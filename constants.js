@@ -1,5 +1,5 @@
 let comments = {
-   js: ["/*", "//"],
+   js: {start_block: ["/*"], end_block: ["*/"], line: ["//"]},
 }
 
 let commands = [
