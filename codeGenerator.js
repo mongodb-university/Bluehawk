@@ -7,8 +7,9 @@ const lineReader = require('line-reader');
 const fs = require('fs');
 
 let inBlockComment = false;
-let inCommand = false;
+let isCommand = false;
 let inHide = false;
+let inStepBlock = false;
 
 async function run(stages, fileType){
    console.log('coder start', stages, fileType, fileHandler.fileArray)
@@ -31,70 +32,77 @@ async function buildFileForStage(file, stage, fileType){
     });
 
     lineReader.eachLine(file.source, async function(line) {
-        isComment(line, fileType).then(async isComment=>{
-           if (isComment || inBlockComment) {
-               isCommand(line).then(async command => {
-                  if (command != "") { 
-                     // We have a command! 
-                     handleCommand(command, line)
-                  } else {
-                     // we're in a comment, but there is no command
-                     // so we are either in a block comment 
-                     // or we have a comment line that we want to write out
-                     if (!inBlockComment) {
-                        // we should only get here if we're on an END block comment
-                        // we don't want to write this line out unless it's 
-                        // part of the output text
-                        //console.log("end of block?", line, command)
-                        if (command == ":step-end:" || command == "") {
-                          // console.log('end of block and what???')
-                           fs.appendFileSync(file[stage], line + "\n");
-                        }
-                     } else {
-                        // we're in a block. Ignore or write?
-                        output.error("// we're in a block. Ignore or write?" + line + command + inHide + inCommand)
-                        if (!inHide && !inCommand){
-                           //should be true false false
-                           //console.log('writing:', line, inBlockComment, inHide, inCommand)
-                           fs.appendFileSync(file[stage], line + "\n");
-                        }
-                     }
-                     
-                     
-                     /*else if (!inBlockComment && !inHide && !inCommand) {
-                        console.log('writing...', line, inBlockComment)
-                        fs.appendFileSync(file[stage], line + "\n");
-                     }*/ 
-                  }
-               })
+      await isBlockComment(line, fileType);
+      getCommand(line).then(async command => {
+         if (isCommand) { // We have a command 
+            //console.log('1' + isCommand + inStepBlock + line)
+            handleCommand(command, line)
+         } else { // there is no command
+            console.log('2' + line + inStepBlock + inHide + inBlockComment)
+            if (inStepBlock || inHide) {
+               //we're in the middle of a step or hide block
+               // so we don't include in code output
+               //console.log('3' + isCommand + inStepBlock)
             } else {
-               // regular line of text/code; write it to output
-               console.log('****', line + inBlockComment + inHide + inCommand)
-               if (!inBlockComment && !inHide && !inCommand){
-                  console.log('writing', line)
+               //not in stepblock and not hidden
+               if (!inBlockComment){ 
+                  //remove comment
+                  output.result("inblockcomment" + line)
+                  await constants.comments[fileType].line.forEach(commentType => {
+                     if (line.indexOf(commentType) > -1) {
+                        let nocomment = line.replace(commentType, "");
+                        output.result("nocomment" + nocomment)
+                        fs.appendFileSync(file[stage], nocomment + "\n");
+                     } else {
+                        fs.appendFileSync(file[stage], line + "\n");
+                     }
+                  });
+               } else {
+                  output.result("writing " + line)
                   fs.appendFileSync(file[stage], line + "\n");
-               } 
+               }
             }
-        });
+         }  // no command
+      });
    });
-
-   fs.readFileSync(file[stage], 'utf8', function (err, data) {
+   
+   /*fs.readFileSync(file[stage], 'utf8', function (err, data) {
       if (err) {
          output.error(err);
          return false;
       }
       //output.result(data);
-   });
+   });*/
    return;
 }
 
 async function handleCommand(command, line) {
-   //output.result(command + " " + line)
-   //console.log("handleCommand - inCommand, inHide", inCommand, inHide)
-   if (inCommand){
+   if (command.indexOf(":step-start:") > -1) {
+      //ignore all lines until we get to step-end
+      //console.log('we should get here', line)
+      inStepBlock = true;
+      console.log("inStep", inStepBlock)
+      return;
+   }
+   if (command.indexOf(":step-end:")> -1) {
+      inStepBlock = false;
+      return;
+   }
+   if (command.indexOf(":hide-start:") > -1) {
+      // ignore all lines until we get to hide-end
+      inHide = true;
+      return;
+   }
+   if (command.indexOf(":replace-with:") > -1 
+            || command.indexOf(":hide-end:") > -1) {
+         inHide = false;
+         return;
+   }
+
+  /* if (isCommand){
       //look for end
       if (command.indexOf(":step-end:")> -1) {
-         inCommand = false;
+         inStep = false;
       }
       return;
    }
@@ -108,51 +116,45 @@ async function handleCommand(command, line) {
       //we have an object we need to deal with
       //TODO!
    } else {*/
-   if (command.indexOf(":step-start:") > -1) {
-      //ignore all lines until we get to step-end
-      //console.log('we should get here', line)
-      inCommand = true;
-   } else if (command.indexOf(":hide-start:") > -1) {
-      //ignore all lines until we get to hide-end
-      inHide = true;
-   }
+  
+
    
       // command with default params (or no params)
    //console.log("command, inCommand, inHide", command, inCommand, inHide)
 }
 
 
-async function isComment(line, fileType) {
-   let isComment = false;
+async function isBlockComment(line, fileType) {
+   /*let isComment = false;
    await constants.comments[fileType].line.forEach(commentType => {
       if (line.indexOf(commentType) > -1) {
          isComment = true;
       }
-   });
+   });*/
    await constants.comments[fileType].start_block.forEach(commentType => {
       if (line.indexOf(commentType) > -1) {
-         isComment = true;
          inBlockComment = true;
       }
    });
    await constants.comments[fileType].end_block.forEach(commentType => {
       if (line.indexOf(commentType) > -1) {
-         isComment = false;
-         inBlockComment = true;
+         inBlockComment = false;
       }
    });
-   output.error("isComment?" + line + isComment + inBlockComment)
-   return isComment;
+   //output.error("isComment?" + line + inBlockComment)
+   return;
 }
 
-async function isCommand(line) {
+async function getCommand(line) {
+   isCommand = false;
    let command = "";
    await constants.commands.forEach(commandType => {
       if (line.indexOf(commandType) > -1) {
+         isCommand = true;
          command = commandType;
       }
    });
-   if (command != "") console.log('isCommand: ', command)
+   if (command != "") console.log('isCommand: ', command, isCommand)
    return command;
 }
 
