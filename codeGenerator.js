@@ -12,7 +12,7 @@ let inHide = false;
 let inStepBlock = false;
 
 async function run(stages, fileType){
-   console.log('coder start', stages, fileType, fileHandler.fileArray)
+   console.log('coder start', fileHandler.fileArray)
 
    fileHandler.fileArray.forEach(async file => {
       if (file.source){
@@ -20,8 +20,8 @@ async function run(stages, fileType){
             await buildFileForStage(file, stage, fileType);
          });
          
-         output.result(file.name)
-         output.result(file.source);
+         //output.result(file.name)
+         //output.result(file.source);
       }
    });
 }
@@ -38,7 +38,7 @@ async function buildFileForStage(file, stage, fileType){
             //console.log('1' + isCommand + inStepBlock + line)
             handleCommand(command, line)
          } else { // there is no command
-            console.log('2' + line + inStepBlock + inHide + inBlockComment)
+            //console.log('2' + line + inStepBlock + inHide + inBlockComment)
             if (inStepBlock || inHide) {
                //we're in the middle of a step or hide block
                // so we don't include in code output
@@ -47,18 +47,18 @@ async function buildFileForStage(file, stage, fileType){
                //not in stepblock and not hidden
                if (!inBlockComment){ 
                   //remove comment
-                  output.result("inblockcomment" + line)
+                  //output.result("inblockcomment" + line)
                   await constants.comments[fileType].line.forEach(commentType => {
                      if (line.indexOf(commentType) > -1) {
                         let nocomment = line.replace(commentType, "");
-                        output.result("nocomment" + nocomment)
+                        //output.result("nocomment" + nocomment)
                         fs.appendFileSync(file[stage], nocomment + "\n");
                      } else {
                         fs.appendFileSync(file[stage], line + "\n");
                      }
                   });
                } else {
-                  output.result("writing " + line)
+                  //output.result("writing " + line)
                   fs.appendFileSync(file[stage], line + "\n");
                }
             }
@@ -81,7 +81,7 @@ async function handleCommand(command, line) {
       //ignore all lines until we get to step-end
       //console.log('we should get here', line)
       inStepBlock = true;
-      console.log("inStep", inStepBlock)
+      //console.log("inStep", inStepBlock)
       return;
    }
    if (command.indexOf(":step-end:")> -1) {
@@ -148,13 +148,15 @@ async function isBlockComment(line, fileType) {
 async function getCommand(line) {
    isCommand = false;
    let command = "";
-   await constants.commands.forEach(commandType => {
+   Object.keys(constants.commands).forEach(commandType => {
+
+   //await constants.commands.forEach(commandType => {
       if (line.indexOf(commandType) > -1) {
          isCommand = true;
          command = commandType;
       }
    });
-   if (command != "") console.log('isCommand: ', command, isCommand)
+   //if (command != "") console.log('isCommand: ', command, isCommand)
    return command;
 }
 

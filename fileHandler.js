@@ -37,7 +37,7 @@ async function openFile(params) {
             
             if (!fs.existsSync(filename + "/" + outPath)){
                fs.mkdirSync(filename + "/" + outPath);
-           }
+            }
            
             if (fs.lstatSync(fullname).isDirectory()){
                 //TODO: do we want to supported nested folders?
@@ -46,24 +46,21 @@ async function openFile(params) {
             output.result("Reading " + fullname);
             //let data = await readFile(file);
             fileArray[index] = {source: fullname};
+            fileArray[index].step = fullOutPath + ".step.rst";
          
             stages.forEach(async stage => {  
-               fileArray[index][stage] = filename + "/" + outPath + "/" + file + "." + stage;
+               fileArray[index][stage] = fullOutPath + "." + stage;
             });
 
             //output.result(util.inspect(fileArray[index]));
 
-
-         await coder.run(stages, params.type);
-         await stepper.run();
-
+         index++;
          });
-
-         
-         return true;
+         await coder.run(stages, params.type);
+         await stepper.run(stages, params.type);
       });
    } else {
-      output.result("Processing " + filename);
+      //output.result("Processing " + filename);
       let data = await readFile(filename);
       fileArray.push({name:filename, data:[{source: data}]});
       await coder.run();
@@ -82,10 +79,6 @@ async function readFile(filename){
    });
 }
 
-async function writeFile(filename){
-   
-}
 
 exports.openFile = openFile;
-exports.writeFile = writeFile;
 exports.fileArray = fileArray;
