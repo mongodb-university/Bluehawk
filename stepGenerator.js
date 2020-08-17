@@ -15,7 +15,7 @@ async function run(stages, fileType){
    fileHandler.fileArray.forEach(async file => {
       if (file.source){
          stages.forEach(async stage => {
-            await buildStepFile(file, stage, fileType);
+            buildStepFile(file, stage, fileType);
          });
       }
    });
@@ -25,35 +25,34 @@ async function buildStepFile(file, stage, fileType){
    //output.result(file.step)
    fs.writeFile(file.step, "", function(err) {
       if(err) output.error(err);
-    });
+   });
 
-    lineReader.open(file.source, function(err, reader) {
+   lineReader.open(file.source, function(err, reader) {
       if (err) throw err;
-      if (reader.hasNextLine()) {
+      while (reader.hasNextLine()) {
         reader.nextLine(function(err, line) {
-         if (!inStep){
-         //look for step-start
-         //parse step-start object
-         // if there's no object, get default
-         checkForStart(reader, line);
-       }
-       
-    });
-   }
-   else {
-     reader.close(function(err) {
-       if (err) throw err;          
-     });
-   }
- });
+            if (!inStep){
+               console.log('not in step')
+               checkForStart(reader, line, file);
+            } else {
+               // /console.log('here?')
+               //checkForNextCommandOrWrite(line, file);
+            }
+         });
+      }
+      console.log("closing reader")
+      reader.close(function(err) {
+         if (err) throw err;          
+      });
+   });
 }
 
 
-async function checkForStart(reader, line){
+async function checkForStart(reader, line, file){
    if (line.indexOf(':step-start:')> -1){
       inStep = true;
-      if (currentStep==""){
-         currentStep == "A. "
+      if (currentStep== "" ){
+         currentStep = "A. "
       } else {
          currentStep = "#. "
       }
@@ -63,38 +62,49 @@ async function checkForStart(reader, line){
          //output.result(constants.commands[":hide-start:"]);
          if (line.indexOf('}')> -1){
             //the props object is all on one line!
-            //TODO
+            //TODO:
             constants.commands[":hide-start:"].forEach(property => {
             });
          } else{
-               //write out id as a comment
                var propObj = await buildObjectFromPropsString(reader);
-               console.log(propObj);
-               var id = ".. ".concat(propObj.id, "\n");
-               var step = id.concat(currentStep, propObj.title);
-
-               output.result(file.step, step + "\n");
+               var step = ".. " + propObj.id + "\n" + currentStep + propObj.title;
                fs.appendFileSync(file.step, step + "\n");
          }
-
-
-         
       }
    }
 }
 
+function checkForNextCommandOrWrite(line, file){
+   console.log("checking", line)
+   if (line.indexOf(':step-end:')> -1){
+      inStep = false;
+      return;
+   }
+   if (line.indexOf(':include-code-block:')> -1){
+      //TODO:
+      return;
+   }
+
+   // /fs.appendFileSync(file.step, line + "\n");
+}
+   
+
+
 async function buildObjectFromPropsString(reader, current){ 
    var propObj = current ?? "{";
-   return reader.nextLine(function (e,line) {
-      if (line.indexOf('}') > -1){
-         propObj = propObj.concat("}")
-         output.result("I am returning an object, yo!" + JSON.stringify(JSON.parse(propObj)))
-         JSON.parse(propObj);
-      } else {
-         propObj = propObj.concat(line)
-         buildObjectFromPropsString(reader, propObj)
-      }
-   });
+   return new Promise((resolve, reject)=> {
+      reader.nextLine(function (e,line) {
+         if (e) reject(e);
+         if (line.indexOf('}') > -1){
+            propObj = propObj.concat("}")
+            output.result("I am returning an object, yo!" + JSON.stringify(JSON.parse(propObj)))
+            resolve(JSON.parse(propObj));
+         } else {
+            propObj = propObj.concat(line)
+            resolve(buildObjectFromPropsString(reader, propObj))
+         }
+      });
+   })
 }
 
 exports.run = run;
