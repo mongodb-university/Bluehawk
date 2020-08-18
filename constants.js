@@ -9,7 +9,7 @@ let commands = {
    ":step-start:":{},
    ":step-end:":{},
    ":include-code-block:":{},
-   ":code-block-start:":{},
+   ":code-block-start:":["emphasize-lines","line-numbers"],
    ":code-block-end:": {}
 }
 

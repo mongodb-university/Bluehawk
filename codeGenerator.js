@@ -79,9 +79,7 @@ async function buildFileForStage(file, stage, fileType){
 async function handleCommand(command, line) {
    if (command.indexOf(":step-start:") > -1) {
       //ignore all lines until we get to step-end
-      //console.log('we should get here', line)
       inStepBlock = true;
-      //console.log("inStep", inStepBlock)
       return;
    }
    if (command.indexOf(":step-end:")> -1) {

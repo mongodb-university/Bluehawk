@@ -2,14 +2,12 @@ const fileHandler = require("./fileHandler");
 const output = require("./output");
 const constants = require("./constants");
 const fs = require('fs');
-const { resolve } = require("path");
 
-let inBlockComment = false;
-let isCommand = false;
 let inStep = false;
 let currentStep = "A. ";
 
 var fullFile = [];
+var codeBlocks = [];
 
 async function run(stages, fileType){
    console.log('step-file start', fileHandler.fileArray)
@@ -28,20 +26,111 @@ async function buildStepFile(file, stage, fileType){
    });
 
    fullFile = fs.readFileSync(file.source, 'utf8').split('\n');
-   console.log(fullFile);
-   
+   await getCodeBlocks();
+
    var line=true;
    while (fullFile.length>0){
       
       line = fullFile.shift();
-      console.log(line);
+      //console.log(line);
       if (!inStep){
          await checkForStart(line, file);
       } else {
-         await checkForNextCommandOrWrite(line, file);
+         await checkForNextCommandOrWrite(line, file, fileType);
       }
    }
 }
+
+async function getCodeBlocks() {
+
+   let starter = false;
+   let final = false;
+   let codeBlockProps = [];
+   
+   for (const [index, codeLine] of fullFile.entries()){
+      let id;
+      let counter = index+1;
+      let nextCodeLine = fullFile[counter];
+      if (codeLine.indexOf(':code-block-start:')> -1) {
+         //build code block and store for future lookup
+         if (codeLine.indexOf('{')> -1){
+            //we have a property object
+            codeBlockProps = await safeBuildObjectFromPropsString(":code-block-start:", index+1);
+            id = codeBlockProps.id;
+           
+            while (nextCodeLine.indexOf("}") == -1) {
+               counter++;
+               nextCodeLine = fullFile[counter];
+            }
+            counter++;
+         } else {  
+            id = codeLine.substring((':code-block-start:').length+2).trimStart();
+         }
+
+         output.result("building code block with id " + id)
+         let starterCodeLines = [];
+         let finalCodeLines = [];
+         output.result("next code line" + nextCodeLine + counter)
+         
+         while (nextCodeLine && nextCodeLine.indexOf(":code-block-end:") == -1) {
+            nextCodeLine = fullFile[counter];
+            console.log(nextCodeLine);
+
+            if (nextCodeLine.indexOf(":hide-start:")> -1){
+               final = true;
+               starter = false;
+               counter++;
+               //output.result(counter);
+               continue;
+            } else if (nextCodeLine.indexOf(":hide-end:")> -1){
+               starter = true;
+               final = true;
+               counter++;
+               //output.result(counter);
+               continue;
+   
+            } else if (nextCodeLine.indexOf(":replace-with:")> -1){
+               final = false;
+               starter = true;
+               counter++;
+               //output.result(counter);
+               continue;
+            }
+            else if (nextCodeLine.indexOf(":code-block-end:")> -1){
+               counter++;
+               //output.result(counter);
+               continue;
+            }
+
+            if (starter) {
+               output.result("putting in start code" + nextCodeLine)
+               starterCodeLines.push(nextCodeLine);
+            }
+            if (final) {
+               output.result("putting in final code" + nextCodeLine)
+               finalCodeLines.push(nextCodeLine);
+            }
+
+            counter++;
+            //output.result(counter);
+         
+
+         //TODO: this could be expanded to allow multiple states
+         // rather than just start and final. Not MVP?
+         
+      }
+      codeBlocks.push({
+         "id":id, 
+         "startCode": starterCodeLines, 
+         "endCode": finalCodeLines,
+         "props": codeBlockProps
+      });
+      output.result(JSON.stringify(codeBlocks))
+
+      }
+   }
+}
+
 
 async function checkForStart(line, file){
    if (line.indexOf(':step-start:')> -1){
@@ -58,56 +147,83 @@ async function checkForStart(line, file){
    }
 }
 
-async function checkForNextCommandOrWrite(line, file){
+async function checkForNextCommandOrWrite(line, file, fileType){
    if (line.indexOf(':step-end:')> -1){
       inStep = false;
       currentStep = "#. "
       fs.appendFileSync(file.step, "\n\n");
-      output.result("END OF STEP")
       return;
    }
    if (line.indexOf(':include-code-block:')> -1){
-      //TODO:
-      /* parse object, as with step-start
-      open final code file that contains the block
-      copy it in
-      */
-
       var props = await buildObjectFromPropsString(line);
-      output.result(JSON.stringify(props));
+      //open final code file that contains the block
+      if (props && props.id){
+         if (props.id.indexOf(".") > -1){
+            //we need to find a foreign file!
+         } else {
+            output.result("I'm looking for" + props.id)
+            let codeBlock = codeBlocks.find(e=> e.id == props.id);
+            var outputCode;
+            if (codeBlock){
+               output.result("I have a code block!" + codeBlock.props)
+               if (codeBlock["props"]){
+                  outputCode = ".. code-block:: " + fileType + "\n\t";
+                  constants.commands[":code-block-start:"].forEach(property => {
+                     if (codeBlock["props"][property]){
+                        outputCode = outputCode.concat(property, " : ", codeBlock["props"][property]+ "\n\t");
+                     }
+                  });
+                  outputCode = outputCode.concat("\n\t");
+               }
+               else outputCode = ".. code-block:: " + fileType + "\n\n\t";
+               if (props.state == "start") {
+                  outputCode = outputCode.concat(codeBlock.startCode.join("\n\t"));
+               } else if (props.state == "final") {
+                  outputCode = outputCode.concat(codeBlock.endCode.join("\n\t"));
+               }
+               outputCode = outputCode.concat("\n\n");
+               fs.appendFileSync(file.step,outputCode);
+            }
+         }
+      }  
       return;
    }
 
    fs.appendFileSync(file.step, line + "\n");
 }
-   
-
 
 async function buildObjectFromPropsString(current){ 
-      if (current.indexOf('}')> -1){
-         //the props object is all on one line!
-         //TODO:
-         constants.commands[":hide-start:"].forEach(property => {
-         });
-         resolve();
-      } else{
-         var propObj = "{";
-         return new Promise((resolve, reject)=> {
-            let line = fullFile.shift();
-            output.result(line)
-            if (!line) reject();
-            if (line.indexOf('}') > -1){
-               propObj = propObj.concat("}")
-               output.result(propObj)
-               output.result("I am returning an object, yo!" + JSON.stringify(JSON.parse(propObj)))
-               resolve(JSON.parse(propObj));
-            } else {
-               propObj = propObj.concat(line);
-               console.log(propObj)
-               resolve(buildObjectFromPropsString(propObj))
-            }
-         });
+   if (current.indexOf('}')> -1){
+      //the props object is all on one line!
+      var sub = current.substring(":include-code-block:".length);
+      return JSON.parse(sub);
+   } else{
+      var propObj = "{";
+      let line = fullFile.shift();
+      if (!line) reject();
+      while (line.indexOf('}') == -1){
+         propObj = propObj.concat(line);
+         line = fullFile.shift();
       }
+         propObj = propObj.concat("}")
+         return JSON.parse(propObj);
+   }
 }
+
+async function safeBuildObjectFromPropsString(command, index){ 
+   if (fullFile[index].indexOf('}')> -1){
+      var propsString = fullFile[index].split(',');
+      return JSON.parse(propsString);
+   } else{
+      var propObj = "{";
+      while (fullFile[index].indexOf('}') == -1){
+         propObj = propObj.concat(fullFile[index]);
+         index++;
+      }
+      propObj = propObj.concat("}")
+      return JSON.parse(propObj);
+   }
+}
+
 
 exports.run = run;
