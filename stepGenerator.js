@@ -6,8 +6,8 @@ const fs = require("fs");
 let inStep = false;
 let currentStep = "A. ";
 var fullOutput = [];
-var source=[];
-var codeBlocks=[];
+var source = [];
+var codeBlocks = [];
 
 async function buildStepFile(file, fileType, fullFile, code) {
   source = fullFile;

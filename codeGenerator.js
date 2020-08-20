@@ -1,8 +1,6 @@
 const output = require("./output");
 const constants = require("./constants");
 
-let result = {start:[],final:[]}
-let source=[];
 let fileType;
 let inBlockComment = false;
 let isCommand = false;
@@ -10,59 +8,47 @@ let inHide = false;
 let inStepBlock = false;
 let inReplace = false;
 
-async function buildCodeFiles(fullFile, type) {
-  fileType = type;
-  source = fullFile;
+async function buildCodeFiles(source, type) {
+  let result = { start: [], final: [] };
+  return new Promise(async (resolve, reject) => {
+    fileType = type;
 
-  for (l=0;l<source.length;l++){
-    let line = source[l];
-    
-    await isBlockComment(line, fileType);
-    getCommand(line).then(async (command) => {
-      //output.result('here', line, inBlockComment, isCommand, inStepBlock)
-      if (isCommand) {
-        // We have a command
-        handleCommand(command, line);
-      } else {
-        // there is no command
-        if (inStepBlock) {
-          // we're in the middle of a step
-          // so we don't include in code output
+    for (l = 0; l < source.length; l++) {
+      let line = source[l];
+
+      await isBlockComment(line, fileType);
+      getCommand(line).then(async (command) => {
+        if (isCommand) {
+          handleCommand(command, line);
         } else {
-          //not in step-block
-
-          if (line.indexOf("/*")>-1){
-            //output.error(line, inBlockComment, inHide, inReplace)
-            line = line.replace("/*","");
-          }
-          if (!inBlockComment && (inHide || inReplace)) {
-            //remove comment
-            for (c=0;c<constants.comments[fileType].line.length;c++){
-              let commentType = constants.comments[fileType].line[c];
-              console.log("So I should be here", line)
-              if (line.indexOf(commentType) > -1) {
-                line = line.replace(commentType, "");
-              } 
+          if (!inStepBlock) {
+            if (!inReplace) {
+              line = line.replace("/*", "").replace("*/", "");
+            }
+            if (!inBlockComment && (inHide || inReplace)) {
+              //remove comment
+              for (c = 0; c < constants.comments[fileType].line.length; c++) {
+                let commentType = constants.comments[fileType].line[c];
+                if (line.indexOf(commentType) > -1) {
+                  line = line.replace(commentType, "");
+                }
+              }
+            }
+            if (!inHide) {
+              result["start"].push(line + "\n");
+            }
+            if (!inReplace) {
+              result["final"].push(line + "\n");
             }
           }
-          
-          if (!inHide) {
-            result["start"].push(line + "\n");
-          }
-          if (!inReplace){
-            result["final"].push(line + "\n");
-          }
         }
-      } // no command
-    });
-  };
-
-  output.result(result)
-  return result;
+      });
+    }
+    resolve(result);
+  });
 }
 
 async function handleCommand(command, line) {
-
   if (command.indexOf(":step-start:") > -1) {
     inStepBlock = true;
     return;
@@ -75,11 +61,11 @@ async function handleCommand(command, line) {
     inHide = true;
     return;
   }
-  if (command.indexOf(":replace-with:") > -1){
+  if (command.indexOf(":replace-with:") > -1) {
     inReplace = true;
     inHide = false;
   }
-  if (command.indexOf(":hide-end:") > -1){
+  if (command.indexOf(":hide-end:") > -1) {
     inHide = false;
     inReplace = false;
   }
@@ -94,7 +80,6 @@ async function isBlockComment(line, fileType) {
   });
   await constants.comments[fileType].end_block.forEach((commentType) => {
     if (line.indexOf(commentType) > -1) {
-      output.error('no longer block comment', line)
       inBlockComment = false;
     }
   });

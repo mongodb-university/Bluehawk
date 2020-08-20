@@ -15,111 +15,105 @@ async function run(stages, fileType) {
       // one step file for each file
       fullFile = fs.readFileSync(file.source, "utf8").split("\n");
       codeBlocks = await getCodeBlocks(fullFile);
-      let result = await stepper.buildStepFile(file, fileType, fullFile, codeBlocks);
+      let result = await stepper.buildStepFile(
+        file,
+        fileType,
+        fullFile,
+        codeBlocks
+      );
       fs.appendFileSync(file.step, result.join(""));
-     
-      for (s = 0; s < stages.length; s++) {
-         let stage = stages[s];
-         fs.writeFile(file[stage], "", function (err) {
-            if (err) output.error(err);
-            });
-      }
 
-         fullFile = fs.readFileSync(file.source, "utf8").split("\n");
-         result = await coder.buildCodeFiles(fullFile, fileType);
-         console.log(result);
-         fs.appendFileSync(file["start"], result["start"].join(""));
-         fs.appendFileSync(file["final"], result["final"].join(""));
+      let source = fs.readFileSync(file.source, "utf8").split("\n");
+      let codeFile = await coder.buildCodeFiles(source, fileType);
+      //output.result("***", file.source, JSON.stringify(codeFile))
+      fs.writeFileSync(file.start, codeFile["start"].join(""));
+      fs.writeFileSync(file.final, codeFile["final"].join(""));
     }
   }
 }
 
 async function getCodeBlocks(input) {
-   let result = [];
-   let starterCodeLines = [];
-   let finalCodeLines = [];
+  let result = [];
 
-   return new Promise(async (resolve, reject) => {
-      let starter = false;
-      let final = false;
-      let codeBlockProps = [];
+  return new Promise(async (resolve, reject) => {
+    let starter = false;
+    let final = false;
+    let codeBlockProps = [];
 
-      for (const [index, codeLine] of input.entries()) {
-         let id;
-         let counter = index + 1;
-         let nextCodeLine = input[counter];
-         
-         if (codeLine.indexOf(":code-block-start:") > -1) {
-            //build code block and store for future lookup
-            
-            if (codeLine.indexOf("{") > -1) {
-               //we have a property object
-               codeBlockProps = await safeBuildObjectFromPropsString(
-                  index + 1
-               );
-               id = codeBlockProps.id;
-               console.log(id)
+    for (const [index, codeLine] of input.entries()) {
+      let id;
+      let counter = index + 1;
+      let nextCodeLine = input[counter];
 
-               while (nextCodeLine.indexOf("}") == -1) {
-                  counter++;
-                  nextCodeLine = await input[counter];
-               }
-               counter++;
-            } else {
-               let foo = codeLine.replace(/ /g,'');
-               let matchAll = Array.from(foo.matchAll(':'));
-               id = foo.substring(matchAll[matchAll.length-1].index+1).trim().replace('*/','');
-               output.result(id)
-            }
+      if (codeLine.indexOf(":code-block-start:") > -1) {
+        let starterCodeLines = [];
+        let finalCodeLines = [];
 
-            while (nextCodeLine && nextCodeLine.indexOf(":code-block-end:") == -1) {
-               nextCodeLine = input[counter];
-               console.log(nextCodeLine)
+        //build code block and store for future lookup
 
-               if (nextCodeLine.indexOf(":hide-start:") > -1) {
-                  final = true;
-                  starter = false;
-                  counter++;
-                  continue;
-               } else if (nextCodeLine.indexOf(":hide-end:") > -1) {
-                  starter = true;
-                  final = true;
-                  counter++;
-                  continue;
-               } else if (nextCodeLine.indexOf(":replace-with:") > -1) {
-                  final = false;
-                  starter = true;
-                  counter++;
-                  continue;
-               } else if (nextCodeLine.indexOf(":code-block-end:") > -1) {
-                  counter++;
-                  continue;
-               }
+        if (codeLine.indexOf("{") > -1) {
+          //we have a property object
+          codeBlockProps = await safeBuildObjectFromPropsString(index + 1);
+          id = codeBlockProps.id;
 
-               if (starter) {
-                  starterCodeLines.push(nextCodeLine);
-               }
-               if (final) {
-                  finalCodeLines.push(nextCodeLine);
-               }
+          while (nextCodeLine.indexOf("}") == -1) {
+            counter++;
+            nextCodeLine = await input[counter];
+          }
+          counter++;
+        } else {
+          let foo = codeLine.replace(/ /g, "");
+          let matchAll = Array.from(foo.matchAll(":"));
+          id = foo
+            .substring(matchAll[matchAll.length - 1].index + 1)
+            .trim()
+            .replace("*/", "");
+        }
 
-               counter++;
-            } 
+        while (nextCodeLine && nextCodeLine.indexOf(":code-block-end:") == -1) {
+          nextCodeLine = input[counter];
 
-         
-            result.push({
-               id: id,
-               startCode: starterCodeLines,
-               endCode: finalCodeLines,
-               props: codeBlockProps,
-            });
-         }
-      }
-      console.log('done building code blocks', result)
-      resolve(result);
-   });
+          if (nextCodeLine.indexOf(":hide-start:") > -1) {
+            final = true;
+            starter = false;
+            counter++;
+            continue;
+          } else if (nextCodeLine.indexOf(":hide-end:") > -1) {
+            starter = true;
+            final = true;
+            counter++;
+            continue;
+          } else if (nextCodeLine.indexOf(":replace-with:") > -1) {
+            final = false;
+            starter = true;
+            counter++;
+            continue;
+          } else if (nextCodeLine.indexOf(":code-block-end:") > -1) {
+            counter++;
+            continue;
+          }
+
+          if (starter) {
+            starterCodeLines.push(nextCodeLine);
+          }
+          if (final) {
+            finalCodeLines.push(nextCodeLine);
+          }
+
+          counter++;
+        }
+
+        result.push({
+          id: id,
+          startCode: starterCodeLines,
+          endCode: finalCodeLines,
+          props: codeBlockProps,
+        });
+      } // end code block
+    }
+    resolve(result);
+  });
 }
-
 
 async function safeBuildObjectFromPropsString(index) {
   if (fullFile[index].indexOf("}") > -1) {

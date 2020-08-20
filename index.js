@@ -31,7 +31,6 @@ async function run() {
     params.stages = ["start", "final"];
   }
   if (!Array.isArray(params.stages)) {
-    output.error(params.stages);
     params.stages = params.stages.split(",");
   }
   if (!params.type) {
