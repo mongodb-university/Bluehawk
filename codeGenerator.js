@@ -1,60 +1,116 @@
 const output = require("./output");
 const constants = require("./constants");
 
-let result = [];
+let result = {start:[],final:[]}
 let source=[];
-let codeBlocks=[];
 let fileType;
+let inBlockComment = false;
+let isCommand = false;
+let inHide = false;
+let inStepBlock = false;
+let inReplace = false;
 
-async function buildFileForStage(stage, code, type) {
-  result = [];
-  codeBlocks = code;
+async function buildCodeFiles(fullFile, type) {
   fileType = type;
-  
-  return new Promise(async (resolve, reject) => {
-    switch (stage){
-      case "start":
-        resolve(buildStarterCode());
-        break;
-      case "final":
-        resolve(buildFinalCode());
-        break;
-      default:
-        reject();
-    }
-  });
+  source = fullFile;
+
+  for (l=0;l<source.length;l++){
+    let line = source[l];
+    
+    await isBlockComment(line, fileType);
+    getCommand(line).then(async (command) => {
+      //output.result('here', line, inBlockComment, isCommand, inStepBlock)
+      if (isCommand) {
+        // We have a command
+        handleCommand(command, line);
+      } else {
+        // there is no command
+        if (inStepBlock) {
+          // we're in the middle of a step
+          // so we don't include in code output
+        } else {
+          //not in step-block
+
+          if (line.indexOf("/*")>-1){
+            //output.error(line, inBlockComment, inHide, inReplace)
+            line = line.replace("/*","");
+          }
+          if (!inBlockComment && (inHide || inReplace)) {
+            //remove comment
+            for (c=0;c<constants.comments[fileType].line.length;c++){
+              let commentType = constants.comments[fileType].line[c];
+              console.log("So I should be here", line)
+              if (line.indexOf(commentType) > -1) {
+                line = line.replace(commentType, "");
+              } 
+            }
+          }
+          
+          if (!inHide) {
+            result["start"].push(line + "\n");
+          }
+          if (!inReplace){
+            result["final"].push(line + "\n");
+          }
+        }
+      } // no command
+    });
+  };
+
+  output.result(result)
+  return result;
 }
 
-async function buildStarterCode() {
-  let result =[]
-  output.result('starter code')
-  return new Promise(async (resolve, reject) => {
-    for (c=0;c<codeBlocks.length;c++){
-      let codeBlock = codeBlocks[c].startCode;
-      if (codeBlock) {
-        result.push(codeBlock.join('\n'));
-      }
-      result.push('\n');
-    }
-    output.result("STARTER codeblock", JSON.stringify(result))
-    resolve(result);
-  });
+async function handleCommand(command, line) {
+
+  if (command.indexOf(":step-start:") > -1) {
+    inStepBlock = true;
+    return;
+  }
+  if (command.indexOf(":step-end:") > -1) {
+    inStepBlock = false;
+    return;
+  }
+  if (command.indexOf(":hide-start:") > -1) {
+    inHide = true;
+    return;
+  }
+  if (command.indexOf(":replace-with:") > -1){
+    inReplace = true;
+    inHide = false;
+  }
+  if (command.indexOf(":hide-end:") > -1){
+    inHide = false;
+    inReplace = false;
+  }
+  return;
 }
 
-async function buildFinalCode() {
-  let result =[]
-  output.result('final code')
-  return new Promise(async (resolve, reject) => {
-    for (c=0;c<codeBlocks.length;c++){
-      let codeBlock = codeBlocks[c].endCode;
-      if (codeBlock) {
-        result.push(codeBlock.join('\n'));
-      }
-      result.push('\n');
+async function isBlockComment(line, fileType) {
+  await constants.comments[fileType].start_block.forEach((commentType) => {
+    if (line.indexOf(commentType) > -1) {
+      inBlockComment = true;
     }
-    output.result("END codeblock", JSON.stringify(result))
-    resolve(result);
   });
+  await constants.comments[fileType].end_block.forEach((commentType) => {
+    if (line.indexOf(commentType) > -1) {
+      output.error('no longer block comment', line)
+      inBlockComment = false;
+    }
+  });
+  return;
 }
 
-exports.buildFileForStage = buildFileForStage;
+async function getCommand(line) {
+  isCommand = false;
+  let command = "";
+  Object.keys(constants.commands).forEach((commandType) => {
+    if (line.indexOf(commandType) > -1) {
+      isCommand = true;
+      command = commandType;
+    }
+  });
+  return command;
+}
+
+exports.buildCodeFiles = buildCodeFiles;
