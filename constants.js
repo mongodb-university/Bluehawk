@@ -8,8 +8,8 @@ let commands = {
   ":replace-with:": {},
   ":step-start:": {},
   ":step-end:": {},
-  ":include-code-block:": {},
-  ":code-block-start:": ["emphasize-lines", "line-numbers"],
+  ":include-code-block:": ["emphasize_lines", "line_numbers"],
+  ":code-block-start:": {},
   ":code-block-end:": {},
 };
 

@@ -1,17 +1,12 @@
 const fs = require("fs");
-const path = require("path");
-const index = require("./index");
 const output = require("./output");
-const coder = require("./codeGenerator");
-const stepper = require("./stepGenerator");
-const util = require("util");
+const builder = require("./builder");
 
 var fileArray = [];
 
 async function openFile(params) {
   let filename = params.source;
-  let stages = params.stages.split(",");
-  console.log(stages);
+  let stages = params.stages;
 
   if (!fs.existsSync(filename)) {
     output.error("That file or directory doesn't exist!", filename);
@@ -41,7 +36,7 @@ async function openFile(params) {
           //TODO: do we want to supported nested folders?
           return;
         }
-        output.result("Reading " + fullname);
+        output.result("Reading", fullname);
         fileArray[index] = { source: fullname };
         fileArray[index].step = fullOutPath + ".step.rst";
 
@@ -51,27 +46,40 @@ async function openFile(params) {
 
         index++;
       });
-      await coder.run(stages, params.type);
-      await stepper.run(stages, params.type);
+      await builder.run(stages, params.type);
     });
   } else {
-    let data = await readFile(filename);
-    fileArray.push({ name: filename, data: [{ source: data }] });
-    await coder.run();
-    await stepper.run();
-    return true;
+    // TODO
+    /*await builder.run(stages, params.type);
+    return true;*/
   }
 }
 
-async function readFile(filename) {
-  return fs.readFileSync(filename, "utf8", function (err, data) {
-    if (err) {
-      output.error(err);
-      return false;
+async function getFileType(filename) {
+  return new Promise((resolve, reject) => {
+    if (!fs.existsSync(filename)) {
+      output.error("The source file or directory doesn't exist!", filename);
+      reject();
     }
-    return data;
+
+    if (fs.lstatSync(filename).isDirectory()) {
+      fs.readdir(filename, function (err, files) {
+        for (var x = 0; x < files.length; x++) {
+          var file = filename + "/" + files[x];
+          if (fs.lstatSync(file).isFile() && !files[x].startsWith(".")) {
+            let ext = file.split(".").pop();
+            output.result("I am auto-detecting a file type of", ext);
+            return resolve(ext);
+          }
+        }
+      });
+    } else {
+      let ext = filename.split(".").pop();
+      return ext;
+    }
   });
 }
 
 exports.openFile = openFile;
 exports.fileArray = fileArray;
+exports.getFileType = getFileType;

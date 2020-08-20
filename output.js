@@ -13,21 +13,14 @@ module.exports.intro = function () {
   );
 };
 
-module.exports.header = function (text) {
-  console.log(chalk.yellowBright.bold("\n" + text + "\n"));
+module.exports.header = function (...text) {
+  console.log(chalk.yellowBright.bold("\n" + text.join(" ") + "\n"));
 };
 
-module.exports.error = function (text) {
-  console.log(chalk.red.bold("\n ❗\n" + text + "\n ❗\n"));
+module.exports.error = function (...text) {
+  console.log(chalk.red.bold("\n ❗\n" + text.join(" ") + "\n ❗\n"));
 };
 
-module.exports.result = function (text) {
-  console.log(chalk.yellowBright(text + "\n"));
-};
-
-module.exports.watchResult = function (header, text) {
-  console.log(
-    chalk.bgCyan.black("\n---------------" + header + "----------------\n")
-  );
-  console.log(chalk.cyanBright(text + "\n"));
+module.exports.result = function (...text) {
+  console.log(chalk.yellowBright(text.join(" ") + "\n"));
 };

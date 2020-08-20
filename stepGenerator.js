@@ -1,141 +1,60 @@
-const fileHandler = require("./fileHandler");
+const builder = require("./builder");
 const output = require("./output");
 const constants = require("./constants");
 const fs = require("fs");
 
 let inStep = false;
 let currentStep = "A. ";
+var fullOutput = [];
+var source=[];
+var codeBlocks=[];
 
-var fullFile = [];
-var codeBlocks = [];
+async function buildStepFile(file, fileType, fullFile, code) {
+  source = fullFile;
+  codeBlocks = code;
 
-async function run(stages, fileType) {
-  console.log("step-file start", fileHandler.fileArray);
-  fileHandler.fileArray.forEach(async (file) => {
-    if (file.source) {
-      stages.forEach(async (stage) => {
-        buildStepFile(file, stage, fileType);
-      });
-    }
-  });
-}
+  return new Promise(async (resolve, reject) => {
+    fs.writeFile(file.step, "", function (err) {
+      if (err) output.error(err);
+    });
 
-async function buildStepFile(file, stage, fileType) {
-  fs.writeFile(file.step, "", function (err) {
-    if (err) output.error(err);
-  });
-
-  fullFile = fs.readFileSync(file.source, "utf8").split("\n");
-  await getCodeBlocks();
-
-  var line = true;
-  while (fullFile.length > 0) {
-    line = fullFile.shift();
-    if (!inStep) {
-      await checkForStart(line, file);
-    } else {
-      await checkForNextCommandOrWrite(line, file, fileType);
-    }
-  }
-}
-
-async function getCodeBlocks() {
-  let starter = false;
-  let final = false;
-  let codeBlockProps = [];
-
-  for (const [index, codeLine] of fullFile.entries()) {
-    let id;
-    let counter = index + 1;
-    let nextCodeLine = fullFile[counter];
-    if (codeLine.indexOf(":code-block-start:") > -1) {
-      //build code block and store for future lookup
-      if (codeLine.indexOf("{") > -1) {
-        //we have a property object
-        codeBlockProps = await safeBuildObjectFromPropsString(
-          ":code-block-start:",
-          index + 1
-        );
-        id = codeBlockProps.id;
-
-        while (nextCodeLine.indexOf("}") == -1) {
-          counter++;
-          nextCodeLine = fullFile[counter];
-        }
-        counter++;
+    var line = true;
+    while (source.length > 0) {
+      line = source.shift();
+      if (!inStep) {
+        await checkForStart(line, source);
       } else {
-        id = codeLine.substring(":code-block-start:".length + 2).trimStart();
+        await checkForNextCommandOrWrite(line, fileType);
       }
-
-      let starterCodeLines = [];
-      let finalCodeLines = [];
-
-      while (nextCodeLine && nextCodeLine.indexOf(":code-block-end:") == -1) {
-        nextCodeLine = fullFile[counter];
-
-        if (nextCodeLine.indexOf(":hide-start:") > -1) {
-          final = true;
-          starter = false;
-          counter++;
-          continue;
-        } else if (nextCodeLine.indexOf(":hide-end:") > -1) {
-          starter = true;
-          final = true;
-          counter++;
-          continue;
-        } else if (nextCodeLine.indexOf(":replace-with:") > -1) {
-          final = false;
-          starter = true;
-          counter++;
-          continue;
-        } else if (nextCodeLine.indexOf(":code-block-end:") > -1) {
-          counter++;
-          continue;
-        }
-
-        if (starter) {
-          starterCodeLines.push(nextCodeLine);
-        }
-        if (final) {
-          finalCodeLines.push(nextCodeLine);
-        }
-
-        counter++;
-
-        //TODO: this could be expanded to allow multiple states
-        // rather than just start and final. Not MVP?
-      }
-      codeBlocks.push({
-        id: id,
-        startCode: starterCodeLines,
-        endCode: finalCodeLines,
-        props: codeBlockProps,
-      });
     }
-  }
+    resolve(fullOutput);
+  });
 }
 
-async function checkForStart(line, file) {
-  if (line.indexOf(":step-start:") > -1) {
-    inStep = true;
-    if (line.indexOf("{") > -1) {
-      var propObj = await buildObjectFromPropsString(line);
-      var step = ".. " + propObj.id + "\n" + currentStep + propObj.title;
-      fs.appendFileSync(file.step, step + "\n\n");
-    } else {
-      //default property
-      var title = line.substring(":step-start:".length).trimStart();
-      var step = currentStep + title;
-      fs.appendFileSync(file.step, step + "\n\n");
+async function checkForStart(line) {
+  return new Promise(async (resolve, reject) => {
+    if (line.indexOf(":step-start:") > -1) {
+      inStep = true;
+      if (line.indexOf("{") > -1) {
+        var propObj = await buildObjectFromPropsString(line);
+        var step = ".. " + propObj.id + "\n" + currentStep + propObj.title;
+        fullOutput.push(step + "\n\n");
+      } else {
+        //default property
+        var title = line.substring(":step-start:".length).trimStart();
+        var step = currentStep + title;
+        fullOutput.push(step + "\n\n");
+      }
     }
-  }
+    resolve();
+  });
 }
 
-async function checkForNextCommandOrWrite(line, file, fileType) {
+async function checkForNextCommandOrWrite(line, fileType) {
   if (line.indexOf(":step-end:") > -1) {
     inStep = false;
     currentStep = "#. ";
-    fs.appendFileSync(file.step, "\n\n");
+    fullOutput.push("\n\n");
     return;
   }
   if (line.indexOf(":include-code-block:") > -1) {
@@ -148,33 +67,30 @@ async function checkForNextCommandOrWrite(line, file, fileType) {
         let codeBlock = codeBlocks.find((e) => e.id == props.id);
         var outputCode;
         if (codeBlock) {
-          if (codeBlock["props"]) {
-            outputCode = ".. code-block:: " + fileType + "\n\t";
-            constants.commands[":code-block-start:"].forEach((property) => {
-              if (codeBlock["props"][property]) {
-                outputCode = outputCode.concat(
-                  property,
-                  " : ",
-                  codeBlock["props"][property] + "\n\t"
-                );
-              }
-            });
-            outputCode = outputCode.concat("\n\t");
-          } else outputCode = ".. code-block:: " + fileType + "\n\n\t";
+          outputCode = ".. code-block:: " + fileType + "\n\t";
+          constants.commands[":include-code-block:"].forEach((property) => {
+            if (props[property]) {
+              outputCode = outputCode.concat(
+                property,
+                " : ",
+                props[property] + "\n\t"
+              );
+            }
+          });
+          outputCode = outputCode.concat("\n\t");
           if (props.state == "start") {
             outputCode = outputCode.concat(codeBlock.startCode.join("\n\t"));
           } else if (props.state == "final") {
             outputCode = outputCode.concat(codeBlock.endCode.join("\n\t"));
           }
           outputCode = outputCode.concat("\n\n");
-          fs.appendFileSync(file.step, outputCode);
+          fullOutput.push(outputCode);
         }
       }
     }
     return;
   }
-
-  fs.appendFileSync(file.step, line + "\n");
+  fullOutput.push(line + "\n");
 }
 
 async function buildObjectFromPropsString(current) {
@@ -184,11 +100,11 @@ async function buildObjectFromPropsString(current) {
     return JSON.parse(sub);
   } else {
     var propObj = "{";
-    let line = fullFile.shift();
+    let line = source.shift();
     if (!line) reject();
     while (line.indexOf("}") == -1) {
       propObj = propObj.concat(line);
-      line = fullFile.shift();
+      line = source.shift();
     }
     propObj = propObj.concat("}");
     return JSON.parse(propObj);
@@ -196,13 +112,13 @@ async function buildObjectFromPropsString(current) {
 }
 
 async function safeBuildObjectFromPropsString(command, index) {
-  if (fullFile[index].indexOf("}") > -1) {
-    var propsString = fullFile[index].split(",");
+  if (source[index].indexOf("}") > -1) {
+    var propsString = source[index].split(",");
     return JSON.parse(propsString);
   } else {
     var propObj = "{";
-    while (fullFile[index].indexOf("}") == -1) {
-      propObj = propObj.concat(fullFile[index]);
+    while (source[index].indexOf("}") == -1) {
+      propObj = propObj.concat(source[index]);
       index++;
     }
     propObj = propObj.concat("}");
@@ -210,4 +126,4 @@ async function safeBuildObjectFromPropsString(command, index) {
   }
 }
 
-exports.run = run;
+exports.buildStepFile = buildStepFile;
