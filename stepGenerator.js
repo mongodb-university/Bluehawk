@@ -5,9 +5,9 @@ const fs = require("fs");
 
 let inStep = false;
 let currentStep = "A. ";
-var fullOutput = [];
-var source = [];
-var codeBlocks = [];
+let fullOutput = [];
+let source = [];
+let codeBlocks = [];
 
 async function buildStepFile(file, fileType, fullFile, code) {
   source = fullFile;
@@ -18,7 +18,7 @@ async function buildStepFile(file, fileType, fullFile, code) {
       if (err) output.error(err);
     });
 
-    var line = true;
+    let line = true;
     while (source.length > 0) {
       line = source.shift();
       if (!inStep) {
@@ -36,13 +36,13 @@ async function checkForStart(line) {
     if (line.indexOf(":step-start:") > -1) {
       inStep = true;
       if (line.indexOf("{") > -1) {
-        var propObj = await buildObjectFromPropsString(line);
-        var step = ".. " + propObj.id + "\n" + currentStep + propObj.title;
+        const propObj = await buildObjectFromPropsString(line);
+        const step = ".. " + propObj.id + "\n" + currentStep + propObj.title;
         fullOutput.push(step + "\n\n");
       } else {
         //default property
-        var title = line.substring(":step-start:".length).trimStart();
-        var step = currentStep + title;
+        const title = line.substring(":step-start:".length).trimStart();
+        const step = currentStep + title;
         fullOutput.push(step + "\n\n");
       }
     }
@@ -58,14 +58,14 @@ async function checkForNextCommandOrWrite(line, fileType) {
     return;
   }
   if (line.indexOf(":include-code-block:") > -1) {
-    var props = await buildObjectFromPropsString(line);
+    const props = await buildObjectFromPropsString(line);
     //open final code file that contains the block
     if (props && props.id) {
       if (props.id.indexOf(".") > -1) {
         //we need to find a foreign file!
       } else {
         let codeBlock = codeBlocks.find((e) => e.id == props.id);
-        var outputCode;
+        let outputCode;
         if (codeBlock) {
           outputCode = ".. code-block:: " + fileType + "\n\t";
           constants.commands[":include-code-block:"].forEach((property) => {
@@ -96,10 +96,10 @@ async function checkForNextCommandOrWrite(line, fileType) {
 async function buildObjectFromPropsString(current) {
   if (current.indexOf("}") > -1) {
     //the props object is all on one line!
-    var sub = current.substring(":include-code-block:".length);
+    const sub = current.substring(":include-code-block:".length);
     return JSON.parse(sub);
   } else {
-    var propObj = "{";
+    let propObj = "{";
     let line = source.shift();
     if (!line) reject();
     while (line.indexOf("}") == -1) {
@@ -113,10 +113,10 @@ async function buildObjectFromPropsString(current) {
 
 async function safeBuildObjectFromPropsString(command, index) {
   if (source[index].indexOf("}") > -1) {
-    var propsString = source[index].split(",");
+    const propsString = source[index].split(",");
     return JSON.parse(propsString);
   } else {
-    var propObj = "{";
+    let propObj = "{";
     while (source[index].indexOf("}") == -1) {
       propObj = propObj.concat(source[index]);
       index++;

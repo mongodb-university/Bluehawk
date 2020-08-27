@@ -33,8 +33,7 @@ async function openRealm() {
       :hide-start:*/
       notInStartCode: true,
       inFinalCode: true,
-      /* 
-       :replace-with:
+      /* :replace-with:
       // You should only see this in the start code
       start: true,
       final: false,
@@ -46,14 +45,14 @@ async function openRealm() {
       // :hide-start:
       notInStartCode: true,
       inFinalCode: true,
-      /*
-        :replace-with:
+      /* :replace-with:
        // You should only see this in the start code
        start: true,
        final: false,
        // comment in start code: ... ,
        :hide-end:
-       :code-block-end:*/
+       :code-block-end:
+       */
     },
   };
   realm = Realm.open(config);

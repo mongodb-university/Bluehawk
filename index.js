@@ -4,7 +4,7 @@ const fileHandler = require("./fileHandler");
 const yargs = require("yargs");
 
 output.intro();
-var params = {};
+let params = {};
 
 async function run() {
   params = yargs
@@ -35,6 +35,12 @@ async function run() {
   }
   if (!params.type) {
     params.type = await fileHandler.getFileType(params.source);
+    output.header(
+      "I have auto-detected a file type of '",
+      params.type +
+        "'. If this is incorrect, use the --t or -type parameter to specify " +
+        "the correct file type"
+    );
   }
 
   fileHandler.openFile(params);

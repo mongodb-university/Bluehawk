@@ -3,18 +3,20 @@ const stepper = require("./stepGenerator");
 const coder = require("./codeGenerator");
 const output = require("./output");
 const fs = require("fs");
+const { white } = require("chalk");
 
-var fullFile = [];
-var codeBlocks = [];
+let fullFile = [];
+let codeBlocks = [];
+let fileType;
 
-async function run(stages, fileType) {
-  console.log("builder start", fileHandler.fileArray);
+async function run(stages, type) {
+  fileType = type;
   for (f = 0; f < fileHandler.fileArray.length; f++) {
     let file = fileHandler.fileArray[f];
     if (file.source) {
       // one step file for each file
       fullFile = fs.readFileSync(file.source, "utf8").split("\n");
-      codeBlocks = await getCodeBlocks(fullFile);
+      codeBlocks = await getCodeBlocks(fullFile, file);
       let result = await stepper.buildStepFile(
         file,
         fileType,
@@ -25,14 +27,13 @@ async function run(stages, fileType) {
 
       let source = fs.readFileSync(file.source, "utf8").split("\n");
       let codeFile = await coder.buildCodeFiles(source, fileType);
-      //output.result("***", file.source, JSON.stringify(codeFile))
       fs.writeFileSync(file.start, codeFile["start"].join(""));
       fs.writeFileSync(file.final, codeFile["final"].join(""));
     }
   }
 }
 
-async function getCodeBlocks(input) {
+async function getCodeBlocks(input, fileObject) {
   let result = [];
 
   return new Promise(async (resolve, reject) => {
@@ -89,6 +90,8 @@ async function getCodeBlocks(input) {
             counter++;
             continue;
           } else if (nextCodeLine.indexOf(":code-block-end:") > -1) {
+            saveCodeBlock(id, starterCodeLines, fileObject, "start");
+            saveCodeBlock(id, finalCodeLines, fileObject, "final");
             counter++;
             continue;
           }
@@ -117,10 +120,10 @@ async function getCodeBlocks(input) {
 
 async function safeBuildObjectFromPropsString(index) {
   if (fullFile[index].indexOf("}") > -1) {
-    var propsString = fullFile[index].split(",");
+    const propsString = fullFile[index].split(",");
     return JSON.parse(propsString);
   } else {
-    var propObj = "{";
+    const propObj = "{";
     while (fullFile[index].indexOf("}") == -1) {
       propObj = propObj.concat(fullFile[index]);
       index++;
@@ -128,6 +131,26 @@ async function safeBuildObjectFromPropsString(index) {
     propObj = propObj.concat("}");
     return JSON.parse(propObj);
   }
+}
+
+function saveCodeBlock(id, source, fileObject, stage) {
+  let whitespaceToRemove = 100000;
+  const reg = /[^\s]/g;
+  for (l = 0; l < source.length; l++) {
+    if (source[l].search(reg) < whitespaceToRemove) {
+      whitespaceToRemove = source[l].search(reg);
+    }
+  }
+  for (l = 0; l < source.length; l++) {
+    source[l] = source[l].substring(whitespaceToRemove);
+  }
+
+  const filename = fileObject["codeBlock"][stage] + "." + id + "." + fileType;
+  fs.writeFile(filename, source.join("\n"), (err) => {
+    if (err) {
+      output.error(err);
+    }
+  });
 }
 
 exports.run = run;

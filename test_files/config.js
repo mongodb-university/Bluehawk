@@ -58,8 +58,8 @@ This should be included in the START ONLY */
 Here's another comment for start only!
 */
 //:hide-end:
-var shouldBeInStartAndFinalCode;
-// as should this comment
+let shouldBeInStartAndFinalCode;
+// This comment should be in all outputs
 //:code-block-end:
 
 /*:code-block-start: foo

@@ -2,7 +2,7 @@ const fs = require("fs");
 const output = require("./output");
 const builder = require("./builder");
 
-var fileArray = [];
+let fileArray = [];
 
 async function openFile(params) {
   let filename = params.source;
@@ -13,8 +13,9 @@ async function openFile(params) {
     return false;
   }
   if (fs.lstatSync(filename).isDirectory()) {
-    output.result("scanning directory '" + filename + "'");
-    fs.readdir(filename, async function (err, files) {
+    let directory = filename;
+    output.result("scanning directory '" + directory + "'");
+    fs.readdir(directory, async function (err, files) {
       if (err) {
         output.error(err);
         return false;
@@ -24,29 +25,68 @@ async function openFile(params) {
       await files.forEach(async function (file) {
         if (file.startsWith(".")) return;
 
-        let fullname = filename + "/" + file;
-        let outPath = params.destination ?? "output";
-        let fullOutPath = filename + "/" + outPath + "/" + file;
-
-        if (!fs.existsSync(filename + "/" + outPath)) {
-          fs.mkdirSync(filename + "/" + outPath);
+        let fullname = directory + "/" + file;
+        let stepOutputPath = params.destination ?? "output/steps";
+        let codeOutputPath = params.destination ?? "output/code";
+        if (!fs.existsSync(directory + "/output")) {
+          fs.mkdirSync(directory + "/output");
+        }
+        if (!fs.existsSync(directory + "/" + stepOutputPath)) {
+          fs.mkdirSync(directory + "/" + stepOutputPath);
+        }
+        if (!fs.existsSync(directory + "/" + codeOutputPath)) {
+          fs.mkdirSync(directory + "/" + codeOutputPath);
         }
 
         if (fs.lstatSync(fullname).isDirectory()) {
           //TODO: do we want to supported nested folders?
           return;
         }
-        output.result("Reading", fullname);
+
+        const fileparts = file.split(".");
+        const ext = fileparts[1];
+        const baseFileName = fileparts[0];
+
+        output.result("Processing '" + fullname + "'");
+
         fileArray[index] = { source: fullname };
-        fileArray[index].step = fullOutPath + ".step.rst";
+        fileArray[index].step =
+          directory + "/" + stepOutputPath + "/" + baseFileName + ".step.rst";
+
+        fileArray[index]["codeBlock"] = {};
 
         stages.forEach(async (stage) => {
-          fileArray[index][stage] = fullOutPath + "." + stage;
+          if (!fs.existsSync(directory + "/" + codeOutputPath + "/" + stage)) {
+            fs.mkdirSync(directory + "/" + codeOutputPath + "/" + stage);
+          }
+
+          fileArray[index]["codeBlock"][stage] =
+            directory +
+            "/" +
+            codeOutputPath +
+            "/" +
+            stage +
+            "/" +
+            baseFileName +
+            ".codeblock";
+
+          fileArray[index][stage] =
+            directory +
+            "/" +
+            codeOutputPath +
+            "/" +
+            stage +
+            "/" +
+            baseFileName +
+            "." +
+            ext;
         });
 
         index++;
       });
       await builder.run(stages, params.type);
+
+      output.header("DONE!");
     });
   } else {
     // TODO
@@ -64,11 +104,10 @@ async function getFileType(filename) {
 
     if (fs.lstatSync(filename).isDirectory()) {
       fs.readdir(filename, function (err, files) {
-        for (var x = 0; x < files.length; x++) {
-          var file = filename + "/" + files[x];
+        for (let x = 0; x < files.length; x++) {
+          const file = filename + "/" + files[x];
           if (fs.lstatSync(file).isFile() && !files[x].startsWith(".")) {
             let ext = file.split(".").pop();
-            output.result("I am auto-detecting a file type of", ext);
             return resolve(ext);
           }
         }
