@@ -3,10 +3,11 @@ const output = require("./output");
 const fileHandler = require("./fileHandler");
 const yargs = require("yargs");
 
-output.intro();
 let params = {};
 
 async function run() {
+  output.intro();
+
   params = yargs
     .usage("Usage: $0 <command> [options]")
     .command("source", "The file or folder to process")
@@ -35,11 +36,11 @@ async function run() {
   }
   if (!params.type) {
     params.type = await fileHandler.getFileType(params.source);
-    output.header(
-      "I have auto-detected a file type of '",
-      params.type +
-        "'. If this is incorrect, use the --t or -type parameter to specify " +
-        "the correct file type"
+    output.important(
+      "I have auto-detected a file type of '" +
+        params.type +
+        "'. If this is incorrect, \nuse the --t or -type parameter to specify " +
+        "the correct file type."
     );
   }
 

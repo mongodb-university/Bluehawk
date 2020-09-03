@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --require 'test/hooks.js' -- 'test/*.test.js'"
   },
   "author": "",
   "license": "ISC",
@@ -13,9 +13,12 @@
     "clear": "^0.1.0",
     "figlet": "^1.5.0",
     "fs": "0.0.1-security",
+    "fsify": "^4.0.1",
     "inquirer": "^7.3.3",
     "line-reader": "^0.4.0",
+    "mocha": "^8.1.3",
     "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
     "yargs": "^15.4.1"
   }
 }

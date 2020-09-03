@@ -22,7 +22,7 @@ async function openRealm() {
       inFinalCode: true,
 
       // :replace-with:
-      // // You should only see this in the start code
+      // // A You should only see this in the start code
       // start: true,
       // final: false,
       // // comment in start code: ... ,
@@ -34,7 +34,7 @@ async function openRealm() {
       notInStartCode: true,
       inFinalCode: true,
       /* :replace-with:
-      // You should only see this in the start code
+      // B You should only see this in the start code
       start: true,
       final: false,
       // comment in start code: ... ,
@@ -46,13 +46,12 @@ async function openRealm() {
       notInStartCode: true,
       inFinalCode: true,
       /* :replace-with:
-       // You should only see this in the start code
+       // C You should only see this in the start code
        start: true,
        final: false,
        // comment in start code: ... ,
        :hide-end:
-       :code-block-end:
-       */
+       :code-block-end:*/
     },
   };
   realm = Realm.open(config);
@@ -61,8 +60,8 @@ async function openRealm() {
 output.intro();
 
 async function run() {
-  output.header("*** WELCOME ***");
-  output.header(
+  console.log("*** WELCOME ***");
+  console.log(
     "Please log in to your Realm account or register as a new user."
   );
 

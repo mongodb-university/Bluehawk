@@ -1,2 +1,3 @@
 
-test_files/
+test/input
+test/expected

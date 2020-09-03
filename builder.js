@@ -1,34 +1,46 @@
-const fileHandler = require("./fileHandler");
 const stepper = require("./stepGenerator");
 const coder = require("./codeGenerator");
 const output = require("./output");
 const fs = require("fs");
-const { white } = require("chalk");
 
 let fullFile = [];
 let codeBlocks = [];
 let fileType;
 
-async function run(stages, type) {
+async function run(fileArray, type) {
   fileType = type;
-  for (f = 0; f < fileHandler.fileArray.length; f++) {
-    let file = fileHandler.fileArray[f];
+  for (f = 0; f < fileArray.length; f++) {
+    let file = fileArray[f];
     if (file.source) {
       // one step file for each file
       fullFile = fs.readFileSync(file.source, "utf8").split("\n");
-      codeBlocks = await getCodeBlocks(fullFile, file);
+      codeBlocks = await getCodeBlocks(fullFile, file).catch((e) => {
+        return;
+      });
+
+      fs.writeFile(file.step, "", function (err) {
+        if (err) output.error(err);
+      });
+
+      /*output.info("Building step file(s) from", file.source);
+
       let result = await stepper.buildStepFile(
-        file,
         fileType,
         fullFile,
         codeBlocks
       );
-      fs.appendFileSync(file.step, result.join(""));
+
+      //console.log(result.join("").split('\n'))
+
+      fs.appendFileSync(file.step, result.join(""));*/
 
       let source = fs.readFileSync(file.source, "utf8").split("\n");
-      let codeFile = await coder.buildCodeFiles(source, fileType);
-      fs.writeFileSync(file.start, codeFile["start"].join(""));
-      fs.writeFileSync(file.final, codeFile["final"].join(""));
+      output.info("Building code file(s) from", file.source);
+      await coder.buildCodeFiles(source, fileType).then((codeFile) => {
+        fs.writeFileSync(file.start, codeFile["start"].join(""));
+        fs.writeFileSync(file.final, codeFile["final"].join(""));
+        codeFile = [];
+      });
     }
   }
 }
@@ -41,12 +53,14 @@ async function getCodeBlocks(input, fileObject) {
     let final = false;
     let codeBlockProps = [];
 
+    let inCodeBlock = false;
     for (const [index, codeLine] of input.entries()) {
       let id;
       let counter = index + 1;
       let nextCodeLine = input[counter];
 
       if (codeLine.indexOf(":code-block-start:") > -1) {
+        inCodeBlock = true;
         let starterCodeLines = [];
         let finalCodeLines = [];
 
@@ -55,25 +69,33 @@ async function getCodeBlocks(input, fileObject) {
         if (codeLine.indexOf("{") > -1) {
           //we have a property object
           codeBlockProps = await safeBuildObjectFromPropsString(index + 1);
-          id = codeBlockProps.id;
-
+          id = codeBlockProps.id.trim();
           while (nextCodeLine.indexOf("}") == -1) {
             counter++;
             nextCodeLine = await input[counter];
           }
           counter++;
         } else {
-          let foo = codeLine.replace(/ /g, "");
-          let matchAll = Array.from(foo.matchAll(":"));
-          id = foo
+          let matchAll = Array.from(codeLine.matchAll(":"));
+          id = codeLine
             .substring(matchAll[matchAll.length - 1].index + 1)
-            .trim()
-            .replace("*/", "");
+            .replace("*/", "")
+            .trim();
         }
 
+        if (id.indexOf(" ") > -1) {
+          output.warning("The {id} of this code block contains spaces:", id);
+        }
         while (nextCodeLine && nextCodeLine.indexOf(":code-block-end:") == -1) {
           nextCodeLine = input[counter];
-
+          if (nextCodeLine == undefined) {
+            output.error(
+              `I expected a ':code-block-end:' but didn't find one.\n,
+              This is the last code block I was working on at line ${counter}`
+            );
+            console.log(finalCodeLines);
+            return reject();
+          }
           if (nextCodeLine.indexOf(":hide-start:") > -1) {
             final = true;
             starter = false;
@@ -113,6 +135,19 @@ async function getCodeBlocks(input, fileObject) {
           props: codeBlockProps,
         });
       } // end code block
+      else if (codeLine.indexOf(":code-block-end:") > -1) {
+        inCodeBlock = false;
+      }
+      if (
+        !inCodeBlock &&
+        (codeLine.indexOf(":hide-start:") > -1 ||
+          codeLine.indexOf(":hide-end:") > -1)
+      ) {
+        output.error(
+          `I found a 'hide' command outside of a code block at line ${counter}.`,
+          codeLine
+        );
+      }
     }
     resolve(result);
   });
@@ -134,7 +169,7 @@ async function safeBuildObjectFromPropsString(index) {
 }
 
 function saveCodeBlock(id, source, fileObject, stage) {
-  let whitespaceToRemove = 100000;
+  let whitespaceToRemove = 1000;
   const reg = /[^\s]/g;
   for (l = 0; l < source.length; l++) {
     if (source[l].search(reg) < whitespaceToRemove) {

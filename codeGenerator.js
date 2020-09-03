@@ -12,39 +12,45 @@ async function buildCodeFiles(source, type) {
   let result = { start: [], final: [] };
   return new Promise(async (resolve, reject) => {
     fileType = type;
-
     for (l = 0; l < source.length; l++) {
       let line = source[l];
 
+      let command = await getCommand(line);
+
+      if (line.indexOf("*/") > -1 && !inBlockComment) {
+        line = line.replace("*/", "");
+        inBlockComment = false;
+      }
+
       await isBlockComment(line, fileType);
-      getCommand(line).then(async (command) => {
-        if (isCommand) {
-          handleCommand(command, line);
-        } else {
-          if (!inStepBlock) {
-            if (!inReplace) {
-              line = line.replace("/*", "").replace("*/", "");
-            }
-            if (!inBlockComment && (inHide || inReplace)) {
-              //remove comment
-              for (c = 0; c < constants.comments[fileType].line.length; c++) {
-                let commentType = constants.comments[fileType].line[c];
-                if (line.indexOf(commentType) > -1) {
-                  line = line.replace(commentType, "");
-                }
+
+      if (isCommand) {
+        handleCommand(command, line);
+      } else {
+        if (!inStepBlock) {
+          if (!inBlockComment && (inReplace || inHide)) {
+            //remove comment
+            for (c = 0; c < constants.comments[fileType].line.length; c++) {
+              let commentType = constants.comments[fileType].line[c];
+              if (line.indexOf(commentType) > -1) {
+                line = line.replace(commentType, "");
               }
             }
-            if (!inHide) {
-              result["start"].push(line + "\n");
-            }
-            if (!inReplace) {
-              result["final"].push(line + "\n");
-            }
+          }
+          if (!inHide) {
+            result["start"].push(line + "\n");
+          }
+          if (!inReplace) {
+            result["final"].push(line + "\n");
           }
         }
-      });
+      }
     }
-    resolve(result);
+    if (result["start"][result["start"].length - 1] == "\n")
+      result["start"].pop();
+    if (result["final"][result["final"].length - 1] == "\n")
+      result["final"].pop();
+    return resolve(result);
   });
 }
 
