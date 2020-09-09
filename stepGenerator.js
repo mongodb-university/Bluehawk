@@ -74,7 +74,7 @@ function checkForNextCommandOrWrite(line, fileType) {
           if (props.state == "start") {
             outputCode = outputCode.concat(codeBlock.startCode.join("\n\t"));
           } else if (props.state == "final") {
-            outputCode = outputCode.concat(codeBlock.endCode.join("\n\t"));
+            outputCode = outputCode.concat(codeBlock.finalCode.join("\n\t"));
           }
           outputCode = outputCode.concat("\n\n");
           fullOutput.push(outputCode);

@@ -44,8 +44,9 @@ I'm step 2. That's cool, right?
 I'm using the default property of the step-start
 rather than passing in an object. That makes me
 cooler than the previous step.
-
 :step-end:*/
+
+
 
 //:code-block-start:realmAppId
 //:hide-start:
@@ -61,6 +62,9 @@ Here's another comment for start only!
 let shouldBeInStartAndFinalCode;
 // This comment should be in all outputs
 //:code-block-end:
+
+
+
 
 /*:code-block-start: foo
 let foo = "this line should be in both starter and final"

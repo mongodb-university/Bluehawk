@@ -1,12 +1,14 @@
 const coder = require("./codeGenerator");
+const stepper = require("./stepGenerator");
 const output = require("./output");
 const fs = require("fs");
 
 let fullFile = [];
 let fileType;
 let codeFile;
+let codeBlocks = [];
 
-function run(fileArray, type) {
+async function run(fileArray, type) {
   fileType = type;
   for (let f = 0; f < fileArray.length; f++) {
     let file = fileArray[f];
@@ -14,7 +16,7 @@ function run(fileArray, type) {
       // one step file for each file
       fullFile = fs.readFileSync(file.source, "utf8").split("\n");
       try {
-        getCodeBlocks(fullFile, file);
+        codeBlocks = await getCodeBlocks(fullFile, file);
       } catch (e) {
         console.error(e);
       }
@@ -23,17 +25,13 @@ function run(fileArray, type) {
         if (err) output.error(err);
       });
 
-      /*output.info("Building step file(s) from", file.source);
+      output.info("Building step file(s) from", file.source);
 
-      let result = await stepper.buildStepFile(
-        fileType,
-        fullFile,
-        codeBlocks
-      );
+      let result = stepper.buildStepFile(fileType, fullFile, codeBlocks);
 
       //console.log(result.join("").split('\n'))
 
-      fs.appendFileSync(file.step, result.join(""));*/
+      fs.appendFileSync(file.step, result.join(""));
 
       let source = fs.readFileSync(file.source, "utf8").split("\n");
       output.info("Building code file(s) from", file.source);
@@ -46,12 +44,11 @@ function run(fileArray, type) {
 
 function getCodeBlocks(input, fileObject) {
   let result = [];
-
   let starter = false;
   let final = false;
   let codeBlockProps = [];
-
   let inCodeBlock = false;
+
   for (const [index, codeLine] of input.entries()) {
     let id;
     let counter = index + 1;
@@ -61,8 +58,6 @@ function getCodeBlocks(input, fileObject) {
       inCodeBlock = true;
       let starterCodeLines = [];
       let finalCodeLines = [];
-
-      //build code block and store for future lookup
 
       if (codeLine.indexOf("{") > -1) {
         //we have a property object
@@ -132,7 +127,7 @@ function getCodeBlocks(input, fileObject) {
       result.push({
         id: id,
         startCode: starterCodeLines,
-        endCode: finalCodeLines,
+        finalCode: finalCodeLines,
         props: codeBlockProps,
       });
     } // end code block

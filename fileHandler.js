@@ -155,5 +155,4 @@ function getFileType(filename) {
 }
 
 exports.openFile = openFile;
-//exports.fileArray = fileArray;
 exports.getFileType = getFileType;
