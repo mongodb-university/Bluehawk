@@ -84,14 +84,16 @@ function getCodeBlocks(input, fileObject) {
       if (id.indexOf(" ") > -1) {
         output.warning("The {id} of this code block contains spaces:", id);
       }
-      while (nextCodeLine && nextCodeLine.indexOf(":code-block-end:") == -1) {
+      while (
+        nextCodeLine != undefined &&
+        nextCodeLine.indexOf(":code-block-end:") == -1
+      ) {
         nextCodeLine = input[counter];
         if (nextCodeLine == undefined) {
           output.error(
             `I expected a ':code-block-end:' but didn't find one.\n,
             This is the last code block I was working on at line ${counter}`
           );
-          console.log(finalCodeLines);
           throw new Error(`I expected a ':code-block-end:' but didn't find one.\n,
             This is the last code block I was working on at line ${counter}`);
         }
