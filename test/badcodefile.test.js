@@ -5,13 +5,13 @@ const output = require("../output");
 const path = require("path");
 const dirPath = path.join(__dirname, "/output");
 
-describe("Badcode file tests", async function () {
-  it("Should handle bad code files gracefully", async function (done) {
-    startResult = fs.readFileSync(
+describe("Badcode file tests", function () {
+  it("Should handle bad code files gracefully", function (done) {
+    let startResult = fs.readFileSync(
       dirPath + "/code/start/badcodefile.js",
       "utf8"
     );
-    finalResult = fs.readFileSync(
+    let finalResult = fs.readFileSync(
       dirPath + "/code/final/badcodefile.js",
       "utf8"
     );
@@ -26,7 +26,13 @@ describe("Badcode file tests", async function () {
         "The 'start' output is not the expected length"
       );
 
-      for (l = 0; l < startResult.length; l++) {
+      assert.equal(
+        finalResult.length,
+        expectedCodeFile.output["final"].length,
+        "The 'final' output is not the expected length"
+      );
+
+      for (let l = 0; l < startResult.length; l++) {
         assert.equal(
           startResult[l].trim(),
           expectedCodeFile.output["start"][l].trim(),

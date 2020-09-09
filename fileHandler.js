@@ -1,54 +1,55 @@
 const fs = require("fs");
 const output = require("./output");
 const builder = require("./builder");
-const { finished } = require("stream");
 
-//let fileArray = [];
 let filename;
 let stages;
 let destination;
 
-async function openFile(params) {
-  filename = params.source;
-  stages = params.stages;
-  destination = params.destination;
+function openFile(params) {
+  return new Promise((resolve, reject) => {
+    filename = params.source;
+    stages = params.stages;
+    destination = params.destination;
 
-  if (!fs.existsSync(filename)) {
-    output.error("That file or directory doesn't exist!", filename);
-    return false;
-  }
+    if (!fs.existsSync(filename)) {
+      output.error("That file or directory doesn't exist!", filename);
+      return reject(`File or directory doesn't exist: ${filename}`);
+    }
 
-  if (fs.lstatSync(filename).isDirectory()) {
-    let directory = filename;
-    output.info("Scanning directory '" + directory + "'");
-    fs.readdir(directory, async function (err, files) {
-      if (err) {
-        output.error(err);
-        return false;
-      }
+    if (fs.lstatSync(filename).isDirectory()) {
+      let directory = filename;
+      output.info("Scanning directory '" + directory + "'");
+      fs.readdir(directory, function (err, files) {
+        if (err) {
+          output.error(err);
+          reject(err);
+        }
 
-      let fileArray = [];
-      for (i = 0; i < files.length; i++) {
-        fileArray.push(await createFileArray(files[i], directory));
-      }
+        let fileArray = [];
+        for (let i = 0; i < files.length; i++) {
+          fileArray.push(createFileArray(files[i], directory));
+        }
 
+        output.info("Building the following files:");
+        console.log(fileArray);
+        builder.run(fileArray, params.type);
+        wrapup();
+        resolve();
+      });
+    } else {
+      let fileparts = filename.split("/");
+      let file = fileparts.pop();
+      let dir = __dirname + "/" + fileparts.join("/");
+      let fileArray = createFileArray(file, dir);
       output.info("Building the following files:");
       console.log(fileArray);
-      await builder.run(fileArray, params.type);
-      wrapup();
-    });
-  } else {
-    let fileparts = filename.split("/");
-    let file = fileparts.pop();
-    let dir = __dirname + "/" + fileparts.join("/");
-    let fileArray = await createFileArray(file, dir);
-    output.info("Building the following files:");
-    console.log(fileArray);
-    await builder.run(fileArray, params.type).then((foo) => {
+      builder.run(fileArray, params.type);
       fileArray = null;
-    });
-    wrapup();
-  }
+      wrapup();
+      resolve();
+    }
+  });
 }
 
 function wrapup() {
@@ -75,7 +76,7 @@ function wrapup() {
   //output.warningsList = [];
 }
 
-async function createFileArray(file, directory) {
+function createFileArray(file, directory) {
   let tempArray = [];
   if (file.startsWith(".")) {
     return;
@@ -112,7 +113,7 @@ async function createFileArray(file, directory) {
 
   tempArray[index]["codeBlock"] = {};
 
-  await stages.forEach(async (stage) => {
+  stages.forEach((stage) => {
     if (!fs.existsSync(codeOutputPath + "/" + stage)) {
       fs.mkdirSync(codeOutputPath + "/" + stage);
     }
@@ -127,11 +128,13 @@ async function createFileArray(file, directory) {
   return tempArray;
 }
 
-async function getFileType(filename) {
+function getFileType(filename) {
   return new Promise((resolve, reject) => {
     if (!fs.existsSync(filename)) {
       output.error("The source file or directory doesn't exist!", filename);
-      reject();
+      reject(
+        new Error(`The source file or directory doesn't exist: ${filename}`)
+      );
     }
 
     if (fs.lstatSync(filename).isDirectory()) {

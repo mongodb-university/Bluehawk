@@ -1,4 +1,3 @@
-const inquirer = require("inquirer");
 const output = require("./output");
 const fileHandler = require("./fileHandler");
 const yargs = require("yargs");

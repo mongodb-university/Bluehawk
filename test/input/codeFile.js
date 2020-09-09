@@ -21,10 +21,10 @@ async function openRealm() {
       notInStartCode: true,
       inFinalCode: true,
 
-      // :replace-with:
+      // :replace-with:A
       // // A You should only see this in the start code
-      // start: true,
-      // final: false,
+      // start1: true,
+      // final1: false,
       // // comment in start code: ... ,
       // :hide-end:
       // :code-block-end:
@@ -33,10 +33,10 @@ async function openRealm() {
       :hide-start:*/
       notInStartCode: true,
       inFinalCode: true,
-      /* :replace-with:
+      /* :replace-with:B
       // B You should only see this in the start code
-      start: true,
-      final: false,
+      start2: true,
+      final2: false,
       // comment in start code: ... ,
       :hide-end:
       :code-block-end:*/
@@ -45,13 +45,13 @@ async function openRealm() {
       // :hide-start:
       notInStartCode: true,
       inFinalCode: true,
-      /* :replace-with:
-       // C You should only see this in the start code
-       start: true,
-       final: false,
-       // comment in start code: ... ,
-       :hide-end:
-       :code-block-end:*/
+      /* :replace-with:C
+      // C You should only see this in the start code
+      start3: true,
+      final3: false,
+      // comment in start code: ... ,
+      :hide-end:
+      :code-block-end:*/
     },
   };
   realm = Realm.open(config);

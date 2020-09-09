@@ -7,54 +7,52 @@ let isCommand = false;
 let inHide = false;
 let inStepBlock = false;
 let inReplace = false;
+let replaceIndent;
+let replaceOffset;
 
-async function buildCodeFiles(source, type) {
+function buildCodeFiles(source, type) {
   let result = { start: [], final: [] };
-  return new Promise(async (resolve, reject) => {
-    fileType = type;
-    for (l = 0; l < source.length; l++) {
-      let line = source[l];
+  fileType = type;
+  for (let l = 0; l < source.length; l++) {
+    let line = source[l];
+    getCommand(line);
+    isBlockComment(line);
 
-      let command = await getCommand(line);
-
-      if (line.indexOf("*/") > -1 && !inBlockComment) {
-        line = line.replace("*/", "");
-        inBlockComment = false;
+    // bucket according to hide/replace rules
+    if (!isCommand) {
+      if (replaceIndent > 0) {
+        console.log("replaceIndent", replaceIndent, line);
+        line = stripCommentAsNeeded(line);
       }
-
-      await isBlockComment(line, fileType);
-
-      if (isCommand) {
-        handleCommand(command, line);
+      if (inHide) {
+        result["final"].push(line + "\n");
+      } else if (inReplace) {
+        result["start"].push(line + "\n");
       } else {
-        if (!inStepBlock) {
-          if (!inBlockComment && (inReplace || inHide)) {
-            //remove comment
-            for (c = 0; c < constants.comments[fileType].line.length; c++) {
-              let commentType = constants.comments[fileType].line[c];
-              if (line.indexOf(commentType) > -1) {
-                line = line.replace(commentType, "");
-              }
-            }
-          }
-          if (!inHide) {
-            result["start"].push(line + "\n");
-          }
-          if (!inReplace) {
-            result["final"].push(line + "\n");
-          }
-        }
+        result["start"].push(line + "\n");
+        result["final"].push(line + "\n");
       }
     }
-    if (result["start"][result["start"].length - 1] == "\n")
-      result["start"].pop();
-    if (result["final"][result["final"].length - 1] == "\n")
-      result["final"].pop();
-    return resolve(result);
-  });
+  } //end foreach line
+  if (result["start"][result["start"].length - 1] == "\n")
+    result["start"].pop();
+  if (result["final"][result["final"].length - 1] == "\n")
+    result["final"].pop();
+  console.log(result);
+  return result;
 }
 
-async function handleCommand(command, line) {
+function stripCommentAsNeeded(line) {
+  console.log("start strip", line, replaceIndent);
+  console.log("return strip", line.substring(replaceIndent));
+  if (!inHide && !inBlockComment) {
+    return line.slice(0, replaceOffset) + line.slice(replaceIndent);
+  }
+  return line;
+}
+
+function handleCommand(command, line) {
+  //output.info(command, line, line.indexOf(command))
   if (command.indexOf(":step-start:") > -1) {
     inStepBlock = true;
     return;
@@ -65,40 +63,67 @@ async function handleCommand(command, line) {
   }
   if (command.indexOf(":hide-start:") > -1) {
     inHide = true;
+    for (let c = 0; c < constants.comments[fileType].line.length; c++) {
+      let commentType = constants.comments[fileType].line[c];
+      if (line.indexOf(commentType) > -1) {
+        const regex = new RegExp(commentType, "g");
+        console.log("hidestart", line, line.indexOf(line.match(regex)));
+        replaceOffset = line.indexOf(line.match(regex));
+        replaceIndent = replaceOffset + commentType.length;
+        console.log("replaceOffset:", replaceOffset);
+        console.log("replaceIndent:", replaceIndent);
+        if (replaceIndent > 0) return;
+      }
+    }
     return;
   }
   if (command.indexOf(":replace-with:") > -1) {
-    inReplace = true;
     inHide = false;
+    inReplace = true;
+    for (let c = 0; c < constants.comments[fileType].line.length; c++) {
+      let commentType = constants.comments[fileType].line[c];
+      output.info(line, commentType, line.indexOf(commentType));
+      if (line.indexOf(commentType) > -1) {
+        const regex = new RegExp(commentType, "g");
+        console.log("replacewith", line, line.indexOf(line.match(regex)));
+        replaceOffset = line.indexOf(line.match(regex));
+        replaceIndent = replaceOffset + commentType.length;
+        console.log("replaceOffset:", replaceOffset);
+        console.log("replaceIndent:", replaceIndent);
+        if (replaceIndent > 0) return;
+      }
+    }
+    return;
   }
   if (command.indexOf(":hide-end:") > -1) {
     inHide = false;
     inReplace = false;
+    replaceIndent = 0;
   }
   return;
 }
 
-async function isBlockComment(line, fileType) {
-  await constants.comments[fileType].start_block.forEach((commentType) => {
+function isBlockComment(line) {
+  constants.comments[fileType].start_block.forEach((commentType) => {
     if (line.indexOf(commentType) > -1) {
       inBlockComment = true;
     }
   });
-  await constants.comments[fileType].end_block.forEach((commentType) => {
+  constants.comments[fileType].end_block.forEach((commentType) => {
     if (line.indexOf(commentType) > -1) {
       inBlockComment = false;
     }
   });
-  return;
 }
 
-async function getCommand(line) {
+function getCommand(line) {
   isCommand = false;
   let command = "";
   Object.keys(constants.commands).forEach((commandType) => {
     if (line.indexOf(commandType) > -1) {
       isCommand = true;
       command = commandType;
+      handleCommand(command, line);
     }
   });
   return command;
