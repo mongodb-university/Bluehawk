@@ -21,7 +21,6 @@ function buildCodeFiles(source, type) {
     // bucket according to hide/replace rules
     if (!isCommand) {
       if (replaceIndent > 0) {
-        console.log("replaceIndent", replaceIndent, line);
         line = stripCommentAsNeeded(line);
       }
       if (inHide) {
@@ -38,13 +37,11 @@ function buildCodeFiles(source, type) {
     result["start"].pop();
   if (result["final"][result["final"].length - 1] == "\n")
     result["final"].pop();
-  console.log(result);
+  // console.log(result);
   return result;
 }
 
 function stripCommentAsNeeded(line) {
-  console.log("start strip", line, replaceIndent);
-  console.log("return strip", line.substring(replaceIndent));
   if (!inHide && !inBlockComment) {
     return line.slice(0, replaceOffset) + line.slice(replaceIndent);
   }
@@ -67,11 +64,8 @@ function handleCommand(command, line) {
       let commentType = constants.comments[fileType].line[c];
       if (line.indexOf(commentType) > -1) {
         const regex = new RegExp(commentType, "g");
-        console.log("hidestart", line, line.indexOf(line.match(regex)));
         replaceOffset = line.indexOf(line.match(regex));
         replaceIndent = replaceOffset + commentType.length;
-        console.log("replaceOffset:", replaceOffset);
-        console.log("replaceIndent:", replaceIndent);
         if (replaceIndent > 0) return;
       }
     }
@@ -85,11 +79,8 @@ function handleCommand(command, line) {
       output.info(line, commentType, line.indexOf(commentType));
       if (line.indexOf(commentType) > -1) {
         const regex = new RegExp(commentType, "g");
-        console.log("replacewith", line, line.indexOf(line.match(regex)));
         replaceOffset = line.indexOf(line.match(regex));
         replaceIndent = replaceOffset + commentType.length;
-        console.log("replaceOffset:", replaceOffset);
-        console.log("replaceIndent:", replaceIndent);
         if (replaceIndent > 0) return;
       }
     }

@@ -23,11 +23,13 @@ exports.mochaHooks = {
     await filer.openFile(params);
     params.source = "./test/input/indent.c";
     await filer.openFile(params);
+    params.source = "./test/input/stepfilewithcode.js";
+    await filer.openFile(params);
   },
 
   afterAll(done) {
     console.log("deleting", dirPath);
-    rimraf.sync(dirPath);
+    // /rimraf.sync(dirPath);
     done();
   },
 };
