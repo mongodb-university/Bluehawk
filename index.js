@@ -9,11 +9,11 @@ async function run() {
 
   params = yargs
     .usage("Usage: $0 <command> [options]")
-    .command("source", "The file or folder to process")
-    .command("type", "The file type to process")
-    .command("destination", "The output folder")
-    .command("stages", "The code stages to build, as comma-delimited list")
-    .example("$0 count -f foo.js", "TODO")
+    .command("--source", "The file or folder to process")
+    .command("--type", "The file type to process")
+    .command("--destination", "The output folder")
+    .command("--stages", "The code stages to build, as comma-delimited list")
+    .example("$0 -s ./foo.js -d ./output/")
     .alias("s", "source")
     .alias("t", "type")
     .alias("d", "destination")
@@ -21,8 +21,6 @@ async function run() {
     .demandOption(["source"])
     .help("h")
     .alias("h", "help").argv;
-
-  //console.log(params);
 
   //TODO: user can specify what to generate (starter code, final code, steps)
   //default should be all 3

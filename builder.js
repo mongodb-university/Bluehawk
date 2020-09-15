@@ -76,13 +76,12 @@ function getCodeBlocks(input, fileObject) {
           .trim();
       }
 
+      output.info("****",codeLine, id)
       if (id.indexOf(" ") > -1) {
         output.warning("The {id} of this code block contains spaces:", id);
       }
-      while (
-        nextCodeLine != undefined &&
-        nextCodeLine.indexOf(":code-block-end:") == -1
-      ) {
+
+      while ((nextCodeLine != undefined) && (nextCodeLine.indexOf(":code-block-end:") == -1)) {
         nextCodeLine = input[counter];
         if (nextCodeLine == undefined) {
           output.error(

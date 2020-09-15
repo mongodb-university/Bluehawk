@@ -11,7 +11,7 @@ function openFile(params) {
     filename = params.source;
     stages = params.stages;
     destination = params.destination;
-
+    
     if (!fs.existsSync(filename)) {
       output.error("That file or directory doesn't exist!", filename);
       return reject(`File or directory doesn't exist: ${filename}`);
@@ -40,7 +40,8 @@ function openFile(params) {
     } else {
       let fileparts = filename.split("/");
       let file = fileparts.pop();
-      let dir = __dirname + "/" + fileparts.join("/");
+      let dir = fileparts.join("/");
+
       let fileArray = createFileArray(file, dir);
       output.info("Building the following files:");
       console.log(fileArray);
