@@ -2,12 +2,10 @@ const output = require("./output");
 const fileHandler = require("./fileHandler");
 const yargs = require("yargs");
 
-let params = {};
-
 async function run() {
   output.intro();
 
-  params = yargs
+  const params = yargs
     .usage("Usage: $0 <command> [options]")
     .command("--source", "The file or folder to process")
     .command("--type", "The file type to process")

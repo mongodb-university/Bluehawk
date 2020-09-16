@@ -15,16 +15,20 @@ exports.mochaHooks = {
       type: "js",
     };
 
-    params.source = "./test/input/comments.js";
-    await filer.openFile(params);
-    params.source = "./test/input/codefile.js";
-    await filer.openFile(params);
-    params.source = "./test/input/badcodefile.js";
-    await filer.openFile(params);
-    params.source = "./test/input/indent.c";
-    await filer.openFile(params);
-    params.source = "./test/input/stepfilewithcode.js";
-    await filer.openFile(params);
+    const sources = [
+      "./test/input/comments.js",
+      "./test/input/codefile.js",
+      "./test/input/badcodefile.js",
+      "./test/input/indent.c",
+      "./test/input/firstBlockNotHidden.swift",
+      "./test/input/stepfilewithcode.js",
+    ];
+
+    const promises = sources.map((source) =>
+      filer.openFile({ ...params, source })
+    );
+
+    await Promise.all(promises);
   },
 
   afterAll(done) {
