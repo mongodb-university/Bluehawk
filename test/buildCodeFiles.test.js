@@ -36,27 +36,4 @@ this is all that should remain in final
       final: `this is all that should remain in final`,
     });
   });
-
-  it("should dedent lines", () => {
-    const source = `
-          // :code-block-start: dedent-me
-          this should be flush with the left column
-          // :hide-start:
-          this should be flush with the left column in final
-          // :replace-with:
-          this should be flush with the left column in start
-          // :hide-end:
-          // :code-block-end:`;
-    const files = buildCodeFiles(source, "js");
-    expect(files).to.deep.equal({
-      start: `
-this should be flush with the left column
-this should be flush with the left column in start
-`,
-      final: `
-this should be flush with the left column
-this should be flush with the left column in final
-`,
-    });
-  });
 });
