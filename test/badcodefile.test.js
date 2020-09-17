@@ -16,9 +16,6 @@ describe("Badcode file tests", function () {
       "utf8"
     );
 
-    startResult = startResult.split("\n");
-    finalResult = finalResult.split("\n");
-
     try {
       assert.equal(
         startResult.length,

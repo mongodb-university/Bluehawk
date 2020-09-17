@@ -176,11 +176,11 @@ async function run(fileArray, type) {
 
       fs.appendFileSync(file.step, result.join(""));
 
-      let source = fs.readFileSync(file.source, "utf8").split("\n");
+      let source = fs.readFileSync(file.source, "utf8");
       output.info("Building code file(s) from", file.source);
       codeFile = coder.buildCodeFiles(source, fileType);
-      fs.writeFileSync(file.start, codeFile["start"].join(""));
-      fs.writeFileSync(file.final, codeFile["final"].join(""));
+      fs.writeFileSync(file.start, codeFile["start"]);
+      fs.writeFileSync(file.final, codeFile["final"]);
     }
   }
 }
