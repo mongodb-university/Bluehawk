@@ -1,5 +1,25 @@
 const output = require("./output");
 
+function getMinIndentation(lines) {
+  return (
+    lines.reduce((acc, cur) => {
+      const lengthWithoutIndent = cur.trimStart().length;
+      if (lengthWithoutIndent === 0) {
+        return acc;
+      }
+      const indentLength = cur.length - lengthWithoutIndent;
+      if (acc == null) {
+        return indentLength;
+      }
+      return Math.min(acc, indentLength);
+    }, null) || 0
+  );
+}
+
+function deindentLines(lines, amount) {
+  return lines.map((line) => line.slice(amount));
+}
+
 function getCodeBlocks({ input, emitCodeBlock }) {
   let result = [];
   let starter = true;
@@ -92,12 +112,18 @@ function getCodeBlocks({ input, emitCodeBlock }) {
           };
           emitCodeBlock({
             id,
-            source: starterCodeLines,
+            source: deindentLines(
+              starterCodeLines,
+              getMinIndentation(starterCodeLines)
+            ),
             stage: "start",
           });
           emitCodeBlock({
             id,
-            source: finalCodeLines,
+            source: deindentLines(
+              finalCodeLines,
+              getMinIndentation(finalCodeLines)
+            ),
             stage: "final",
           });
           break;
@@ -137,3 +163,5 @@ function getCodeBlocks({ input, emitCodeBlock }) {
 }
 
 exports.getCodeBlocks = getCodeBlocks;
+exports.getMinIndentation = getMinIndentation;
+exports.deindentLines = deindentLines;

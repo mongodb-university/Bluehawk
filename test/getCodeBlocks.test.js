@@ -1,5 +1,73 @@
-const { getCodeBlocks } = require("../getCodeBlocks");
+const {
+  getCodeBlocks,
+  getMinIndentation,
+  deindentLines,
+} = require("../getCodeBlocks");
 const { expect, assert } = require("chai");
+
+describe("getMinIndentation", () => {
+  it("should return a number", () => {
+    expect(getMinIndentation([])).to.equal(0);
+  });
+
+  it("should return the lowest indentation", () => {
+    expect(getMinIndentation([" a"])).to.equal(1);
+    expect(getMinIndentation(["  a"])).to.equal(2);
+    expect(getMinIndentation(["   a"])).to.equal(3);
+    expect(getMinIndentation(["    a"])).to.equal(4);
+    expect(getMinIndentation(["     a"])).to.equal(5);
+    expect(getMinIndentation(["\t\ta"])).to.equal(2);
+  });
+
+  it("should ignore blank and whitespace-only lines", () => {
+    const result = getMinIndentation(["  ", "", "    a", "\t"]);
+    expect(result).to.equal(4);
+  });
+
+  it("should pick the least indented intentation", () => {
+    const result = getMinIndentation(
+      `
+      6
+    4
+  2
+
+        8
+      6
+\t\t\t
+`.split("\n")
+    );
+    expect(result).to.equal(2);
+  });
+});
+
+describe("deindent", () => {
+  it("should return an array", () => {
+    expect(deindentLines([], 0)).to.deep.equal([]);
+  });
+
+  it("should deindent lines by an amount", () => {
+    expect(deindentLines(["chocolate", "ack"], 2)).to.deep.equal([
+      "ocolate",
+      "k",
+    ]);
+  });
+
+  it("should work with getMinIndentation", () => {
+    const lines = `
+    deindented by 4
+\t\t\t\t\t
+    even the blank lines
+`.split("\n");
+    const indentation = getMinIndentation(lines);
+    expect(deindentLines(lines, indentation)).to.deep.equal(
+      `
+deindented by 4
+\t
+even the blank lines
+`.split("\n")
+    );
+  });
+});
 
 describe("getCodeBlocks", () => {
   it("should return an array", () => {
@@ -78,10 +146,7 @@ the quick brown fox...
         props: [],
         startCode: ["hello world!", "how are you?"],
         range: [
-          {
-            line: 1,
-            column: 0,
-          },
+          { line: 1, column: 0 },
           { line: 4, column: 17 },
         ],
       },
@@ -91,10 +156,7 @@ the quick brown fox...
         props: [],
         startCode: ["the quick brown fox...", "...jumped over the lazy dog"],
         range: [
-          {
-            line: 6,
-            column: 0,
-          },
+          { line: 6, column: 0 },
           { line: 9, column: 17 },
         ],
       },
@@ -153,6 +215,10 @@ hello, world!
           array: [1.23, -2, 3],
         },
         startCode: ["hello, world!"],
+        range: [
+          { line: 1, column: 0 },
+          { line: 10, column: 17 },
+        ],
       },
     ]);
 
@@ -170,9 +236,9 @@ hello, world!
     ]);
   });
 
-  it("should dedent lines", () => {
+  it("should deindent code example lines", () => {
     const source = `
-          // :code-block-start: dedent-me
+          // :code-block-start: deindent-me
           this should be flush with the left column
           // :hide-start:
           this should be flush with the left column in final
@@ -187,28 +253,31 @@ hello, world!
     });
     expect(result).to.deep.equal([
       {
-        finalCode: `this should be flush with the left column in final`.split(
+        finalCode: `          this should be flush with the left column in final`.split(
           "\n"
         ),
-        id: "dedent-me",
+        id: "deindent-me",
         props: [],
-        startCode: `this should be flush with the left column
-this should be flush with the left column in start`.split("\n"),
+        startCode: `          this should be flush with the left column
+          this should be flush with the left column in start`.split("\n"),
+        range: [
+          { line: 1, column: 13 },
+          { line: 8, column: 30 },
+        ],
       },
     ]);
-    expect(blocks.length).to.deep.equal([
+    expect(blocks).to.deep.equal([
       {
-        id: "one",
+        id: "deindent-me",
         source: `this should be flush with the left column
-this should be flush with the left column in start
-`.split("\n"),
+this should be flush with the left column in start`.split("\n"),
         stage: "start",
       },
       {
-        id: "one",
-        source: `this should be flush with the left column
-this should be flush with the left column in final
-`.split("\n"),
+        id: "deindent-me",
+        source: `this should be flush with the left column in final`.split(
+          "\n"
+        ),
         stage: "final",
       },
     ]);
