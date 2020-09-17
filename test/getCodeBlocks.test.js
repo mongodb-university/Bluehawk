@@ -96,7 +96,7 @@ how are you?
     });
     expect(result).to.deep.equal([
       {
-        finalCode: [],
+        finalCode: ["hello world!", "how are you?"],
         id: "one",
         props: [],
         startCode: ["hello world!", "how are you?"],
@@ -117,7 +117,7 @@ how are you?
       },
       {
         id: "one",
-        source: [],
+        source: ["hello world!", "how are you?"],
         stage: "final",
       },
     ]);
@@ -141,7 +141,7 @@ the quick brown fox...
     });
     expect(result).to.deep.equal([
       {
-        finalCode: [],
+        finalCode: ["hello world!", "how are you?"],
         id: "one",
         props: [],
         startCode: ["hello world!", "how are you?"],
@@ -151,7 +151,7 @@ the quick brown fox...
         ],
       },
       {
-        finalCode: [],
+        finalCode: ["the quick brown fox...", "...jumped over the lazy dog"],
         id: "two",
         props: [],
         startCode: ["the quick brown fox...", "...jumped over the lazy dog"],
@@ -169,7 +169,7 @@ the quick brown fox...
       },
       {
         id: "one",
-        source: [],
+        source: ["hello world!", "how are you?"],
         stage: "final",
       },
       {
@@ -179,7 +179,82 @@ the quick brown fox...
       },
       {
         id: "two",
-        source: [],
+        source: ["the quick brown fox...", "...jumped over the lazy dog"],
+        stage: "final",
+      },
+    ]);
+  });
+
+  it("should handle hide and replace-with", () => {
+    const blocks = [];
+    const result = getCodeBlocks({
+      input: `
+:code-block-start: one
+this is everywhere
+:hide-start:
+this is in final
+:replace-with:
+this is in start
+:hide-end:
+this is also everywhere
+:hide-start:
+this is also in final
+:replace-with:
+this is also in start
+:hide-end:
+finally, one last everywhere
+:code-block-end:
+`.split("\n"),
+      emitCodeBlock: (block) => blocks.push(block),
+    });
+    expect(result).to.deep.equal([
+      {
+        finalCode: [
+          "this is everywhere",
+          "this is in final",
+          "this is also everywhere",
+          "this is also in final",
+          "finally, one last everywhere",
+        ],
+        id: "one",
+        props: [],
+        startCode: [
+          "this is everywhere",
+          "this is in start",
+          "this is also everywhere",
+          "this is also in start",
+          "finally, one last everywhere",
+        ],
+        range: [
+          {
+            line: 1,
+            column: 0,
+          },
+          { line: 15, column: 17 },
+        ],
+      },
+    ]);
+    expect(blocks).to.deep.equal([
+      {
+        id: "one",
+        source: [
+          "this is everywhere",
+          "this is in start",
+          "this is also everywhere",
+          "this is also in start",
+          "finally, one last everywhere",
+        ],
+        stage: "start",
+      },
+      {
+        id: "one",
+        source: [
+          "this is everywhere",
+          "this is in final",
+          "this is also everywhere",
+          "this is also in final",
+          "finally, one last everywhere",
+        ],
         stage: "final",
       },
     ]);
@@ -204,7 +279,7 @@ hello, world!
     });
     expect(result).to.deep.equal([
       {
-        finalCode: [],
+        finalCode: ["hello, world!"],
         id: "one",
         props: {
           bool: false,
@@ -230,10 +305,21 @@ hello, world!
       },
       {
         id: "one",
-        source: [],
+        source: ["hello, world!"],
         stage: "final",
       },
     ]);
+  });
+
+  it("should fail on unclosed code-block", () => {
+    expect(() => {
+      getCodeBlocks({
+        input: `
+:code-block-start: a
+`.split("\n"),
+        emitCodeBlock: () => {},
+      });
+    }).to.throw("I expected a ':code-block-end:' but didn't find one.");
   });
 
   it("should deindent code example lines", () => {
@@ -253,9 +339,8 @@ hello, world!
     });
     expect(result).to.deep.equal([
       {
-        finalCode: `          this should be flush with the left column in final`.split(
-          "\n"
-        ),
+        finalCode: `          this should be flush with the left column
+          this should be flush with the left column in final`.split("\n"),
         id: "deindent-me",
         props: [],
         startCode: `          this should be flush with the left column
@@ -275,9 +360,8 @@ this should be flush with the left column in start`.split("\n"),
       },
       {
         id: "deindent-me",
-        source: `this should be flush with the left column in final`.split(
-          "\n"
-        ),
+        source: `this should be flush with the left column
+this should be flush with the left column in final`.split("\n"),
         stage: "final",
       },
     ]);

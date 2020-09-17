@@ -23,7 +23,7 @@ function deindentLines(lines, amount) {
 function getCodeBlocks({ input, emitCodeBlock }) {
   let result = [];
   let starter = true;
-  let final = false;
+  let final = true;
   let codeBlockProps = [];
   let inCodeBlock = false;
 

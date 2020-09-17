@@ -33,7 +33,7 @@ exports.mochaHooks = {
 
   afterAll(done) {
     console.log("deleting", dirPath);
-    // rimraf.sync(dirPath);
+    rimraf.sync(dirPath);
     done();
   },
 };
