@@ -2,6 +2,7 @@ const output = require("./output");
 const constants = require("./constants");
 
 function buildCodeFiles(source, type) {
+  const sourceLines = source.split("\n");
   let fileType;
   let inBlockComment = false;
   let isCommand = false;
@@ -92,8 +93,8 @@ function buildCodeFiles(source, type) {
 
   let result = { start: [], final: [] };
   fileType = type;
-  for (let l = 0; l < source.length; l++) {
-    let line = source[l];
+  for (let l = 0; l < sourceLines.length; l++) {
+    let line = sourceLines[l];
     getCommand(line);
     isBlockComment(line);
 
@@ -103,20 +104,18 @@ function buildCodeFiles(source, type) {
         line = stripCommentAsNeeded(line);
       }
       if (inHide) {
-        result["final"].push(line + "\n");
+        result["final"].push(line);
       } else if (inReplace) {
-        result["start"].push(line + "\n");
+        result["start"].push(line);
       } else {
-        result["start"].push(line + "\n");
-        result["final"].push(line + "\n");
+        result["start"].push(line);
+        result["final"].push(line);
       }
     }
   } //end foreach line
 
-  if (result["start"][result["start"].length - 1] == "\n")
-    result["start"].pop();
-  if (result["final"][result["final"].length - 1] == "\n")
-    result["final"].pop();
+  result.start = result.start.join("\n");
+  result.final = result.final.join("\n");
   // console.log(result);
   return result;
 }
