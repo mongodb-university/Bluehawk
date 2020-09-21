@@ -56,22 +56,30 @@ Insert the following "tags" to define the beginning and end of a tutorial step.
 For each "step block", Bluehawk will create a new numbered step, with an `id` and 
 title that correspond to the values you provide. 
 
-| Syntax                 | Description                                          |
-|------------------------|------------------------------------------------------|
-| **:step-start:** {         | Creates a new step in the step file and              |
-| id: ...,               | copies the text found in the following comment lines |
-| title: ...             | until a :step-end: is encountered.                   |
-| }                      |                                                      |
-| | |
-| **:step-end:**         | End this step.                                       |
-| | | 
-| **:include-code-block:** { | Indicates that a code-block needs to be created here |
-| id: ...,               | using code found elsewhere in this file              |
-| code-state:            | until a :step-end: is encountered.                   |
-| emphasize-lines:       | code-state: `start` or `final`                       |
-| line-numbers:          | emphasize-lines: `x`, `x-z`, or `x,y,z`              |
-| }                      | line-numbers: `true/false`                           |
-|                        |                                                      |
+**:step-start:** Creates a new step in the step file and copies the text found in the 
+following comment lines until a :step-end: is encountered. Both the `title` and `id`
+properties are required:
+```
+:step-start: {
+    id: ...,
+    title: ...              
+}
+```
+**:step-end:** Ends the current step. It has no properties.
+
+**:include-code-block:**  Indicates that a code-block needs to be created here 
+using code found elsewhere in this file until a :step-end: is encountered. 
+
+```
+:include-code-block: {
+  id: ...,              
+  code-state: "start" | "final" 
+  emphasize-lines: 1 | 1-4 | 1,5,7  
+  line-numbers: true | false   
+}                     
+```
+<br>
+<br>
 
 ### Code Files
 When generating code blocks from a code file, use the following markup. Note: you
@@ -88,6 +96,9 @@ compiler happy.
 | | |
 | **:hide-end:**              | Stop removing lines of code |
 | **:code-block-end:**        | End of the code block. |
+
+<br>
+<br>
 
 ### Start, End, Hide, Replace...I'm confused.
 All code and comments between **:hide-start:** and **:hide-end:** will not be 
@@ -114,14 +125,14 @@ inFinalCode: true,
 
 Bluehawk will generate the following output:
 
-** Start version **
+**Start version**
 ```
 // A You should only see this in the start code
 start1: true,
 final1: false,
 // comment in start code: ... ,
 ```
-** Final version **
+**Final version**
 ```
 notInStartCode: true,
 inFinalCode: true,
