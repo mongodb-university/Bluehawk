@@ -80,14 +80,14 @@ compiler happy.
 
 | Syntax                 | Description                                          |
 |------------------------|------------------------------------------------------|
-| **:code-block-start:** *id* | Creates a new step in the step file andDefines the start of a chunk of code to be placed within a  code-block directive.     |                                                                                                                            |
-|                        
-| **:hide-start:**            | When generating the starting code, hide the following lines until you reach a  **:hide-end:** or **:replace-with:** command. |
-|                             |                                                                                                                              |
-| **:replace-with:**          | Stop removing lines of code, and insert the following lines until you reach a **:hide-end:** command.                        |
-|                             |                                                                                                                              |
-| **:hide-end:**              | Stop removing lines of code                                                                                                  |
-| **:code-block-end:**        | End of the code block.                                                                                                       |
+| **:code-block-start:** *id* | Creates a new step in the step file and defines the start of a chunk of code to be placed within a  code-block directive. |
+| | |
+| **:hide-start:** | When generating the starting code, hide the following lines until you reach a  **:hide-end:** or **:replace-with:** command. |
+| | |
+| **:replace-with:**          | Stop removing lines of code, and insert the following lines until you reach a **:hide-end:** command.|
+| | |
+| **:hide-end:**              | Stop removing lines of code |
+| **:code-block-end:**        | End of the code block. |
 
 ### Start, End, Hide, Replace...I'm confused.
 All code and comments between **:hide-start:** and **:hide-end:** will not be 
