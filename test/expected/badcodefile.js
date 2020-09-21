@@ -1,45 +1,39 @@
 module.exports.output = 
 {
-   start: [
-     'Realm.Sync.setLogLevel("error");\n',
-     '\n',
-     'let realm;\n',
-     'async function openRealm() {\n',
-     '  const config = {\n',
-     '    schema: [schemas.TaskSchema, schemas.UserSchema, schemas.ProjectSchema],\n',
-     '    sync: {\n',
-     '      \n',
-     '\n',
-     ' \n',
-     '      // I should trigger an error',
-     '    }\n',
-     '   }\n',
-     '}\n',
-     '\n',
-   ],
-   final: [
-     'Realm.Sync.setLogLevel("error");\n',
-     '\n',
-     'let realm;\n',
-     'async function openRealm() {\n',
-     '  const config = {\n',
-     '    schema: [schemas.TaskSchema, schemas.UserSchema, schemas.ProjectSchema],\n',
-     '    sync: {\n',
-     '      \n',
-     '      // I should trigger an error',
-     '      notInStartCode: true,\n',
-     '      inFinalCode: true,\n',
-     '\n',
-     '      // I should trigger a warning',
-     '      notInStartCode: true,\n',
-     '      inFinalCode: true,\n',
-     ' \n',
-     '      // I should trigger an error',
-     '      notInStartCode: true,\n',
-     '      inFinalCode: true,\n',
-     '\n',
-     '    }\n',
-     '   }\n',
-     '}\n',
-   ]
+   start: `Realm.Sync.setLogLevel("error");
+
+let realm;
+async function openRealm() {
+  const config = {
+    schema: [schemas.TaskSchema, schemas.UserSchema, schemas.ProjectSchema],
+    sync: {
+      
+  
+ 
+      // I should trigger an error
+    }
+   }
+}`,
+   final: `Realm.Sync.setLogLevel("error");
+
+let realm;
+async function openRealm() {
+  const config = {
+    schema: [schemas.TaskSchema, schemas.UserSchema, schemas.ProjectSchema],
+    sync: {
+      
+      // I should trigger an error
+      notInStartCode: true,
+      inFinalCode: true,
+      // I should trigger a warning
+      notInStartCode: true,
+      inFinalCode: true,
+  
+ 
+      // I should trigger an error
+      notInStartCode: true,
+      inFinalCode: true,
+    }
+   }
+}`
  }

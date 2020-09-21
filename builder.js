@@ -1,138 +1,13 @@
 const coder = require("./codeGenerator");
 const stepper = require("./stepGenerator");
+const { getCodeBlocks } = require("./getCodeBlocks");
 const output = require("./output");
 const fs = require("fs");
 
-async function run(fileArray, type) {
-  let fullFile = [];
-  let fileType;
-  let codeFile;
-  let codeBlocks = [];
-
-  function getCodeBlocks(input, fileObject) {
-    let result = [];
-    let starter = true;
-    let final = false;
-    let codeBlockProps = [];
-    let inCodeBlock = false;
-
-    for (const [index, codeLine] of input.entries()) {
-      let id;
-      let counter = index + 1;
-      let nextCodeLine = input[counter];
-
-      if (codeLine.indexOf(":code-block-start:") > -1) {
-        inCodeBlock = true;
-        let starterCodeLines = [];
-        let finalCodeLines = [];
-
-        if (codeLine.indexOf("{") > -1) {
-          //we have a property object
-          codeBlockProps = safeBuildObjectFromPropsString(index + 1);
-          id = codeBlockProps.id.trim();
-          while (nextCodeLine.indexOf("}") == -1) {
-            counter++;
-            nextCodeLine = input[counter];
-          }
-          counter++;
-        } else {
-          let matchAll = Array.from(codeLine.matchAll(":"));
-          id = codeLine
-            .substring(matchAll[matchAll.length - 1].index + 1)
-            .replace("*/", "")
-            .trim();
-        }
-
-        output.info("****", codeLine, id);
-        if (id.indexOf(" ") > -1) {
-          output.warning("The {id} of this code block contains spaces:", id);
-        }
-
-        while (
-          nextCodeLine != undefined &&
-          nextCodeLine.indexOf(":code-block-end:") == -1
-        ) {
-          nextCodeLine = input[counter];
-          if (nextCodeLine == undefined) {
-            output.error(
-              `I expected a ':code-block-end:' but didn't find one.\n,
-            This is the last code block I was working on at line ${counter}`
-            );
-            throw new Error(`I expected a ':code-block-end:' but didn't find one.\n,
-            This is the last code block I was working on at line ${counter}`);
-          }
-          if (nextCodeLine.indexOf(":hide-start:") > -1) {
-            final = true;
-            starter = false;
-            counter++;
-            continue;
-          } else if (nextCodeLine.indexOf(":hide-end:") > -1) {
-            starter = true;
-            final = true;
-            counter++;
-            continue;
-          } else if (nextCodeLine.indexOf(":replace-with:") > -1) {
-            final = false;
-            starter = true;
-            counter++;
-            continue;
-          } else if (nextCodeLine.indexOf(":code-block-end:") > -1) {
-            saveCodeBlock(id, starterCodeLines, fileObject, "start");
-            saveCodeBlock(id, finalCodeLines, fileObject, "final");
-            counter++;
-            continue;
-          }
-
-          if (starter) {
-            starterCodeLines.push(nextCodeLine);
-          }
-          if (final) {
-            finalCodeLines.push(nextCodeLine);
-          }
-
-          counter++;
-        }
-
-        result.push({
-          id: id,
-          startCode: starterCodeLines,
-          finalCode: finalCodeLines,
-          props: codeBlockProps,
-        });
-      } // end code block
-      else if (codeLine.indexOf(":code-block-end:") > -1) {
-        inCodeBlock = false;
-      }
-      if (
-        !inCodeBlock &&
-        (codeLine.indexOf(":hide-start:") > -1 ||
-          codeLine.indexOf(":hide-end:") > -1)
-      ) {
-        output.error(
-          `I found a 'hide' command outside of a code block at line ${counter}.`,
-          codeLine
-        );
-      }
-    }
-    return result;
-  }
-
-  function safeBuildObjectFromPropsString(index) {
-    if (fullFile[index].indexOf("}") > -1) {
-      const propsString = fullFile[index].split(",");
-      return JSON.parse(propsString);
-    } else {
-      let propObj = "{";
-      while (fullFile[index].indexOf("}") == -1) {
-        propObj = propObj.concat(fullFile[index]);
-        index++;
-      }
-      propObj = propObj.concat("}");
-      return JSON.parse(propObj);
-    }
-  }
-
-  function saveCodeBlock(id, source, fileObject, stage) {
+// Make a function to handle emitted code blocks and save them for the given
+// fileObject and type
+function makeSaveCodeBlockFunction(fileObject, fileType) {
+  return ({ id, source, stage }) => {
     let whitespaceToRemove = 1000;
     const reg = /[^\s]/g;
     for (let l = 0; l < source.length; l++) {
@@ -150,16 +25,27 @@ async function run(fileArray, type) {
         output.error(err);
       }
     });
-  }
+  };
+}
+
+async function run(fileArray, type) {
+  let fullFile = [];
+  let fileType;
+  let codeFile;
+  let codeBlocks = [];
 
   fileType = type;
   for (let f = 0; f < fileArray.length; f++) {
     let file = fileArray[f];
     if (file.source) {
+      const saveCodeBlock = makeSaveCodeBlockFunction(file, fileType);
       // one step file for each file
       fullFile = fs.readFileSync(file.source, "utf8").split("\n");
       try {
-        codeBlocks = await getCodeBlocks(fullFile, file);
+        codeBlocks = await getCodeBlocks({
+          input: fullFile,
+          emitCodeBlock: saveCodeBlock,
+        });
       } catch (e) {
         console.error(e);
       }
@@ -176,11 +62,11 @@ async function run(fileArray, type) {
 
       fs.appendFileSync(file.step, result.join(""));
 
-      let source = fs.readFileSync(file.source, "utf8").split("\n");
+      let source = fs.readFileSync(file.source, "utf8");
       output.info("Building code file(s) from", file.source);
       codeFile = coder.buildCodeFiles(source, fileType);
-      fs.writeFileSync(file.start, codeFile["start"].join(""));
-      fs.writeFileSync(file.final, codeFile["final"].join(""));
+      fs.writeFileSync(file.start, codeFile["start"]);
+      fs.writeFileSync(file.final, codeFile["final"]);
     }
   }
 }
