@@ -78,8 +78,8 @@ When generating code blocks from a code file, use the following markup. Note: yo
 use either single-line commenting or block commenting for all tags to keep the 
 compiler happy.
 
-| Syntax                      | Description                                                                                                                  |
-|-----------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| Syntax                 | Description                                          |
+|------------------------|------------------------------------------------------|
 | **:code-block-start:** *id* | Creates a new step in the step file andDefines the start of a chunk of code to be placed within a  code-block directive.     |                                                                                                                            |
 |                        
 | **:hide-start:**            | When generating the starting code, hide the following lines until you reach a  **:hide-end:** or **:replace-with:** command. |
