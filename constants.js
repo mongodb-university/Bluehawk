@@ -3,6 +3,8 @@ let comments = {
   c: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
   js: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
   swift: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
+  kt: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
+  java: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
 };
 
 let commands = {
