@@ -1,11 +1,10 @@
-const { buildCodeFiles } = require("../codeGenerator");
-const { expect } = require("chai");
+import { buildCodeFiles } from "../codeGenerator";
 
 describe("buildCodeFiles", () => {
   it("should return code files", () => {
     const source = "this bluehawk source has no annotation";
     const files = buildCodeFiles(source, "js");
-    expect(files).to.deep.equal({
+    expect(files).toStrictEqual({
       start: "this bluehawk source has no annotation",
       final: "this bluehawk source has no annotation",
     });
@@ -16,7 +15,7 @@ describe("buildCodeFiles", () => {
 this is all that should remain
 // :code-block-end:`;
     const files = buildCodeFiles(source, "js");
-    expect(files).to.deep.equal({
+    expect(files).toStrictEqual({
       start: `this is all that should remain`,
       final: `this is all that should remain`,
     });
@@ -31,7 +30,7 @@ this is all that should remain in final
 // :hide-end:
 // :code-block-end:`;
     const files = buildCodeFiles(source, "js");
-    expect(files).to.deep.equal({
+    expect(files).toStrictEqual({
       start: `this is all that should remain in start (note stripped comment)`,
       final: `this is all that should remain in final`,
     });

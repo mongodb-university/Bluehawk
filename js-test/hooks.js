@@ -2,7 +2,7 @@ var rimraf = require("rimraf");
 var fs = require("fs");
 const path = require("path");
 const dirPath = path.join(__dirname, "/output");
-const filer = require("../fileHandler");
+const filer = require("../build/fileHandler");
 
 exports.mochaHooks = {
   async beforeAll() {
@@ -16,12 +16,12 @@ exports.mochaHooks = {
     };
 
     const sources = [
-      "./test/input/comments.js",
-      "./test/input/codefile.js",
-      "./test/input/badcodefile.js",
-      "./test/input/indent.c",
-      "./test/input/firstBlockNotHidden.swift",
-      "./test/input/stepfilewithcode.js",
+      "./js-test/input/comments.js",
+      "./js-test/input/codefile.js",
+      "./js-test/input/badcodefile.js",
+      "./js-test/input/indent.c",
+      "./js-test/input/firstBlockNotHidden.swift",
+      "./js-test/input/stepfilewithcode.js",
     ];
 
     const promises = sources.map((source) =>

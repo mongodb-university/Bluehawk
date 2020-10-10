@@ -31,8 +31,29 @@ can check their work....or just download it and cheat.
 
 ## How to run Bluehawk
 
-From the root directory, run 
-`node index.js -s <folder to source file or directory>`
+First, install dependencies:
+
+```sh
+npm install
+```
+
+To build, run:
+
+```
+npm run compile
+```
+
+If compilation is successful, you can run bluehawk like so:
+
+```sh
+node build/index.js -s <folder to source file or directory>
+```
+
+Which you can alias (until release):
+
+```sh
+alias bluehawk="node /path/to/bluehawk/build/index.js"
+```
 
 The `-s or --source` parameter is required. Other optional parameters include:
 
@@ -46,6 +67,38 @@ The `-s or --source` parameter is required. Other optional parameters include:
       |-> start
       |-> final
   ```
+
+## Running Tests
+
+This project uses Jest to test TypeScript and Mocha to test the legacy
+JavaScript files. The plan is to completely migrate off JavaScript and Mocha.
+
+To run all tests, use:
+
+```sh
+npm test
+```
+
+To run only the JS (mocha) tests, run:
+
+```sh
+npm run js-test
+```
+
+To run only the TypeScript (jest) tests, run:
+
+```sh
+npm run ts-test
+```
+
+Additionally, you can get a Jest coverage report with:
+
+```sh
+npm run coverage
+```
+
+You can also run tests with breakpoints in VS Code with F5. See .vscode/launch.json.
+
 
 ## The Markup
 

@@ -11,6 +11,22 @@
       "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
       "type": "pwa-node"
+    },
+    {
+      "name": "Run TS Tests",
+      "request": "launch",
+      "runtimeArgs": ["run", "ts-test"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node",
+    },
+    {
+      "name": "Run JS Tests",
+      "request": "launch",
+      "runtimeArgs": ["run", "js-test"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
     }
   ]
 }

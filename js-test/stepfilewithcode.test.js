@@ -22,7 +22,7 @@ describe("Stepfile tests", async function () {
         "The output is not the expected length"
       );
 
-      for (l = 0; l < stepResult.length; l++) {
+      for (let l = 0; l < stepResult.length; l++) {
         assert.equal(
           stepResult[l],
           expected.output[l],
@@ -55,7 +55,7 @@ describe("Stepfile tests", async function () {
 
     let files = [start1, start2, final1, final2];
     try {
-      for (f = 0; f < files.length; f++) {
+      for (let f = 0; f < files.length; f++) {
         let target = expected.codeBlocks[f];
         let result = files[f].split("\n");
         assert.equal(
@@ -64,7 +64,7 @@ describe("Stepfile tests", async function () {
           "The output is not the expected length"
         );
 
-        for (l = 0; l < files[f].length; l++) {
+        for (let l = 0; l < files[f].length; l++) {
           assert.equal(
             result[l],
             target[l],
