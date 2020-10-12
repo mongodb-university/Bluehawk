@@ -1,27 +1,27 @@
-const {
+import {
   getCodeBlocks,
   getMinIndentation,
   deindentLines,
-} = require("../getCodeBlocks");
-const { expect, assert } = require("chai");
+} from "../getCodeBlocks";
 
+// Ported from mocha test suite
 describe("getMinIndentation", () => {
   it("should return a number", () => {
-    expect(getMinIndentation([])).to.equal(0);
+    expect(getMinIndentation([])).toBe(0);
   });
 
   it("should return the lowest indentation", () => {
-    expect(getMinIndentation([" a"])).to.equal(1);
-    expect(getMinIndentation(["  a"])).to.equal(2);
-    expect(getMinIndentation(["   a"])).to.equal(3);
-    expect(getMinIndentation(["    a"])).to.equal(4);
-    expect(getMinIndentation(["     a"])).to.equal(5);
-    expect(getMinIndentation(["\t\ta"])).to.equal(2);
+    expect(getMinIndentation([" a"])).toBe(1);
+    expect(getMinIndentation(["  a"])).toBe(2);
+    expect(getMinIndentation(["   a"])).toBe(3);
+    expect(getMinIndentation(["    a"])).toBe(4);
+    expect(getMinIndentation(["     a"])).toBe(5);
+    expect(getMinIndentation(["\t\ta"])).toBe(2);
   });
 
   it("should ignore blank and whitespace-only lines", () => {
     const result = getMinIndentation(["  ", "", "    a", "\t"]);
-    expect(result).to.equal(4);
+    expect(result).toBe(4);
   });
 
   it("should pick the least indented intentation", () => {
@@ -36,17 +36,17 @@ describe("getMinIndentation", () => {
 \t\t\t
 `.split("\n")
     );
-    expect(result).to.equal(2);
+    expect(result).toBe(2);
   });
 });
 
 describe("deindent", () => {
   it("should return an array", () => {
-    expect(deindentLines([], 0)).to.deep.equal([]);
+    expect(deindentLines([], 0)).toStrictEqual([]);
   });
 
   it("should deindent lines by an amount", () => {
-    expect(deindentLines(["chocolate", "ack"], 2)).to.deep.equal([
+    expect(deindentLines(["chocolate", "ack"], 2)).toStrictEqual([
       "ocolate",
       "k",
     ]);
@@ -59,7 +59,7 @@ describe("deindent", () => {
     even the blank lines
 `.split("\n");
     const indentation = getMinIndentation(lines);
-    expect(deindentLines(lines, indentation)).to.deep.equal(
+    expect(deindentLines(lines, indentation)).toStrictEqual(
       `
 deindented by 4
 \t
@@ -77,10 +77,10 @@ This is a bluehawk source file.
 It has no markup.
 `.split("\n"),
       emitCodeBlock: () => {
-        assert(false, "unexpected code block emit");
+        fail("unexpected code block emit");
       },
     });
-    expect(result).to.deep.equal([]);
+    expect(result).toStrictEqual([]);
   });
 
   it("should emit code blocks", () => {
@@ -94,7 +94,7 @@ how are you?
 `.split("\n"),
       emitCodeBlock: (block) => blocks.push(block),
     });
-    expect(result).to.deep.equal([
+    expect(result).toStrictEqual([
       {
         finalCode: ["hello world!", "how are you?"],
         id: "one",
@@ -109,7 +109,7 @@ how are you?
         ],
       },
     ]);
-    expect(blocks).to.deep.equal([
+    expect(blocks).toStrictEqual([
       {
         id: "one",
         source: ["hello world!", "how are you?"],
@@ -139,7 +139,7 @@ the quick brown fox...
 `.split("\n"),
       emitCodeBlock: (block) => blocks.push(block),
     });
-    expect(result).to.deep.equal([
+    expect(result).toStrictEqual([
       {
         finalCode: ["hello world!", "how are you?"],
         id: "one",
@@ -161,7 +161,7 @@ the quick brown fox...
         ],
       },
     ]);
-    expect(blocks).to.deep.equal([
+    expect(blocks).toStrictEqual([
       {
         id: "one",
         source: ["hello world!", "how are you?"],
@@ -207,7 +207,7 @@ finally, one last everywhere
 `.split("\n"),
       emitCodeBlock: (block) => blocks.push(block),
     });
-    expect(result).to.deep.equal([
+    expect(result).toStrictEqual([
       {
         finalCode: [
           "this is everywhere",
@@ -234,7 +234,7 @@ finally, one last everywhere
         ],
       },
     ]);
-    expect(blocks).to.deep.equal([
+    expect(blocks).toStrictEqual([
       {
         id: "one",
         source: [
@@ -277,7 +277,7 @@ hello, world!
 `.split("\n"),
       emitCodeBlock: (block) => blocks.push(block),
     });
-    expect(result).to.deep.equal([
+    expect(result).toStrictEqual([
       {
         finalCode: ["hello, world!"],
         id: "one",
@@ -297,7 +297,7 @@ hello, world!
       },
     ]);
 
-    expect(blocks).to.deep.equal([
+    expect(blocks).toStrictEqual([
       {
         id: "one",
         source: ["hello, world!"],
@@ -317,9 +317,9 @@ hello, world!
         input: `
 :code-block-start: a
 `.split("\n"),
-        emitCodeBlock: () => {},
+        emitCodeBlock: () => undefined,
       });
-    }).to.throw("I expected a ':code-block-end:' but didn't find one.");
+    }).toThrow("I expected a ':code-block-end:' but didn't find one.");
   });
 
   it("should deindent code example lines", () => {
@@ -337,7 +337,7 @@ hello, world!
       input: source.split("\n"),
       emitCodeBlock: (block) => blocks.push(block),
     });
-    expect(result).to.deep.equal([
+    expect(result).toStrictEqual([
       {
         finalCode: `          this should be flush with the left column
           this should be flush with the left column in final`.split("\n"),
@@ -351,7 +351,7 @@ hello, world!
         ],
       },
     ]);
-    expect(blocks).to.deep.equal([
+    expect(blocks).toStrictEqual([
       {
         id: "deindent-me",
         source: `this should be flush with the left column

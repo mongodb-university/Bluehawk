@@ -1,32 +1,25 @@
 const assert = require("assert");
 const fs = require("fs");
-const expectedCodeFile = require("./expected/badcodefile");
-const output = require("../output");
+const expectedCodeFile = require("./expected/firstBlockNotHidden");
+const output = require("../build/output");
 const path = require("path");
 const dirPath = path.join(__dirname, "/output");
 
-describe("Badcode file tests", function () {
-  it("Should handle bad code files gracefully", function (done) {
+describe("First code block tests", function () {
+  it("Should not hide first code block", function (done) {
     let startResult = fs.readFileSync(
-      dirPath + "/code/start/badcodefile.js",
+      dirPath +
+        "/code/start/firstBlockNotHidden.codeblock.i-should-not-be-hidden.js",
       "utf8"
     );
-    let finalResult = fs.readFileSync(
-      dirPath + "/code/final/badcodefile.js",
-      "utf8"
-    );
+
+    startResult = startResult.split("\n");
 
     try {
       assert.equal(
         startResult.length,
         expectedCodeFile.output["start"].length,
         "The 'start' output is not the expected length"
-      );
-
-      assert.equal(
-        finalResult.length,
-        expectedCodeFile.output["final"].length,
-        "The 'final' output is not the expected length"
       );
 
       for (let l = 0; l < startResult.length; l++) {

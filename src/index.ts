@@ -1,8 +1,8 @@
-const output = require("./output");
-const fileHandler = require("./fileHandler");
-const yargs = require("yargs");
+import * as yargs from "yargs";
+import * as output from "./output";
+import * as fileHandler from "./fileHandler";
 
-async function run() {
+async function run(): Promise<void> {
   output.intro();
 
   const params = yargs
@@ -11,7 +11,10 @@ async function run() {
     .command("--type", "The file type to process")
     .command("--destination", "The output folder")
     .command("--stages", "The code stages to build, as comma-delimited list")
-    .example("$0 -s ./foo.js -d ./output/")
+    .example(
+      "$0 -s ./foo.js -d ./output/",
+      "Parse the foo.js file and output results in the output/ directory."
+    )
     .alias("s", "source")
     .alias("t", "type")
     .alias("d", "destination")
@@ -26,9 +29,11 @@ async function run() {
   if (!params.stages) {
     params.stages = ["start", "final"];
   }
-  if (!Array.isArray(params.stages)) {
+
+  if (params.stages instanceof String) {
     params.stages = params.stages.split(",");
   }
+
   if (!params.type) {
     params.type = await fileHandler.getFileType(params.source);
     output.important(
@@ -39,11 +44,16 @@ async function run() {
     );
   }
 
-  fileHandler.openFile(params);
+  fileHandler.openFile({
+    source: params.source,
+    stages: params.stages,
+    destination: params.destination,
+    type: params.type,
+  });
 }
 
 run().catch((err) => {
   output.error(err);
 });
 
-exports.run = run;
+export default run;

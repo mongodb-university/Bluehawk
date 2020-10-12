@@ -1,9 +1,12 @@
-const output = require("./output");
-const constants = require("./constants");
+import * as output from "./output";
+import * as constants from "./constants";
 
-function buildCodeFiles(source, type) {
+export function buildCodeFiles(
+  source: string,
+  type: string
+): { start: string; final: string } {
   const sourceLines = source.split("\n");
-  let fileType;
+  let fileType: string = null;
   let inBlockComment = false;
   let isCommand = false;
   let inHide = false;
@@ -32,7 +35,7 @@ function buildCodeFiles(source, type) {
     if (command.indexOf(":hide-start:") > -1) {
       inHide = true;
       for (let c = 0; c < constants.comments[fileType].line.length; c++) {
-        let commentType = constants.comments[fileType].line[c];
+        const commentType = constants.comments[fileType].line[c];
         if (line.indexOf(commentType) > -1) {
           const regex = new RegExp(commentType, "g");
           replaceOffset = line.indexOf(line.match(regex));
@@ -46,7 +49,7 @@ function buildCodeFiles(source, type) {
       inHide = false;
       inReplace = true;
       for (let c = 0; c < constants.comments[fileType].line.length; c++) {
-        let commentType = constants.comments[fileType].line[c];
+        const commentType = constants.comments[fileType].line[c];
         output.info(line, commentType, line.indexOf(commentType));
         if (line.indexOf(commentType) > -1) {
           const regex = new RegExp(commentType, "g");
@@ -91,7 +94,7 @@ function buildCodeFiles(source, type) {
     return command;
   }
 
-  let result = { start: [], final: [] };
+  const result = { start: [], final: [] };
   fileType = type;
   for (let l = 0; l < sourceLines.length; l++) {
     let line = sourceLines[l];
@@ -114,10 +117,8 @@ function buildCodeFiles(source, type) {
     }
   } //end foreach line
 
-  result.start = result.start.join("\n");
-  result.final = result.final.join("\n");
-  // console.log(result);
-  return result;
+  return {
+    start: result.start.join("\n"),
+    final: result.final.join("\n"),
+  };
 }
-
-exports.buildCodeFiles = buildCodeFiles;

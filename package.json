@@ -2,9 +2,14 @@
   "name": "bluehawk",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./build",
   "scripts": {
-    "test": "mocha --require 'test/hooks.js' -- 'test/*.test.js'"
+    "build": "tsc -b",
+    "watch": "tsc -b -w",
+    "test": "npm run ts-test && npm run js-test",
+    "js-test": "npm run build && mocha --require 'js-test/hooks.js' -- 'js-test/*.test.js'",
+    "ts-test": "jest",
+    "coverage": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -17,11 +22,21 @@
     "inquirer": "^7.3.3",
     "line-reader": "^0.4.0",
     "mocha": "^8.1.3",
-    "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "yargs": "^15.4.1"
   },
   "devDependencies": {
-    "chai": "^4.2.0"
+    "@babel/preset-typescript": "^7.10.4",
+    "@types/node": "^12.12.0",
+    "@typescript-eslint/eslint-plugin": "^4.4.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^26.5.2",
+    "prettier": "^2.1.2",
+    "ts-jest": "^26.4.1",
+    "typescript": "^4.0.3"
   }
 }

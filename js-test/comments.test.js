@@ -1,5 +1,4 @@
 const assert = require("assert");
-const filer = require("../fileHandler");
 const expected = require("./expected/comments");
 const fs = require("fs");
 const path = require("path");
@@ -8,7 +7,7 @@ const dirPath = path.join(__dirname, "/output");
 let startResult;
 let finalResult;
 
-describe("Comment file tests", async function (done) {
+describe("Comment file tests", function () {
   it("Should verify the 'start' code state", async function (done) {
     startResult = fs.readFileSync(dirPath + "/code/start/comments.js", "utf8");
     finalResult = fs.readFileSync(dirPath + "/code/final/comments.js", "utf8");
@@ -25,7 +24,7 @@ describe("Comment file tests", async function (done) {
         "The output is not the expected length"
       );
 
-      for (l = 0; l < startResult.length; l++) {
+      for (let l = 0; l < startResult.length; l++) {
         assert.equal(
           startResult[l].trim(),
           expected.output["start"][l].trim(),
@@ -45,7 +44,7 @@ describe("Comment file tests", async function (done) {
         "The output is not the expected length"
       );
 
-      for (l = 0; l < finalResult.length; l++) {
+      for (let l = 0; l < finalResult.length; l++) {
         assert.equal(
           finalResult[l].trim(),
           expected.output["final"][l].trim(),
