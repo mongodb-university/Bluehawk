@@ -27,7 +27,7 @@ describe("lexer", () => {
 `);
     expect(result.errors).toStrictEqual([]);
     expect(result.groups).toStrictEqual({});
-    expect(result.tokens[0].tokenType.name).toStrictEqual("LineComment");
+    expect(result.tokens[0].tokenType.name).toStrictEqual("Newline");
   });
 
   it("tokenizes bluehawk markup", () => {
@@ -43,23 +43,29 @@ this is used to replace
 `);
     expect(result.errors).toStrictEqual([]);
     expect(result.groups).toStrictEqual({});
-    expect(result.tokens.length).toBe(11);
-    const tokenStartLines = result.tokens.map((token) => token.startLine);
-    expect(tokenStartLines).toStrictEqual([2, 2, 2, 4, 4, 6, 6, 8, 8, 9, 9]);
-
+    expect(result.tokens.length).toBe(20);
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
+      "Newline",
       "LineComment",
       "CommandStart",
       "Identifier",
+      "Newline",
+      "Newline",
       "LineComment",
       "CommandStart",
+      "Newline",
+      "Newline",
       "LineComment",
       "Command",
+      "Newline",
+      "Newline",
       "LineComment",
       "CommandEnd",
+      "Newline",
       "LineComment",
       "CommandEnd",
+      "Newline",
     ]);
   });
 });
@@ -78,10 +84,19 @@ describe("custom comment lexer", () => {
 <!-- just text -->
 `);
     expect(result.errors).toStrictEqual([]);
-    const tokenLines = result.tokens.map((token) => token.startLine);
+    const tokenLines = result.tokens
+      .filter((token) => token.tokenType.name !== "Newline")
+      .map((token) => token.startLine);
     expect(tokenLines).toStrictEqual([2]);
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
-    expect(tokenNames).toStrictEqual(["LineComment"]);
+    expect(tokenNames).toStrictEqual([
+      "Newline",
+      "LineComment",
+      "Newline",
+      "Newline",
+      "Newline",
+      "Newline",
+    ]);
   });
 
   it("accepts block comment patterns", () => {
@@ -98,9 +113,12 @@ describe("custom comment lexer", () => {
 <!-- this is a block comment -->
 `);
     expect(result.errors).toStrictEqual([]);
-    const tokenLines = result.tokens.map((token) => token.startLine);
+    const tokens = result.tokens.filter(
+      (token) => token.tokenType.name !== "Newline"
+    );
+    const tokenLines = tokens.map((token) => token.startLine);
     expect(tokenLines).toStrictEqual([5, 5]);
-    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    const tokenNames = tokens.map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual(["BlockCommentStart", "BlockCommentEnd"]);
   });
 
@@ -130,7 +148,9 @@ this is not parsed
 `);
     expect(result.errors).toStrictEqual([]);
     expect(result.groups).toStrictEqual({});
-    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    const tokenNames = result.tokens
+      .filter((token) => token.tokenType.name !== "Newline")
+      .map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
       "CommandStart",
       "AttributeListStart",
@@ -178,9 +198,13 @@ this is ignored
     expect(result.groups).toStrictEqual({});
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
+      "Newline",
       "CommandStart",
       "Identifier",
+      "Newline",
+      "Newline",
       "CommandEnd",
+      "Newline",
     ]);
   });
 
@@ -198,7 +222,14 @@ this is ignored
       "unexpected character: ->'<- at offset: 26, skipped 1 characters.",
     ]);
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
-    expect(tokenNames).toStrictEqual(["CommandStart", "CommandEnd"]);
+    expect(tokenNames).toStrictEqual([
+      "Newline",
+      "CommandStart",
+      "Newline",
+      "Newline",
+      "CommandEnd",
+      "Newline",
+    ]);
   });
 
   it("diagnoses invalid identifiers", () => {
@@ -215,7 +246,14 @@ this is ignored
       "unexpected character: ->'<- at offset: 26, skipped 1 characters.",
     ]);
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
-    expect(tokenNames).toStrictEqual(["CommandStart", "CommandEnd"]);
+    expect(tokenNames).toStrictEqual([
+      "Newline",
+      "CommandStart",
+      "Newline",
+      "Newline",
+      "CommandEnd",
+      "Newline",
+    ]);
   });
 
   it("diagnoses on unclosed attributes lists", () => {
@@ -234,6 +272,7 @@ forgot to close
     ]);
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
+      "Newline",
       "CommandStart",
       "AttributeListStart",
       "Colon",

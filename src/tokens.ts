@@ -9,7 +9,6 @@ const Space = createToken({
 const Newline = createToken({
   name: "Newline",
   pattern: /(\r\n|\r|\n)/,
-  group: Lexer.SKIPPED,
   line_breaks: true,
 });
 
@@ -19,4 +18,25 @@ const Text = createToken({
   group: Lexer.SKIPPED,
 });
 
-export { Space, Newline, Text };
+const CommandStart = createToken({
+  name: "CommandStart",
+  pattern: /:[a-z-]+-start:/,
+  push_mode: "CommandAttributesMode",
+});
+
+const CommandEnd = createToken({
+  name: "CommandEnd",
+  pattern: /:[a-z-]+-end:/,
+});
+
+const Command = createToken({
+  name: "Command",
+  pattern: /:[a-z-]+:/,
+});
+
+const Identifier = createToken({
+  name: "Identifier",
+  pattern: /[_A-z][A-z0-9-_]*/,
+});
+
+export { Space, Newline, Text, CommandStart, CommandEnd, Command, Identifier };
