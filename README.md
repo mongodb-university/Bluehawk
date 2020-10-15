@@ -40,7 +40,7 @@ npm install
 To build, run:
 
 ```
-npm run compile
+npm run-script build
 ```
 
 If compilation is successful, you can run bluehawk like so:
