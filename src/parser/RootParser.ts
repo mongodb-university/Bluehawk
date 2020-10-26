@@ -10,8 +10,9 @@ import {
   Newline,
   Identifier,
 } from "../tokens";
+import { ErrorMessageProvider } from "./ErrorMessageProvider";
 
-type Rule = (idx: number) => CstNode;
+type Rule = (idx?: number) => CstNode;
 
 /*
 
@@ -48,7 +49,10 @@ export class RootParser extends CstParser {
   lineComment?: Rule;
 
   constructor(commentPatterns: CommentPatterns) {
-    super(makeRootMode(commentPatterns));
+    super(makeRootMode(commentPatterns), {
+      nodeLocationTracking: "none",
+      errorMessageProvider: new ErrorMessageProvider(),
+    });
     this.lexer = makeLexer(commentPatterns);
 
     const {
