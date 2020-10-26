@@ -42,6 +42,8 @@ not ended code block
     // "input" is a setter which will reset the parser's state
     parser.input = result.tokens;
     parser.annotatedText();
-    expect(parser.errors[0]).toStrictEqual("");
+    expect(parser.errors[0].message).toStrictEqual(
+      "3:21 blockCommand: After Newline, expected CommandEnd but found EOF"
+    );
   });
 });

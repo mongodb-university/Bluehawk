@@ -19,7 +19,7 @@ type Rule = (idx?: number) => CstNode;
 Bluehawk Root grammar:
 
 annotatedText
-  : blockCommand | command | blockComment | lineComment | Newline
+  : blockCommand | command | blockComment | lineComment | Newline ...
 
 blockCommand
   : CommandStart (commandAttribute)? Newline annotatedText CommandEnd
@@ -50,7 +50,7 @@ export class RootParser extends CstParser {
 
   constructor(commentPatterns: CommentPatterns) {
     super(makeRootMode(commentPatterns), {
-      nodeLocationTracking: "none",
+      nodeLocationTracking: "full",
       errorMessageProvider: new ErrorMessageProvider(),
     });
     this.lexer = makeLexer(commentPatterns);
