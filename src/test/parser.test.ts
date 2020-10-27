@@ -5,6 +5,7 @@ describe("parser", () => {
     blockCommentEndPattern: /\*\//,
     blockCommentStartPattern: /\/\*/,
     lineCommentPattern: /\/\//,
+    canNestBlockComments: true,
   });
   const { lexer } = parser;
 
@@ -88,17 +89,63 @@ not ended code block
   });
 
   it("handles comments", () => {
-    // Not sure why this should be allowed or disallowed
-    // so allow it
     const result = lexer.tokenize(`/* */
 // :some-command:
 /*
-//
+// not a command
+// :command-start: ok
+:command-end:
 */
 `);
     expect(result.errors.length).toBe(0);
     parser.input = result.tokens;
     parser.annotatedText();
     expect(parser.errors.length).toBe(0);
+  });
+
+  it("rejects block commands that straddle comment blocks", () => {
+    const result = lexer.tokenize(`
+:command-start:
+/* start comment block
+:command-end: // this should not work
+*/ end comment block
+`);
+    expect(result.errors.length).toBe(0);
+    parser.input = result.tokens;
+    parser.annotatedText();
+    expect(parser.errors[0].message).toBe(
+      "3:23 blockComment: After Newline, expected BlockCommentEnd but found CommandEnd"
+    );
+  });
+
+  it("accepts any number of comment tokens", () => {
+    const result = lexer.tokenize(`
+/////////////////
+/* // // // // // */
+`);
+    expect(result.errors.length).toBe(0);
+    parser.input = result.tokens;
+    parser.annotatedText();
+    expect(parser.errors.length).toBe(0);
+  });
+});
+
+describe("parser without nested block comments", () => {
+  const parser = new RootParser({
+    blockCommentEndPattern: /\*\//,
+    blockCommentStartPattern: /\/\*/,
+    lineCommentPattern: /\/\//,
+    canNestBlockComments: false,
+  });
+  const { lexer } = parser;
+
+  it("cannot nest block comments", () => {
+    const result = lexer.tokenize(`/* /* */ */`);
+    expect(result.errors.length).toBe(0);
+    parser.input = result.tokens;
+    parser.annotatedText();
+    expect(parser.errors[0].message).toBe(
+      "1:1 blockComment: After BlockCommentStart, expected BlockCommentEnd but found BlockCommentStart"
+    );
   });
 });

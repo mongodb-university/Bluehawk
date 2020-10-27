@@ -75,6 +75,7 @@ describe("custom comment lexer", () => {
   it("accepts arbitrary line comment patterns", () => {
     const bashLexer = makeLexer({
       lineCommentPattern: /#/,
+      canNestBlockComments: false,
     });
     expect(bashLexer.lexerDefinitionErrors).toStrictEqual([]);
 
@@ -104,6 +105,7 @@ describe("custom comment lexer", () => {
     const htmlLexer = makeLexer({
       blockCommentStartPattern: /<!--/,
       blockCommentEndPattern: /-->/,
+      canNestBlockComments: true,
     });
     expect(htmlLexer.lexerDefinitionErrors).toStrictEqual([]);
 
@@ -127,6 +129,7 @@ describe("custom comment lexer", () => {
     expect(() => {
       makeLexer({
         lineCommentPattern: COMMAND_PATTERN,
+        canNestBlockComments: false,
       });
     }).toThrowError(`Errors detected in definition of Lexer:
 The same RegExp pattern ->/:([A-z0-9-]+):/<-has been used in all of the following Token Types: Command, LineComment <-`);

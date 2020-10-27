@@ -131,8 +131,7 @@ export function makeCstVisitor(
     }
 
     blockComment(context: BlockCommentContext): VisitorResult {
-      this.visit(context.annotatedText);
-      return { errors: [], anchors: [] };
+      return this.visit(context.annotatedText);
     }
 
     command(context: CommandContext): VisitorResult {
@@ -147,8 +146,7 @@ export function makeCstVisitor(
     }
 
     lineComment(context: LineCommentContext): VisitorResult {
-      this.visit(context.command);
-      return { errors: [], anchors: [] };
+      return this.visit(context.command);
     }
   })();
 }

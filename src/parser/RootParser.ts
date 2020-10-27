@@ -12,6 +12,8 @@ import {
 } from "../lexer/tokens";
 import { ErrorMessageProvider } from "./ErrorMessageProvider";
 
+// See https://sap.github.io/chevrotain/docs/tutorial/step2_parsing.html
+
 type Rule = (idx?: number) => CstNode;
 
 /*
@@ -31,11 +33,12 @@ commandAttribute
   : Identifier | AttributeList
 
 blockComment
-  : BlockCommentStart annotatedText BlockCommentEnd
+  : BlockCommentStart (command | blockComment† | LineComment)* BlockCommentEnd
 
 lineComment
-  : LineComment (command)? Newline
+  : (LineComment)+ (command)? (LineComment)* Newline
 
+† = if canNestBlockComments
 */
 
 export class RootParser extends CstParser {
@@ -81,8 +84,16 @@ export class RootParser extends CstParser {
     });
 
     this.RULE("blockComment", () => {
+      const alternatives = [
+        { ALT: () => this.SUBRULE(this.command) },
+        { ALT: () => this.CONSUME(LineComment) },
+        { ALT: () => this.CONSUME(Newline) },
+      ];
+      if (commentPatterns.canNestBlockComments) {
+        alternatives.push({ ALT: () => this.SUBRULE(this.blockComment) });
+      }
       this.CONSUME(BlockCommentStart);
-      this.OPTION(() => this.SUBRULE(this.annotatedText));
+      this.MANY(() => this.OR(alternatives));
       this.CONSUME(BlockCommentEnd);
     });
 
@@ -101,7 +112,7 @@ export class RootParser extends CstParser {
     });
 
     this.RULE("lineComment", () => {
-      this.CONSUME(LineComment);
+      this.AT_LEAST_ONE(() => this.CONSUME(LineComment));
       this.OPTION(() => this.SUBRULE(this.command));
       this.CONSUME(Newline);
     });

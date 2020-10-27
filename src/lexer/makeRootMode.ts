@@ -14,7 +14,7 @@ import { makeCommentTokens } from "./makeCommentTokens";
 export function makeRootMode(
   commentPatterns: CommentPatterns
 ): Array<TokenType> {
-  // Keep comment tokens where the pattern is defined
+  // Keep comment tokens only if they have a pattern defined
   const commentTokens = Object.values(
     makeCommentTokens(commentPatterns)
   ).filter((token) => token.PATTERN !== undefined);

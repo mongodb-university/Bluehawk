@@ -6,6 +6,7 @@ describe("visitor", () => {
     blockCommentEndPattern: /\*\\/,
     blockCommentStartPattern: /\/\*/,
     lineCommentPattern: /\/\//,
+    canNestBlockComments: true,
   });
   const { lexer } = parser;
 
