@@ -1,7 +1,11 @@
 import { RootParser } from "../parser/RootParser";
 
 describe("parser", () => {
-  const parser = new RootParser({});
+  const parser = new RootParser({
+    blockCommentEndPattern: /\*\//,
+    blockCommentStartPattern: /\/\*/,
+    lineCommentPattern: /\/\//,
+  });
   const { lexer } = parser;
 
   it("handles annotated text", () => {
@@ -33,9 +37,9 @@ this is not bluehawk markup
     expect(parser.errors).toStrictEqual([]);
   });
 
-  it("error", () => {
+  it("rejects incomplete markup", () => {
     const result = lexer.tokenize(`
-// :code-block-start:
+:code-block-start:
 not ended code block
 `);
     expect(result.errors.length).toBe(0);
@@ -76,6 +80,21 @@ not ended code block
 :some-command-start:
 :some-command-end::some-other-command-start:
 :some-other-command-end:
+`);
+    expect(result.errors.length).toBe(0);
+    parser.input = result.tokens;
+    parser.annotatedText();
+    expect(parser.errors.length).toBe(0);
+  });
+
+  it("handles comments", () => {
+    // Not sure why this should be allowed or disallowed
+    // so allow it
+    const result = lexer.tokenize(`/* */
+// :some-command:
+/*
+//
+*/
 `);
     expect(result.errors.length).toBe(0);
     parser.input = result.tokens;

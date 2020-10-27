@@ -24,7 +24,7 @@ export class ErrorMessageProvider implements IParserErrorMessageProvider {
     firstRedundant: IToken;
     ruleName: string;
   }): string {
-    return defaultParserErrorProvider.buildNotAllInputParsedMessage(options);
+    return `${options.firstRedundant.startLine}:${options.firstRedundant.startColumn} ${options.ruleName}: expecting EOF but found ${options.firstRedundant.tokenType.name}`;
   }
 
   buildNoViableAltMessage(options: {

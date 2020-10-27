@@ -82,7 +82,7 @@ export class RootParser extends CstParser {
 
     this.RULE("blockComment", () => {
       this.CONSUME(BlockCommentStart);
-      this.SUBRULE(this.annotatedText);
+      this.OPTION(() => this.SUBRULE(this.annotatedText));
       this.CONSUME(BlockCommentEnd);
     });
 
