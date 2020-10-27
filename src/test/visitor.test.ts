@@ -10,7 +10,6 @@ describe("visitor", () => {
   const { lexer } = parser;
 
   it("can be constructed", () => {
-    const visitor = makeCstVisitor(parser);
     const result = lexer.tokenize(`
 this is annotated text
 :command: attribute
@@ -24,7 +23,22 @@ annotated text
     expect(result.errors.length).toBe(0);
     expect(result.tokens.length).toBe(16);
     parser.input = result.tokens;
+    const visitor = makeCstVisitor(parser);
     const cst = parser.annotatedText();
     visitor.visit(cst);
+  });
+
+  it("detects mismatched command names", () => {
+    const tokens = lexer.tokenize(`
+:this-is-a-command-start:
+:this-is-a-different-command-end:`);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors.length).toBe(1);
+    expect(result.errors[0].message).toBe(
+      "Unexpected this-is-a-different-command-end closing this-is-a-command-start"
+    );
   });
 });
