@@ -18,20 +18,26 @@ const Text = createToken({
   group: Lexer.SKIPPED,
 });
 
+// Shared patterns with captures for use in CstVisitor. Please ensure they stay
+// aligned (both in the editor for at-a-glance error checking and as regexes)
+const COMMAND_START_PATTERN /**/ = /:([A-z0-9-]+)-start:/;
+const COMMAND_END_PATTERN /*  */ = /:([A-z0-9-]+)-end:/;
+const COMMAND_PATTERN /*      */ = /:([A-z0-9-]+):/;
+
 const CommandStart = createToken({
   name: "CommandStart",
-  pattern: /:[a-z-]+-start:/,
+  pattern: COMMAND_START_PATTERN,
   push_mode: "CommandAttributesMode",
 });
 
 const CommandEnd = createToken({
   name: "CommandEnd",
-  pattern: /:[a-z-]+-end:/,
+  pattern: COMMAND_END_PATTERN,
 });
 
 const Command = createToken({
   name: "Command",
-  pattern: /:[a-z-]+:/,
+  pattern: COMMAND_PATTERN,
 });
 
 const Identifier = createToken({
@@ -39,4 +45,15 @@ const Identifier = createToken({
   pattern: /[_A-z][A-z0-9-_]*/,
 });
 
-export { Space, Newline, Text, CommandStart, CommandEnd, Command, Identifier };
+export {
+  COMMAND_END_PATTERN,
+  COMMAND_PATTERN,
+  COMMAND_START_PATTERN,
+  Command,
+  CommandEnd,
+  CommandStart,
+  Identifier,
+  Newline,
+  Space,
+  Text,
+};

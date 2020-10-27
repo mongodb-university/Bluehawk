@@ -7,7 +7,7 @@ import {
   Newline,
   Space,
   Text,
-} from "../tokens";
+} from "./tokens";
 import { makeCommentTokens } from "./makeCommentTokens";
 
 // RootMode is the default parser and lexer mode.

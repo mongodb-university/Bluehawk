@@ -9,7 +9,7 @@ import {
   CommandStart,
   Newline,
   Identifier,
-} from "../tokens";
+} from "../lexer/tokens";
 import { ErrorMessageProvider } from "./ErrorMessageProvider";
 
 type Rule = (idx?: number) => CstNode;

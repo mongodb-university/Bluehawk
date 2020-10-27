@@ -1,4 +1,5 @@
 import { makeLexer } from "../lexer/makeLexer";
+import { COMMAND_PATTERN } from "../lexer/tokens";
 
 describe("lexer", () => {
   const lexer = makeLexer();
@@ -125,10 +126,10 @@ describe("custom comment lexer", () => {
   it("rejects comment patterns that conflict with other tokens", () => {
     expect(() => {
       makeLexer({
-        lineCommentPattern: /:[a-z-]+-start:/,
+        lineCommentPattern: COMMAND_PATTERN,
       });
     }).toThrowError(`Errors detected in definition of Lexer:
-The same RegExp pattern ->/:[a-z-]+-start:/<-has been used in all of the following Token Types: CommandStart, LineComment <-`);
+The same RegExp pattern ->/:([A-z0-9-]+):/<-has been used in all of the following Token Types: Command, LineComment <-`);
   });
 });
 

@@ -1,5 +1,5 @@
 import { createToken } from "chevrotain";
-import { Identifier, Newline, Space } from "../tokens";
+import { Identifier, Newline, Space } from "./tokens";
 
 // After a command start tag, there may be an attributes list or ID until the
 // end of line.

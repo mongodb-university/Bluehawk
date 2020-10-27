@@ -1,4 +1,5 @@
 import { ICstVisitor, CstNode, IToken } from "chevrotain";
+import { COMMAND_END_PATTERN, COMMAND_START_PATTERN } from "../lexer/tokens";
 import { RootParser } from "./RootParser";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions_visitor.html
@@ -101,11 +102,11 @@ export function makeCstVisitor(
     }
 
     blockCommand(context: BlockCommandContext): VisitorResult {
-      const startCommandName = /:([A-z0-9-]+)-start:/.exec(
+      const startCommandName = COMMAND_START_PATTERN.exec(
         context.CommandStart[0].image
       )[1];
 
-      const endCommandName = /:([A-z-]+)-end:/.exec(
+      const endCommandName = COMMAND_END_PATTERN.exec(
         context.CommandEnd[0].image
       )[1];
 
@@ -121,9 +122,12 @@ export function makeCstVisitor(
         };
       }
 
-      this.visit(context.commandAttribute);
-      this.visit(context.annotatedText);
-      return { errors: [], anchors: [] };
+      const attributeResult = this.visit(context.commandAttribute);
+      const textResult = this.visit(context.annotatedText);
+      return {
+        errors: [...(attributeResult?.errors ?? []), ...textResult.errors],
+        anchors: [...(attributeResult?.anchors ?? []), ...textResult.anchors],
+      };
     }
 
     blockComment(context: BlockCommentContext): VisitorResult {
