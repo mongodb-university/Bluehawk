@@ -10,7 +10,7 @@ module.exports.intro = function () {
   console.log(
     chalk.blueBright.bold(
       figlet.textSync("Bluehawk", {
-        font: "colossal",
+        font: "Colossal",
       })
     )
   );
