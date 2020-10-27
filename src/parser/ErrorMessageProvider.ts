@@ -34,7 +34,9 @@ export class ErrorMessageProvider implements IParserErrorMessageProvider {
     customUserDescription: string;
     ruleName: string;
   }): string {
-    return defaultParserErrorProvider.buildNoViableAltMessage(options);
+    return `${options.actual[0].startLine}:${options.actual[0].startColumn} ${
+      options.ruleName
+    }: ${defaultParserErrorProvider.buildNoViableAltMessage(options)}`;
   }
 
   buildEarlyExitMessage(options: {

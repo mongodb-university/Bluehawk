@@ -32,11 +32,12 @@ annotated text
   it("detects mismatched command names", () => {
     const tokens = lexer.tokenize(`
 :this-is-a-command-start:
-:this-is-a-different-command-end:`);
-    expect(tokens.errors.length).toBe(0);
+:this-is-a-different-command-end:
+`);
+    expect(tokens.errors).toStrictEqual([]);
     parser.input = tokens.tokens;
     const cst = parser.annotatedText();
-    expect(parser.errors.length).toBe(0);
+    expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst);
     expect(result.errors.length).toBe(1);

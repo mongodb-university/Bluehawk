@@ -1,5 +1,17 @@
 import { createToken, Lexer } from "chevrotain";
 
+const AttributeListStart = createToken({
+  name: "AttributeListStart",
+  pattern: /{/,
+  push_mode: "AttributeListMode",
+});
+
+const AttributeListEnd = createToken({
+  name: "AttributeListEnd",
+  pattern: /}/,
+  pop_mode: true,
+});
+
 const Space = createToken({
   name: "Spaces",
   pattern: /[\t ]+/,
@@ -46,6 +58,8 @@ const Identifier = createToken({
 });
 
 export {
+  AttributeListEnd,
+  AttributeListStart,
   COMMAND_END_PATTERN,
   COMMAND_PATTERN,
   COMMAND_START_PATTERN,

@@ -1,5 +1,4 @@
 import { ICstVisitor, CstNode, IToken } from "chevrotain";
-import { assert } from "console";
 import { COMMAND_END_PATTERN, COMMAND_START_PATTERN } from "../lexer/tokens";
 import { RootParser } from "./RootParser";
 
@@ -20,14 +19,16 @@ function locationFromToken(token: IToken): Location {
 }
 
 interface AnnotatedTextContext {
-  blockCommand?: CstNode[];
-  blockComment?: CstNode[];
-  command?: CstNode[];
-  lineComment?: CstNode[];
-  Newline?: IToken[];
+  chunk?: CstNode[];
+}
+
+interface AttributeListContext {
+  AttributeListStart: IToken[];
+  AttributeListEnd: IToken[];
 }
 
 interface BlockCommandContext {
+  LineComment?: IToken[];
   CommandStart: IToken[];
   commandAttribute?: CstNode[];
   Newline: IToken[];
@@ -37,8 +38,18 @@ interface BlockCommandContext {
 
 interface BlockCommentContext {
   BlockCommentStart: IToken[];
-  annotatedText: CstNode[];
+  command?: CstNode[];
+  LineComment?: IToken[];
+  Newline?: IToken[];
+  blockComment?: CstNode[];
   BlockCommentEnd: IToken[];
+}
+
+interface ChunkContext {
+  blockComment?: CstNode[];
+  command?: CstNode[];
+  lineComment?: CstNode[];
+  Newline: IToken[];
 }
 
 interface CommandContext {
@@ -47,14 +58,15 @@ interface CommandContext {
 }
 
 interface CommandAttributeContext {
-  Identifier: IToken[];
-  // TODO: JSON handling
+  Identifier?: IToken[];
+  attributeList?: CstNode[];
 }
 
 interface LineCommentContext {
   LineComment: IToken[];
-  command?: CstNode[];
-  Newline: IToken[];
+  Command?: IToken[];
+  BlockCommentStart?: IToken[];
+  BlockCommentEnd?: IToken[];
 }
 
 interface VisitorError {
@@ -67,9 +79,12 @@ interface VisitorResult {
   anchors: [];
 }
 
+// While the lexer defines the tokens (words) and the parser defines the syntax,
+// the CstVisitor defines the semantics of the language.
 export function makeCstVisitor(
   parser: RootParser
 ): ICstVisitor<void, VisitorResult> {
+  const { canNestBlockComments } = parser.commentPatterns;
   return new (class CstVisitor extends parser.getBaseCstVisitorConstructor() {
     constructor() {
       super();
@@ -78,20 +93,17 @@ export function makeCstVisitor(
       this.validateVisitor();
     }
 
-    // Correct the underlying return type
+    // This override corrects the underlying method's return type
     visit(node: CstNode | CstNode[]): VisitorResult {
       return super.visit(node);
     }
 
     annotatedText(context: AnnotatedTextContext): VisitorResult {
-      return [
-        ...(context.blockCommand ?? []),
-        ...(context.blockComment ?? []),
-        ...(context.command ?? []),
-        ...(context.lineComment ?? []),
-      ]
+      // Flatten the tree to two lists (errors and elements) ordered by their
+      // appearance in the file.
+      return (context.chunk ?? [])
         .sort((a, b) => b.location.startOffset - a.location.startOffset)
-        .map((node) => this.visit(node))
+        .map((chunk) => this.visit(chunk))
         .reduce(
           (acc, cur) => ({
             errors: [...acc.errors, ...cur.errors],
@@ -101,7 +113,13 @@ export function makeCstVisitor(
         );
     }
 
+    attributeList(context: AttributeListContext): VisitorResult {
+      return { errors: [], anchors: [] };
+    }
+
     blockCommand(context: BlockCommandContext): VisitorResult {
+      // Extract the command name ("example") from the
+      // ":example-start:"/":example-end:" tokens and compare them.
       const startCommandName = COMMAND_START_PATTERN.exec(
         context.CommandStart[0].image
       )[1];
@@ -125,13 +143,36 @@ export function makeCstVisitor(
       const attributeResult = this.visit(context.commandAttribute);
       const textResult = this.visit(context.annotatedText);
       return {
-        errors: [...(attributeResult?.errors ?? []), ...textResult.errors],
-        anchors: [...(attributeResult?.anchors ?? []), ...textResult.anchors],
+        errors: [
+          ...(attributeResult?.errors ?? []),
+          ...(textResult?.errors ?? []),
+        ],
+        anchors: [
+          ...(attributeResult?.anchors ?? []),
+          ...(textResult?.anchors ?? []),
+        ],
       };
     }
 
     blockComment(context: BlockCommentContext): VisitorResult {
-      return this.visit(context.annotatedText);
+      return this.visit(context.blockComment);
+    }
+
+    chunk(context: ChunkContext): VisitorResult {
+      return [
+        ...(context.blockComment ?? []),
+        ...(context.command ?? []),
+        ...(context.lineComment ?? []),
+      ]
+        .sort((a, b) => b.location.startOffset - a.location.startOffset)
+        .map((node) => this.visit(node))
+        .reduce(
+          (acc, cur) => ({
+            errors: [...acc.errors, ...cur.errors],
+            anchors: [...acc.anchors, ...cur.anchors],
+          }),
+          { errors: [], anchors: [] }
+        );
     }
 
     command(context: CommandContext): VisitorResult {
@@ -146,7 +187,7 @@ export function makeCstVisitor(
     }
 
     lineComment(context: LineCommentContext): VisitorResult {
-      return this.visit(context.command);
+      return { errors: [], anchors: [] };
     }
   })();
 }

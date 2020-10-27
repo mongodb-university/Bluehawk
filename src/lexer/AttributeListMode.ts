@@ -1,5 +1,5 @@
-import { createToken } from "chevrotain";
 import { JsonMode } from "./JsonMode";
+import { AttributeListEnd } from "./tokens";
 
 /*
 Bluehawk uses AttributeListMode to parse the attribute list of a command:
@@ -18,5 +18,5 @@ Bluehawk uses AttributeListMode to parse the attribute list of a command:
 // ever supports inner objects in their attributes list.
 export const AttributeListMode = [
   ...JsonMode.filter((token) => token.name !== "RCurly"),
-  createToken({ name: "AttributeListEnd", pattern: /}/, pop_mode: true }),
+  AttributeListEnd,
 ];

@@ -8,7 +8,7 @@
     "watch": "tsc -b -w",
     "test": "npm run ts-test && npm run js-test",
     "js-test": "npm run build && mocha --require 'js-test/hooks.js' -- 'js-test/*.test.js'",
-    "ts-test": "jest",
+    "ts-test": "jest --verbose",
     "coverage": "jest --coverage"
   },
   "author": "",

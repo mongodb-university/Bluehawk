@@ -11,6 +11,7 @@ export function makeLexer(
     lineCommentPattern: /\/\//, // Standard C++-ish line comment --> //
     blockCommentStartPattern: /\/\*/, // Standard C-ish block comment start --> /*
     blockCommentEndPattern: /\*\\/, // Standard C-ish block comment end --> */
+    canNestBlockComments: true,
   }
 ): Lexer {
   return new Lexer({
