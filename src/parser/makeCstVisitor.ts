@@ -1,4 +1,5 @@
 import { ICstVisitor, CstNode, IToken } from "chevrotain";
+import { assert } from "console";
 import { COMMAND_END_PATTERN, COMMAND_START_PATTERN } from "../lexer/tokens";
 import { RootParser } from "./RootParser";
 
@@ -41,9 +42,8 @@ interface BlockCommentContext {
 }
 
 interface CommandContext {
-  Command: IToken[];
-  commandAttribute?: CstNode[];
-  Newline: IToken[];
+  Command?: IToken[];
+  blockCommand?: CstNode[];
 }
 
 interface CommandAttributeContext {
@@ -136,7 +136,9 @@ export function makeCstVisitor(
     }
 
     command(context: CommandContext): VisitorResult {
-      this.visit(context.commandAttribute);
+      if (context.blockCommand) {
+        return this.visit(context.blockCommand);
+      }
       return { errors: [], anchors: [] };
     }
 

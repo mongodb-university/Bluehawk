@@ -57,4 +57,29 @@ not ended code block
     parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
   });
+
+  it("allows one command after another", () => {
+    // No reason to disallow this
+    const result = lexer.tokenize(`
+:some-command: :some-other-command:
+`);
+    expect(result.errors.length).toBe(0);
+    parser.input = result.tokens;
+    parser.annotatedText();
+    expect(parser.errors.length).toBe(0);
+  });
+
+  it("accepts one block command after another", () => {
+    // Not sure why this should be allowed or disallowed
+    // so allow it
+    const result = lexer.tokenize(`
+:some-command-start:
+:some-command-end::some-other-command-start:
+:some-other-command-end:
+`);
+    expect(result.errors.length).toBe(0);
+    parser.input = result.tokens;
+    parser.annotatedText();
+    expect(parser.errors.length).toBe(0);
+  });
 });

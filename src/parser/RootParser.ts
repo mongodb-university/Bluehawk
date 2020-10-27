@@ -19,19 +19,19 @@ type Rule = (idx?: number) => CstNode;
 Bluehawk Root grammar:
 
 annotatedText
-  : blockCommand | command | blockComment | lineComment | Newline ...
+  : command | blockComment | lineComment | Newline ...
+
+command
+  : Command | blockCommand
 
 blockCommand
   : CommandStart (commandAttribute)? Newline (annotatedText)? CommandEnd
 
-blockComment
-  : BlockCommentStart annotatedText BlockCommentEnd
-
-command
-  : Command (commandAttribute)? Newline
-
 commandAttribute
   : Identifier | AttributeList
+
+blockComment
+  : BlockCommentStart annotatedText BlockCommentEnd
 
 lineComment
   : LineComment (command)? Newline
@@ -64,9 +64,8 @@ export class RootParser extends CstParser {
     this.RULE("annotatedText", () => {
       this.MANY(() =>
         this.OR([
-          { ALT: () => this.SUBRULE(this.blockCommand) },
-          { ALT: () => this.SUBRULE(this.blockComment) },
           { ALT: () => this.SUBRULE(this.command) },
+          { ALT: () => this.SUBRULE(this.blockComment) },
           { ALT: () => this.SUBRULE(this.lineComment) },
           { ALT: () => this.CONSUME(Newline) },
         ])
@@ -88,9 +87,10 @@ export class RootParser extends CstParser {
     });
 
     this.RULE("command", () => {
-      this.CONSUME(Command);
-      this.OPTION(() => this.SUBRULE(this.commandAttribute));
-      this.CONSUME(Newline);
+      this.OR([
+        { ALT: () => this.SUBRULE(this.blockCommand) },
+        { ALT: () => this.CONSUME(Command) },
+      ]);
     });
 
     this.RULE("commandAttribute", () => {
