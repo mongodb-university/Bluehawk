@@ -46,13 +46,27 @@ annotated text
 
   it("supports nested commands", () => {
     const tokens = lexer.tokenize(`
-:A-start:
-  :B-start:
-    :C-start:
+:A-start: a
+  :B-start: b
+    :C-start: c
     :C-end:
     :D-start:
     :D-end:
   :B-end:
+:A-end:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors.length).toBe(0);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors.length).toBe(0);
+  });
+
+  it("supports id commands", () => {
+    const tokens = lexer.tokenize(`
+:A-start: label
 :A-end:
 `);
     expect(tokens.errors.length).toBe(0);

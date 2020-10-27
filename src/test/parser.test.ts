@@ -46,4 +46,15 @@ not ended code block
       "3:21 blockCommand: After Newline, expected CommandEnd but found EOF"
     );
   });
+
+  it("handles empty command blocks with ids", () => {
+    const result = lexer.tokenize(`
+:some-command-start: label
+:some-command-end:
+`);
+    expect(result.errors.length).toBe(0);
+    parser.input = result.tokens;
+    parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+  });
 });

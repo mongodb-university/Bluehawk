@@ -22,7 +22,7 @@ annotatedText
   : blockCommand | command | blockComment | lineComment | Newline ...
 
 blockCommand
-  : CommandStart (commandAttribute)? Newline annotatedText CommandEnd
+  : CommandStart (commandAttribute)? Newline (annotatedText)? CommandEnd
 
 blockComment
   : BlockCommentStart annotatedText BlockCommentEnd
@@ -77,7 +77,7 @@ export class RootParser extends CstParser {
       this.CONSUME(CommandStart);
       this.OPTION(() => this.SUBRULE(this.commandAttribute));
       this.CONSUME(Newline);
-      this.SUBRULE(this.annotatedText);
+      this.OPTION1(() => this.SUBRULE(this.annotatedText));
       this.CONSUME(CommandEnd);
     });
 
@@ -98,7 +98,6 @@ export class RootParser extends CstParser {
         { ALT: () => this.CONSUME(Identifier) },
         // TODO: JSON handling
       ]);
-      this.CONSUME(Newline);
     });
 
     this.RULE("lineComment", () => {
