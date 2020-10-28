@@ -106,7 +106,7 @@ export function openFile({
       output.info("Scanning directory '" + directory + "'");
       fs.readdir(directory, function (err, files) {
         if (err) {
-          output.error(err);
+          output.error(err.message);
           reject(err);
         }
 
