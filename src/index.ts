@@ -3,8 +3,6 @@ import * as output from "./output";
 import * as fileHandler from "./fileHandler";
 
 async function run(): Promise<void> {
-  output.intro();
-
   const params = yargs
     .usage("Usage: $0 <command> [options]")
     .command("--source", "The file or folder to process")
@@ -44,13 +42,16 @@ async function run(): Promise<void> {
     );
   }
 
-  let source = params.source as string;
-  let stages = params.stages as [string];
-  let destination = params.destination as string;
-  let type = params.type as string;
+  const source = params.source as string;
+  const stages = params.stages as [string];
+  const destination = params.destination as string;
+  const type = params.type as string;
 
   fileHandler.openFile({
-    source, stages, destination, type
+    source,
+    stages,
+    destination,
+    type,
   });
 }
 
