@@ -1,12 +1,21 @@
-// const fs = require("fs");
-// const output = require("./output");
-// const builder = require("./builder");
 import * as fs from "fs";
 import * as path from "path";
 import * as output from "./output";
 import * as builder from "./builder";
 
-export function openFile({ source, stages, destination, type }) {
+interface OpenFileParams {
+  source: string;
+  stages: [string];
+  destination: string;
+  type: string;
+}
+
+export function openFile({
+  source,
+  stages,
+  destination,
+  type,
+}: OpenFileParams): Promise<void> {
   // Helper to create snippet file array
   function createFileArray(file: string, directory: string) {
     const tempArray = [];
