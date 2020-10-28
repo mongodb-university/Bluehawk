@@ -44,11 +44,13 @@ async function run(): Promise<void> {
     );
   }
 
+  let source = params.source as string;
+  let stages = params.stages as [string];
+  let destination = params.destination as string;
+  let type = params.type as string;
+
   fileHandler.openFile({
-    source: params.source,
-    stages: params.stages,
-    destination: params.destination,
-    type: params.type,
+    source, stages, destination, type
   });
 }
 
