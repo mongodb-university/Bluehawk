@@ -1,10 +1,14 @@
-const fs = require("fs");
-const output = require("./output");
-const builder = require("./builder");
+// const fs = require("fs");
+// const output = require("./output");
+// const builder = require("./builder");
+import * as fs from "fs";
+import * as path from "path";
+import * as output from "./output";
+import * as builder from "./builder";
 
-function openFile({ source, stages, destination, type }) {
+export function openFile({ source, stages, destination, type }) {
   // Helper to create snippet file array
-  function createFileArray(file, directory) {
+  function createFileArray(file: string, directory: string) {
     const tempArray = [];
     if (file.startsWith(".")) {
       return;
@@ -37,7 +41,7 @@ function openFile({ source, stages, destination, type }) {
 
     output.info("Parsing '" + fullname + "'");
 
-    let index = tempArray.length;
+    const index = tempArray.length;
     tempArray[index] = { source: fullname };
     tempArray[index].step = stepOutputPath + "/" + basesource + ".step.rst";
 
@@ -61,15 +65,15 @@ function openFile({ source, stages, destination, type }) {
   function wrapup() {
     output.info("--------------------------------\n             Done!");
 
-    if (output.warningsList > 0) {
-      if (output.warningsList == 1) {
+    if (output.warningsList.length > 0) {
+      if (output.warningsList.length == 1) {
         output.warning(`There was 1 warning.`);
       } else {
         output.warning(`There were ${output.warningsList} warnings.`);
       }
     }
-    if (output.errorsList > 0) {
-      if (output.errorsList == 1) {
+    if (output.errorsList.length > 0) {
+      if (output.errorsList.length == 1) {
         output.error(`There was 1 error.`);
       } else {
         output.error(`There were ${output.errorsList} errors.`);
@@ -106,9 +110,8 @@ function openFile({ source, stages, destination, type }) {
         resolve();
       });
     } else {
-      const fileparts = source.split("/");
-      const file = fileparts.pop();
-      const directory = fileparts.join("/");
+      const directory = path.dirname(source);
+      const file = path.basename(source);
 
       const fileArray = createFileArray(file, directory);
       output.info("Building the following files:");
@@ -120,7 +123,7 @@ function openFile({ source, stages, destination, type }) {
   });
 }
 
-function getFileType(source) {
+export function getFileType(source) {
   return new Promise((resolve, reject) => {
     if (!fs.existsSync(source)) {
       output.error("The source file or directory doesn't exist!", source);
@@ -128,23 +131,21 @@ function getFileType(source) {
         new Error(`The source file or directory doesn't exist: ${source}`)
       );
     }
+    let ext: string;
 
     if (fs.lstatSync(source).isDirectory()) {
       fs.readdir(source, function (err, files) {
         for (let x = 0; x < files.length; x++) {
           const file = source + "/" + files[x];
           if (fs.lstatSync(file).isFile() && !files[x].startsWith(".")) {
-            let ext = file.split(".").pop();
+            ext = file.split(".").pop();
             return resolve(ext);
           }
         }
       });
     } else {
-      let ext = source.split(".").pop();
+      ext = source.split(".").pop();
       return resolve(ext);
     }
   });
 }
-
-exports.openFile = openFile;
-exports.getFileType = getFileType;
