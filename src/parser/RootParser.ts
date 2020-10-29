@@ -162,7 +162,7 @@ export class RootParser extends CstParser {
       this.CONSUME(LineComment);
       this.MANY(() =>
         this.OR([
-          { ALT: () => this.CONSUME(Command) },
+          { ALT: () => this.SUBRULE(this.command) },
           { ALT: () => this.CONSUME1(LineComment) },
           { ALT: () => this.CONSUME(BlockCommentStart) },
           { ALT: () => this.CONSUME(BlockCommentEnd) },

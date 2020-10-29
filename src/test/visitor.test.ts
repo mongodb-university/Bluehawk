@@ -123,7 +123,7 @@ annotated text
     expect(result.commands[0].id).toBe("label");
   });
 
-  it("detects comment context", () => {
+  it("detects comment context on line commands", () => {
     const tokens = lexer.tokenize(`
 0 /* :command-in-a-block-comment: */
 1 // :line-commented-command:
@@ -132,14 +132,7 @@ annotated text
 /*
 4 :another-block-commented-command:
 */
-5 :line-commented-block-command-start:
-// // // // :line-commented-block-command-end:
-
-/*
-6 // :not-really-line-commented-block-command-start:
-:not-really-line-commented-block-command-end:
-*/
-7 :not-in-context:
+5 :not-in-context:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -148,7 +141,6 @@ annotated text
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst);
     expect(result.errors).toStrictEqual([]);
-    //expect(result.commands.length).toBe(8);
     expect(result.commands[0].commandName).toBe("command-in-a-block-comment");
     expect(result.commands[0].inContext).toBe("blockComment");
     expect(result.commands[1].commandName).toBe("line-commented-command");
@@ -163,13 +155,58 @@ annotated text
       "another-block-commented-command"
     );
     expect(result.commands[4].inContext).toBe("blockComment");
-    expect(result.commands[5].commandName).toBe("line-commented-block-command");
-    expect(result.commands[5].inContext).toBe("lineComment");
-    expect(result.commands[6].commandName).toBe(
+    expect(result.commands[5].commandName).toBe("not-in-context");
+    expect(result.commands[5].inContext).toBe("none");
+  });
+
+  it("detects comment context on block commands", () => {
+    const tokens = lexer.tokenize(`// :line-commented-block-command-start:
+// // // // :line-commented-block-command-end: */
+
+/*
+2 // :not-really-line-commented-block-command-start:
+:not-really-line-commented-block-command-end:
+*/
+
+:not-in-context-start:
+:not-in-context-end:
+
+// :lcb-start:
+:lcb-end: //// Not closing on a line comment doesn't matter
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands[0].commandName).toBe("line-commented-block-command");
+    expect(result.commands[0].inContext).toBe("lineComment");
+    expect(result.commands[1].commandName).toBe(
       "not-really-line-commented-block-command"
     );
-    expect(result.commands[6].inContext).toBe("blockComment");
-    expect(result.commands[7].commandName).toBe("not-in-context");
-    expect(result.commands[7].inContext).toBe("none");
+    expect(result.commands[1].inContext).toBe("blockComment");
+    expect(result.commands[2].commandName).toBe("not-in-context");
+    expect(result.commands[2].inContext).toBe("none");
+    expect(result.commands[3].commandName).toBe("lcb");
+    expect(result.commands[3].inContext).toBe("lineComment");
+  });
+
+  it("never puts lineComment context on a command that starts on another line", () => {
+    const tokens = lexer.tokenize(`//
+////
+/* */ hiya :not-sure-how-to-test-this: // comment
+////
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands[0].commandName).toBe("not-sure-how-to-test-this");
+    expect(result.commands[0].inContext).toBe("none");
   });
 });

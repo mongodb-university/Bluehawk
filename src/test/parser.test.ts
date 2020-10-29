@@ -99,14 +99,13 @@ bad second line
   });
 
   describe("lineComment rule", () => {
-    it("rejects block commands", () => {
-      const result = lexer.tokenize(`// :command-start:`);
+    it("accepts block commands", () => {
+      const result = lexer.tokenize(`// :command-start:
+:command-end:`);
       expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
       parser.lineComment();
-      expect(parser.errors[0].message).toBe(
-        "1:4 undefined: expecting EOF but found CommandStart"
-      );
+      expect(parser.errors.length).toBe(0);
     });
   });
 

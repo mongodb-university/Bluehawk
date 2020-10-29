@@ -71,7 +71,7 @@ interface CommandAttributeContext {
 
 interface LineCommentContext {
   LineComment: IToken[];
-  Command?: IToken[];
+  command?: CstNode[];
   BlockCommentStart?: IToken[];
   BlockCommentEnd?: IToken[];
 }
@@ -300,14 +300,15 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
     lineComment(context: LineCommentContext, parent: CommandNode) {
       assert(parent != null);
       assert(parent.inContext === "none");
-      const { Command } = context;
-      if (Command === undefined) {
+      const { command } = context;
+      if (command === undefined) {
         return;
       }
       parent.withErasedBlockCommand((erasedBlockCommand) => {
+        // Any blockCommand that starts in a lineComment by definition MUST be
+        // on the same line as the line comment
         erasedBlockCommand.inContext = "lineComment";
-        // Call the command visitor directly with the commented commands
-        this.command({ Command }, erasedBlockCommand);
+        this.$visit(command, erasedBlockCommand);
       });
     }
   })();
