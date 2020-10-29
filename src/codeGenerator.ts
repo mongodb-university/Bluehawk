@@ -8,7 +8,7 @@ export interface CodeFile {
 
 export function buildCodeFiles(source: string, type: string): CodeFile {
   const sourceLines = source.split("\n");
-  let fileType: string = null;
+  const fileType = type.substr(1);
   let inBlockComment = false;
   let isCommand = false;
   let inHide = false;
@@ -97,7 +97,6 @@ export function buildCodeFiles(source: string, type: string): CodeFile {
   }
 
   const result = { start: [], final: [] };
-  fileType = type;
   for (let l = 0; l < sourceLines.length; l++) {
     let line = sourceLines[l];
     getCommand(line);

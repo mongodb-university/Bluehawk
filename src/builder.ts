@@ -37,7 +37,7 @@ function makeSaveCodeBlockFunction(
   };
 }
 
-export async function run(fileArray, type) {
+export async function run(fileArray, type): Promise<void> {
   let fullFile = [];
   let codeFile: coder.CodeFile;
   let codeBlocks = [];
