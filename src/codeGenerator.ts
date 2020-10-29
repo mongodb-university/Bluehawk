@@ -1,10 +1,12 @@
 import * as output from "./output";
 import * as constants from "./constants";
 
-export function buildCodeFiles(
-  source: string,
-  type: string
-): { start: string; final: string } {
+export interface CodeFile {
+  start: string;
+  final: string;
+}
+
+export function buildCodeFiles(source: string, type: string): CodeFile {
   const sourceLines = source.split("\n");
   let fileType: string = null;
   let inBlockComment = false;
