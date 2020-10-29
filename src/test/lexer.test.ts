@@ -1,3 +1,4 @@
+import { assert } from "console";
 import { makeLexer } from "../lexer/makeLexer";
 import { COMMAND_PATTERN } from "../lexer/tokens";
 

@@ -133,6 +133,7 @@ export class RootParser extends CstParser {
     this.RULE("blockCommand", () => {
       this.CONSUME(CommandStart);
       this.OPTION1(() => this.SUBRULE(this.commandAttribute));
+      this.CONSUME(Newline);
       this.MANY(() => this.SUBRULE(this.chunk));
       this.CONSUME(CommandEnd);
     });

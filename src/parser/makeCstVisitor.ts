@@ -15,6 +15,11 @@ interface Location {
   offset: number;
 }
 
+interface Range {
+  start: Location;
+  end: Location;
+}
+
 function locationFromToken(token: IToken): Location {
   return {
     line: token.startLine,
@@ -48,7 +53,10 @@ class CommandNode {
 
   _context = Array<CommandNodeContext>();
 
-  // TODO: range(s)
+  // ranges covered by this node
+  range: Range
+  contentRange?: Range
+
   // Only available in block commands:
   id?: string;
   attributes?: CommandAttributes;
@@ -232,6 +240,32 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
 
       const newNode = parent.makeChildBlockCommand(commandName);
 
+      newNode.range = {
+        start: {
+          line: context.CommandStart[0].startLine,
+          column: context.CommandStart[0].startColumn,
+          offset: context.CommandStart[0].startOffset,
+        },
+        end: {
+          line: context.CommandEnd[0].endLine,
+          column: context.CommandEnd[0].endColumn,
+          offset: context.CommandEnd[0].endOffset,
+        }
+      }
+
+      newNode.contentRange = {
+        start : {
+          line: context.Newline[0].endLine + 1,
+          column: 0,
+          offset: context.Newline[0].endOffset + 1,
+        },
+        end : {
+          line: context.CommandEnd[0].startLine - 1,
+          column: context.chunk ? context.chunk[context.chunk.length > 1? context.chunk.length - 2 : 0].location.endColumn : 0,
+          offset: context.CommandEnd[0].startOffset - 1,
+        }
+      }
+
       const endCommandName = COMMAND_END_PATTERN.exec(
         context.CommandEnd[0].image
       )[1];
@@ -288,9 +322,22 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         return;
       }
       assert(context.Command);
-      context.Command.forEach((Command) =>
-        parent.makeChildLineCommand(COMMAND_PATTERN.exec(Command.image)[1])
-      );
+      
+      context.Command.forEach((Command) =>{
+        const newNode = parent.makeChildLineCommand(COMMAND_PATTERN.exec(Command.image)[1])
+        newNode.range = {
+          start: {
+            line: context.Command[0].startLine,
+            column:context.Command[0].startColumn,
+            offset: context.Command[0].startOffset,
+          },
+          end: {
+            line: context.Command[0].endLine,
+            column: context.Command[0].endColumn,
+            offset: context.Command[0].endOffset,
+          }
+        }
+      });
     }
 
     commandAttribute(context: CommandAttributeContext, { parent, errors }: VA) {
