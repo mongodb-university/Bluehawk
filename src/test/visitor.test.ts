@@ -80,7 +80,9 @@ annotated text
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst);
-    expect(result.errors).toStrictEqual([]);
+    expect(result.errors[0].message).toBe(
+      "Unexpected this-is-a-different-command-end closing this-is-a-command-start"
+    );
   });
 
   it("supports nested commands", () => {
@@ -193,7 +195,7 @@ annotated text
     expect(result.commands[3].inContext).toBe("lineComment");
   });
 
-  it("never puts lineComment context on a command that starts on another line", () => {
+  it("never puts lineComment context on a top-level command that starts on another line", () => {
     const tokens = lexer.tokenize(`//
 ////
 /* */ hiya :not-sure-how-to-test-this: // comment
@@ -208,5 +210,43 @@ annotated text
     expect(result.errors).toStrictEqual([]);
     expect(result.commands[0].commandName).toBe("not-sure-how-to-test-this");
     expect(result.commands[0].inContext).toBe("none");
+  });
+
+  test("descendants inherit context", () => {
+    const tokens = lexer.tokenize(`
+// :a-start:
+  :b-start: 
+    /* :c-start:
+      :d-start:
+      :d-end:
+    :c-end: */
+    -- end block comment --
+    :e-start:
+    :e-end:
+  :b-end:
+:a-end:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    const a = result.commands[0];
+    expect(a.commandName).toBe("a");
+    expect(a.inContext).toBe("lineComment");
+    const b = a.children[0];
+    expect(b.commandName).toBe("b");
+    expect(b.inContext).toBe("lineComment");
+    const c = b.children[0];
+    expect(c.commandName).toBe("c");
+    expect(c.inContext).toBe("blockComment");
+    const d = c.children[0];
+    expect(d.commandName).toBe("d");
+    expect(d.inContext).toBe("blockComment");
+    const e = b.children[1];
+    expect(e.commandName).toBe("e");
+    expect(e.inContext).toBe("lineComment");
   });
 });

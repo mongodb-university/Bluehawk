@@ -21,6 +21,25 @@ bad second line
         "2:16 undefined: expecting EOF but found Newline",
       ]);
     });
+
+    it("ends with a Newline", () => {
+      const result = lexer.tokenize(`//
+`);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.chunk();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("could end with a CommandEnd", () => {
+      const result = lexer.tokenize(`// :command-end:`);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.chunk();
+      expect(parser.errors.map((error) => error.message)).toStrictEqual([
+        "1:4 undefined: expecting EOF but found CommandEnd",
+      ]);
+    });
   });
 
   describe("command rule", () => {
@@ -34,23 +53,40 @@ bad second line
       expect(parser.errors).toStrictEqual([]);
     });
 
-    it("accepts regular commands", () => {
+    it("accepts line commands", () => {
       const result = lexer.tokenize(`:some-command:`);
       expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
       parser.command();
       expect(parser.errors).toStrictEqual([]);
     });
+
+    it("rejects anything else", () => {
+      const otherTokens = ["//", "/*", "*/", "\n", ":some-command-end:"];
+      otherTokens.forEach((token) => {
+        const result = lexer.tokenize(token);
+        expect(result.errors.length).toBe(0);
+        parser.input = result.tokens;
+        parser.command();
+        expect(parser.errors[0].message).toBe(
+          "NaN:NaN command: expecting one of these possible token sequences: CommandStart | Command "
+        );
+      });
+    });
   });
 
   describe("blockCommand rule", () => {
-    it("does not have to start with a line comment", () => {
-      const result = lexer.tokenize(`:block-command-start:
+    it("must not start with a line comment", () => {
+      const result = lexer.tokenize(`// :block-command-start:
 :block-command-end:`);
       expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
       parser.blockCommand();
-      expect(parser.errors).toStrictEqual([]);
+      // This is not a top-level rule anybody would use directly outside of a
+      // unit test so the NaN in the error message is less concerning
+      expect(parser.errors[0].message).toBe(
+        "NaN:NaN blockCommand: After EOF, expected CommandStart but found LineComment"
+      );
     });
 
     it("handles optional identifiers", () => {
@@ -83,8 +119,14 @@ bad second line
 :block-command-end:`);
       expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
-      parser.blockCommand();
+      const cst = parser.blockCommand();
       expect(parser.errors).toStrictEqual([]);
+      expect(Object.keys(cst.children)).toStrictEqual([
+        "CommandStart",
+        "commandAttribute",
+        "chunk",
+        "CommandEnd",
+      ]);
     });
   });
 
@@ -102,6 +144,24 @@ bad second line
     it("accepts block commands", () => {
       const result = lexer.tokenize(`// :command-start:
 :command-end:`);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.lineComment();
+      expect(parser.errors.length).toBe(0);
+    });
+
+    it("accepts line commands", () => {
+      const result = lexer.tokenize(`// :command:`);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.lineComment();
+      expect(parser.errors.length).toBe(0);
+    });
+
+    it("allows block comment tokens", () => {
+      const result = lexer.tokenize(
+        `// */ */ unexpected tokens?! /* no, because they would be commented out /*`
+      );
       expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
       parser.lineComment();

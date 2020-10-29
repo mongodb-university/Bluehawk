@@ -1,5 +1,5 @@
 import { CstNode, IToken } from "chevrotain";
-import { assert } from "console";
+import { strict as assert } from "assert";
 import {
   COMMAND_END_PATTERN,
   COMMAND_PATTERN,
@@ -23,59 +23,6 @@ function locationFromToken(token: IToken): Location {
   };
 }
 
-// For whatever reason, chevrotain always provides arrays of CstNodes, even if
-// you know there can only be one.
-interface AnnotatedTextContext {
-  chunk?: CstNode[];
-}
-
-interface AttributeListContext {
-  AttributeListStart: IToken[];
-  AttributeListEnd: IToken[];
-}
-
-interface BlockCommandContext {
-  LineComment?: IToken[];
-  CommandStart: IToken[];
-  commandAttribute?: CstNode[];
-  Newline: IToken[];
-  chunk: CstNode[];
-  CommandEnd: IToken[];
-}
-
-interface BlockCommentContext {
-  BlockCommentStart: IToken[];
-  command?: CstNode[];
-  LineComment?: IToken[];
-  Newline?: IToken[];
-  blockComment?: CstNode[];
-  BlockCommentEnd: IToken[];
-}
-
-interface ChunkContext {
-  blockComment?: CstNode[];
-  command?: CstNode[];
-  lineComment?: CstNode[];
-  Newline: IToken[];
-}
-
-interface CommandContext {
-  Command?: IToken[];
-  blockCommand?: CstNode[];
-}
-
-interface CommandAttributeContext {
-  Identifier?: IToken[];
-  attributeList?: CstNode[];
-}
-
-interface LineCommentContext {
-  LineComment: IToken[];
-  command?: CstNode[];
-  BlockCommentStart?: IToken[];
-  BlockCommentEnd?: IToken[];
-}
-
 interface VisitorError {
   message: string;
   location: Location;
@@ -95,7 +42,12 @@ type CommandNodeContext =
 
 class CommandNode {
   commandName: string;
-  inContext: CommandNodeContext = "none";
+  get inContext(): CommandNodeContext {
+    return this._context[this._context.length - 1] || "none";
+  }
+
+  _context = Array<CommandNodeContext>();
+
   // TODO: range(s)
   // Only available in block commands:
   id?: string;
@@ -144,7 +96,7 @@ class CommandNode {
   private constructor(commandName: string, parentToAttachTo?: CommandNode) {
     this.commandName = commandName;
     if (parentToAttachTo != null) {
-      this.inContext = parentToAttachTo.inContext;
+      this._context = [...parentToAttachTo._context];
       parentToAttachTo.children.push(this);
     }
   }
@@ -157,6 +109,71 @@ interface IVisitor {
 // While the lexer defines the tokens (words) and the parser defines the syntax,
 // the CstVisitor defines the semantics of the language.
 export function makeCstVisitor(parser: RootParser): IVisitor {
+  // The following context interfaces (should) match the corresponding parser
+  // rule. Subrules appear as CstNode[]. Tokens appear as IToken[]. If the
+  // element is optional in the syntax, it's TypeScript optional™ in the context
+  // interface.
+
+  // For whatever reason, chevrotain always provides *arrays* of CstNodes and
+  // ITokens, even if you know there can only be one.
+  interface AnnotatedTextContext {
+    chunk?: CstNode[];
+  }
+
+  interface AttributeListContext {
+    AttributeListStart: IToken[];
+    AttributeListEnd: IToken[];
+  }
+
+  interface BlockCommandContext {
+    CommandStart: IToken[];
+    commandAttribute?: CstNode[];
+    Newline: IToken[];
+    chunk: CstNode[];
+    CommandEnd: IToken[];
+  }
+
+  interface BlockCommentContext {
+    BlockCommentStart: IToken[];
+    command?: CstNode[];
+    LineComment?: IToken[];
+    Newline?: IToken[];
+    blockComment?: CstNode[];
+    BlockCommentEnd: IToken[];
+  }
+
+  interface ChunkContext {
+    blockComment?: CstNode[];
+    command?: CstNode[];
+    lineComment?: CstNode[];
+    Newline: IToken[];
+  }
+
+  interface CommandContext {
+    Command?: IToken[];
+    blockCommand?: CstNode[];
+  }
+
+  interface CommandAttributeContext {
+    Identifier?: IToken[];
+    attributeList?: CstNode[];
+  }
+
+  interface LineCommentContext {
+    LineComment: IToken[];
+    command?: CstNode[];
+    BlockCommentStart?: IToken[];
+    BlockCommentEnd?: IToken[];
+  }
+
+  // Tuple passed to visitor methods. All errors go to the top level. Visitor
+  // methods operate on the parent node, usually by adding child nodes to the
+  // parent.
+  interface VA {
+    parent: CommandNode;
+    errors: VisitorError[];
+  }
+
   const { canNestBlockComments } = parser.commentPatterns;
   return new (class CstVisitor extends parser.getBaseCstVisitorConstructor() {
     constructor() {
@@ -168,25 +185,25 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
 
     // The entrypoint for the visitor.
     visit(node: CstNode): VisitorResult {
-      const root = CommandNode.rootCommand();
-      this.$visit([node], root);
+      const parent = CommandNode.rootCommand();
       const errors = [];
+      this.$visit([node], { errors, parent });
       return {
         errors,
-        commands: root.children,
+        commands: parent.children,
       };
     }
 
     // chevrotain requires helper methods to begin with a token other than
     // [0-9A-z-_] which leaves... $?
-    private $visit(nodes: CstNode[] | undefined, parent: CommandNode) {
+    private $visit(nodes: CstNode[] | undefined, { parent, errors }: VA) {
       assert(parent != null);
       if (nodes) {
-        nodes.forEach((node) => super.visit(node, parent));
+        nodes.forEach((node) => super.visit(node, { parent, errors }));
       }
     }
 
-    annotatedText(context: AnnotatedTextContext, parent: CommandNode) {
+    annotatedText(context: AnnotatedTextContext, { parent, errors }: VA) {
       assert(parent != null);
       // Flatten annotatedText and chunks to one list ordered by appearance in
       // the file and allow each chunk to add to the parent's child list.
@@ -194,16 +211,16 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         (context.chunk ?? []).sort(
           (a, b) => a.location.startOffset - b.location.startOffset
         ),
-        parent
+        { parent, errors }
       );
     }
 
-    attributeList(context: AttributeListContext, parent: CommandNode) {
+    attributeList(context: AttributeListContext, { parent, errors }: VA) {
       assert(parent != null);
       // TODO: populate parent's attributes
     }
 
-    blockCommand(context: BlockCommandContext, parent: CommandNode) {
+    blockCommand(context: BlockCommandContext, { parent, errors }: VA) {
       assert(parent != null);
 
       // Extract the command name ("example") from the
@@ -221,40 +238,34 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
 
       // Compare start/end name to ensure it is the same command
       if (newNode.commandName !== endCommandName) {
-        /*
-        newNode.diagnostics.push({
+        errors.push({
           location: locationFromToken(context.CommandEnd[0]),
           message: `Unexpected ${endCommandName}-end closing ${newNode.commandName}-start`,
         });
-        */
       }
 
-      this.$visit(context.commandAttribute, newNode);
-      this.$visit(context.chunk, newNode);
+      this.$visit(context.commandAttribute, { parent: newNode, errors });
+      this.$visit(context.chunk, { parent: newNode, errors });
     }
 
-    blockComment(context: BlockCommentContext, parent: CommandNode) {
+    blockComment(context: BlockCommentContext, { parent, errors }: VA) {
       assert(parent != null);
       // This indicates a problem with the parser. Please file a bug with the
       // markup that triggered this assertion failure.
-      assert(
-        parent.inContext === "none" ||
-          (canNestBlockComments && parent.inContext === "blockComment")
-      );
-      assert(context.blockComment == null || canNestBlockComments);
+      assert(canNestBlockComments || parent.inContext !== "blockComment");
 
       // This node (blockComment) should not be included in the final output. We
       // use it to gather child nodes and attach them to the parent node.
       parent.withErasedBlockCommand((erasedBlockCommand) => {
-        erasedBlockCommand.inContext = "blockComment";
+        erasedBlockCommand._context.push("blockComment");
         this.$visit(
           [...(context.blockComment ?? []), ...(context.command ?? [])],
-          erasedBlockCommand
+          { parent: erasedBlockCommand, errors }
         );
       });
     }
 
-    chunk(context: ChunkContext, parent: CommandNode) {
+    chunk(context: ChunkContext, { parent, errors }: VA) {
       assert(parent != null);
       // Like annotatedText, merge all child nodes into a list of children
       // attached to the parent node, ordered by their appearance in the
@@ -265,15 +276,15 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
           ...(context.command ?? []),
           ...(context.lineComment ?? []),
         ].sort((a, b) => a.location.startOffset - b.location.startOffset),
-        parent
+        { parent, errors }
       );
     }
 
-    command(context: CommandContext, parent: CommandNode) {
+    command(context: CommandContext, { parent, errors }: VA) {
       assert(parent != null);
       if (context.blockCommand) {
         assert(!context.Command); // Parser issue!
-        this.$visit(context.blockCommand, parent);
+        this.$visit(context.blockCommand, { parent, errors });
         return;
       }
       assert(context.Command);
@@ -282,24 +293,23 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
       );
     }
 
-    commandAttribute(context: CommandAttributeContext, node: CommandNode) {
-      assert(node != null);
+    commandAttribute(context: CommandAttributeContext, { parent, errors }: VA) {
+      assert(parent != null);
       const Identifier = context.Identifier[0];
       const attributeList = context.attributeList;
       if (Identifier != undefined) {
         assert(!attributeList); // parser issue
         assert(Identifier.image.length > 0);
-        node.id = Identifier.image;
+        parent.id = Identifier.image;
       } else if (context.attributeList != undefined) {
         assert(!Identifier); // parser issue
         assert(attributeList.length === 1); // should be impossible to have more than 1 list
-        this.$visit(attributeList, node);
+        this.$visit(attributeList, { parent, errors });
       }
     }
 
-    lineComment(context: LineCommentContext, parent: CommandNode) {
+    lineComment(context: LineCommentContext, { parent, errors }: VA) {
       assert(parent != null);
-      assert(parent.inContext === "none");
       const { command } = context;
       if (command === undefined) {
         return;
@@ -307,8 +317,8 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
       parent.withErasedBlockCommand((erasedBlockCommand) => {
         // Any blockCommand that starts in a lineComment by definition MUST be
         // on the same line as the line comment
-        erasedBlockCommand.inContext = "lineComment";
-        this.$visit(command, erasedBlockCommand);
+        erasedBlockCommand._context.push("lineComment");
+        this.$visit(command, { parent: erasedBlockCommand, errors });
       });
     }
   })();
