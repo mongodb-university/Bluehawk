@@ -34,9 +34,13 @@ export class ErrorMessageProvider implements IParserErrorMessageProvider {
     customUserDescription: string;
     ruleName: string;
   }): string {
-    return `${options.actual[0].startLine}:${options.actual[0].startColumn} ${
+    return `${options.previous.startLine}:${options.previous.startColumn} ${
       options.ruleName
-    }: ${defaultParserErrorProvider.buildNoViableAltMessage(options)}`;
+    }: expecting one of these possible token sequences: ${options.expectedPathsPerAlt
+      .map((alt) =>
+        alt.map((path) => path.map((a) => a.name).join()).join(" -> ")
+      )
+      .join(" | ")} `;
   }
 
   buildEarlyExitMessage(options: {

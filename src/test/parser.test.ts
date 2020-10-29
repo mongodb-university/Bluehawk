@@ -8,19 +8,6 @@ describe("parser", () => {
     canNestBlockComments: true,
   });
   const { lexer } = parser;
-  it("rejects incomplete markup", () => {
-    const result = lexer.tokenize(`
-:code-block-start:
-not ended code block
-`);
-    expect(result.errors.length).toBe(0);
-    // "input" is a setter which will reset the parser's state
-    parser.input = result.tokens;
-    parser.annotatedText();
-    expect(parser.errors[0].message).toStrictEqual(
-      "3:21 blockCommand: After Newline, expected CommandEnd but found EOF"
-    );
-  });
 
   describe("chunk rule", () => {
     it("accepts no more than one newline at top level", () => {
@@ -41,26 +28,6 @@ bad second line
       const result = lexer.tokenize(`:block-command-start: attribute
   any text
   :block-command-end:`);
-      expect(result.errors.length).toBe(0);
-      parser.input = result.tokens;
-      parser.command();
-      expect(parser.errors).toStrictEqual([]);
-    });
-
-    it("accepts line-commented block commands", () => {
-      const result = lexer.tokenize(`// :block-command-start: attribute
-any text
-:block-command-end:`); // it doesn't care if you comment the end block
-      expect(result.errors.length).toBe(0);
-      parser.input = result.tokens;
-      parser.command();
-      expect(parser.errors).toStrictEqual([]);
-    });
-
-    it("accepts line-commented block commands with inner line comments", () => {
-      const result = lexer.tokenize(`// :block-command-start: attribute
-// any text
-// :block-command-end:`);
       expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
       parser.command();
@@ -131,7 +98,19 @@ any text
     });
   });
 
-  describe("annotatedText rule", () => {
+  describe("lineComment rule", () => {
+    it("rejects block commands", () => {
+      const result = lexer.tokenize(`// :command-start:`);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.lineComment();
+      expect(parser.errors[0].message).toBe(
+        "1:4 undefined: expecting EOF but found CommandStart"
+      );
+    });
+  });
+
+  describe("annotatedText rule (main parser)", () => {
     it("handles annotated text", () => {
       const result = lexer.tokenize(`
 this is ignored
@@ -249,6 +228,90 @@ this is not bluehawk markup
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors.length).toBe(0);
+    });
+
+    it("accepts line-commented block commands", () => {
+      const result = lexer.tokenize(`// :block-command-start: attribute
+any text
+:block-command-end:
+`); // it doesn't care if you comment the end block
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("accepts line-commented block commands with inner line comments", () => {
+      const result = lexer.tokenize(`// :block-command-start: attribute
+// any text
+:block-command-end:
+`);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("fails on incomplete line-commented block commands", () => {
+      const result = lexer.tokenize(`// :block-command-start: attribute
+// forgot to close
+`);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors[0].message).toBe(
+        "2:19 blockCommand: After Newline, expected CommandEnd but found EOF"
+      );
+    });
+
+    it("accepts line-commented block commands with many line comments before the end", () => {
+      const result = lexer.tokenize(`// :block-command-start: attribute
+// // // // // // // // // // // // // // :block-command-end:
+`);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("rejects incomplete markup", () => {
+      const result = lexer.tokenize(`
+:code-block-start:
+not ended code block
+`);
+      expect(result.errors.length).toBe(0);
+      // "input" is a setter which will reset the parser's state
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors[0].message).toStrictEqual(
+        "3:21 blockCommand: After Newline, expected CommandEnd but found EOF"
+      );
+    });
+
+    it("rejects CommandEnd outside of blockCommand", () => {
+      const result = lexer.tokenize(`
+not in a code block
+:code-block-end: //
+`);
+      expect(result.errors.length).toBe(0);
+      // "input" is a setter which will reset the parser's state
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors[0].message).toStrictEqual(
+        "3:1 undefined: expecting EOF but found CommandEnd"
+      );
+    });
+
+    it("requires newline at end of file", () => {
+      const result = lexer.tokenize(`:command-start:
+:command-end:`);
+      expect(result.errors.length).toBe(0);
+      // "input" is a setter which will reset the parser's state
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors[0].message).toStrictEqual(
+        "2:1 chunk: expecting one of these possible token sequences: Newline |  "
+      );
     });
   });
 

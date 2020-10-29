@@ -1,4 +1,4 @@
-import { CstNode, CstParser, Lexer } from "chevrotain";
+import { CstNode, CstParser, EOF, IToken, Lexer } from "chevrotain";
 import { CommentPatterns } from "../lexer/CommentPatterns";
 import { makeCommentTokens } from "../lexer/makeCommentTokens";
 import { makeLexer } from "../lexer/makeLexer";
@@ -45,7 +45,7 @@ attributeList
   : AttributeListStart <TODO JSON> AttributeListEnd
 
 blockCommand
-  : (LineComment)? CommandStart (commandAttribute)? Newline (annotatedText)? (LineComment)? CommandEnd
+  : (LineComment)? CommandStart (commandAttribute)? Newline (chunk)* (LineComment)* CommandEnd
 
 blockComment
   : BlockCommentStart (command | LineComment | NewLine | blockComment†)* BlockCommentEnd
@@ -111,7 +111,16 @@ export class RootParser extends CstParser {
           { ALT: () => this.SUBRULE(this.lineComment) },
         ]);
       });
-      this.CONSUME(Newline);
+      this.OR1([
+        { ALT: () => this.CONSUME(Newline) },
+        {
+          // Allow for lineComment lines to end without a newline
+          GATE: () => this.LA(1).tokenType.name === CommandEnd.name,
+          ALT: () => {
+            return;
+          },
+        },
+      ]);
     });
 
     this.RULE("command", () => {
@@ -122,11 +131,9 @@ export class RootParser extends CstParser {
     });
 
     this.RULE("blockCommand", () => {
-      this.OPTION(() => this.CONSUME(LineComment));
       this.CONSUME(CommandStart);
       this.OPTION1(() => this.SUBRULE(this.commandAttribute));
       this.MANY(() => this.SUBRULE(this.chunk));
-      this.OPTION2(() => this.CONSUME1(LineComment));
       this.CONSUME(CommandEnd);
     });
 
@@ -155,7 +162,7 @@ export class RootParser extends CstParser {
       this.CONSUME(LineComment);
       this.MANY(() =>
         this.OR([
-          { ALT: () => this.CONSUME1(Command) },
+          { ALT: () => this.CONSUME(Command) },
           { ALT: () => this.CONSUME1(LineComment) },
           { ALT: () => this.CONSUME(BlockCommentStart) },
           { ALT: () => this.CONSUME(BlockCommentEnd) },
