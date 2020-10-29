@@ -17,7 +17,7 @@ export function makeRootMode(
   // Keep comment tokens only if they have a pattern defined
   const commentTokens = Object.values(
     makeCommentTokens(commentPatterns)
-  ).filter((token) => token.PATTERN !== undefined);
+  ).filter((token: TokenType) => token.PATTERN !== undefined);
 
   // Order matters -- always CommandStart/End before Command
   return [
