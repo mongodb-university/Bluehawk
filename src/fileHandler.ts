@@ -71,12 +71,12 @@ export function getFileType(source: string): string {
       for (let x = 0; x < files.length; x++) {
         const file = source + "/" + files[x];
         if (fs.lstatSync(file).isFile() && !files[x].startsWith(".")) {
-          return path.extname(file);
+          return path.extname(file).substr(1);
         }
       }
     });
   } else {
-    return path.extname(source);
+    return path.extname(source).substr(1);
   }
 }
 

@@ -76,7 +76,6 @@ describe("fileHandler createFileInfo", () => {
       stepOutputPath,
       codeOutputPath,
     });
-    console.dir(actual);
     const expected = [];
     expect(actual).toStrictEqual(expected);
   });
