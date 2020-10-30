@@ -6,6 +6,7 @@ import {
   COMMAND_START_PATTERN,
 } from "../lexer/tokens";
 import { RootParser } from "./RootParser";
+import { runInNewContext } from "vm";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
 
@@ -253,16 +254,18 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         }
       }
 
-      newNode.contentRange = {
-        start : {
-          line: context.Newline[0].endLine + 1,
-          column: 0,
-          offset: context.Newline[0].endOffset + 1,
-        },
-        end : {
-          line: context.CommandEnd[0].startLine - 1,
-          column: context.chunk ? context.chunk[context.chunk.length > 1? context.chunk.length - 2 : 0].location.endColumn : 0,
-          offset: context.CommandEnd[0].startOffset - 1,
+      if (context.chunk != undefined) {
+        newNode.contentRange = {
+          start: {
+            line: context.Newline[0].endLine + 1,
+            column: 0,
+            offset: context.Newline[0].endOffset + 1,
+          },
+          end: {
+            line: context.CommandEnd[0].startLine,
+            column: context.CommandEnd[0].startColumn - 1,
+            offset: context.CommandEnd[0].startOffset - 1,
+          }
         }
       }
 
@@ -322,13 +325,13 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         return;
       }
       assert(context.Command);
-      
-      context.Command.forEach((Command) =>{
+
+      context.Command.forEach((Command) => {
         const newNode = parent.makeChildLineCommand(COMMAND_PATTERN.exec(Command.image)[1])
         newNode.range = {
           start: {
             line: context.Command[0].startLine,
-            column:context.Command[0].startColumn,
+            column: context.Command[0].startColumn,
             offset: context.Command[0].startOffset,
           },
           end: {
@@ -342,7 +345,7 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
 
     commandAttribute(context: CommandAttributeContext, { parent, errors }: VA) {
       assert(parent != null);
-      const Identifier = context.Identifier[0];
+      const Identifier = context.Identifier == undefined ? undefined : context.Identifier[0];
       const attributeList = context.attributeList;
       if (Identifier != undefined) {
         assert(!attributeList); // parser issue
