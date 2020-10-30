@@ -1,8 +1,8 @@
-const output = require("./output");
+import * as output from "./output";
 
-function getMinIndentation(lines) {
+export function getMinIndentation(lines: string[]): number {
   return (
-    lines.reduce((acc, cur) => {
+    lines.reduce((acc: number, cur: string) => {
       const lengthWithoutIndent = cur.trimStart().length;
       if (lengthWithoutIndent === 0) {
         return acc;
@@ -16,40 +16,36 @@ function getMinIndentation(lines) {
   );
 }
 
-function deindentLines(lines, amount) {
+export function deindentLines(lines: string[], amount: number): string[] {
   return lines.map((line) => line.slice(amount));
 }
 
-function getCodeBlocks({ input, emitCodeBlock }) {
-  let result = [];
+interface EmitCodeFn {
+  id: string;
+  source: string[];
+  stage: string;
+}
+
+export function getCodeBlocks({
+  input,
+  emitCodeBlock,
+}: {
+  input: string[];
+  emitCodeBlock: ({ id, source, stage }: EmitCodeFn) => void;
+}): Record<string, string>[] {
+  const result = [];
   let starter = true;
   let final = true;
-  let codeBlockProps = [];
+  const codeBlockProps: Record<string, string> = {};
   let inCodeBlock = false;
 
-  function safeBuildObjectFromPropsString(index) {
-    const fullFile = input;
-    if (fullFile[index].indexOf("}") > -1) {
-      const propsString = fullFile[index].split(",");
-      return JSON.parse(propsString);
-    } else {
-      let propObj = "{";
-      while (fullFile[index].indexOf("}") == -1) {
-        propObj = propObj.concat(fullFile[index]);
-        index++;
-      }
-      propObj = propObj.concat("}");
-      return JSON.parse(propObj);
-    }
-  }
-
-  input.forEach((codeLine, index) => {
+  input.forEach((codeLine: string, index: number) => {
     let id;
     let counter = index + 1;
     let nextCodeLine = input[counter];
 
     // Range has two elements: begin and end, which each have line and column
-    let range = [{}, {}];
+    const range = [{}, {}];
     const codeBlockStartIndex = codeLine.indexOf(":code-block-start:");
     if (codeBlockStartIndex > -1) {
       range[0] = {
@@ -57,12 +53,11 @@ function getCodeBlocks({ input, emitCodeBlock }) {
         column: codeBlockStartIndex,
       };
       inCodeBlock = true;
-      let starterCodeLines = [];
-      let finalCodeLines = [];
+      const starterCodeLines = [];
+      const finalCodeLines = [];
 
       if (codeLine.indexOf("{") > -1) {
         //we have a property object
-        codeBlockProps = safeBuildObjectFromPropsString(index + 1);
         id = codeBlockProps.id.trim();
         while (nextCodeLine.indexOf("}") == -1) {
           counter++;
@@ -70,7 +65,7 @@ function getCodeBlocks({ input, emitCodeBlock }) {
         }
         counter++;
       } else {
-        let matchAll = Array.from(codeLine.matchAll(":"));
+        const matchAll = Array.from(codeLine.matchAll(/:/g));
         id = codeLine
           .substring(matchAll[matchAll.length - 1].index + 1)
           .replace("*/", "")
@@ -141,7 +136,6 @@ function getCodeBlocks({ input, emitCodeBlock }) {
         id: id,
         startCode: starterCodeLines,
         finalCode: finalCodeLines,
-        props: codeBlockProps,
         range,
       });
     } // end code block
@@ -161,7 +155,3 @@ function getCodeBlocks({ input, emitCodeBlock }) {
   });
   return result;
 }
-
-exports.getCodeBlocks = getCodeBlocks;
-exports.getMinIndentation = getMinIndentation;
-exports.deindentLines = deindentLines;
