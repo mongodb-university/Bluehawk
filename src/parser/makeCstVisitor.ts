@@ -330,14 +330,14 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         const newNode = parent.makeChildLineCommand(COMMAND_PATTERN.exec(Command.image)[1])
         newNode.range = {
           start: {
-            line: context.Command[0].startLine,
-            column: context.Command[0].startColumn,
-            offset: context.Command[0].startOffset,
+            line: Command.startLine,
+            column: Command.startColumn,
+            offset: Command.startOffset,
           },
           end: {
-            line: context.Command[0].endLine,
-            column: context.Command[0].endColumn,
-            offset: context.Command[0].endOffset,
+            line: Command.endLine,
+            column: Command.endColumn,
+            offset: Command.endOffset,
           }
         }
       });
