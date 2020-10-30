@@ -1,22 +1,56 @@
-import chalk from "chalk";
+export const errorsList: errorMessage[] = [];
+export const infoList: diagnosticMessage[] = [];
 
-export const warningsList = [];
-export const errorsList = [];
+class warningMessage {
+  messageType: "warning";
+  prefix: "\n⚠️\t";
+  message: string[];
+  constructor(...message: string[]) {
+    this.message = message;
+  }
+}
+
+class importantMessage {
+  messageType: "important";
+  prefix: "\n❗\t";
+  message: string[];
+  constructor(...message: string[]) {
+    this.message = message;
+  }
+}
+
+class infoMessage {
+  messageType: "info";
+  prefix: "";
+  message: string[];
+  constructor(...message: string[]) {
+    this.message = message;
+  }
+}
+
+class errorMessage {
+  messageType: "error";
+  prefix: "";
+  message: string[];
+  constructor(...message: string[]) {
+    this.message = message;
+  }
+}
+
+type diagnosticMessage = warningMessage | importantMessage | infoMessage;
 
 export function warning(...text: string[]): void {
-  // console.warn(chalk.hex("#FFFF00")("\n⚠️\t" + text.join("\t") + "\n"));
-  warningsList.push(text);
+  infoList.push(new warningMessage(...text));
 }
 
 export function error(...text: string[]): void {
-  // console.error(chalk.hex("#FF0000")("\n❗\t" + text.join("\t") + "\n"));
-  errorsList.push(text);
+  errorsList.push(new errorMessage(...text));
 }
 
 export function important(...text: string[]): void {
-  // console.log(chalk.hex("#FFFF00")("\n⚠️\t" + text.join("\t") + "\n"));
+  infoList.push(new importantMessage(...text));
 }
 
 export function info(...text: string[]): void {
-  // console.info(chalk.cyanBright(text.join(" ") + "\n"));
+  infoList.push(new infoMessage(...text));
 }
