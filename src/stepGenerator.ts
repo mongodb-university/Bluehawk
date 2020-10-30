@@ -1,5 +1,7 @@
-import * as output from "./output";
+import { MessageHandler } from "./messageHandler";
 import * as constants from "./constants";
+
+const output = MessageHandler.getMessageHandler();
 
 let inStep = false;
 let currentStep = "A. ";
@@ -111,14 +113,14 @@ export function buildObjectFromPropsString(current, isStepProps) {
       //TODO: update constants to have required properties for each type, rather
       // than this hacky bit of "isStep tomfoolery"
       if (!result.id) {
-        output.warning(
+        output.addWarning(
           "This property object has no 'id' field at line " + lineNumber + "\n",
           propObj
         );
       }
 
       if (isStepProps && !result.title) {
-        output.warning(
+        output.addWarning(
           "This step has no 'title' field at line " + lineNumber + "\n",
           propObj
         );
@@ -126,7 +128,7 @@ export function buildObjectFromPropsString(current, isStepProps) {
 
       return result;
     } catch (err) {
-      output.error(
+      output.addError(
         "Error parsing the following property object of a code block.\n",
         "Usually this means you didn't wrap a property name or value in quotes.\n",
         "Line " + (lineNumber + 1) + ":\n",
