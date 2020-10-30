@@ -1,4 +1,4 @@
-let comments = {
+export const comments = {
   cs: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
   c: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
   js: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
@@ -7,7 +7,7 @@ let comments = {
   java: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
 };
 
-let commands = {
+export const commands = {
   ":hide-start:": ["id", "title", "parent", "next-step"],
   ":hide-end:": {},
   ":replace-with:": {},
@@ -17,6 +17,3 @@ let commands = {
   ":code-block-start:": {},
   ":code-block-end:": {},
 };
-
-exports.comments = comments;
-exports.commands = commands;
