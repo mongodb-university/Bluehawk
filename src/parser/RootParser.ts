@@ -1,5 +1,6 @@
-import { CstNode, CstParser, EOF, IToken, Lexer } from "chevrotain";
+import { CstNode, CstParser, Lexer } from "chevrotain";
 import { CommentPatterns } from "../lexer/CommentPatterns";
+import { makeAttributeListMode } from "../lexer/makeAttributeListMode";
 import { makeCommentTokens } from "../lexer/makeCommentTokens";
 import { makeLexer } from "../lexer/makeLexer";
 import { makeRootMode } from "../lexer/makeRootMode";
@@ -9,6 +10,7 @@ import {
   CommandStart,
   Newline,
   Identifier,
+  JsonStringLiteral,
   AttributeListStart,
   AttributeListEnd,
 } from "../lexer/tokens";
@@ -42,7 +44,7 @@ annotatedText
   : (chunk)*
 
 attributeList
-  : AttributeListStart <TODO JSON> AttributeListEnd
+  : AttributeListStart (AttributeListStart | AttributeListEnd | StringLiteral | Newline | LineComment)* AttributeListEnd
 
 blockCommand
   : (LineComment)? CommandStart (commandAttribute)? Newline (chunk)* (LineComment)* CommandEnd
@@ -173,8 +175,22 @@ export class RootParser extends CstParser {
 
     this.RULE("attributeList", () => {
       this.CONSUME(AttributeListStart);
-      // TODO: So, want to support attribute lists, do ya?
-      // Defer to JSON parser.
+      // Simply consume the JSON tokens and allow the JSON.parse() function in
+      // the visitor to report errors.
+      this.MANY(() => {
+        // Consume any token but block comment tokens. We disallow block comment
+        // tokens here because it prevents block comment straddling in block
+        // commands.
+        this.OR([
+          { ALT: () => this.CONSUME(LineComment) },
+          { ALT: () => this.CONSUME(Newline) },
+          { ALT: () => this.CONSUME(JsonStringLiteral) },
+          {
+            // Handle subobjects
+            ALT: () => this.SUBRULE(this.attributeList),
+          },
+        ]);
+      });
       this.CONSUME(AttributeListEnd);
     });
 

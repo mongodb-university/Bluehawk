@@ -1,9 +1,36 @@
-import { createToken, Lexer } from "chevrotain";
+import { createToken, ICustomPattern, Lexer } from "chevrotain";
+import { strict as assert } from "assert";
+
+// Using custom payloads to store the full text in the token. This allows a CST
+// visitor to operate on the full document. See
+// http://sap.github.io/chevrotain/docs/guide/custom_token_patterns.html#custom-payloads
+function makeStoreTextInPayloadPattern(pattern: RegExp): ICustomPattern {
+  assert(
+    pattern.sticky,
+    "StoreTextInPayload pattern MUST be sticky (e.g. `y` in `/example/y`)"
+  );
+  return {
+    exec: (text: string, offset: number): RegExpExecArray => {
+      // start the search at the offset
+      pattern.lastIndex = offset;
+
+      const result = pattern.exec(text);
+      if (result) {
+        // Store the full text in the regex result as the payload. Chevrotain will
+        // pick it up.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (result as any).payload = text;
+      }
+      return result;
+    },
+  };
+}
 
 const AttributeListStart = createToken({
   name: "AttributeListStart",
-  pattern: /{/,
+  pattern: makeStoreTextInPayloadPattern(/{/y),
   push_mode: "AttributeListMode",
+  line_breaks: false,
 });
 
 const AttributeListEnd = createToken({
@@ -26,7 +53,7 @@ const Newline = createToken({
 
 const Text = createToken({
   name: "Text",
-  pattern: /\S+/,
+  pattern: /\S/,
   group: Lexer.SKIPPED,
 });
 
@@ -57,6 +84,11 @@ const Identifier = createToken({
   pattern: /[_A-z][A-z0-9-_]*/,
 });
 
+const JsonStringLiteral = createToken({
+  name: "JsonStringLiteral",
+  pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
+});
+
 export {
   AttributeListEnd,
   AttributeListStart,
@@ -67,7 +99,9 @@ export {
   CommandEnd,
   CommandStart,
   Identifier,
+  JsonStringLiteral,
   Newline,
   Space,
   Text,
+  makeStoreTextInPayloadPattern,
 };

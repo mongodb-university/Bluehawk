@@ -98,10 +98,28 @@ bad second line
       expect(parser.errors).toStrictEqual([]);
     });
 
-    it("handles optional attribute lists (empty)", () => {
-      // TODO: populated attribute lists
+    it("handles empty attribute lists", () => {
       const result = lexer.tokenize(`:block-command-start: {
 }
+:block-command-end:`);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.blockCommand();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("handles attribute lists with json", () => {
+      const json = `{"a": 1,
+  "b": false,
+  "c": true,
+  "d": null,
+  "e": [1, 2.0, 3e10, 3e-10, 3e+10, 3.14, -1.23],
+  "f": {
+    "g": [1, "\\"string\\"", {}]
+  }
+}`;
+      expect(JSON.parse(json)).toBeDefined(); // It is valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}
 :block-command-end:`);
       expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
@@ -167,6 +185,151 @@ bad second line
       parser.input = result.tokens;
       parser.lineComment();
       expect(parser.errors.length).toBe(0);
+    });
+  });
+
+  describe("attributeList rule", () => {
+    it("accepts valid json", () => {
+      const json = `{"a": 1,
+  "b": false,
+  "c": true,
+  "d": null,
+  "e": [1, 2.0, 3e10, 3e-10, 3e+10, 3.14, -1.23],
+  "f": {
+    "g": [1, "\\"string\\"", {}]
+  }
+}`;
+      expect(JSON.parse(json)).toBeDefined(); // It is valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("accepts somewhat invalid json", () => {
+      // The parser only consumes the tokens and does not care about the syntax
+      // of JSON. We are deferring to JSON.parse() to do that. All that really
+      // matters is the curly braces match.
+      const json = `{1: 1,
+  false: false,
+  {}: true,
+  []: null,
+  [,,,]: [1, 2.0, 3e10, 3e-10, 3e+10, 3.14, -1.23]
+  "nocomma"
+  "nocolon" {
+    "g"] [1, "\\"string\\"", {}]
+  }
+}`;
+      expect(() => {
+        JSON.parse(json);
+      }).toThrow("Unexpected number in JSON at position 1"); // It is not valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors).toStrictEqual([]); // JSON invalid, but it is still ok
+    });
+
+    it("accepts commented json", () => {
+      // The parser only consumes the tokens and does not care about the syntax
+      // of JSON. We are deferring to JSON.parse() to do that. All that really
+      // matters is the curly braces match.
+      const json = `{1: 1,
+//  false: false,
+//  {}: true,
+//  []: null,
+//  [,,,]: [1, 2.0, 3e10, 3e-10, 3e+10, 3.14, -1.23]
+//  "nocomma"
+//  "nocolon" {
+//    "g"] [1, "\\"string\\"", {}]
+//  }
+//}`;
+      expect(() => {
+        JSON.parse(json);
+      }).toThrow("Unexpected number in JSON at position 1"); // It is not valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors).toStrictEqual([]); // JSON invalid, but it is still ok
+    });
+
+    it("rejects block comment start tokens in json", () => {
+      const json = `{
+  /*
+}
+`;
+      expect(() => {
+        JSON.parse(json);
+      }).toThrow("Unexpected token / in JSON at position 4"); // It is not valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors[0].message).toBe(
+        "1:24 attributeList: After Newline, expected AttributeListEnd but found BlockCommentStart"
+      );
+    });
+
+    it("rejects block comment end tokens in json", () => {
+      const json = `{
+  */
+}
+`;
+      expect(() => {
+        JSON.parse(json);
+      }).toThrow("Unexpected token * in JSON at position 4"); // It is not valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors[0].message).toBe(
+        "1:24 attributeList: After Newline, expected AttributeListEnd but found BlockCommentEnd"
+      );
+    });
+
+    it("diagnoses unterminated attribute lists", () => {
+      const json = `{
+  "a": 1
+`;
+      expect(() => {
+        JSON.parse(json);
+      }).toThrow("Unexpected end of JSON input"); // It is not valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors[0].message).toBe(
+        "2:9 attributeList: After Newline, expected AttributeListEnd but found EOF"
+      );
+    });
+
+    it("handles many nested JSON objects", () => {
+      const json = `{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{}}}}}}}}}}`;
+      // It is valid JSON
+      expect(JSON.parse(json)).toStrictEqual({
+        a: { a: { a: { a: { a: { a: { a: { a: { a: {} } } } } } } } },
+      });
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors).toStrictEqual([]);
     });
   });
 

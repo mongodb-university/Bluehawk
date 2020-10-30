@@ -6,11 +6,11 @@ import {
   COMMAND_START_PATTERN,
 } from "../lexer/tokens";
 import { RootParser } from "./RootParser";
-import { runInNewContext } from "vm";
+import { jsonErrorToVisitorError } from "./jsonErrorToVisitorError";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
 
-interface Location {
+export interface Location {
   line: number;
   column: number;
   offset: number;
@@ -29,7 +29,7 @@ function locationFromToken(token: IToken): Location {
   };
 }
 
-interface VisitorError {
+export interface VisitorError {
   message: string;
   location: Location;
 }
@@ -39,7 +39,6 @@ interface VisitorResult {
   commands: CommandNode[];
 }
 
-type CommandAttributes = Map<string, string | boolean | number>;
 type CommandNodeContext =
   | "none"
   | "stringLiteral"
@@ -55,20 +54,22 @@ class CommandNode {
   _context = Array<CommandNodeContext>();
 
   // ranges covered by this node
-  range: Range
-  contentRange?: Range
+  range: Range;
+  contentRange?: Range;
 
   // Only available in block commands:
   id?: string;
-  attributes?: CommandAttributes;
   children?: CommandNode[];
+
+  // Attributes come from JSON and their schema depends on the command.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  attributes?: { [member: string]: any };
 
   // Block Commands operate on their inner range and can have children, IDs, and
   // attributes.
   makeChildBlockCommand(commandName: string): CommandNode {
     assert(this.children);
     const command = new CommandNode(commandName, this);
-    command.attributes = new Map();
     command.children = [];
     return command;
   }
@@ -132,6 +133,7 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
   interface AttributeListContext {
     AttributeListStart: IToken[];
     AttributeListEnd: IToken[];
+    LineComment: IToken[];
   }
 
   interface BlockCommandContext {
@@ -225,8 +227,62 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
     }
 
     attributeList(context: AttributeListContext, { parent, errors }: VA) {
+      // ⚠️ This should not recursively visit inner attributeLists
       assert(parent != null);
-      // TODO: populate parent's attributes
+      const AttributeListStart = context.AttributeListStart[0];
+      const AttributeListEnd = context.AttributeListEnd[0];
+      assert(AttributeListStart);
+      assert(AttributeListEnd);
+
+      // Retrieve the full text document as the custom payload from the token.
+      // Note that AttributeListStart was created with a custom pattern that
+      // stores the full text document in the custom payload.
+      const { payload } = AttributeListStart;
+      const document = payload as string;
+      assert(
+        document,
+        "Unexpected empty payload in AttributeListStart! This is a bug in the parser. Please submit a bug report containing the document that caused this assertion failure."
+      );
+
+      // Reminder: substr(startOffset, length) vs. substring(startOffset, endOffset)
+      let json = document.substring(
+        AttributeListStart.startOffset,
+        AttributeListEnd.endOffset + 1
+      );
+
+      // There may be line comments to strip out
+      if (context.LineComment) {
+        context.LineComment.forEach((LineComment) => {
+          // Make offsets relative to the JSON string, not the overall document
+          const startOffset =
+            LineComment.startOffset - AttributeListStart.startOffset;
+          const endOffset =
+            LineComment.endOffset - AttributeListStart.startOffset; // [sic]
+          // Replace line comments with harmless spaces
+          json =
+            json.substring(0, startOffset) +
+            " ".repeat(LineComment.image.length) +
+            json.substring(endOffset + 1);
+        });
+      }
+
+      try {
+        const object = JSON.parse(json);
+        // The following should be impossible in the parser.
+        assert(
+          typeof object === "object" && object !== null,
+          "attributeList is not an object. This is a bug in the parser. Please submit a bug report containing the document that caused this assertion failure."
+        );
+        parent.attributes = object;
+      } catch (error) {
+        errors.push(
+          jsonErrorToVisitorError(error, json, {
+            line: AttributeListStart.startLine,
+            column: AttributeListStart.startColumn,
+            offset: AttributeListStart.startOffset,
+          })
+        );
+      }
     }
 
     blockCommand(context: BlockCommandContext, { parent, errors }: VA) {
@@ -251,8 +307,8 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
           line: context.CommandEnd[0].endLine,
           column: context.CommandEnd[0].endColumn,
           offset: context.CommandEnd[0].endOffset,
-        }
-      }
+        },
+      };
 
       if (context.chunk != undefined) {
         newNode.contentRange = {
@@ -265,8 +321,8 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
             line: context.CommandEnd[0].startLine,
             column: context.CommandEnd[0].startColumn - 1,
             offset: context.CommandEnd[0].startOffset - 1,
-          }
-        }
+          },
+        };
       }
 
       const endCommandName = COMMAND_END_PATTERN.exec(
@@ -327,7 +383,9 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
       assert(context.Command);
 
       context.Command.forEach((Command) => {
-        const newNode = parent.makeChildLineCommand(COMMAND_PATTERN.exec(Command.image)[1])
+        const newNode = parent.makeChildLineCommand(
+          COMMAND_PATTERN.exec(Command.image)[1]
+        );
         newNode.range = {
           start: {
             line: Command.startLine,
@@ -338,19 +396,19 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
             line: Command.endLine,
             column: Command.endColumn,
             offset: Command.endOffset,
-          }
-        }
+          },
+        };
       });
     }
 
     commandAttribute(context: CommandAttributeContext, { parent, errors }: VA) {
       assert(parent != null);
-      const Identifier = context.Identifier == undefined ? undefined : context.Identifier[0];
+      const Identifier = context.Identifier;
       const attributeList = context.attributeList;
       if (Identifier != undefined) {
         assert(!attributeList); // parser issue
-        assert(Identifier.image.length > 0);
-        parent.id = Identifier.image;
+        assert(Identifier[0].image.length > 0);
+        parent.id = Identifier[0].image;
       } else if (context.attributeList != undefined) {
         assert(!Identifier); // parser issue
         assert(attributeList.length === 1); // should be impossible to have more than 1 list
