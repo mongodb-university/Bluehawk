@@ -33,7 +33,7 @@ async function run(): Promise<void> {
   }
 
   if (!params.type) {
-    params.type = await fileHandler.getFileType(params.source);
+    params.type = await fileHandler.getFileType(params.source as string);
     output.important(
       "I have auto-detected a file type of '" +
         params.type +

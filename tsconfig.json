@@ -3,7 +3,8 @@
     "outDir": "./build",
     "allowJs": true,
     "target": "es5",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "lib": ["ES2020"]
   },
   "sourceMap": true,
   "include": ["./src/**/*"],
