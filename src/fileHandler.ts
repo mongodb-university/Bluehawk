@@ -1,7 +1,9 @@
 import * as fs from "fs";
 import * as path from "path";
-import * as output from "./output";
+import { MessageHandler } from "./messageHandler";
 import * as builder from "./builder";
+
+const output = MessageHandler.getMessageHandler();
 
 interface OpenFileParams {
   source: string;
@@ -18,7 +20,7 @@ export async function openFile({
 }: OpenFileParams): Promise<void> {
   return new Promise((resolve, reject) => {
     if (!fs.existsSync(source)) {
-      output.error("That file or directory doesn't exist!", source);
+      output.addError("That file or directory doesn't exist!", source);
       return reject(`File or directory doesn't exist: ${source}`);
     }
 
