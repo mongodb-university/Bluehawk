@@ -98,7 +98,6 @@ how are you?
       {
         finalCode: ["hello world!", "how are you?"],
         id: "one",
-        props: [],
         startCode: ["hello world!", "how are you?"],
         range: [
           {
@@ -143,7 +142,6 @@ the quick brown fox...
       {
         finalCode: ["hello world!", "how are you?"],
         id: "one",
-        props: [],
         startCode: ["hello world!", "how are you?"],
         range: [
           { line: 1, column: 0 },
@@ -153,7 +151,6 @@ the quick brown fox...
       {
         finalCode: ["the quick brown fox...", "...jumped over the lazy dog"],
         id: "two",
-        props: [],
         startCode: ["the quick brown fox...", "...jumped over the lazy dog"],
         range: [
           { line: 6, column: 0 },
@@ -217,7 +214,6 @@ finally, one last everywhere
           "finally, one last everywhere",
         ],
         id: "one",
-        props: [],
         startCode: [
           "this is everywhere",
           "this is in start",
@@ -260,57 +256,6 @@ finally, one last everywhere
     ]);
   });
 
-  it("should handle props", () => {
-    const blocks = [];
-    const result = getCodeBlocks({
-      input: `
-:code-block-start: {
-  "id": "one",
-  "number": 1e-10,
-  "bool": false,
-  "null": null,
-  "string": "some string",
-  "array": [1.23, -2, 3]
-}
-hello, world!
-:code-block-end:
-`.split("\n"),
-      emitCodeBlock: (block) => blocks.push(block),
-    });
-    expect(result).toStrictEqual([
-      {
-        finalCode: ["hello, world!"],
-        id: "one",
-        props: {
-          bool: false,
-          id: "one",
-          null: null,
-          number: 1e-10,
-          string: "some string",
-          array: [1.23, -2, 3],
-        },
-        startCode: ["hello, world!"],
-        range: [
-          { line: 1, column: 0 },
-          { line: 10, column: 17 },
-        ],
-      },
-    ]);
-
-    expect(blocks).toStrictEqual([
-      {
-        id: "one",
-        source: ["hello, world!"],
-        stage: "start",
-      },
-      {
-        id: "one",
-        source: ["hello, world!"],
-        stage: "final",
-      },
-    ]);
-  });
-
   it("should fail on unclosed code-block", () => {
     expect(() => {
       getCodeBlocks({
@@ -342,7 +287,6 @@ hello, world!
         finalCode: `          this should be flush with the left column
           this should be flush with the left column in final`.split("\n"),
         id: "deindent-me",
-        props: [],
         startCode: `          this should be flush with the left column
           this should be flush with the left column in start`.split("\n"),
         range: [
