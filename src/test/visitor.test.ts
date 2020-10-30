@@ -249,4 +249,334 @@ annotated text
     expect(e.commandName).toBe("e");
     expect(e.inContext).toBe("lineComment");
   });
+
+  test("identifies start and end lines for block commands", () => {
+    const tokens = lexer.tokenize(`
+// :a-start:
+the quick brown fox jumped
+// :a-end:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands.length).toBe(1);
+    const a = result.commands[0];
+    expect(a.commandName).toBe("a");
+    // range describes the total block range, from the start of the first command
+    // to the end of the last command
+    expect(result.commands[0].range.start.line).toBe(2);
+    expect(result.commands[0].range.start.column).toBe(4);
+    expect(result.commands[0].range.start.offset).toBe(4);
+    expect(result.commands[0].range.end.line).toBe(4);
+    expect(result.commands[0].range.end.column).toBe(10);
+    expect(result.commands[0].range.end.offset).toBe(50);
+  });
+
+  test("identifies start and end lines for block command content", () => {
+    const tokens = lexer.tokenize(`
+// :a-start:
+the quick brown fox jumped
+// :a-end:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands.length).toBe(1);
+    const a = result.commands[0];
+    expect(a.commandName).toBe("a");
+    // contentRange describes the range of the block's content, including sub-commands
+    // but not the current start/endcommands
+    expect(result.commands[0].contentRange.start.line).toBe(3);
+    expect(result.commands[0].contentRange.start.column).toBe(0);
+    expect(result.commands[0].contentRange.start.offset).toBe(14);
+    expect(result.commands[0].contentRange.end.line).toBe(4);
+    expect(result.commands[0].contentRange.end.column).toBe(3);
+    //expect(result.commands[0].contentRange.end.offset).toBe(43);
+  });
+
+  test("identifies start and end lines for nested block commands", () => {
+    const tokens = lexer.tokenize(`
+// :a-start:
+the quick brown fox jumped
+// :b-start:
+he jumped again
+// :c-start:
+and again
+// :c-end:
+// :b-end:
+// :a-end:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands.length).toBe(1);
+
+    const a = result.commands[0];
+    expect(a.commandName).toBe("a");
+    // range describes the total block range, from the start of the first command
+    // to the end of the last command
+    expect(a.range.start.line).toBe(2);
+    expect(a.range.start.column).toBe(4);
+    expect(a.range.start.offset).toBe(4);
+    expect(a.range.end.line).toBe(10);
+    expect(a.range.end.column).toBe(10);
+    expect(a.range.end.offset).toBe(124);
+    // contentRange describes the range of the block's content, including sub-commands
+    // but not the current start/endcommands
+    expect(a.contentRange.start.line).toBe(3);
+    expect(a.contentRange.start.column).toBe(0);
+    expect(a.contentRange.start.offset).toBe(14);
+    expect(a.contentRange.end.line).toBe(10);
+    expect(a.contentRange.end.column).toBe(3);
+    expect(a.contentRange.end.offset).toBe(117);
+
+    const b = result.commands[0].children[0];
+    expect(b.commandName).toBe("b");
+    // range describes the total block range, from the start of the first command
+    // to the end of the last command
+    expect(b.range.start.line).toBe(4);
+    expect(b.range.start.column).toBe(4);
+    expect(b.range.start.offset).toBe(44);
+    expect(b.range.end.line).toBe(9);
+    expect(b.range.end.column).toBe(10);
+    expect(b.range.end.offset).toBe(113);
+    // contentRange describes the range of the block's content, including sub-commands
+    // but not the current start/endcommands
+    expect(b.contentRange.start.line).toBe(5);
+    expect(b.contentRange.start.column).toBe(0);
+    expect(b.contentRange.start.offset).toBe(54);
+    expect(b.contentRange.end.line).toBe(9);
+    expect(b.contentRange.end.column).toBe(3);
+    expect(b.contentRange.end.offset).toBe(106);
+
+    const c = result.commands[0].children[0].children[0];
+    expect(c.commandName).toBe("c");
+    // range describes the total block range, from the start of the first command
+    // to the end of the last command
+    expect(c.range.start.line).toBe(6);
+    expect(c.range.start.column).toBe(4);
+    expect(c.range.start.offset).toBe(73);
+    expect(c.range.end.line).toBe(8);
+    expect(c.range.end.column).toBe(10);
+    expect(c.range.end.offset).toBe(102);
+    // contentRange describes the range of the block's content, including sub-commands
+    // but not the current start/endcommands
+    expect(c.contentRange.start.line).toBe(7);
+    expect(c.contentRange.start.column).toBe(0);
+    expect(c.contentRange.start.offset).toBe(83);
+    expect(c.contentRange.end.line).toBe(8);
+    expect(c.contentRange.end.column).toBe(3);
+    expect(c.contentRange.end.offset).toBe(95);
+  });
+
+  test("lines and columns are 1-based index while offsets are 0-based", () => {
+    const tokens = lexer.tokenize(`:A-command:
+ :B-command:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands[0].commandName).toBe("A-command");
+    expect(result.commands[0].range.start.line).toBe(1);
+    expect(result.commands[0].range.start.column).toBe(1);
+    expect(result.commands[0].range.start.offset).toBe(0);
+    expect(result.commands[0].range.end.line).toBe(1);
+    expect(result.commands[0].range.end.column).toBe(11);
+    expect(result.commands[1].commandName).toBe("B-command");
+    expect(result.commands[1].range.start.line).toBe(2);
+    expect(result.commands[1].range.start.column).toBe(2);
+    expect(result.commands[1].range.start.offset).toBe(13);
+    expect(result.commands[1].range.end.line).toBe(2);
+    expect(result.commands[1].range.end.column).toBe(12);
+  });
+
+  test("identifies start and end lines for one-liner commands", () => {
+    const tokens = lexer.tokenize(`
+// :A-command:
+// :B-command:
+// :C-command:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors.length).toBe(0);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands.length).toBe(3);
+    expect(result.commands[0].commandName).toBe("A-command");
+    expect(result.commands[0].range.start.line).toBe(2);
+    expect(result.commands[0].range.start.column).toBe(4);
+    expect(result.commands[0].range.start.offset).toBe(4);
+    expect(result.commands[1].commandName).toBe("B-command");
+    expect(result.commands[1].range.start.line).toBe(3);
+    expect(result.commands[1].range.start.column).toBe(4);
+    expect(result.commands[1].range.start.offset).toBe(19);
+    expect(result.commands[2].commandName).toBe("C-command");
+    expect(result.commands[2].range.start.line).toBe(4);
+    expect(result.commands[2].range.start.column).toBe(4);
+    expect(result.commands[2].range.start.offset).toBe(34);
+  });
+
+  it("identifies ranges for many one-liners on the same commented line", () => {
+    const tokens = lexer.tokenize(`// :A-command: :B-command: :C-command:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors.length).toBe(0);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands.length).toBe(3);
+    expect(result.commands[0].commandName).toBe("A-command");
+    expect(result.commands[0].range).toStrictEqual({
+      start: {
+        line: 1,
+        column: 4,
+        offset: 3,
+      },
+      end: {
+        line: 1,
+        column: 14,
+        offset: 13,
+      },
+    });
+    expect(result.commands[1].commandName).toBe("B-command");
+    expect(result.commands[1].range).toStrictEqual({
+      start: {
+        line: 1,
+        column: 16,
+        offset: 15,
+      },
+      end: {
+        line: 1,
+        column: 26,
+        offset: 25,
+      },
+    });
+    expect(result.commands[2].commandName).toBe("C-command");
+    expect(result.commands[2].range).toStrictEqual({
+      start: {
+        line: 1,
+        column: 28,
+        offset: 27,
+      },
+      end: {
+        line: 1,
+        column: 38,
+        offset: 37,
+      },
+    });
+  });
+
+  it("identifies range for empty block command content", () => {
+    const tokens = lexer.tokenize(`:a-start:
+:a-end:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands.length).toBe(1);
+    expect(result.commands[0].contentRange).toBeUndefined();
+  });
+
+  it("identifies content range for block commands with attributeLists", () => {
+    const source = `:a-start: {
+
+
+
+
+
+
+        }
+line 9 -- some more content
+line 10 :a-end:
+`;
+    const tokens = lexer.tokenize(source);
+    expect(tokens.errors).toStrictEqual([]);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands.length).toBe(1);
+    const lines = source.split("\n");
+    expect(result.commands[0].contentRange.start.line).toBe(9);
+    expect(lines[result.commands[0].contentRange.start.line - 1]).toBe(
+      "line 9 -- some more content"
+    );
+    expect(result.commands[0].contentRange.start.column).toBe(0);
+    expect(result.commands[0].contentRange.start.offset).toBe(28);
+    expect(result.commands[0].contentRange.end.line).toBe(10);
+    expect(result.commands[0].contentRange.end.column).toBe(8);
+    expect(result.commands[0].contentRange.end.offset).toBe(63);
+
+    // Remember lines are 1-based while the lines array starts at index 0
+    expect(lines[result.commands[0].contentRange.end.line - 1]).toBe(
+      "line 10 :a-end:"
+    );
+  });
+
+  test("offset matches line + column", () => {
+    const source = `a2345678
+b2345678
+c2345678 :a-start:
+//
+// :a-end:
+`;
+    const tokens = lexer.tokenize(source);
+    expect(tokens.errors).toStrictEqual([]);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commands.length).toBe(1);
+    // Re-add newlines since they are included in the offset
+    const lines = source.split("\n").map((line) => `${line}\n`);
+    expect(lines[0].length).toBe(9);
+    expect(lines[1].length).toBe(9);
+    expect(lines[2].length).toBe(19);
+    expect(lines[3].length).toBe(3);
+    expect(lines[4].length).toBe(11);
+
+    expect(result.commands[0].contentRange.start.line).toBe(4);
+    expect(result.commands[0].contentRange.start.column).toBe(0);
+
+    expect(result.commands[0].contentRange.start.offset).toBe(
+      lines[0].length + lines[1].length + lines[2].length
+    );
+    expect(result.commands[0].contentRange.end.line).toBe(5);
+    expect(result.commands[0].contentRange.end.column).toBe(3);
+    expect(result.commands[0].contentRange.end.offset).toBe(
+      lines[0].length +
+        lines[1].length +
+        lines[2].length +
+        lines[3].length +
+        "//".length // offset points at the space between // and command end
+    );
+  });
 });

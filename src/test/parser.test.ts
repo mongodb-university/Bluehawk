@@ -124,6 +124,7 @@ bad second line
       expect(Object.keys(cst.children)).toStrictEqual([
         "CommandStart",
         "commandAttribute",
+        "Newline",
         "chunk",
         "CommandEnd",
       ]);

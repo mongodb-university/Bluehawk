@@ -6,6 +6,7 @@ import {
   COMMAND_START_PATTERN,
 } from "../lexer/tokens";
 import { RootParser } from "./RootParser";
+import { runInNewContext } from "vm";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
 
@@ -13,6 +14,11 @@ interface Location {
   line: number;
   column: number;
   offset: number;
+}
+
+interface Range {
+  start: Location;
+  end: Location;
 }
 
 function locationFromToken(token: IToken): Location {
@@ -48,7 +54,10 @@ class CommandNode {
 
   _context = Array<CommandNodeContext>();
 
-  // TODO: range(s)
+  // ranges covered by this node
+  range: Range
+  contentRange?: Range
+
   // Only available in block commands:
   id?: string;
   attributes?: CommandAttributes;
@@ -232,6 +241,34 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
 
       const newNode = parent.makeChildBlockCommand(commandName);
 
+      newNode.range = {
+        start: {
+          line: context.CommandStart[0].startLine,
+          column: context.CommandStart[0].startColumn,
+          offset: context.CommandStart[0].startOffset,
+        },
+        end: {
+          line: context.CommandEnd[0].endLine,
+          column: context.CommandEnd[0].endColumn,
+          offset: context.CommandEnd[0].endOffset,
+        }
+      }
+
+      if (context.chunk != undefined) {
+        newNode.contentRange = {
+          start: {
+            line: context.Newline[0].endLine + 1,
+            column: 0,
+            offset: context.Newline[0].endOffset + 1,
+          },
+          end: {
+            line: context.CommandEnd[0].startLine,
+            column: context.CommandEnd[0].startColumn - 1,
+            offset: context.CommandEnd[0].startOffset - 1,
+          }
+        }
+      }
+
       const endCommandName = COMMAND_END_PATTERN.exec(
         context.CommandEnd[0].image
       )[1];
@@ -288,14 +325,27 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         return;
       }
       assert(context.Command);
-      context.Command.forEach((Command) =>
-        parent.makeChildLineCommand(COMMAND_PATTERN.exec(Command.image)[1])
-      );
+
+      context.Command.forEach((Command) => {
+        const newNode = parent.makeChildLineCommand(COMMAND_PATTERN.exec(Command.image)[1])
+        newNode.range = {
+          start: {
+            line: Command.startLine,
+            column: Command.startColumn,
+            offset: Command.startOffset,
+          },
+          end: {
+            line: Command.endLine,
+            column: Command.endColumn,
+            offset: Command.endOffset,
+          }
+        }
+      });
     }
 
     commandAttribute(context: CommandAttributeContext, { parent, errors }: VA) {
       assert(parent != null);
-      const Identifier = context.Identifier[0];
+      const Identifier = context.Identifier == undefined ? undefined : context.Identifier[0];
       const attributeList = context.attributeList;
       if (Identifier != undefined) {
         assert(!attributeList); // parser issue
