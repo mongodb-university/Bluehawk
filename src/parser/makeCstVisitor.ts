@@ -314,7 +314,7 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         newNode.contentRange = {
           start: {
             line: context.Newline[0].endLine + 1,
-            column: 0,
+            column: 1,
             offset: context.Newline[0].endOffset + 1,
           },
           end: {
