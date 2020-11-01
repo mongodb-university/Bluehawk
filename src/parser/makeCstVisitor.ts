@@ -7,6 +7,8 @@ import {
 } from "../lexer/tokens";
 import { RootParser } from "./RootParser";
 import { jsonErrorToVisitorError } from "./jsonErrorToVisitorError";
+import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
+import { PushParserPayload } from "../lexer/makePushParserTokens";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
 
@@ -27,6 +29,21 @@ function locationFromToken(token: IToken): Location {
     column: token.startColumn,
     offset: token.startOffset,
   };
+}
+
+function locationAfterToken(token: IToken, fullText: string): Location {
+  const location = {
+    line: token.endLine,
+    column: token.endColumn,
+    offset: token.endOffset,
+  };
+  // Ensure the line/column are correctly rolled over if the character is
+  // actually a newline
+  if (/\r|\n/.test(fullText[location.offset])) {
+    location.column = 1;
+    location.line += 1;
+  }
+  return location;
 }
 
 export interface VisitorError {
@@ -112,13 +129,17 @@ class CommandNode {
   }
 }
 
-interface IVisitor {
+export interface IVisitor {
+  parser: RootParser;
   visit(node: CstNode): VisitorResult;
 }
 
 // While the lexer defines the tokens (words) and the parser defines the syntax,
 // the CstVisitor defines the semantics of the language.
-export function makeCstVisitor(parser: RootParser): IVisitor {
+export function makeCstVisitor(
+  parser: RootParser,
+  getParser?: (parserId: string) => IVisitor | undefined
+): IVisitor {
   // The following context interfaces (should) match the corresponding parser
   // rule. Subrules appear as CstNode[]. Tokens appear as IToken[]. If the
   // element is optional in the syntax, it's TypeScript optional™ in the context
@@ -157,6 +178,7 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
     blockComment?: CstNode[];
     command?: CstNode[];
     lineComment?: CstNode[];
+    pushParser?: CstNode[];
     Newline: IToken[];
   }
 
@@ -177,6 +199,11 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
     BlockCommentEnd?: IToken[];
   }
 
+  interface PushParserContext {
+    PushParser: IToken[];
+    PopParser: IToken[];
+  }
+
   // Tuple passed to visitor methods. All errors go to the top level. Visitor
   // methods operate on the parent node, usually by adding child nodes to the
   // parent.
@@ -185,8 +212,9 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
     errors: VisitorError[];
   }
 
-  const { canNestBlockComments } = parser.commentPatterns;
   return new (class CstVisitor extends parser.getBaseCstVisitorConstructor() {
+    parser = parser;
+
     constructor() {
       super();
       // The "validateVisitor" method is a helper utility which performs static analysis
@@ -238,14 +266,14 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
       // Note that AttributeListStart was created with a custom pattern that
       // stores the full text document in the custom payload.
       const { payload } = AttributeListStart;
-      const document = payload as string;
+      const { fullText } = payload as PushParserPayload;
       assert(
-        document,
+        fullText,
         "Unexpected empty payload in AttributeListStart! This is a bug in the parser. Please submit a bug report containing the document that caused this assertion failure."
       );
 
       // Reminder: substr(startOffset, length) vs. substring(startOffset, endOffset)
-      let json = document.substring(
+      let json = fullText.substring(
         AttributeListStart.startOffset,
         AttributeListEnd.endOffset + 1
       );
@@ -343,10 +371,6 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
 
     blockComment(context: BlockCommentContext, { parent, errors }: VA) {
       assert(parent != null);
-      // This indicates a problem with the parser. Please file a bug with the
-      // markup that triggered this assertion failure.
-      assert(canNestBlockComments || parent.inContext !== "blockComment");
-
       // This node (blockComment) should not be included in the final output. We
       // use it to gather child nodes and attach them to the parent node.
       parent.withErasedBlockCommand((erasedBlockCommand) => {
@@ -368,6 +392,7 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
           ...(context.blockComment ?? []),
           ...(context.command ?? []),
           ...(context.lineComment ?? []),
+          ...(context.pushParser ?? []),
         ].sort((a, b) => a.location.startOffset - b.location.startOffset),
         { parent, errors }
       );
@@ -428,6 +453,88 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         erasedBlockCommand._context.push("lineComment");
         this.$visit(command, { parent: erasedBlockCommand, errors });
       });
+    }
+
+    pushParser(context: PushParserContext, { parent, errors }: VA) {
+      // ⚠️ This should not recursively visit inner pushParsers
+      assert(parent != null);
+      const PushParser = context.PushParser[0];
+      assert(PushParser);
+
+      // Retrieve the full text document as the custom payload from the token.
+      // Note that AttributeListStart was created with a custom pattern that
+      // stores the full text document in the custom payload.
+      const { payload } = PushParser;
+      const {
+        fullText,
+        parserId,
+        includePushTokenInSubstring,
+        includePopTokenInSubstring,
+        endToken,
+      } = payload as PushParserPayload;
+
+      assert(
+        fullText,
+        "Unexpected empty payload in AttributeListStart! This is a bug in the parser. Please submit a bug report containing the document that caused this assertion failure."
+      );
+
+      // We need to know exactly which PopParser token we are looking for.
+      const PopParser = context[endToken.name][0];
+      assert(PopParser);
+
+      const startLocation = includePushTokenInSubstring
+        ? locationFromToken(PushParser)
+        : locationAfterToken(PushParser, fullText);
+
+      // Reminder: substr(startOffset, length) vs. substring(startOffset, endOffset)
+      const substring = fullText.substring(
+        startLocation.offset,
+        includePopTokenInSubstring
+          ? PopParser.endOffset + 1
+          : PopParser.startOffset
+      );
+
+      const visitor = getParser(parserId);
+      if (!visitor) {
+        errors.push({
+          location: startLocation,
+          message: `Parser '${parserId}' not found`,
+        });
+        return;
+      }
+
+      const { parser } = visitor;
+      const parseResult = parser.parse(substring);
+      parseResult.errors.forEach((error) =>
+        errors.push({
+          ...error,
+          location: innerLocationToOuterLocation(
+            error.location,
+            substring,
+            startLocation
+          ),
+        })
+      );
+
+      if (!parseResult.cst) {
+        errors.push({
+          location: locationFromToken(PushParser),
+          message: `Failed to parse subsection with alternate parser '${parserId}'`,
+        });
+        return;
+      }
+      const result = visitor.visit(parseResult.cst);
+      parent.children = [...parent.children, ...result.commands];
+      result.errors.forEach((error) =>
+        errors.push({
+          ...error,
+          location: innerLocationToOuterLocation(
+            error.location,
+            substring,
+            startLocation
+          ),
+        })
+      );
     }
   })();
 }

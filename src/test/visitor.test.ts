@@ -1,13 +1,13 @@
 import { RootParser } from "../parser/RootParser";
 import { makeCstVisitor } from "../parser/makeCstVisitor";
+import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
+import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
 
 describe("visitor", () => {
-  const parser = new RootParser({
-    blockCommentEndPattern: /\*\//,
-    blockCommentStartPattern: /\/\*/,
-    lineCommentPattern: /\/\//,
-    canNestBlockComments: true,
-  });
+  const parser = new RootParser([
+    ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
+    makeLineCommentToken(/\/\//),
+  ]);
   const { lexer } = parser;
 
   it("can be constructed", () => {
@@ -21,7 +21,7 @@ annotated text
 /* this is a block comment */
 // this is a line comment
 `);
-    expect(tokens.errors.length).toBe(0);
+    expect(tokens.errors).toStrictEqual([]);
     parser.input = tokens.tokens;
     const visitor = makeCstVisitor(parser);
     const cst = parser.annotatedText();

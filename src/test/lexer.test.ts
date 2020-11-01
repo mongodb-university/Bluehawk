@@ -1,8 +1,13 @@
 import { makeLexer } from "../lexer/makeLexer";
 import { COMMAND_PATTERN } from "../lexer/tokens";
+import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
+import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
 
 describe("lexer", () => {
-  const lexer = makeLexer();
+  const lexer = makeLexer([
+    ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
+    makeLineCommentToken(/\/\//y),
+  ]);
 
   it("has no definition errors", () => {
     expect(lexer.lexerDefinitionErrors).toStrictEqual([]);
@@ -20,15 +25,6 @@ describe("lexer", () => {
     expect(result.errors).toStrictEqual([]);
     expect(result.groups).toStrictEqual({});
     expect(result.tokens).toStrictEqual([]);
-  });
-
-  it("finds C-style comment lines by default", () => {
-    const result = lexer.tokenize(`
-// this is a comment
-`);
-    expect(result.errors).toStrictEqual([]);
-    expect(result.groups).toStrictEqual({});
-    expect(result.tokens[0].tokenType.name).toStrictEqual("Newline");
   });
 
   it("tokenizes bluehawk markup", () => {
@@ -72,11 +68,8 @@ this is used to replace
 });
 
 describe("custom comment lexer", () => {
-  it("accepts arbitrary line comment patterns", () => {
-    const bashLexer = makeLexer({
-      lineCommentPattern: /#/,
-      canNestBlockComments: false,
-    });
+  it("accepts arbitrary line comment tokens", () => {
+    const bashLexer = makeLexer([makeLineCommentToken(/#/y)]);
     expect(bashLexer.lexerDefinitionErrors).toStrictEqual([]);
 
     const result = bashLexer.tokenize(`
@@ -101,12 +94,8 @@ describe("custom comment lexer", () => {
     ]);
   });
 
-  it("accepts block comment patterns", () => {
-    const htmlLexer = makeLexer({
-      blockCommentStartPattern: /<!--/,
-      blockCommentEndPattern: /-->/,
-      canNestBlockComments: true,
-    });
+  it("accepts block comment tokens", () => {
+    const htmlLexer = makeLexer([...makeBlockCommentTokens(/<!--/y, /-->/y)]);
     expect(htmlLexer.lexerDefinitionErrors).toStrictEqual([]);
 
     const result = htmlLexer.tokenize(`
@@ -127,17 +116,17 @@ describe("custom comment lexer", () => {
 
   it("rejects comment patterns that conflict with other tokens", () => {
     expect(() => {
-      makeLexer({
-        lineCommentPattern: COMMAND_PATTERN,
-        canNestBlockComments: false,
-      });
+      makeLexer([makeLineCommentToken(COMMAND_PATTERN)]);
     }).toThrowError(`Errors detected in definition of Lexer:
 The same RegExp pattern ->/:([A-z0-9-]+):/<-has been used in all of the following Token Types: Command, LineComment <-`);
   });
 });
 
 describe("command attributes lexer", () => {
-  const lexer = makeLexer();
+  const lexer = makeLexer([
+    ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
+    makeLineCommentToken(/\/\//y),
+  ]);
 
   it("handles JSON attribute lists after commands", () => {
     const result = lexer.tokenize(`:some-command-start: {

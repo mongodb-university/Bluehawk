@@ -17,14 +17,14 @@ export class ErrorMessageProvider implements IParserErrorMessageProvider {
     previous: IToken;
     ruleName: string;
   }): string {
-    return `${previous.startLine}:${previous.startColumn} ${ruleName}: After ${previous.tokenType.name}, expected ${expected.name} but found ${actual.tokenType.name}`;
+    return `${previous.startLine}:${previous.startColumn}(${previous.startOffset}) ${ruleName}: After ${previous.tokenType.name}, expected ${expected.name} but found ${actual.tokenType.name}`;
   }
 
   buildNotAllInputParsedMessage(options: {
     firstRedundant: IToken;
     ruleName: string;
   }): string {
-    return `${options.firstRedundant.startLine}:${options.firstRedundant.startColumn} ${options.ruleName}: expecting EOF but found ${options.firstRedundant.tokenType.name}`;
+    return `${options.firstRedundant.startLine}:${options.firstRedundant.startColumn}(${options.firstRedundant.startOffset}) ${options.ruleName}: expecting EOF but found ${options.firstRedundant.tokenType.name}`;
   }
 
   buildNoViableAltMessage(options: {
@@ -34,7 +34,9 @@ export class ErrorMessageProvider implements IParserErrorMessageProvider {
     customUserDescription: string;
     ruleName: string;
   }): string {
-    return `${options.previous.startLine}:${options.previous.startColumn} ${
+    return `${options.previous.startLine}:${options.previous.startColumn}(${
+      options.previous.startOffset
+    }) ${
       options.ruleName
     }: expecting one of these possible token sequences: ${options.expectedPathsPerAlt
       .map((alt) =>
@@ -50,6 +52,8 @@ export class ErrorMessageProvider implements IParserErrorMessageProvider {
     customUserDescription: string;
     ruleName: string;
   }): string {
-    return defaultParserErrorProvider.buildEarlyExitMessage(options);
+    return `${options.previous.startLine}:${options.previous.startColumn}(${
+      options.previous.startOffset
+    }) ${defaultParserErrorProvider.buildEarlyExitMessage(options)}`;
   }
 }
