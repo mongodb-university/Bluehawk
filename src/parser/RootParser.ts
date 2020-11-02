@@ -1,6 +1,8 @@
 import { CstNode, CstParser, Lexer, TokenType } from "chevrotain";
+import { BlockCommentTokenPayload } from "../lexer/makeBlockCommentTokens";
 import { makeLexer } from "../lexer/makeLexer";
 import { makeRootMode } from "../lexer/makeRootMode";
+import { StringLiteralTokenPayload } from "../lexer/makeStringLiteralTokens";
 import {
   AttributeListStart,
   AttributeListEnd,
@@ -15,6 +17,8 @@ import {
   Identifier,
   JsonStringLiteral,
   LineComment,
+  StringLiteral,
+  DummyPushParser,
 } from "../lexer/tokens";
 import { ErrorMessageProvider } from "./ErrorMessageProvider";
 import { VisitorError } from "./makeCstVisitor";
@@ -56,7 +60,7 @@ annotatedText
   : (chunk)*
 
 attributeList
-  : AttributeListStart (AttributeListStart | AttributeListEnd | StringLiteral | Newline | LineComment)* AttributeListEnd
+  : AttributeListStart (AttributeListStart | AttributeListEnd | JsonStringLiteral | Newline | LineComment)* AttributeListEnd
 
 blockCommand
   : (LineComment)? CommandStart (commandAttribute)? Newline (chunk)* (LineComment)* CommandEnd
@@ -65,7 +69,7 @@ blockComment
   : BlockCommentStart (command | LineComment | NewLine | blockComment†)* BlockCommentEnd
 
 chunk
-  : (command | blockComment | lineComment | pushParser)* Newline
+  : (command | blockComment | lineComment | pushParser | stringLiteral)* Newline
 
 command
   : blockCommand | Command
@@ -77,11 +81,16 @@ lineComment
   : LineComment (Command | LineComment | BlockCommentStart | BlockCommentEnd)*
 
 pushParser
-  : PushParser_X (pushParser | Newline)* PopParser_X
+  : PushParser (dummyPushParser | Newline)* PopParser
 
-† = if canNestBlockComments
+dummyPushParser
+  : DummyPushParser (dummyPushParser | Newline)* PopParser
+
+stringLiteral
+  : StringLiteralStart (StringLiteralEscape | pushParser)* StringLiteralEnd
+
+† = if canNest == true
 */
-
 // While the lexer defines the tokens of the language, the parser defines the
 // syntax.
 export class RootParser extends CstParser implements IParser {
@@ -96,6 +105,8 @@ export class RootParser extends CstParser implements IParser {
   lineComment?: Rule;
   attributeList?: Rule;
   pushParser?: Rule;
+  stringLiteral?: Rule;
+  dummyPushParser?: Rule;
 
   constructor(languageTokens: TokenType[]) {
     super(makeRootMode(languageTokens), {
@@ -120,6 +131,7 @@ export class RootParser extends CstParser implements IParser {
           { ALT: () => this.SUBRULE(this.blockComment) },
           { ALT: () => this.SUBRULE(this.lineComment) },
           { ALT: () => this.SUBRULE(this.pushParser) },
+          { ALT: () => this.SUBRULE(this.stringLiteral) },
         ]);
       });
       this.OR1([
@@ -142,12 +154,11 @@ export class RootParser extends CstParser implements IParser {
     });
 
     this.RULE("blockCommand", () => {
-      const startToken = this.CONSUME(CommandStart);
+      this.CONSUME(CommandStart);
       this.OPTION1(() => this.SUBRULE(this.commandAttribute));
       this.CONSUME(Newline);
       this.MANY(() => this.SUBRULE(this.chunk));
-      const endToken = startToken.payload?.endToken ?? CommandEnd;
-      this.CONSUME(endToken);
+      this.CONSUME(CommandEnd);
     });
 
     this.RULE("commandAttribute", () => {
@@ -158,7 +169,8 @@ export class RootParser extends CstParser implements IParser {
     });
 
     this.RULE("blockComment", () => {
-      const startToken = this.CONSUME(BlockCommentStart);
+      const payload = this.CONSUME(BlockCommentStart)
+        .payload as BlockCommentTokenPayload;
       this.MANY(() =>
         this.OR([
           { ALT: () => this.SUBRULE(this.command) },
@@ -166,12 +178,12 @@ export class RootParser extends CstParser implements IParser {
           { ALT: () => this.CONSUME(Newline) },
           {
             // Only if explicitly set to `false` does this forbid nesting
-            GATE: () => startToken.payload?.canNest !== false,
+            GATE: () => payload?.canNest !== false,
             ALT: () => this.SUBRULE(this.blockComment),
           },
         ])
       );
-      const endToken = startToken.payload?.endToken ?? BlockCommentEnd;
+      const endToken = payload?.endToken ?? BlockCommentEnd;
       this.CONSUME(endToken);
     });
 
@@ -211,17 +223,48 @@ export class RootParser extends CstParser implements IParser {
     this.RULE("pushParser", () => {
       // pushParser leaves a block of text unparsed by this parser, allowing the
       // visitor to parse that section with a different parser
-      const pushToken = this.CONSUME(PushParser);
+      this.CONSUME(PushParser);
       this.MANY(() =>
         this.OR([
-          { ALT: () => this.SUBRULE(this.pushParser) },
+          // Lexer modes guarantee that the only DummyPushParser- and
+          // PopParser-category tokens found in a pushParser rule are those
+          // that correspond to the opening PushParser token.
+          { ALT: () => this.SUBRULE(this.dummyPushParser) },
           { ALT: () => this.CONSUME(Newline) },
         ])
       );
-      // Ensure the end token corresponds to the starting token
-      const popToken = pushToken.payload?.endToken ?? PopParser;
-      this.CONSUME(popToken);
+      this.CONSUME(PopParser);
     });
+
+    this.RULE("dummyPushParser", () => {
+      this.CONSUME(DummyPushParser);
+      this.MANY(() =>
+        this.OR([
+          { ALT: () => this.SUBRULE(this.dummyPushParser) },
+          { ALT: () => this.CONSUME(Newline) },
+        ])
+      );
+      // Ensure the end token corresponds to the start token
+      this.CONSUME(PopParser);
+    });
+
+    this.RULE("stringLiteral", () => {
+      const payload = this.CONSUME(StringLiteral.Start)
+        .payload as StringLiteralTokenPayload;
+      this.MANY(() =>
+        this.OR([
+          {
+            GATE: () => payload?.isMultiline,
+            ALT: () => this.CONSUME(Newline),
+          },
+          { ALT: () => this.SUBRULE(this.pushParser) },
+        ])
+      );
+      // Ensure the end token corresponds to the start token
+      this.CONSUME(payload?.endToken ?? StringLiteral.End);
+    });
+
+    // --- Add new rules ABOVE this line ---
 
     this.performSelfAnalysis();
   }

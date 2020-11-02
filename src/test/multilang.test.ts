@@ -1,7 +1,7 @@
 import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
 import { makePushParserTokens } from "../lexer/makePushParserTokens";
-import { makeCstVisitor, IVisitor } from "../parser/makeCstVisitor";
+import { makeCstVisitor } from "../parser/makeCstVisitor";
 import { RootParser } from "../parser/RootParser";
 
 describe("multicomment", () => {
@@ -38,26 +38,21 @@ CC
 });
 
 describe("multilang", () => {
-  const parser = new RootParser([
-    ...makeBlockCommentTokens(/<!--/y, /-->/),
-    ...makePushParserTokens(/<\?php/y, /\?>/, {
-      includePopTokenInSubstring: false,
-      includePushTokenInSubstring: false,
-      parserId: "php",
-    }),
-  ]);
-
-  const visitors: { [id: string]: IVisitor } = {};
-  const getParser = (parserId: string): IVisitor => {
-    return visitors[parserId];
-  };
-
   const phpParser = new RootParser([
     ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
     makeLineCommentToken(/\/\/|#/y),
   ]);
-  visitors["php"] = makeCstVisitor(phpParser, getParser);
-  const visitor = makeCstVisitor(parser, getParser);
+  const phpVisitor = makeCstVisitor(phpParser);
+  const parser = new RootParser([
+    ...makeBlockCommentTokens(/<!--/y, /-->/),
+    ...makePushParserTokens({
+      pushPattern: /<\?php/y,
+      popPattern: /\?>/,
+      includeTokens: false,
+      getInnerVisitor: () => phpVisitor,
+    }),
+  ]);
+  const visitor = makeCstVisitor(parser);
 
   it("parses without context switching", () => {
     const parseResult = parser.parse(`
@@ -120,22 +115,23 @@ describe("multilang", () => {
 `);
     expect(parseResult.errors).toStrictEqual([]);
     const result = visitor.visit(parseResult.cst);
+    expect(result.errors[0].message).toContain(
+      "blockComment: After Newline, expected BlockCommentEnd but found EOF"
+    );
     expect(result.errors[0].location).toStrictEqual({
       line: 5,
       column: 1,
       offset: 31,
     });
-    expect(result.errors[0].message).toBe(
-      "2:3(4) blockComment: After Newline, expected BlockCommentEnd but found EOF"
-    );
   });
 
   it("handles matching push/pop parser patterns", () => {
     const markdownParser = new RootParser([
-      ...makePushParserTokens(/```/y, /```/, {
-        includePopTokenInSubstring: false,
-        includePushTokenInSubstring: false,
-        parserId: "php", // let's just say it's php so we can reuse the outer visitor
+      ...makePushParserTokens({
+        pushPattern: /```/y,
+        popPattern: /```/,
+        includeTokens: false,
+        getInnerVisitor: () => phpVisitor,
       }),
     ]);
     const parseResult = markdownParser.parse(`
@@ -145,7 +141,7 @@ describe("multilang", () => {
 \`\`\`
 :command2:
 `);
-    const visitor = makeCstVisitor(markdownParser, getParser);
+    const visitor = makeCstVisitor(markdownParser);
     const result = visitor.visit(parseResult.cst);
     expect(result.errors).toStrictEqual([]);
     expect(
@@ -155,5 +151,17 @@ describe("multilang", () => {
       ["line-commented-command", "lineComment"],
       ["command2", "none"],
     ]);
+  });
+
+  it("rejects recursive matching dummyPush/pop parser patterns", () => {
+    expect(() =>
+      makePushParserTokens({
+        pushPattern: /```/y,
+        dummyPushPattern: /```/y,
+        popPattern: /```/,
+        includeTokens: false,
+        getInnerVisitor: () => phpVisitor,
+      })
+    ).toThrowError();
   });
 });
