@@ -1,15 +1,17 @@
-const output = require("./output");
-const constants = require("./constants");
+import { MessageHandler } from "./messageHandler";
+import * as constants from "./constants";
+
+const output = MessageHandler.getMessageHandler();
 
 let inStep = false;
 let currentStep = "A. ";
-let fullOutput = [];
+const fullOutput = [];
 let source = [];
 let codeBlocks = [];
 let lineNumber;
 let fullLength;
 
-function buildStepFile(fileType, fullFile, code) {
+export function buildStepFile(fileType, fullFile, code) {
   fullLength = fullFile.length;
   source = fullFile;
   codeBlocks = code;
@@ -19,7 +21,7 @@ function buildStepFile(fileType, fullFile, code) {
     line = source.shift();
     lineNumber = fullLength - source.length;
     if (!inStep) {
-      checkForStart(line, source);
+      checkForStart(line);
     } else {
       checkForNextCommandOrWrite(line, fileType);
     }
@@ -27,7 +29,7 @@ function buildStepFile(fileType, fullFile, code) {
   return fullOutput;
 }
 
-function checkForStart(line) {
+export function checkForStart(line) {
   if (line.indexOf(":step-start:") > -1) {
     inStep = true;
     if (line.indexOf("{") > -1) {
@@ -43,7 +45,7 @@ function checkForStart(line) {
   }
 }
 
-function checkForNextCommandOrWrite(line, fileType) {
+export function checkForNextCommandOrWrite(line, fileType) {
   if (line.indexOf(":step-end:") > -1) {
     inStep = false;
     currentStep = "#. ";
@@ -57,7 +59,7 @@ function checkForNextCommandOrWrite(line, fileType) {
       if (props.id.indexOf(".") > -1) {
         //TODO: link to a foreign file
       } else {
-        let codeBlock = codeBlocks.find((e) => e.id == props.id);
+        const codeBlock = codeBlocks.find((e) => e.id == props.id);
         let outputCode;
         if (codeBlock) {
           outputCode = ".. code-block:: " + fileType + "\n\t";
@@ -87,7 +89,7 @@ function checkForNextCommandOrWrite(line, fileType) {
   fullOutput.push(line + "\n");
 }
 
-function buildObjectFromPropsString(current, isStepProps) {
+export function buildObjectFromPropsString(current, isStepProps) {
   if (current.indexOf("}") > -1) {
     //the props object is all on one line
     const sub = current.substring(":include-code-block:".length);
@@ -111,14 +113,14 @@ function buildObjectFromPropsString(current, isStepProps) {
       //TODO: update constants to have required properties for each type, rather
       // than this hacky bit of "isStep tomfoolery"
       if (!result.id) {
-        output.warning(
+        output.addWarning(
           "This property object has no 'id' field at line " + lineNumber + "\n",
           propObj
         );
       }
 
       if (isStepProps && !result.title) {
-        output.warning(
+        output.addWarning(
           "This step has no 'title' field at line " + lineNumber + "\n",
           propObj
         );
@@ -126,7 +128,7 @@ function buildObjectFromPropsString(current, isStepProps) {
 
       return result;
     } catch (err) {
-      output.error(
+      output.addError(
         "Error parsing the following property object of a code block.\n",
         "Usually this means you didn't wrap a property name or value in quotes.\n",
         "Line " + (lineNumber + 1) + ":\n",
@@ -136,5 +138,3 @@ function buildObjectFromPropsString(current, isStepProps) {
     }
   }
 }
-
-exports.buildStepFile = buildStepFile;

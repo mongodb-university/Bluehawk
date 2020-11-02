@@ -1,12 +1,12 @@
+import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
+import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
 import { RootParser } from "../parser/RootParser";
 
 describe("parser", () => {
-  const parser = new RootParser({
-    blockCommentEndPattern: /\*\//,
-    blockCommentStartPattern: /\/\*/,
-    lineCommentPattern: /\/\//,
-    canNestBlockComments: true,
-  });
+  const parser = new RootParser([
+    ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
+    makeLineCommentToken(/\/\//y),
+  ]);
   const { lexer } = parser;
 
   describe("chunk rule", () => {
@@ -18,7 +18,7 @@ bad second line
       parser.input = result.tokens;
       parser.chunk();
       expect(parser.errors.map((error) => error.message)).toStrictEqual([
-        "2:16 undefined: expecting EOF but found Newline",
+        "2:16(25) undefined: expecting EOF but found Newline",
       ]);
     });
 
@@ -37,7 +37,7 @@ bad second line
       parser.input = result.tokens;
       parser.chunk();
       expect(parser.errors.map((error) => error.message)).toStrictEqual([
-        "1:4 undefined: expecting EOF but found CommandEnd",
+        "1:4(3) undefined: expecting EOF but found CommandEnd",
       ]);
     });
   });
@@ -69,7 +69,7 @@ bad second line
         parser.input = result.tokens;
         parser.command();
         expect(parser.errors[0].message).toBe(
-          "NaN:NaN command: expecting one of these possible token sequences: CommandStart | Command "
+          "NaN:NaN(NaN) command: expecting one of these possible token sequences: CommandStart | Command "
         );
       });
     });
@@ -85,7 +85,7 @@ bad second line
       // This is not a top-level rule anybody would use directly outside of a
       // unit test so the NaN in the error message is less concerning
       expect(parser.errors[0].message).toBe(
-        "NaN:NaN blockCommand: After EOF, expected CommandStart but found LineComment"
+        "NaN:NaN(NaN) blockCommand: After EOF, expected CommandStart but found LineComment"
       );
     });
 
@@ -276,7 +276,7 @@ bad second line
       parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
       parser.attributeList();
       expect(parser.errors[0].message).toBe(
-        "1:24 attributeList: After Newline, expected AttributeListEnd but found BlockCommentStart"
+        "1:24(23) attributeList: After Newline, expected AttributeListEnd but found BlockCommentStart"
       );
     });
 
@@ -295,7 +295,7 @@ bad second line
       parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
       parser.attributeList();
       expect(parser.errors[0].message).toBe(
-        "1:24 attributeList: After Newline, expected AttributeListEnd but found BlockCommentEnd"
+        "1:24(23) attributeList: After Newline, expected AttributeListEnd but found BlockCommentEnd"
       );
     });
 
@@ -313,7 +313,7 @@ bad second line
       parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
       parser.attributeList();
       expect(parser.errors[0].message).toBe(
-        "2:9 attributeList: After Newline, expected AttributeListEnd but found EOF"
+        "2:9(32) attributeList: After Newline, expected AttributeListEnd but found EOF"
       );
     });
 
@@ -436,7 +436,7 @@ this is not bluehawk markup
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toBe(
-        "3:23 blockComment: After Newline, expected BlockCommentEnd but found CommandEnd"
+        "3:23(39) blockComment: After Newline, expected BlockCommentEnd but found CommandEnd"
       );
     });
 
@@ -483,7 +483,7 @@ any text
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toBe(
-        "2:19 blockCommand: After Newline, expected CommandEnd but found EOF"
+        "2:19(53) blockCommand: After Newline, expected CommandEnd but found EOF"
       );
     });
 
@@ -507,7 +507,7 @@ not ended code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toStrictEqual(
-        "3:21 blockCommand: After Newline, expected CommandEnd but found EOF"
+        "3:21(40) blockCommand: After Newline, expected CommandEnd but found EOF"
       );
     });
 
@@ -521,7 +521,7 @@ not in a code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toStrictEqual(
-        "3:1 undefined: expecting EOF but found CommandEnd"
+        "3:1(21) undefined: expecting EOF but found CommandEnd"
       );
     });
 
@@ -533,18 +533,16 @@ not in a code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toStrictEqual(
-        "2:1 chunk: expecting one of these possible token sequences: Newline |  "
+        "2:1(16) chunk: expecting one of these possible token sequences: Newline |  "
       );
     });
   });
 
   describe("without nested block comments", () => {
-    const parser = new RootParser({
-      blockCommentEndPattern: /\*\//,
-      blockCommentStartPattern: /\/\*/,
-      lineCommentPattern: /\/\//,
-      canNestBlockComments: false,
-    });
+    const parser = new RootParser([
+      ...makeBlockCommentTokens(/\/\*/y, /\*\//y, { canNest: false }),
+      makeLineCommentToken(/\/\//),
+    ]);
     const { lexer } = parser;
 
     it("cannot nest block comments", () => {
@@ -553,7 +551,7 @@ not in a code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toBe(
-        "1:1 blockComment: After BlockCommentStart, expected BlockCommentEnd but found BlockCommentStart"
+        "1:1(0) blockComment: expecting one of these possible token sequences: CommandStart -> Command | LineComment | Newline | BlockCommentStart "
       );
     });
 
@@ -573,7 +571,7 @@ not in a code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors.map((error) => error.message)).toStrictEqual([
-        "9:1 blockComment: After LineComment, expected BlockCommentEnd but found BlockCommentStart",
+        "9:1(173) blockComment: expecting one of these possible token sequences: CommandStart -> Command | LineComment | Newline | BlockCommentStart ",
       ]);
     });
   });

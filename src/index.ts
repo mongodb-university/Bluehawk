@@ -1,6 +1,8 @@
 import * as yargs from "yargs";
-import * as output from "./output";
+import { MessageHandler } from "./messageHandler";
 import * as fileHandler from "./fileHandler";
+
+const output = MessageHandler.getMessageHandler();
 
 async function run(): Promise<void> {
   const params = yargs
@@ -34,7 +36,7 @@ async function run(): Promise<void> {
 
   if (!params.type) {
     params.type = await fileHandler.getFileType(params.source as string);
-    output.important(
+    output.addImportant(
       "I have auto-detected a file type of '" +
         params.type +
         "'. If this is incorrect, \nuse the --t or -type parameter to specify " +
@@ -56,7 +58,7 @@ async function run(): Promise<void> {
 }
 
 run().catch((err) => {
-  output.error(err);
+  output.addError(err);
 });
 
 export default run;

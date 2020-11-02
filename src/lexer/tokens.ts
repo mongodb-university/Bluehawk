@@ -1,42 +1,45 @@
-import { createToken, ICustomPattern, Lexer } from "chevrotain";
-import { strict as assert } from "assert";
+import { createToken, Lexer } from "chevrotain";
+import { PayloadQuery, makePayloadPattern } from "./makePayloadPattern";
 
-// Using custom payloads to store the full text in the token. This allows a CST
-// visitor to operate on the full document. See
-// http://sap.github.io/chevrotain/docs/guide/custom_token_patterns.html#custom-payloads
-function makeStoreTextInPayloadPattern(pattern: RegExp): ICustomPattern {
-  assert(
-    pattern.sticky,
-    "StoreTextInPayload pattern MUST be sticky (e.g. `y` in `/example/y`)"
-  );
-  return {
-    exec: (text: string, offset: number): RegExpExecArray => {
-      // start the search at the offset
-      pattern.lastIndex = offset;
+const LineComment = createToken({
+  name: "LineComment",
+  pattern: Lexer.NA,
+});
 
-      const result = pattern.exec(text);
-      if (result) {
-        // Store the full text in the regex result as the payload. Chevrotain will
-        // pick it up.
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (result as any).payload = text;
-      }
-      return result;
-    },
-  };
-}
+const BlockCommentStart = createToken({
+  name: "BlockCommentStart",
+  pattern: Lexer.NA,
+});
 
-const AttributeListStart = createToken({
-  name: "AttributeListStart",
-  pattern: makeStoreTextInPayloadPattern(/{/y),
-  push_mode: "AttributeListMode",
-  line_breaks: false,
+const BlockCommentEnd = createToken({
+  name: "BlockCommentEnd",
+  pattern: Lexer.NA,
+});
+
+const PushParser = createToken({
+  name: "PushParser",
+  pattern: Lexer.NA,
+});
+
+const PopParser = createToken({
+  name: "PopParser",
+  pattern: Lexer.NA,
 });
 
 const AttributeListEnd = createToken({
   name: "AttributeListEnd",
   pattern: /}/,
   pop_mode: true,
+  categories: [PopParser],
+});
+
+const AttributeListStart = createToken({
+  name: "AttributeListStart",
+  pattern: makePayloadPattern(/{/y, ({ text }: PayloadQuery) => ({
+    fullText: text,
+  })),
+  push_mode: "AttributeListMode",
+  line_breaks: false,
 });
 
 const Space = createToken({
@@ -92,6 +95,10 @@ const JsonStringLiteral = createToken({
 export {
   AttributeListEnd,
   AttributeListStart,
+  PopParser,
+  PushParser,
+  BlockCommentEnd,
+  BlockCommentStart,
   COMMAND_END_PATTERN,
   COMMAND_PATTERN,
   COMMAND_START_PATTERN,
@@ -100,8 +107,8 @@ export {
   CommandStart,
   Identifier,
   JsonStringLiteral,
+  LineComment,
   Newline,
   Space,
   Text,
-  makeStoreTextInPayloadPattern,
 };

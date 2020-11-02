@@ -1,24 +1,36 @@
-import { CstNode, CstParser, Lexer } from "chevrotain";
-import { CommentPatterns } from "../lexer/CommentPatterns";
-import { makeAttributeListMode } from "../lexer/makeAttributeListMode";
-import { makeCommentTokens } from "../lexer/makeCommentTokens";
+import { CstNode, CstParser, Lexer, TokenType } from "chevrotain";
 import { makeLexer } from "../lexer/makeLexer";
 import { makeRootMode } from "../lexer/makeRootMode";
 import {
+  AttributeListStart,
+  AttributeListEnd,
+  PushParser,
+  PopParser,
+  BlockCommentStart,
+  BlockCommentEnd,
   Command,
   CommandEnd,
   CommandStart,
   Newline,
   Identifier,
   JsonStringLiteral,
-  AttributeListStart,
-  AttributeListEnd,
+  LineComment,
 } from "../lexer/tokens";
 import { ErrorMessageProvider } from "./ErrorMessageProvider";
+import { VisitorError } from "./makeCstVisitor";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step2_parsing.html
 
 type Rule = (idx?: number) => CstNode;
+
+interface ParserResult {
+  cst?: CstNode;
+  errors: VisitorError[];
+}
+
+export interface IParser {
+  parse(text: string): ParserResult;
+}
 
 // Comment awareness prevents bluehawk from outputting half-commented code
 // blocks.
@@ -53,7 +65,7 @@ blockComment
   : BlockCommentStart (command | LineComment | NewLine | blockComment†)* BlockCommentEnd
 
 chunk
-  : (command | blockComment | lineComment)* Newline
+  : (command | blockComment | lineComment | pushParser)* Newline
 
 command
   : blockCommand | Command
@@ -64,14 +76,16 @@ commandAttribute
 lineComment
   : LineComment (Command | LineComment | BlockCommentStart | BlockCommentEnd)*
 
+pushParser
+  : PushParser_X (pushParser | Newline)* PopParser_X
+
 † = if canNestBlockComments
 */
 
 // While the lexer defines the tokens of the language, the parser defines the
 // syntax.
-export class RootParser extends CstParser {
+export class RootParser extends CstParser implements IParser {
   lexer: Lexer;
-  commentPatterns: CommentPatterns;
 
   annotatedText?: Rule;
   chunk?: Rule;
@@ -81,20 +95,14 @@ export class RootParser extends CstParser {
   blockComment?: Rule;
   lineComment?: Rule;
   attributeList?: Rule;
+  pushParser?: Rule;
 
-  constructor(commentPatterns: CommentPatterns) {
-    super(makeRootMode(commentPatterns), {
+  constructor(languageTokens: TokenType[]) {
+    super(makeRootMode(languageTokens), {
       nodeLocationTracking: "full",
       errorMessageProvider: new ErrorMessageProvider(),
     });
-    this.lexer = makeLexer(commentPatterns);
-    this.commentPatterns = commentPatterns;
-
-    const {
-      BlockCommentStart,
-      BlockCommentEnd,
-      LineComment,
-    } = makeCommentTokens(commentPatterns);
+    this.lexer = makeLexer(languageTokens);
 
     // annotatedText is the root rule and is a series of zero or more chunks
     this.RULE("annotatedText", () => {
@@ -111,6 +119,7 @@ export class RootParser extends CstParser {
           { ALT: () => this.SUBRULE(this.command) },
           { ALT: () => this.SUBRULE(this.blockComment) },
           { ALT: () => this.SUBRULE(this.lineComment) },
+          { ALT: () => this.SUBRULE(this.pushParser) },
         ]);
       });
       this.OR1([
@@ -133,11 +142,12 @@ export class RootParser extends CstParser {
     });
 
     this.RULE("blockCommand", () => {
-      this.CONSUME(CommandStart);
+      const startToken = this.CONSUME(CommandStart);
       this.OPTION1(() => this.SUBRULE(this.commandAttribute));
       this.CONSUME(Newline);
       this.MANY(() => this.SUBRULE(this.chunk));
-      this.CONSUME(CommandEnd);
+      const endToken = startToken.payload?.endToken ?? CommandEnd;
+      this.CONSUME(endToken);
     });
 
     this.RULE("commandAttribute", () => {
@@ -148,17 +158,21 @@ export class RootParser extends CstParser {
     });
 
     this.RULE("blockComment", () => {
-      this.CONSUME(BlockCommentStart);
-      const alternatives = [
-        { ALT: () => this.SUBRULE(this.command) },
-        { ALT: () => this.CONSUME(LineComment) },
-        { ALT: () => this.CONSUME(Newline) },
-      ];
-      if (commentPatterns.canNestBlockComments) {
-        alternatives.push({ ALT: () => this.SUBRULE(this.blockComment) });
-      }
-      this.MANY(() => this.OR(alternatives));
-      this.CONSUME(BlockCommentEnd);
+      const startToken = this.CONSUME(BlockCommentStart);
+      this.MANY(() =>
+        this.OR([
+          { ALT: () => this.SUBRULE(this.command) },
+          { ALT: () => this.CONSUME(LineComment) },
+          { ALT: () => this.CONSUME(Newline) },
+          {
+            // Only if explicitly set to `false` does this forbid nesting
+            GATE: () => startToken.payload?.canNest !== false,
+            ALT: () => this.SUBRULE(this.blockComment),
+          },
+        ])
+      );
+      const endToken = startToken.payload?.endToken ?? BlockCommentEnd;
+      this.CONSUME(endToken);
     });
 
     this.RULE("lineComment", () => {
@@ -194,6 +208,64 @@ export class RootParser extends CstParser {
       this.CONSUME(AttributeListEnd);
     });
 
+    this.RULE("pushParser", () => {
+      // pushParser leaves a block of text unparsed by this parser, allowing the
+      // visitor to parse that section with a different parser
+      const pushToken = this.CONSUME(PushParser);
+      this.MANY(() =>
+        this.OR([
+          { ALT: () => this.SUBRULE(this.pushParser) },
+          { ALT: () => this.CONSUME(Newline) },
+        ])
+      );
+      // Ensure the end token corresponds to the starting token
+      const popToken = pushToken.payload?.endToken ?? PopParser;
+      this.CONSUME(popToken);
+    });
+
     this.performSelfAnalysis();
+  }
+
+  parse(text: string): { cst: CstNode; errors: VisitorError[] } {
+    const tokens = this.lexer.tokenize(text);
+    const tokenErrors = tokens.errors.map((error) => ({
+      location: {
+        line: error.line,
+        column: error.column,
+        offset: error.offset,
+      },
+      message: error.message,
+    }));
+    let cst: CstNode;
+    if (tokenErrors.length === 0) {
+      this.input = tokens.tokens;
+      cst = this.annotatedText();
+    }
+    return {
+      cst,
+      errors: [
+        ...tokenErrors,
+        ...this.errors.map((error) => {
+          // Retrieve the error location from the message because I can't seem
+          // to find it on the actual error object.
+          const [
+            ,
+            line,
+            column,
+            offset,
+          ] = /^([0-9]+):([0-9]+)\(([0-9]+)\)/
+            .exec(error.message)
+            .map((result) => parseInt(result));
+          return {
+            location: {
+              line,
+              column,
+              offset,
+            },
+            message: error.message,
+          };
+        }),
+      ],
+    };
   }
 }

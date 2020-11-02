@@ -1,14 +1,16 @@
 import { TokenType } from "chevrotain";
-import { CommentPatterns } from "./CommentPatterns";
-import { makeCommentTokens } from "./makeCommentTokens";
 import {
   AttributeListEnd,
   AttributeListStart,
+  BlockCommentEnd,
+  BlockCommentStart,
   JsonStringLiteral,
+  LineComment,
   Newline,
   Space,
   Text,
 } from "./tokens";
+import { tokenCategoryFilter } from "./tokenCategoryFilter";
 
 /*
 Bluehawk uses AttributeListMode to parse the attribute list of a command:
@@ -21,11 +23,13 @@ Bluehawk uses AttributeListMode to parse the attribute list of a command:
 */
 // Attribute lists are basically JSON objects that allow comments.
 export function makeAttributeListMode(
-  commentPatterns: CommentPatterns
+  languageTokens: TokenType[]
 ): TokenType[] {
-  const commentTokens = Object.values(
-    makeCommentTokens(commentPatterns)
-  ).filter((token: TokenType) => token.PATTERN !== undefined);
+  const commentTokens = tokenCategoryFilter(languageTokens, [
+    BlockCommentStart,
+    BlockCommentEnd,
+    LineComment,
+  ]);
   return [
     AttributeListStart,
     AttributeListEnd,

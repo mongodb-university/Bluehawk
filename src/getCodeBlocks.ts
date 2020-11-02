@@ -1,4 +1,5 @@
-import * as output from "./output";
+import { MessageHandler } from "./messageHandler";
+const output = MessageHandler.getMessageHandler();
 
 export function getMinIndentation(lines: string[]): number {
   return (
@@ -72,15 +73,15 @@ export function getCodeBlocks({
           .trim();
       }
 
-      output.info("****", codeLine, id);
+      output.addInformational("****", codeLine, id);
       if (id.indexOf(" ") > -1) {
-        output.warning("The {id} of this code block contains spaces:", id);
+        output.addWarning("The {id} of this code block contains spaces:", id);
       }
 
       for (; nextCodeLine != undefined; ++counter) {
         nextCodeLine = input[counter];
         if (nextCodeLine == undefined) {
-          output.error(
+          output.addError(
             `I expected a ':code-block-end:' but didn't find one.\n,
           This is the last code block I was working on at line ${counter}`
           );
@@ -147,7 +148,7 @@ export function getCodeBlocks({
       (codeLine.indexOf(":hide-start:") > -1 ||
         codeLine.indexOf(":hide-end:") > -1)
     ) {
-      output.error(
+      output.addError(
         `I found a 'hide' command outside of a code block at line ${counter}.`,
         codeLine
       );
