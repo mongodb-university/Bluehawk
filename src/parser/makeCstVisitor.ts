@@ -51,7 +51,7 @@ export interface VisitorError {
   location: Location;
 }
 
-interface VisitorResult {
+export interface VisitorResult {
   errors: VisitorError[];
   commands: CommandNode[];
 }
@@ -62,7 +62,7 @@ type CommandNodeContext =
   | "lineComment"
   | "blockComment";
 
-class CommandNode {
+export class CommandNode {
   commandName: string;
   get inContext(): CommandNodeContext {
     return this._context[this._context.length - 1] || "none";
@@ -75,7 +75,9 @@ class CommandNode {
   contentRange?: Range;
 
   // Only available in block commands:
-  id?: string;
+  get id(): string | undefined {
+    return this.attributes?.id;
+  }
   children?: CommandNode[];
 
   // Attributes come from JSON and their schema depends on the command.
@@ -433,7 +435,7 @@ export function makeCstVisitor(
       if (Identifier != undefined) {
         assert(!attributeList); // parser issue
         assert(Identifier[0].image.length > 0);
-        parent.id = Identifier[0].image;
+        parent.attributes = { id: Identifier[0].image };
       } else if (context.attributeList != undefined) {
         assert(!Identifier); // parser issue
         assert(attributeList.length === 1); // should be impossible to have more than 1 list
