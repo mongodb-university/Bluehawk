@@ -248,9 +248,9 @@ the quick brown fox jumped
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst);
     const validateResult = validateVisitorResult(result);
-    expect(validateResult.commandIds.size).toBe(1);
+    expect(validateResult.commandsById.size).toBe(1);
     expect(
-      validateResult.commandIds.get("totallyuniqueid").range
+      validateResult.commandsById.get("totallyuniqueid").range
     ).toStrictEqual({
       start: {
         line: 2,
