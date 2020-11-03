@@ -1,13 +1,8 @@
-import {
-  VisitorResult,
-  CommandNode,
-  VisitorError,
-  Range,
-} from "./makeCstVisitor";
+import { VisitorResult, CommandNode, VisitorError } from "./makeCstVisitor";
 
 interface ValidateCstResult {
   errors: VisitorError[];
-  commandIdsToRanges: Map<string, Range>;
+  commandIds: Map<string, CommandNode>;
 }
 
 export function validateVisitorResult(
@@ -15,7 +10,7 @@ export function validateVisitorResult(
 ): ValidateCstResult {
   const validateResult = {
     errors: [],
-    commandIdsToRanges: new Map<string, Range>(),
+    commandIds: new Map<string, CommandNode>(),
   };
   visitorResult.commands.forEach((command) => {
     validateCst(command, validateResult);
@@ -53,14 +48,14 @@ const idIsUnique: Rule = (
 ) => {
   if (commandNode.id !== undefined) {
     // if the command id already exists in the set of command ids, create a duplicate error
-    if (result.commandIdsToRanges.has(commandNode.id)) {
+    if (result.commandIds.has(commandNode.id)) {
       result.errors.push({
         location: commandNode.range.start,
         message: `duplicate ID '${commandNode.id}' found`,
       });
     } else {
       // otherwise, add the command id to the set
-      result.commandIdsToRanges.set(commandNode.id, commandNode.range);
+      result.commandIds.set(commandNode.id, commandNode);
     }
   }
 };
