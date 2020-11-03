@@ -42,7 +42,7 @@ the quick brown fox jumped
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
     expect(validateResult.errors[0].message).toStrictEqual(
-      "missing ID on a code block"
+      "missing ID for command: 'code-block'"
     );
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 2,
@@ -70,7 +70,7 @@ the quick brown fox jumped
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
     expect(validateResult.errors[0].message).toStrictEqual(
-      "missing ID on a code block"
+      "missing ID for command: 'code-block'"
     );
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 6,
@@ -98,7 +98,7 @@ the quick brown fox jumped
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(2);
     expect(validateResult.errors[0].message).toStrictEqual(
-      "missing ID on a code block"
+      "missing ID for command: 'code-block'"
     );
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 2,
@@ -106,7 +106,7 @@ the quick brown fox jumped
       offset: 4,
     });
     expect(validateResult.errors[1].message).toStrictEqual(
-      "missing ID on a code block"
+      "missing ID for command: 'code-block'"
     );
     expect(validateResult.errors[1].location).toStrictEqual({
       line: 6,
@@ -150,7 +150,7 @@ the quick brown fox jumped
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
     expect(validateResult.errors[0].message).toStrictEqual(
-      "duplicate ID on a code block"
+      "duplicate ID 'totallyuniqueid' found"
     );
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 6,
@@ -178,7 +178,7 @@ the quick brown fox jumped
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
     expect(validateResult.errors[0].message).toStrictEqual(
-      "missing ID on a code block"
+      "missing ID for command: 'code-block'"
     );
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 2,
@@ -226,7 +226,7 @@ the quick brown fox jumped
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
     expect(validateResult.errors[0].message).toStrictEqual(
-      "duplicate ID on a code block"
+      "duplicate ID 'totallyuniqueid' found"
     );
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 6,

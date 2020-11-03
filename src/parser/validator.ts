@@ -48,7 +48,7 @@ const idIsUnique: Rule = (
     if (result.commandIds.has(commandNode.id)) {
       result.errors.push({
         location: commandNode.range.start,
-        message: "duplicate ID on a code block",
+        message: `duplicate ID '${commandNode.id}' found`,
       });
     } else {
       // otherwise, add the command id to the set
@@ -61,7 +61,7 @@ const hasId: Rule = (commandNode: CommandNode, result: ValidateCstResult) => {
   if (commandNode.id === undefined) {
     result.errors.push({
       location: commandNode.range.start,
-      message: "missing ID on a code block",
+      message: `missing ID for command: '${commandNode.commandName}'`,
     });
   }
 };
