@@ -51,7 +51,7 @@ export interface VisitorError {
   location: Location;
 }
 
-interface VisitorResult {
+export interface VisitorResult {
   errors: VisitorError[];
   commands: CommandNode[];
 }
@@ -62,7 +62,7 @@ type CommandNodeContext =
   | "lineComment"
   | "blockComment";
 
-class CommandNode {
+export class CommandNode {
   commandName: string;
   get inContext(): CommandNodeContext {
     return this._context[this._context.length - 1] || "none";
