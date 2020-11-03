@@ -231,7 +231,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 90,
+      offset: 102,
     });
   });
 });
