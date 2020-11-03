@@ -1,52 +1,65 @@
-import { RootParser } from "../parser/RootParser";
-import { makeCstVisitor, VisitorResult, CommandNode } from "../parser/makeCstVisitor";
+import { RootParser } from "./RootParser";
+import { makeCstVisitor, VisitorResult, CommandNode, VisitorError } from "./makeCstVisitor";
+import { ExecuteCommandRequest } from "vscode-languageserver";
 
-interface validateCSTResult {
-    errors: ValidateCSTError[];
-    hasErrors: boolean;
+interface ValidateCstResult {
+    errors: VisitorError[];
 }
 
-interface ValidateCSTError {
-    error: Error,
-}
-
-export function validateVisitorResult(visitorResult: VisitorResult): validateCSTResult {
-    var validateResult = { errors: [], hasErrors: false};
-    var idSet = new Set<String>();
+export function validateVisitorResult(visitorResult: VisitorResult): ValidateCstResult {
+    const validateResult = { errors: [], hasErrors: false };
+    var context = { commandIds: new Set<String>() }
     visitorResult.commands.forEach((command) => {
-        validateCST(command, validateResult, idSet);
+        validateCst(command, context, validateResult);
     });
     return validateResult;
 }
 
-function validateCST(commandNode: CommandNode, errors: validateCSTResult, idSet: Set<String>) {
+function validateCst(commandNode: CommandNode, context: ValidationContext, result: ValidateCstResult) {
     commandNode.children.forEach((child) => {
-        validateCST(child, errors, idSet);
+        validateCst(child, context, result);
     });
-    codeBlockHasID(commandNode, errors);
-    idIsUnique(commandNode, errors, idSet);
+    const rules = {
+        "code-block": [new idIsUnique(), new hasId()],
+    };
+    const rulesForCommand = rules[commandNode.commandName]
+    if (rulesForCommand != undefined) {
+        rulesForCommand.forEach((rule) => {rule.execute(commandNode, context, result)});
+    }
     return {
-        errors: errors,
-        hasErrors: errors.errors.length > 0
+        errors: result
     }
 }
 
-function codeBlockHasID(commandNode: CommandNode, errors: validateCSTResult) {
-    if (commandNode.commandName == "code-block") {
+// Classes for working with rules
+
+class ValidationContext {
+    commandIds: Set<String>
+}
+
+interface Rule {
+    execute(commandNode: CommandNode, context: ValidationContext, result: ValidateCstResult): any;
+}
+
+// rule implementations
+
+class hasId implements Rule {
+    execute(commandNode: CommandNode, context: ValidationContext, result: ValidateCstResult) {
         if (commandNode.id == undefined) {
-            errors.errors.push({error: {name: "code-block ID missing", message: "line " + commandNode.range.start.line + ": missing ID on a code block"}});
-            errors.hasErrors = true;
+            result.errors.push({location: commandNode.range.start, message: "missing ID on a code block"});
         }
     }
 }
 
-function idIsUnique(commandNode: CommandNode, errors: validateCSTResult, idSet: Set<String>) {
-    if (commandNode.commandName == "code-block") {
+class idIsUnique implements Rule {
+    execute(commandNode: CommandNode, context: ValidationContext, result: ValidateCstResult) {
         if (commandNode.id != undefined) {
-            if (idSet.has(commandNode.id)) {
-                errors.errors.push({error: {name: "code-block ID duplicate", message: "line " + commandNode.range.start.line + ": duplicate ID on a code block"}});
+            // if the command id already exists in the set of command ids, create a duplicate error
+            if (context.commandIds.has(commandNode.id)) {
+                result.errors.push({location: commandNode.range.start, message: "duplicate ID on a code block"});
+            } else { // otherwise, add the command id to the set
+                context.commandIds.add(commandNode.id);
             }
-            idSet.add(commandNode.id);
         }
     }
 }

@@ -41,7 +41,8 @@ the quick brown fox jumped
     const result = visitor.visit(cst);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
-    expect(validateResult.errors[0].error.message).toStrictEqual("line 2: missing ID on a code block")
+    expect(validateResult.errors[0].message).toStrictEqual("missing ID on a code block")
+    expect(validateResult.errors[0].location).toStrictEqual({line: 2, column: 4, offset: 4})
   });
 
   test("throws a single error when just one code-block lacks an id", () => {
@@ -62,7 +63,8 @@ the quick brown fox jumped
     const result = visitor.visit(cst);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
-    expect(validateResult.errors[0].error.message).toStrictEqual("line 6: missing ID on a code block")
+    expect(validateResult.errors[0].message).toStrictEqual("missing ID on a code block")
+    expect(validateResult.errors[0].location).toStrictEqual({line: 6, column: 4, offset: 80})
   });
 
   test("throws two errors when two code-blocks lack an id", () => {
@@ -83,8 +85,10 @@ the quick brown fox jumped
     const result = visitor.visit(cst);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(2);
-    expect(validateResult.errors[0].error.message).toStrictEqual("line 2: missing ID on a code block")
-    expect(validateResult.errors[1].error.message).toStrictEqual("line 6: missing ID on a code block")
+    expect(validateResult.errors[0].message).toStrictEqual("missing ID on a code block")
+    expect(validateResult.errors[0].location).toStrictEqual({line: 2, column: 4, offset: 4})
+    expect(validateResult.errors[1].message).toStrictEqual("missing ID on a code block")
+    expect(validateResult.errors[1].location).toStrictEqual({line: 6, column: 4, offset: 74})
   });
 
   test("does not throw an error when a code-block has an id", () => {
@@ -121,6 +125,7 @@ the quick brown fox jumped
     const result = visitor.visit(cst);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
-    expect(validateResult.errors[0].error.message).toStrictEqual("line 6: duplicate ID on a code block")
+    expect(validateResult.errors[0].message).toStrictEqual("duplicate ID on a code block")
+    expect(validateResult.errors[0].location).toStrictEqual({line: 6, column: 4, offset: 90})
   });
 });
