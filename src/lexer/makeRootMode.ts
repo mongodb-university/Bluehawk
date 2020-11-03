@@ -1,32 +1,40 @@
 import { TokenType } from "chevrotain";
-import { CommentPatterns } from "./CommentPatterns";
+import { tokenCategoryFilter } from "./tokenCategoryFilter";
 import {
+  BlockCommentEnd,
+  BlockCommentStart,
   Command,
   CommandEnd,
   CommandStart,
+  LineComment,
   Newline,
+  PopParser,
+  PushParser,
   Space,
   Text,
 } from "./tokens";
-import { makeCommentTokens } from "./makeCommentTokens";
 
-// RootMode is the default parser and lexer mode.
-export function makeRootMode(
-  commentPatterns: CommentPatterns
-): Array<TokenType> {
-  // Keep comment tokens only if they have a pattern defined
-  const commentTokens = Object.values(
-    makeCommentTokens(commentPatterns)
-  ).filter((token) => token.PATTERN !== undefined);
-
-  // Order matters -- always CommandStart/End before Command
+// RootMode is the default parser and lexer mode for a given language.
+export function makeRootMode(languageTokens: TokenType[]): Array<TokenType> {
   return [
     CommandStart,
     CommandEnd,
     Command,
-    ...commentTokens,
+    ...tokenCategoryFilter(languageTokens, [
+      BlockCommentStart,
+      BlockCommentEnd,
+      LineComment,
+      PushParser,
+    ]),
     Space,
     Newline,
     Text,
+
+    // "Abstract" tokens
+    PushParser,
+    PopParser,
+    LineComment,
+    BlockCommentStart,
+    BlockCommentEnd,
   ];
 }

@@ -6,11 +6,13 @@ import {
   COMMAND_START_PATTERN,
 } from "../lexer/tokens";
 import { RootParser } from "./RootParser";
-import { runInNewContext } from "vm";
+import { jsonErrorToVisitorError } from "./jsonErrorToVisitorError";
+import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
+import { PushParserPayload } from "../lexer/makePushParserTokens";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
 
-interface Location {
+export interface Location {
   line: number;
   column: number;
   offset: number;
@@ -29,24 +31,38 @@ function locationFromToken(token: IToken): Location {
   };
 }
 
-interface VisitorError {
+function locationAfterToken(token: IToken, fullText: string): Location {
+  const location = {
+    line: token.endLine,
+    column: token.endColumn,
+    offset: token.endOffset,
+  };
+  // Ensure the line/column are correctly rolled over if the character is
+  // actually a newline
+  if (/\r|\n/.test(fullText[location.offset])) {
+    location.column = 1;
+    location.line += 1;
+  }
+  return location;
+}
+
+export interface VisitorError {
   message: string;
   location: Location;
 }
 
-interface VisitorResult {
+export interface VisitorResult {
   errors: VisitorError[];
   commands: CommandNode[];
 }
 
-type CommandAttributes = Map<string, string | boolean | number>;
 type CommandNodeContext =
   | "none"
   | "stringLiteral"
   | "lineComment"
   | "blockComment";
 
-class CommandNode {
+export class CommandNode {
   commandName: string;
   get inContext(): CommandNodeContext {
     return this._context[this._context.length - 1] || "none";
@@ -55,20 +71,24 @@ class CommandNode {
   _context = Array<CommandNodeContext>();
 
   // ranges covered by this node
-  range: Range
-  contentRange?: Range
+  range: Range;
+  contentRange?: Range;
 
   // Only available in block commands:
-  id?: string;
-  attributes?: CommandAttributes;
+  get id(): string | undefined {
+    return this.attributes?.id;
+  }
   children?: CommandNode[];
+
+  // Attributes come from JSON and their schema depends on the command.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  attributes?: { [member: string]: any };
 
   // Block Commands operate on their inner range and can have children, IDs, and
   // attributes.
   makeChildBlockCommand(commandName: string): CommandNode {
     assert(this.children);
     const command = new CommandNode(commandName, this);
-    command.attributes = new Map();
     command.children = [];
     return command;
   }
@@ -111,13 +131,17 @@ class CommandNode {
   }
 }
 
-interface IVisitor {
+export interface IVisitor {
+  parser: RootParser;
   visit(node: CstNode): VisitorResult;
 }
 
 // While the lexer defines the tokens (words) and the parser defines the syntax,
 // the CstVisitor defines the semantics of the language.
-export function makeCstVisitor(parser: RootParser): IVisitor {
+export function makeCstVisitor(
+  parser: RootParser,
+  getParser?: (parserId: string) => IVisitor | undefined
+): IVisitor {
   // The following context interfaces (should) match the corresponding parser
   // rule. Subrules appear as CstNode[]. Tokens appear as IToken[]. If the
   // element is optional in the syntax, it's TypeScript optional™ in the context
@@ -132,6 +156,7 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
   interface AttributeListContext {
     AttributeListStart: IToken[];
     AttributeListEnd: IToken[];
+    LineComment: IToken[];
   }
 
   interface BlockCommandContext {
@@ -155,6 +180,7 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
     blockComment?: CstNode[];
     command?: CstNode[];
     lineComment?: CstNode[];
+    pushParser?: CstNode[];
     Newline: IToken[];
   }
 
@@ -175,6 +201,11 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
     BlockCommentEnd?: IToken[];
   }
 
+  interface PushParserContext {
+    PushParser: IToken[];
+    PopParser: IToken[];
+  }
+
   // Tuple passed to visitor methods. All errors go to the top level. Visitor
   // methods operate on the parent node, usually by adding child nodes to the
   // parent.
@@ -183,8 +214,9 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
     errors: VisitorError[];
   }
 
-  const { canNestBlockComments } = parser.commentPatterns;
   return new (class CstVisitor extends parser.getBaseCstVisitorConstructor() {
+    parser = parser;
+
     constructor() {
       super();
       // The "validateVisitor" method is a helper utility which performs static analysis
@@ -225,8 +257,62 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
     }
 
     attributeList(context: AttributeListContext, { parent, errors }: VA) {
+      // ⚠️ This should not recursively visit inner attributeLists
       assert(parent != null);
-      // TODO: populate parent's attributes
+      const AttributeListStart = context.AttributeListStart[0];
+      const AttributeListEnd = context.AttributeListEnd[0];
+      assert(AttributeListStart);
+      assert(AttributeListEnd);
+
+      // Retrieve the full text document as the custom payload from the token.
+      // Note that AttributeListStart was created with a custom pattern that
+      // stores the full text document in the custom payload.
+      const { payload } = AttributeListStart;
+      const { fullText } = payload as PushParserPayload;
+      assert(
+        fullText,
+        "Unexpected empty payload in AttributeListStart! This is a bug in the parser. Please submit a bug report containing the document that caused this assertion failure."
+      );
+
+      // Reminder: substr(startOffset, length) vs. substring(startOffset, endOffset)
+      let json = fullText.substring(
+        AttributeListStart.startOffset,
+        AttributeListEnd.endOffset + 1
+      );
+
+      // There may be line comments to strip out
+      if (context.LineComment) {
+        context.LineComment.forEach((LineComment) => {
+          // Make offsets relative to the JSON string, not the overall document
+          const startOffset =
+            LineComment.startOffset - AttributeListStart.startOffset;
+          const endOffset =
+            LineComment.endOffset - AttributeListStart.startOffset; // [sic]
+          // Replace line comments with harmless spaces
+          json =
+            json.substring(0, startOffset) +
+            " ".repeat(LineComment.image.length) +
+            json.substring(endOffset + 1);
+        });
+      }
+
+      try {
+        const object = JSON.parse(json);
+        // The following should be impossible in the parser.
+        assert(
+          typeof object === "object" && object !== null,
+          "attributeList is not an object. This is a bug in the parser. Please submit a bug report containing the document that caused this assertion failure."
+        );
+        parent.attributes = object;
+      } catch (error) {
+        errors.push(
+          jsonErrorToVisitorError(error, json, {
+            line: AttributeListStart.startLine,
+            column: AttributeListStart.startColumn,
+            offset: AttributeListStart.startOffset,
+          })
+        );
+      }
     }
 
     blockCommand(context: BlockCommandContext, { parent, errors }: VA) {
@@ -251,22 +337,22 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
           line: context.CommandEnd[0].endLine,
           column: context.CommandEnd[0].endColumn,
           offset: context.CommandEnd[0].endOffset,
-        }
-      }
+        },
+      };
 
       if (context.chunk != undefined) {
         newNode.contentRange = {
           start: {
             line: context.Newline[0].endLine + 1,
-            column: 0,
+            column: 1,
             offset: context.Newline[0].endOffset + 1,
           },
           end: {
             line: context.CommandEnd[0].startLine,
             column: context.CommandEnd[0].startColumn - 1,
             offset: context.CommandEnd[0].startOffset - 1,
-          }
-        }
+          },
+        };
       }
 
       const endCommandName = COMMAND_END_PATTERN.exec(
@@ -287,10 +373,6 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
 
     blockComment(context: BlockCommentContext, { parent, errors }: VA) {
       assert(parent != null);
-      // This indicates a problem with the parser. Please file a bug with the
-      // markup that triggered this assertion failure.
-      assert(canNestBlockComments || parent.inContext !== "blockComment");
-
       // This node (blockComment) should not be included in the final output. We
       // use it to gather child nodes and attach them to the parent node.
       parent.withErasedBlockCommand((erasedBlockCommand) => {
@@ -312,6 +394,7 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
           ...(context.blockComment ?? []),
           ...(context.command ?? []),
           ...(context.lineComment ?? []),
+          ...(context.pushParser ?? []),
         ].sort((a, b) => a.location.startOffset - b.location.startOffset),
         { parent, errors }
       );
@@ -327,7 +410,9 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
       assert(context.Command);
 
       context.Command.forEach((Command) => {
-        const newNode = parent.makeChildLineCommand(COMMAND_PATTERN.exec(Command.image)[1])
+        const newNode = parent.makeChildLineCommand(
+          COMMAND_PATTERN.exec(Command.image)[1]
+        );
         newNode.range = {
           start: {
             line: Command.startLine,
@@ -338,19 +423,19 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
             line: Command.endLine,
             column: Command.endColumn,
             offset: Command.endOffset,
-          }
-        }
+          },
+        };
       });
     }
 
     commandAttribute(context: CommandAttributeContext, { parent, errors }: VA) {
       assert(parent != null);
-      const Identifier = context.Identifier == undefined ? undefined : context.Identifier[0];
+      const Identifier = context.Identifier;
       const attributeList = context.attributeList;
       if (Identifier != undefined) {
         assert(!attributeList); // parser issue
-        assert(Identifier.image.length > 0);
-        parent.id = Identifier.image;
+        assert(Identifier[0].image.length > 0);
+        parent.attributes = { id: Identifier[0].image };
       } else if (context.attributeList != undefined) {
         assert(!Identifier); // parser issue
         assert(attributeList.length === 1); // should be impossible to have more than 1 list
@@ -370,6 +455,88 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         erasedBlockCommand._context.push("lineComment");
         this.$visit(command, { parent: erasedBlockCommand, errors });
       });
+    }
+
+    pushParser(context: PushParserContext, { parent, errors }: VA) {
+      // ⚠️ This should not recursively visit inner pushParsers
+      assert(parent != null);
+      const PushParser = context.PushParser[0];
+      assert(PushParser);
+
+      // Retrieve the full text document as the custom payload from the token.
+      // Note that AttributeListStart was created with a custom pattern that
+      // stores the full text document in the custom payload.
+      const { payload } = PushParser;
+      const {
+        fullText,
+        parserId,
+        includePushTokenInSubstring,
+        includePopTokenInSubstring,
+        endToken,
+      } = payload as PushParserPayload;
+
+      assert(
+        fullText,
+        "Unexpected empty payload in AttributeListStart! This is a bug in the parser. Please submit a bug report containing the document that caused this assertion failure."
+      );
+
+      // We need to know exactly which PopParser token we are looking for.
+      const PopParser = context[endToken.name][0];
+      assert(PopParser);
+
+      const startLocation = includePushTokenInSubstring
+        ? locationFromToken(PushParser)
+        : locationAfterToken(PushParser, fullText);
+
+      // Reminder: substr(startOffset, length) vs. substring(startOffset, endOffset)
+      const substring = fullText.substring(
+        startLocation.offset,
+        includePopTokenInSubstring
+          ? PopParser.endOffset + 1
+          : PopParser.startOffset
+      );
+
+      const visitor = getParser(parserId);
+      if (!visitor) {
+        errors.push({
+          location: startLocation,
+          message: `Parser '${parserId}' not found`,
+        });
+        return;
+      }
+
+      const { parser } = visitor;
+      const parseResult = parser.parse(substring);
+      parseResult.errors.forEach((error) =>
+        errors.push({
+          ...error,
+          location: innerLocationToOuterLocation(
+            error.location,
+            substring,
+            startLocation
+          ),
+        })
+      );
+
+      if (!parseResult.cst) {
+        errors.push({
+          location: locationFromToken(PushParser),
+          message: `Failed to parse subsection with alternate parser '${parserId}'`,
+        });
+        return;
+      }
+      const result = visitor.visit(parseResult.cst);
+      parent.children = [...parent.children, ...result.commands];
+      result.errors.forEach((error) =>
+        errors.push({
+          ...error,
+          location: innerLocationToOuterLocation(
+            error.location,
+            substring,
+            startLocation
+          ),
+        })
+      );
     }
   })();
 }

@@ -8,5 +8,5 @@
   },
   "sourceMap": true,
   "include": ["./src/**/*"],
-  "exclude": ["./src/js-test", "./src/test"]
+  "exclude": ["./src/test"]
 }

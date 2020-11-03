@@ -1,26 +1,41 @@
-import { Lexer } from "chevrotain";
-import { AttributeListMode } from "./AttributeListMode";
-import { CommandAttributesMode } from "./CommandAttributesMode";
-import { CommentPatterns } from "./CommentPatterns";
-import { JsonMode } from "./JsonMode";
+import { Lexer, TokenType } from "chevrotain";
+import { makeAttributeListMode } from "./makeAttributeListMode";
 import { makeRootMode } from "./makeRootMode";
+import {
+  PopParser,
+  PushParser,
+  Newline,
+  Space,
+  Text,
+  AttributeListStart,
+  Identifier,
+} from "./tokens";
+import { tokenCategoryFilter } from "./tokenCategoryFilter";
+
+// After a command start tag, there may be an attributes list or ID until the
+// end of line.
+const CommandAttributesMode = [
+  AttributeListStart,
+  Identifier,
+  Space,
+  { ...Newline, POP_MODE: true },
+];
 
 // Generates a Lexer for the given language comment patterns.
-export function makeLexer(
-  commentPatterns: CommentPatterns = {
-    lineCommentPattern: /\/\//, // Standard C++-ish line comment --> //
-    blockCommentStartPattern: /\/\*/, // Standard C-ish block comment start --> /*
-    blockCommentEndPattern: /\*\\/, // Standard C-ish block comment end --> */
-    canNestBlockComments: true,
-  }
-): Lexer {
+export function makeLexer(languageTokens: TokenType[]): Lexer {
+  const modes = {
+    RootMode: makeRootMode(languageTokens),
+    CommandAttributesMode,
+    AttributeListMode: makeAttributeListMode(languageTokens),
+    AltParserMode: [
+      ...tokenCategoryFilter(languageTokens, [PopParser]),
+      Newline,
+      Space,
+      Text,
+    ],
+  };
   return new Lexer({
-    modes: {
-      RootMode: makeRootMode(commentPatterns),
-      CommandAttributesMode,
-      AttributeListMode,
-      JsonMode,
-    },
+    modes,
     defaultMode: "RootMode",
   });
 }

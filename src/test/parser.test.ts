@@ -1,12 +1,12 @@
+import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
+import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
 import { RootParser } from "../parser/RootParser";
 
 describe("parser", () => {
-  const parser = new RootParser({
-    blockCommentEndPattern: /\*\//,
-    blockCommentStartPattern: /\/\*/,
-    lineCommentPattern: /\/\//,
-    canNestBlockComments: true,
-  });
+  const parser = new RootParser([
+    ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
+    makeLineCommentToken(/\/\//y),
+  ]);
   const { lexer } = parser;
 
   describe("chunk rule", () => {
@@ -18,7 +18,7 @@ bad second line
       parser.input = result.tokens;
       parser.chunk();
       expect(parser.errors.map((error) => error.message)).toStrictEqual([
-        "2:16 undefined: expecting EOF but found Newline",
+        "2:16(25) undefined: expecting EOF but found Newline",
       ]);
     });
 
@@ -37,7 +37,7 @@ bad second line
       parser.input = result.tokens;
       parser.chunk();
       expect(parser.errors.map((error) => error.message)).toStrictEqual([
-        "1:4 undefined: expecting EOF but found CommandEnd",
+        "1:4(3) undefined: expecting EOF but found CommandEnd",
       ]);
     });
   });
@@ -69,7 +69,7 @@ bad second line
         parser.input = result.tokens;
         parser.command();
         expect(parser.errors[0].message).toBe(
-          "NaN:NaN command: expecting one of these possible token sequences: CommandStart | Command "
+          "NaN:NaN(NaN) command: expecting one of these possible token sequences: CommandStart | Command "
         );
       });
     });
@@ -85,7 +85,7 @@ bad second line
       // This is not a top-level rule anybody would use directly outside of a
       // unit test so the NaN in the error message is less concerning
       expect(parser.errors[0].message).toBe(
-        "NaN:NaN blockCommand: After EOF, expected CommandStart but found LineComment"
+        "NaN:NaN(NaN) blockCommand: After EOF, expected CommandStart but found LineComment"
       );
     });
 
@@ -98,10 +98,28 @@ bad second line
       expect(parser.errors).toStrictEqual([]);
     });
 
-    it("handles optional attribute lists (empty)", () => {
-      // TODO: populated attribute lists
+    it("handles empty attribute lists", () => {
       const result = lexer.tokenize(`:block-command-start: {
 }
+:block-command-end:`);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.blockCommand();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("handles attribute lists with json", () => {
+      const json = `{"a": 1,
+  "b": false,
+  "c": true,
+  "d": null,
+  "e": [1, 2.0, 3e10, 3e-10, 3e+10, 3.14, -1.23],
+  "f": {
+    "g": [1, "\\"string\\"", {}]
+  }
+}`;
+      expect(JSON.parse(json)).toBeDefined(); // It is valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}
 :block-command-end:`);
       expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
@@ -167,6 +185,151 @@ bad second line
       parser.input = result.tokens;
       parser.lineComment();
       expect(parser.errors.length).toBe(0);
+    });
+  });
+
+  describe("attributeList rule", () => {
+    it("accepts valid json", () => {
+      const json = `{"a": 1,
+  "b": false,
+  "c": true,
+  "d": null,
+  "e": [1, 2.0, 3e10, 3e-10, 3e+10, 3.14, -1.23],
+  "f": {
+    "g": [1, "\\"string\\"", {}]
+  }
+}`;
+      expect(JSON.parse(json)).toBeDefined(); // It is valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("accepts somewhat invalid json", () => {
+      // The parser only consumes the tokens and does not care about the syntax
+      // of JSON. We are deferring to JSON.parse() to do that. All that really
+      // matters is the curly braces match.
+      const json = `{1: 1,
+  false: false,
+  {}: true,
+  []: null,
+  [,,,]: [1, 2.0, 3e10, 3e-10, 3e+10, 3.14, -1.23]
+  "nocomma"
+  "nocolon" {
+    "g"] [1, "\\"string\\"", {}]
+  }
+}`;
+      expect(() => {
+        JSON.parse(json);
+      }).toThrow("Unexpected number in JSON at position 1"); // It is not valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors).toStrictEqual([]); // JSON invalid, but it is still ok
+    });
+
+    it("accepts commented json", () => {
+      // The parser only consumes the tokens and does not care about the syntax
+      // of JSON. We are deferring to JSON.parse() to do that. All that really
+      // matters is the curly braces match.
+      const json = `{1: 1,
+//  false: false,
+//  {}: true,
+//  []: null,
+//  [,,,]: [1, 2.0, 3e10, 3e-10, 3e+10, 3.14, -1.23]
+//  "nocomma"
+//  "nocolon" {
+//    "g"] [1, "\\"string\\"", {}]
+//  }
+//}`;
+      expect(() => {
+        JSON.parse(json);
+      }).toThrow("Unexpected number in JSON at position 1"); // It is not valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors).toStrictEqual([]); // JSON invalid, but it is still ok
+    });
+
+    it("rejects block comment start tokens in json", () => {
+      const json = `{
+  /*
+}
+`;
+      expect(() => {
+        JSON.parse(json);
+      }).toThrow("Unexpected token / in JSON at position 4"); // It is not valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors[0].message).toBe(
+        "1:24(23) attributeList: After Newline, expected AttributeListEnd but found BlockCommentStart"
+      );
+    });
+
+    it("rejects block comment end tokens in json", () => {
+      const json = `{
+  */
+}
+`;
+      expect(() => {
+        JSON.parse(json);
+      }).toThrow("Unexpected token * in JSON at position 4"); // It is not valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors[0].message).toBe(
+        "1:24(23) attributeList: After Newline, expected AttributeListEnd but found BlockCommentEnd"
+      );
+    });
+
+    it("diagnoses unterminated attribute lists", () => {
+      const json = `{
+  "a": 1
+`;
+      expect(() => {
+        JSON.parse(json);
+      }).toThrow("Unexpected end of JSON input"); // It is not valid JSON
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors[0].message).toBe(
+        "2:9(32) attributeList: After Newline, expected AttributeListEnd but found EOF"
+      );
+    });
+
+    it("handles many nested JSON objects", () => {
+      const json = `{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{}}}}}}}}}}`;
+      // It is valid JSON
+      expect(JSON.parse(json)).toStrictEqual({
+        a: { a: { a: { a: { a: { a: { a: { a: { a: {} } } } } } } } },
+      });
+      const result = lexer.tokenize(`:block-command-start: ${json}`);
+      expect(result.errors.length).toBe(0);
+      expect(result.tokens[0].image).toBe(":block-command-start:");
+      expect(result.tokens[1].image).toBe("{");
+      parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      parser.attributeList();
+      expect(parser.errors).toStrictEqual([]);
     });
   });
 
@@ -273,7 +436,7 @@ this is not bluehawk markup
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toBe(
-        "3:23 blockComment: After Newline, expected BlockCommentEnd but found CommandEnd"
+        "3:23(39) blockComment: After Newline, expected BlockCommentEnd but found CommandEnd"
       );
     });
 
@@ -320,7 +483,7 @@ any text
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toBe(
-        "2:19 blockCommand: After Newline, expected CommandEnd but found EOF"
+        "2:19(53) blockCommand: After Newline, expected CommandEnd but found EOF"
       );
     });
 
@@ -344,7 +507,7 @@ not ended code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toStrictEqual(
-        "3:21 blockCommand: After Newline, expected CommandEnd but found EOF"
+        "3:21(40) blockCommand: After Newline, expected CommandEnd but found EOF"
       );
     });
 
@@ -358,7 +521,7 @@ not in a code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toStrictEqual(
-        "3:1 undefined: expecting EOF but found CommandEnd"
+        "3:1(21) undefined: expecting EOF but found CommandEnd"
       );
     });
 
@@ -370,18 +533,16 @@ not in a code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toStrictEqual(
-        "2:1 chunk: expecting one of these possible token sequences: Newline |  "
+        "2:1(16) chunk: expecting one of these possible token sequences: Newline |  "
       );
     });
   });
 
   describe("without nested block comments", () => {
-    const parser = new RootParser({
-      blockCommentEndPattern: /\*\//,
-      blockCommentStartPattern: /\/\*/,
-      lineCommentPattern: /\/\//,
-      canNestBlockComments: false,
-    });
+    const parser = new RootParser([
+      ...makeBlockCommentTokens(/\/\*/y, /\*\//y, { canNest: false }),
+      makeLineCommentToken(/\/\//),
+    ]);
     const { lexer } = parser;
 
     it("cannot nest block comments", () => {
@@ -390,7 +551,7 @@ not in a code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toBe(
-        "1:1 blockComment: After BlockCommentStart, expected BlockCommentEnd but found BlockCommentStart"
+        "1:1(0) blockComment: expecting one of these possible token sequences: CommandStart -> Command | LineComment | Newline | BlockCommentStart "
       );
     });
 
@@ -410,7 +571,7 @@ not in a code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors.map((error) => error.message)).toStrictEqual([
-        "9:1 blockComment: After LineComment, expected BlockCommentEnd but found BlockCommentStart",
+        "9:1(173) blockComment: expecting one of these possible token sequences: CommandStart -> Command | LineComment | Newline | BlockCommentStart ",
       ]);
     });
   });

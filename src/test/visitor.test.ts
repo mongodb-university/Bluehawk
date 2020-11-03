@@ -1,13 +1,13 @@
 import { RootParser } from "../parser/RootParser";
 import { makeCstVisitor } from "../parser/makeCstVisitor";
+import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
+import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
 
 describe("visitor", () => {
-  const parser = new RootParser({
-    blockCommentEndPattern: /\*\//,
-    blockCommentStartPattern: /\/\*/,
-    lineCommentPattern: /\/\//,
-    canNestBlockComments: true,
-  });
+  const parser = new RootParser([
+    ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
+    makeLineCommentToken(/\/\//),
+  ]);
   const { lexer } = parser;
 
   it("can be constructed", () => {
@@ -21,11 +21,195 @@ annotated text
 /* this is a block comment */
 // this is a line comment
 `);
-    expect(tokens.errors.length).toBe(0);
+    expect(tokens.errors).toStrictEqual([]);
     parser.input = tokens.tokens;
     const visitor = makeCstVisitor(parser);
     const cst = parser.annotatedText();
     visitor.visit(cst);
+  });
+
+  describe("JSON attribute lists", () => {
+    it("accepts empty attribute lists", () => {
+      const tokens = lexer.tokenize(`:A-command-start: {}
+:A-command-end:
+`);
+      expect(tokens.errors).toStrictEqual([]);
+      parser.input = tokens.tokens;
+      const cst = parser.annotatedText();
+      expect(parser.errors).toStrictEqual([]);
+      const visitor = makeCstVisitor(parser);
+      const result = visitor.visit(cst);
+      expect(result.errors).toStrictEqual([]);
+      expect(result.commands[0].commandName).toBe("A-command");
+      expect(result.commands[0].attributes).toStrictEqual({});
+    });
+
+    it("attaches well-formed attribute lists to commands", () => {
+      const tokens = lexer.tokenize(`:A-command-start: {
+  "a": 1,
+  "b": false,
+  "c": true,
+  "d": null,
+  "e": [1, 2.0, 3e10, 3e-10, 3e+10, 3.14, -1.23],
+  "f": {
+    "g": [1, "\\"string\\"", {}]
+  }
+}
+:A-command-end:
+`);
+      expect(tokens.errors.length).toBe(0);
+      parser.input = tokens.tokens;
+      const cst = parser.annotatedText();
+      expect(parser.errors.length).toBe(0);
+      const visitor = makeCstVisitor(parser);
+      const result = visitor.visit(cst);
+      expect(result.errors).toStrictEqual([]);
+      expect(result.commands[0].commandName).toBe("A-command");
+      expect(result.commands[0].attributes).toStrictEqual({
+        a: 1,
+        b: false,
+        c: true,
+        d: null,
+        e: [1, 2.0, 3e10, 3e-10, 3e10, 3.14, -1.23],
+        f: {
+          g: [1, '"string"', {}],
+        },
+      });
+    });
+
+    it("reports unexpected tokens in attribute lists", () => {
+      // An escaped newline should not throw off the error report location.
+      // Let's be sure our assumption about how to escape newlines is correct:
+      expect(JSON.parse(`"\\n"`)).toBe("\n");
+
+      const tokens = lexer.tokenize(`:A-command-start: {
+  "a": "\\n",
+     
+
+  1: 1
+}
+:A-command-end:
+`);
+      expect(tokens.errors).toStrictEqual([]);
+      parser.input = tokens.tokens;
+      const cst = parser.annotatedText();
+      expect(parser.errors.length).toBe(0);
+      const visitor = makeCstVisitor(parser);
+      const result = visitor.visit(cst);
+      expect(result.commands[0].attributes).toBeUndefined();
+      expect(result.errors[0].message).toBe("Unexpected number in JSON");
+      expect(result.errors[0].location).toStrictEqual({
+        line: 5,
+        column: 3,
+        offset: 42,
+      });
+    });
+
+    it("reports malformed JSON in attribute lists", () => {
+      const tokens = lexer.tokenize(`:A-command-start: {"a":
+
+    [[[[[[[
+
+}
+:A-command-end:
+`);
+      expect(tokens.errors).toStrictEqual([]);
+      parser.input = tokens.tokens;
+      const cst = parser.annotatedText();
+      expect(parser.errors.length).toBe(0);
+      const visitor = makeCstVisitor(parser);
+      const result = visitor.visit(cst);
+      expect(result.errors[0].location).toStrictEqual({
+        line: 5,
+        column: 1,
+        offset: 38,
+      });
+      expect(result.errors[0].message).toBe("Unexpected token } in JSON");
+    });
+
+    it("reports error accurately with weird newlines", () => {
+      const tokens = lexer.tokenize(
+        ":A-command-start: {\r\n" +
+          "\r\n" +
+          "\r\n" +
+          "\r\n" +
+          "[" + //
+          "}\r\n :A-command-end:\r\n"
+      );
+      expect(tokens.errors).toStrictEqual([]);
+      parser.input = tokens.tokens;
+      const cst = parser.annotatedText();
+      expect(parser.errors).toStrictEqual([]);
+      const visitor = makeCstVisitor(parser);
+      const result = visitor.visit(cst);
+      expect(result.errors[0].location).toStrictEqual({
+        line: 5,
+        column: 1,
+        offset: 27,
+      });
+      expect(result.errors[0].message).toBe("Unexpected token [ in JSON");
+    });
+
+    it("reports error accurately with mixed weird newlines", () => {
+      const tokens = lexer.tokenize(
+        ":A-command-start: {\r" +
+          " \n" +
+          "\r\n" +
+          "\r" +
+          "[" + //
+          "}\r :A-command-end:\r"
+      );
+      expect(tokens.errors).toStrictEqual([]);
+      parser.input = tokens.tokens;
+      const cst = parser.annotatedText();
+      expect(parser.errors).toStrictEqual([]);
+      const visitor = makeCstVisitor(parser);
+      const result = visitor.visit(cst);
+      expect(result.errors[0].location).toStrictEqual({
+        line: 5,
+        column: 1,
+        offset: 25,
+      });
+      expect(result.errors[0].message).toBe("Unexpected token [ in JSON");
+    });
+
+    it("allows line comments in JSON", () => {
+      const tokens = lexer.tokenize(`// :A-command-start: {
+// "a": 1,
+// "b": 2,
+// "c": 3
+//}
+// :A-command-end:
+`);
+      expect(tokens.errors).toStrictEqual([]);
+      parser.input = tokens.tokens;
+      const cst = parser.annotatedText();
+      expect(parser.errors).toStrictEqual([]);
+      const visitor = makeCstVisitor(parser);
+      const result = visitor.visit(cst);
+      expect(result.errors).toStrictEqual([]);
+    });
+
+    it("accurately reports error positions in commented JSON", () => {
+      const tokens = lexer.tokenize(`// :A-command-start: {
+// // "a": 1, //
+// 7
+}
+:A-command-end:
+`);
+      expect(tokens.errors).toStrictEqual([]);
+      parser.input = tokens.tokens;
+      const cst = parser.annotatedText();
+      expect(parser.errors).toStrictEqual([]);
+      const visitor = makeCstVisitor(parser);
+      const result = visitor.visit(cst);
+      expect(result.errors[0].location).toStrictEqual({
+        line: 3,
+        column: 4,
+        offset: 43,
+      });
+      expect(result.errors[0].message).toBe("Unexpected number in JSON");
+    });
   });
 
   it("supports multiple commands", () => {
@@ -295,7 +479,7 @@ the quick brown fox jumped
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
     expect(result.commands[0].contentRange.start.line).toBe(3);
-    expect(result.commands[0].contentRange.start.column).toBe(0);
+    expect(result.commands[0].contentRange.start.column).toBe(1);
     expect(result.commands[0].contentRange.start.offset).toBe(14);
     expect(result.commands[0].contentRange.end.line).toBe(4);
     expect(result.commands[0].contentRange.end.column).toBe(3);
@@ -336,7 +520,7 @@ and again
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
     expect(a.contentRange.start.line).toBe(3);
-    expect(a.contentRange.start.column).toBe(0);
+    expect(a.contentRange.start.column).toBe(1);
     expect(a.contentRange.start.offset).toBe(14);
     expect(a.contentRange.end.line).toBe(10);
     expect(a.contentRange.end.column).toBe(3);
@@ -355,7 +539,7 @@ and again
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
     expect(b.contentRange.start.line).toBe(5);
-    expect(b.contentRange.start.column).toBe(0);
+    expect(b.contentRange.start.column).toBe(1);
     expect(b.contentRange.start.offset).toBe(54);
     expect(b.contentRange.end.line).toBe(9);
     expect(b.contentRange.end.column).toBe(3);
@@ -374,7 +558,7 @@ and again
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
     expect(c.contentRange.start.line).toBe(7);
-    expect(c.contentRange.start.column).toBe(0);
+    expect(c.contentRange.start.column).toBe(1);
     expect(c.contentRange.start.offset).toBe(83);
     expect(c.contentRange.end.line).toBe(8);
     expect(c.contentRange.end.column).toBe(3);
@@ -527,7 +711,7 @@ line 10 :a-end:
     expect(lines[result.commands[0].contentRange.start.line - 1]).toBe(
       "line 9 -- some more content"
     );
-    expect(result.commands[0].contentRange.start.column).toBe(0);
+    expect(result.commands[0].contentRange.start.column).toBe(1);
     expect(result.commands[0].contentRange.start.offset).toBe(28);
     expect(result.commands[0].contentRange.end.line).toBe(10);
     expect(result.commands[0].contentRange.end.column).toBe(8);
@@ -564,7 +748,7 @@ c2345678 :a-start:
     expect(lines[4].length).toBe(11);
 
     expect(result.commands[0].contentRange.start.line).toBe(4);
-    expect(result.commands[0].contentRange.start.column).toBe(0);
+    expect(result.commands[0].contentRange.start.column).toBe(1);
 
     expect(result.commands[0].contentRange.start.offset).toBe(
       lines[0].length + lines[1].length + lines[2].length

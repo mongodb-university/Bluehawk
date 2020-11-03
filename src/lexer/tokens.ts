@@ -1,15 +1,45 @@
 import { createToken, Lexer } from "chevrotain";
+import { PayloadQuery, makePayloadPattern } from "./makePayloadPattern";
 
-const AttributeListStart = createToken({
-  name: "AttributeListStart",
-  pattern: /{/,
-  push_mode: "AttributeListMode",
+const LineComment = createToken({
+  name: "LineComment",
+  pattern: Lexer.NA,
+});
+
+const BlockCommentStart = createToken({
+  name: "BlockCommentStart",
+  pattern: Lexer.NA,
+});
+
+const BlockCommentEnd = createToken({
+  name: "BlockCommentEnd",
+  pattern: Lexer.NA,
+});
+
+const PushParser = createToken({
+  name: "PushParser",
+  pattern: Lexer.NA,
+});
+
+const PopParser = createToken({
+  name: "PopParser",
+  pattern: Lexer.NA,
 });
 
 const AttributeListEnd = createToken({
   name: "AttributeListEnd",
   pattern: /}/,
   pop_mode: true,
+  categories: [PopParser],
+});
+
+const AttributeListStart = createToken({
+  name: "AttributeListStart",
+  pattern: makePayloadPattern(/{/y, ({ text }: PayloadQuery) => ({
+    fullText: text,
+  })),
+  push_mode: "AttributeListMode",
+  line_breaks: false,
 });
 
 const Space = createToken({
@@ -26,7 +56,7 @@ const Newline = createToken({
 
 const Text = createToken({
   name: "Text",
-  pattern: /\S+/,
+  pattern: /\S/,
   group: Lexer.SKIPPED,
 });
 
@@ -57,9 +87,18 @@ const Identifier = createToken({
   pattern: /[_A-z][A-z0-9-_]*/,
 });
 
+const JsonStringLiteral = createToken({
+  name: "JsonStringLiteral",
+  pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
+});
+
 export {
   AttributeListEnd,
   AttributeListStart,
+  PopParser,
+  PushParser,
+  BlockCommentEnd,
+  BlockCommentStart,
   COMMAND_END_PATTERN,
   COMMAND_PATTERN,
   COMMAND_START_PATTERN,
@@ -67,6 +106,8 @@ export {
   CommandEnd,
   CommandStart,
   Identifier,
+  JsonStringLiteral,
+  LineComment,
   Newline,
   Space,
   Text,

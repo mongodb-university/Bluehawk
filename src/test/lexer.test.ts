@@ -1,9 +1,13 @@
-import { assert } from "console";
 import { makeLexer } from "../lexer/makeLexer";
 import { COMMAND_PATTERN } from "../lexer/tokens";
+import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
+import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
 
 describe("lexer", () => {
-  const lexer = makeLexer();
+  const lexer = makeLexer([
+    ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
+    makeLineCommentToken(/\/\//y),
+  ]);
 
   it("has no definition errors", () => {
     expect(lexer.lexerDefinitionErrors).toStrictEqual([]);
@@ -21,15 +25,6 @@ describe("lexer", () => {
     expect(result.errors).toStrictEqual([]);
     expect(result.groups).toStrictEqual({});
     expect(result.tokens).toStrictEqual([]);
-  });
-
-  it("finds C-style comment lines by default", () => {
-    const result = lexer.tokenize(`
-// this is a comment
-`);
-    expect(result.errors).toStrictEqual([]);
-    expect(result.groups).toStrictEqual({});
-    expect(result.tokens[0].tokenType.name).toStrictEqual("Newline");
   });
 
   it("tokenizes bluehawk markup", () => {
@@ -73,11 +68,8 @@ this is used to replace
 });
 
 describe("custom comment lexer", () => {
-  it("accepts arbitrary line comment patterns", () => {
-    const bashLexer = makeLexer({
-      lineCommentPattern: /#/,
-      canNestBlockComments: false,
-    });
+  it("accepts arbitrary line comment tokens", () => {
+    const bashLexer = makeLexer([makeLineCommentToken(/#/y)]);
     expect(bashLexer.lexerDefinitionErrors).toStrictEqual([]);
 
     const result = bashLexer.tokenize(`
@@ -102,12 +94,8 @@ describe("custom comment lexer", () => {
     ]);
   });
 
-  it("accepts block comment patterns", () => {
-    const htmlLexer = makeLexer({
-      blockCommentStartPattern: /<!--/,
-      blockCommentEndPattern: /-->/,
-      canNestBlockComments: true,
-    });
+  it("accepts block comment tokens", () => {
+    const htmlLexer = makeLexer([...makeBlockCommentTokens(/<!--/y, /-->/y)]);
     expect(htmlLexer.lexerDefinitionErrors).toStrictEqual([]);
 
     const result = htmlLexer.tokenize(`
@@ -128,17 +116,17 @@ describe("custom comment lexer", () => {
 
   it("rejects comment patterns that conflict with other tokens", () => {
     expect(() => {
-      makeLexer({
-        lineCommentPattern: COMMAND_PATTERN,
-        canNestBlockComments: false,
-      });
+      makeLexer([makeLineCommentToken(COMMAND_PATTERN)]);
     }).toThrowError(`Errors detected in definition of Lexer:
 The same RegExp pattern ->/:([A-z0-9-]+):/<-has been used in all of the following Token Types: Command, LineComment <-`);
   });
 });
 
 describe("command attributes lexer", () => {
-  const lexer = makeLexer();
+  const lexer = makeLexer([
+    ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
+    makeLineCommentToken(/\/\//y),
+  ]);
 
   it("handles JSON attribute lists after commands", () => {
     const result = lexer.tokenize(`:some-command-start: {
@@ -159,35 +147,15 @@ this is not parsed
     expect(tokenNames).toStrictEqual([
       "CommandStart",
       "AttributeListStart",
-      "StringLiteral",
-      "Colon",
-      "NumberLiteral",
-      "Comma",
-      "StringLiteral",
-      "Colon",
-      "True",
-      "Comma",
-      "StringLiteral",
-      "Colon",
-      "False",
-      "Comma",
-      "StringLiteral",
-      "Colon",
-      "LSquare",
-      "NumberLiteral",
-      "Comma",
-      "NumberLiteral",
-      "Comma",
-      "NumberLiteral",
-      "RSquare",
-      "Comma",
-      "StringLiteral",
-      "Colon",
-      "LCurly",
-      "StringLiteral",
-      "Colon",
-      "StringLiteral",
-      "RCurly",
+      "JsonStringLiteral",
+      "JsonStringLiteral",
+      "JsonStringLiteral",
+      "JsonStringLiteral",
+      "JsonStringLiteral",
+      "AttributeListStart",
+      "JsonStringLiteral",
+      "JsonStringLiteral",
+      "AttributeListEnd",
       "AttributeListEnd",
       "CommandEnd",
     ]);
@@ -206,30 +174,6 @@ this is ignored
       "Newline",
       "CommandStart",
       "Identifier",
-      "Newline",
-      "Newline",
-      "CommandEnd",
-      "Newline",
-    ]);
-  });
-
-  it("rejects invalid identifiers", () => {
-    // Identifiers may not start with a number or dash nor contain invalid characters
-    const result = lexer.tokenize(`
-:some-command-start: 9 - '
-this is ignored
-:some-command-end:
-`);
-    const errorMessages = result.errors.map((error) => error.message);
-    expect(errorMessages).toStrictEqual([
-      "unexpected character: ->9<- at offset: 22, skipped 1 characters.",
-      "unexpected character: ->-<- at offset: 24, skipped 1 characters.",
-      "unexpected character: ->'<- at offset: 26, skipped 1 characters.",
-    ]);
-    const tokenNames = result.tokens.map((token) => token.tokenType.name);
-    expect(tokenNames).toStrictEqual([
-      "Newline",
-      "CommandStart",
       "Newline",
       "Newline",
       "CommandEnd",
@@ -261,27 +205,69 @@ this is ignored
     ]);
   });
 
-  it("diagnoses on unclosed attributes lists", () => {
-    // Identifiers may not start with a number or dash nor contain invalid characters
+  it("does not diagnose on unclosed attributes lists", () => {
     const result = lexer.tokenize(`
 :some-command-start: {
 forgot to close
 :some-command-end:
 `);
-    const errorMessages = result.errors.map((error) => error.message);
-    expect(errorMessages).toStrictEqual([
-      "unexpected character: ->f<- at offset: 24, skipped 6 characters.",
-      "unexpected character: ->t<- at offset: 31, skipped 2 characters.",
-      "unexpected character: ->c<- at offset: 34, skipped 5 characters.",
-      "unexpected character: ->s<- at offset: 41, skipped 16 characters.",
-    ]);
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
       "Newline",
       "CommandStart",
       "AttributeListStart",
-      "Colon",
-      "Colon",
+      "Newline",
+      "Newline",
+      "Newline",
+      // Note it never switched back to root mode, so it does not find a
+      // CommandEnd
+    ]);
+    const errorMessages = result.errors.map((error) => error.message);
+    expect(errorMessages).toStrictEqual([]);
+  });
+
+  it("accepts comment tokens in attributes lists", () => {
+    const result = lexer.tokenize(`
+:some-command-start: {
+// /* */ //
+}
+:some-command-end:
+`);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toStrictEqual([
+      "Newline",
+      "CommandStart",
+      "AttributeListStart",
+      "Newline",
+      "LineComment",
+      "BlockCommentStart",
+      "BlockCommentEnd",
+      "LineComment",
+      "Newline",
+      "AttributeListEnd",
+      "Newline",
+      "CommandEnd",
+      "Newline",
+    ]);
+    const errorMessages = result.errors.map((error) => error.message);
+    expect(errorMessages).toStrictEqual([]);
+  });
+
+  it("does not misinterpret comment tokens in json strings", () => {
+    const result = lexer.tokenize(`:some-command-start: {"// /* */"}
+:some-command-end:
+`);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toStrictEqual([
+      "CommandStart",
+      "AttributeListStart",
+      "JsonStringLiteral",
+      // NOT LineComment, BlockCommentStart, or BlockCommentEnd
+      "AttributeListEnd",
+      "Newline",
+      "CommandEnd",
+      "Newline",
     ]);
   });
 });

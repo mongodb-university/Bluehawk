@@ -1,7 +1,7 @@
 import * as coder from "./codeGenerator";
 import * as stepper from "./stepGenerator";
 import { getCodeBlocks } from "./getCodeBlocks";
-import * as output from "./output";
+import { MessageHandler } from "./messageHandler";
 import fs from "fs";
 
 // Make a function to handle emitted code blocks and save them for the given
@@ -11,6 +11,8 @@ interface CodeBlockData {
   source: [string];
   stage: string;
 }
+
+const output = MessageHandler.getMessageHandler();
 
 function makeSaveCodeBlockFunction(
   fileObject: Record<string, string>,
@@ -31,7 +33,7 @@ function makeSaveCodeBlockFunction(
     const filename = fileObject["codeBlock"][stage] + "." + id + "." + fileType;
     fs.writeFile(filename, source.join("\n"), (err) => {
       if (err) {
-        output.error(err.message);
+        output.addError(err.message);
       }
     });
   };
@@ -58,10 +60,10 @@ export async function run(fileArray, type): Promise<void> {
       }
 
       fs.writeFile(file.step, "", function (err) {
-        if (err) output.error(err.message);
+        if (err) output.addError(err.message);
       });
 
-      output.info("Building step file(s) from", file.source);
+      output.addInformational("Building step file(s) from", file.source);
 
       const result = stepper.buildStepFile(type, fullFile, codeBlocks);
 
@@ -70,7 +72,7 @@ export async function run(fileArray, type): Promise<void> {
       fs.appendFileSync(file.step, result.join(""));
 
       const source = fs.readFileSync(file.source, "utf8");
-      output.info("Building code file(s) from", file.source);
+      output.addInformational("Building code file(s) from", file.source);
       codeFile = coder.buildCodeFiles(source, type);
       fs.writeFileSync(file.start, codeFile["start"]);
       fs.writeFileSync(file.final, codeFile["final"]);
