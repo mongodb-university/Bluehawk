@@ -234,4 +234,34 @@ the quick brown fox jumped
       offset: 102,
     });
   });
+
+  test("correctly locates code block", () => {
+    const tokens = lexer.tokenize(`
+// :code-block-start: { "id": "totallyuniqueid" }
+the quick brown fox jumped
+// :code-block-end:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst);
+    const validateResult = validateVisitorResult(result);
+    expect(validateResult.commandsById.size).toBe(1);
+    expect(
+      validateResult.commandsById.get("totallyuniqueid").range
+    ).toStrictEqual({
+      start: {
+        line: 2,
+        column: 4,
+        offset: 4,
+      },
+      end: {
+        line: 4,
+        column: 19,
+        offset: 96,
+      },
+    });
+  });
 });
