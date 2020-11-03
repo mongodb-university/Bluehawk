@@ -18,7 +18,7 @@ export interface Location {
   offset: number;
 }
 
-interface Range {
+export interface Range {
   start: Location;
   end: Location;
 }
