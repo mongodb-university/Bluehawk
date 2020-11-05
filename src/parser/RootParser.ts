@@ -17,7 +17,8 @@ import {
   LineComment,
 } from "../lexer/tokens";
 import { ErrorMessageProvider } from "./ErrorMessageProvider";
-import { VisitorError } from "./makeCstVisitor";
+import { BluehawkError, makeCstVisitor } from "./makeCstVisitor";
+import { validateVisitorResult } from "./validator";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step2_parsing.html
 
@@ -25,7 +26,11 @@ type Rule = (idx?: number) => CstNode;
 
 interface ParserResult {
   cst?: CstNode;
-  errors: VisitorError[];
+  errors: BluehawkError[];
+}
+
+export class BluehawkResult {
+  errors: BluehawkError[];
 }
 
 export interface IParser {
@@ -226,7 +231,23 @@ export class RootParser extends CstParser implements IParser {
     this.performSelfAnalysis();
   }
 
-  parse(text: string): { cst: CstNode; errors: VisitorError[] } {
+  morethanparse(text: string): BluehawkResult {
+    // handle lexing, parsing, visiting, validating
+    // amalgamate all errors
+    const parseResult = this.parse(text);
+    const visitor = makeCstVisitor(this);
+    const visitorResult = visitor.visit(parseResult.cst);
+    const validateResult = validateVisitorResult(visitorResult);
+    return {
+      errors: [
+        ...parseResult.errors,
+        ...visitorResult.errors,
+        ...validateResult.errors,
+      ],
+    };
+  }
+
+  parse(text: string): { cst: CstNode; errors: BluehawkError[] } {
     const tokens = this.lexer.tokenize(text);
     const tokenErrors = tokens.errors.map((error) => ({
       location: {

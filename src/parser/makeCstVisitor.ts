@@ -46,13 +46,13 @@ function locationAfterToken(token: IToken, fullText: string): Location {
   return location;
 }
 
-export interface VisitorError {
+export interface BluehawkError {
   message: string;
   location: Location;
 }
 
 export interface VisitorResult {
-  errors: VisitorError[];
+  errors: BluehawkError[];
   commands: CommandNode[];
 }
 
@@ -211,7 +211,7 @@ export function makeCstVisitor(
   // parent.
   interface VA {
     parent: CommandNode;
-    errors: VisitorError[];
+    errors: BluehawkError[];
   }
 
   return new (class CstVisitor extends parser.getBaseCstVisitorConstructor() {
