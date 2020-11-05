@@ -29,10 +29,6 @@ interface ParserResult {
   errors: BluehawkError[];
 }
 
-export class BluehawkResult {
-  errors: BluehawkError[];
-}
-
 export interface IParser {
   parse(text: string): ParserResult;
 }
@@ -229,22 +225,6 @@ export class RootParser extends CstParser implements IParser {
     });
 
     this.performSelfAnalysis();
-  }
-
-  morethanparse(text: string): BluehawkResult {
-    // handle lexing, parsing, visiting, validating
-    // amalgamate all errors
-    const parseResult = this.parse(text);
-    const visitor = makeCstVisitor(this);
-    const visitorResult = visitor.visit(parseResult.cst);
-    const validateResult = validateVisitorResult(visitorResult);
-    return {
-      errors: [
-        ...parseResult.errors,
-        ...visitorResult.errors,
-        ...validateResult.errors,
-      ],
-    };
   }
 
   parse(text: string): { cst: CstNode; errors: BluehawkError[] } {
