@@ -1,6 +1,8 @@
 import { Bluehawk } from "../bluehawk";
 
 describe("bluehawk", () => {
+  const bluehawk = new Bluehawk();
+
   it("handles lexing, parsing, visiting, and validating", () => {
     const input = `
     this is ignored
@@ -8,7 +10,7 @@ describe("bluehawk", () => {
     this is in the command
     :some-command-end:
 `;
-    const output = Bluehawk.bluehawk(input);
+    const output = bluehawk.run(input);
     expect(output.errors.length).toBe(0);
   });
 
@@ -18,7 +20,7 @@ describe("bluehawk", () => {
     this is ignored
     :some-command-end:
     `;
-    const output = Bluehawk.bluehawk(input);
+    const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
     expect(output.errors[0]).toStrictEqual({
       location: {
@@ -38,7 +40,7 @@ describe("bluehawk", () => {
     this is in the command
     :some-command-start:
 `;
-    const output = Bluehawk.bluehawk(input);
+    const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
     expect(output.errors[0]).toStrictEqual({
       location: {
@@ -59,7 +61,7 @@ describe("bluehawk", () => {
     this is in the command
     :some-command-end:
 `;
-    const output = Bluehawk.bluehawk(input);
+    const output = bluehawk.run(input);
     expect(output.errors.length).toBe(0);
     expect(output.errors[0]).toStrictEqual(undefined);
   });
@@ -71,7 +73,7 @@ describe("bluehawk", () => {
     this is in the command
     :code-block-end:
 `;
-    const output = Bluehawk.bluehawk(input);
+    const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
     expect(output.errors[0]).toStrictEqual({
       location: {

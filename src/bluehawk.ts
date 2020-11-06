@@ -9,7 +9,7 @@ export class BluehawkResult {
 }
 
 export class Bluehawk {
-  static bluehawk(text: string): BluehawkResult {
+  run(text: string): BluehawkResult {
     const parser = new RootParser([
       ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
       makeLineCommentToken(/\/\//y),
