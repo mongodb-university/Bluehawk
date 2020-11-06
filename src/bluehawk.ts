@@ -44,7 +44,6 @@ export class Bluehawk {
       );
     }
     const parser = this.parsers.get(source.language);
-    const { lexer } = parser;
     const parseResult = parser.parse(source.text);
     const visitor = makeCstVisitor(parser);
     const visitorResult = visitor.visit(parseResult.cst);
