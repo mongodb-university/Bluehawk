@@ -8,20 +8,10 @@ import {
 import { RootParser } from "./RootParser";
 import { jsonErrorToVisitorError } from "./jsonErrorToVisitorError";
 import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
+import { BluehawkError, Location, Range } from "../bluehawk";
 import { PushParserTokenPayload } from "../lexer/makePushParserTokens";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
-
-export interface Location {
-  line: number;
-  column: number;
-  offset: number;
-}
-
-export interface Range {
-  start: Location;
-  end: Location;
-}
 
 function locationFromToken(token: IToken): Location {
   return {
@@ -46,13 +36,8 @@ function locationAfterToken(token: IToken, fullText: string): Location {
   return location;
 }
 
-export interface VisitorError {
-  message: string;
-  location: Location;
-}
-
 export interface VisitorResult {
-  errors: VisitorError[];
+  errors: BluehawkError[];
   commands: CommandNode[];
 }
 
@@ -217,7 +202,7 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
   // parent.
   interface VA {
     parent: CommandNode;
-    errors: VisitorError[];
+    errors: BluehawkError[];
   }
 
   return new (class CstVisitor extends parser.getBaseCstVisitorConstructor() {
@@ -479,7 +464,6 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         fullText,
         getInnerVisitor,
         includeTokens,
-        endToken,
       } = payload as PushParserTokenPayload;
 
       assert(

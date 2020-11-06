@@ -1,5 +1,5 @@
 import { innerOffsetToOuterLocation } from "./innerOffsetToOuterLocation";
-import { Location, VisitorError } from "./makeCstVisitor";
+import { BluehawkError, Location } from "../bluehawk";
 
 // Convert a JSON.parse() error to visitor error. Updates the error location to
 // document space and cleans up the message, if possible.
@@ -7,7 +7,7 @@ export function jsonErrorToVisitorError(
   error: Error,
   json: string,
   locationInDocument: Location // The location of the start of the json that caused the error
-): VisitorError {
+): BluehawkError {
   const location = locationInDocument;
 
   // Try to convert to a more helpful diagnostic
