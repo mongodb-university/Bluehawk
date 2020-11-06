@@ -435,8 +435,8 @@ this is not bluehawk markup
       expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
       parser.annotatedText();
-      expect(parser.errors[0].message).toBe(
-        "3:23(39) blockComment: After Newline, expected BlockCommentEnd but found CommandEnd"
+      expect(parser.errors[0].message).toContain(
+        "blockComment: After Newline, expected BlockCommentEnd but found CommandEnd"
       );
     });
 

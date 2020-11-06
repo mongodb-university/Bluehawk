@@ -1,50 +1,80 @@
 import { createToken, TokenType } from "chevrotain";
+import { IVisitor } from "../parser/makeCstVisitor";
 import { PayloadQuery, makePayloadPattern } from "./makePayloadPattern";
-import { PopParser, PushParser } from "./tokens";
+import { makeModeId } from "./modeId";
+import { DummyPushParser, PopParser, PushParser } from "./tokens";
 
 export interface PushParserTokenConfiguration {
-  parserId: string;
-  includePushTokenInSubstring: boolean;
-  includePopTokenInSubstring: boolean;
+  pushPattern: RegExp;
+  popPattern: RegExp;
+  dummyPushPattern?: RegExp;
+  includeTokens: boolean;
+  getInnerVisitor: (outerVisitor?: IVisitor) => IVisitor;
+  modeId?: string;
 }
 
-export interface PushParserPayload {
+export interface PushParserTokenPayload extends PushParserTokenConfiguration {
   fullText: string;
-  parserId: string;
-  includePushTokenInSubstring: boolean;
-  includePopTokenInSubstring: boolean;
   endToken: TokenType;
 }
 
 export function makePushParserTokens(
-  pushPattern: RegExp,
-  popPattern: RegExp,
   configuration: PushParserTokenConfiguration
-): [TokenType, TokenType] {
-  const tokens: [TokenType, TokenType] = [
+): TokenType[] {
+  // Each invocation of makePushParserTokens() puts the tokens in their own
+  // group. This allows the lexer to create a mode specifically for each group.
+  const modeId = makeModeId();
+
+  const { pushPattern, popPattern, dummyPushPattern } = configuration;
+  // Create the pop token first so it can be referenced later
+  const endToken = createToken({
+    name: `${modeId}PopParser`,
+    label: `PopParser(${popPattern})`,
+    categories: [PopParser],
+    pattern: popPattern,
+    pop_mode: true,
+    line_breaks: false,
+  });
+
+  // Start assembling the final tokens
+  const tokens = [
     createToken({
-      name: "PushParser",
+      name: `${configuration.modeId ?? ""}PushParser`,
       label: `PushParser(${pushPattern})`,
       categories: [PushParser],
       pattern: makePayloadPattern(
         pushPattern,
-        ({ text }: PayloadQuery): PushParserPayload => ({
+        ({ text }: PayloadQuery): PushParserTokenPayload => ({
           ...configuration,
           fullText: text,
-          endToken: tokens[1],
+          endToken,
         })
       ),
-      push_mode: "AltParserMode",
+      push_mode: modeId,
       line_breaks: false,
     }),
-    createToken({
-      name: "PopParser",
-      label: `PopParser(${popPattern})`,
-      categories: [PopParser],
-      pattern: popPattern,
-      pop_mode: true,
-      line_breaks: false,
-    }),
+    endToken,
   ];
+
+  // Create optional tokens
+  if (dummyPushPattern) {
+    if (dummyPushPattern.source === popPattern.source) {
+      throw new Error(
+        `cannot make push parser tokens with identical DummyPushParser and PopParser patterns (${dummyPushPattern})`
+      );
+    }
+
+    tokens.push(
+      createToken({
+        name: `${modeId}DummyPushParser`,
+        label: `DummyPushParser(${dummyPushPattern})`,
+        categories: [DummyPushParser],
+        pattern: dummyPushPattern,
+        push_mode: modeId,
+        line_breaks: false,
+      })
+    );
+  }
+
   return tokens;
 }

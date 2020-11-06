@@ -1,4 +1,5 @@
-import { VisitorResult, CommandNode, BluehawkError } from "./makeCstVisitor";
+import { VisitorResult, CommandNode } from "./makeCstVisitor";
+import { BluehawkError } from "../bluehawk";
 
 interface ValidateCstResult {
   errors: BluehawkError[];
