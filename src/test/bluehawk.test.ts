@@ -4,22 +4,28 @@ describe("bluehawk", () => {
   const bluehawk = new Bluehawk();
 
   it("handles lexing, parsing, visiting, and validating", () => {
-    const input = `
+    const input = {
+      text: `
     this is ignored
     :some-command-start:
     this is in the command
     :some-command-end:
-`;
+`,
+      language: "testlanguage",
+    };
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(0);
   });
 
   it("contains lexing errors", () => {
-    const input = `
+    const input = {
+      text: `
     :some-command-start: '
     this is ignored
     :some-command-end:
-    `;
+    `,
+      language: "testlanguage",
+    };
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
     expect(output.errors[0]).toStrictEqual({
@@ -34,12 +40,15 @@ describe("bluehawk", () => {
   });
 
   it("contains parsing errors", () => {
-    const input = `
+    const input = {
+      text: `
     this is ignored
     :some-command-start:
     this is in the command
     :some-command-start:
-`;
+`,
+      language: "testlanguage",
+    };
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
     expect(output.errors[0]).toStrictEqual({
@@ -55,24 +64,30 @@ describe("bluehawk", () => {
 
   it("contains visiting errors", () => {
     // TODO: come up with a decent visiting error
-    const input = `
+    const input = {
+      text: `
     this is ignored
     :some-command-start:
     this is in the command
     :some-command-end:
-`;
+`,
+      language: "testlanguage",
+    };
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(0);
     expect(output.errors[0]).toStrictEqual(undefined);
   });
 
   it("contains validating errors", () => {
-    const input = `
+    const input = {
+      text: `
     this is ignored
     :code-block-start:
     this is in the command
     :code-block-end:
-`;
+`,
+      language: "testlanguage",
+    };
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
     expect(output.errors[0]).toStrictEqual({

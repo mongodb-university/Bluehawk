@@ -9,19 +9,9 @@ import { RootParser } from "./RootParser";
 import { jsonErrorToVisitorError } from "./jsonErrorToVisitorError";
 import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
 import { PushParserPayload } from "../lexer/makePushParserTokens";
+import { BluehawkError, Location, Range } from "../bluehawk";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
-
-export interface Location {
-  line: number;
-  column: number;
-  offset: number;
-}
-
-export interface Range {
-  start: Location;
-  end: Location;
-}
 
 function locationFromToken(token: IToken): Location {
   return {
@@ -44,11 +34,6 @@ function locationAfterToken(token: IToken, fullText: string): Location {
     location.line += 1;
   }
   return location;
-}
-
-export interface BluehawkError {
-  message: string;
-  location: Location;
 }
 
 export interface VisitorResult {
