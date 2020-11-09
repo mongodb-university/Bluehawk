@@ -1,4 +1,4 @@
-import { Location } from "./makeCstVisitor";
+import { Location } from "../bluehawk";
 
 // Convenience function to transform an offset within an inner string
 // (substring) that appears in the outer text at the given location.
