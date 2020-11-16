@@ -7,6 +7,7 @@ import { CommandNode } from "../parser/CommandNode";
  */
 
 export default class RemoveCommand extends Command {
+  fileOutPath: string;
   constructor(cfg: CommandConfig) {
     super(cfg);
   }
