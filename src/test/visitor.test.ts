@@ -9,6 +9,11 @@ describe("visitor", () => {
     makeLineCommentToken(/\/\//),
   ]);
   const { lexer } = parser;
+  const source = {
+    language: "mock",
+    text: "mock",
+    filePath: "mock",
+  };
 
   it("can be constructed", () => {
     const tokens = lexer.tokenize(`
@@ -25,7 +30,7 @@ annotated text
     parser.input = tokens.tokens;
     const visitor = makeCstVisitor(parser);
     const cst = parser.annotatedText();
-    visitor.visit(cst);
+    visitor.visit(cst, source);
   });
 
   describe("JSON attribute lists", () => {
@@ -38,7 +43,7 @@ annotated text
       const cst = parser.annotatedText();
       expect(parser.errors).toStrictEqual([]);
       const visitor = makeCstVisitor(parser);
-      const result = visitor.visit(cst);
+      const result = visitor.visit(cst, source);
       expect(result.errors).toStrictEqual([]);
       expect(result.commands[0].commandName).toBe("A-command");
       expect(result.commands[0].attributes).toStrictEqual({});
@@ -62,7 +67,7 @@ annotated text
       const cst = parser.annotatedText();
       expect(parser.errors.length).toBe(0);
       const visitor = makeCstVisitor(parser);
-      const result = visitor.visit(cst);
+      const result = visitor.visit(cst, source);
       expect(result.errors).toStrictEqual([]);
       expect(result.commands[0].commandName).toBe("A-command");
       expect(result.commands[0].attributes).toStrictEqual({
@@ -84,7 +89,7 @@ annotated text
 
       const tokens = lexer.tokenize(`:A-command-start: {
   "a": "\\n",
-     
+
 
   1: 1
 }
@@ -95,13 +100,13 @@ annotated text
       const cst = parser.annotatedText();
       expect(parser.errors.length).toBe(0);
       const visitor = makeCstVisitor(parser);
-      const result = visitor.visit(cst);
+      const result = visitor.visit(cst, source);
       expect(result.commands[0].attributes).toBeUndefined();
       expect(result.errors[0].message).toBe("Unexpected number in JSON");
       expect(result.errors[0].location).toStrictEqual({
         line: 5,
         column: 3,
-        offset: 42,
+        offset: 37,
       });
     });
 
@@ -118,7 +123,7 @@ annotated text
       const cst = parser.annotatedText();
       expect(parser.errors.length).toBe(0);
       const visitor = makeCstVisitor(parser);
-      const result = visitor.visit(cst);
+      const result = visitor.visit(cst, source);
       expect(result.errors[0].location).toStrictEqual({
         line: 5,
         column: 1,
@@ -141,7 +146,7 @@ annotated text
       const cst = parser.annotatedText();
       expect(parser.errors).toStrictEqual([]);
       const visitor = makeCstVisitor(parser);
-      const result = visitor.visit(cst);
+      const result = visitor.visit(cst, source);
       expect(result.errors[0].location).toStrictEqual({
         line: 5,
         column: 1,
@@ -164,7 +169,7 @@ annotated text
       const cst = parser.annotatedText();
       expect(parser.errors).toStrictEqual([]);
       const visitor = makeCstVisitor(parser);
-      const result = visitor.visit(cst);
+      const result = visitor.visit(cst, source);
       expect(result.errors[0].location).toStrictEqual({
         line: 5,
         column: 1,
@@ -186,7 +191,7 @@ annotated text
       const cst = parser.annotatedText();
       expect(parser.errors).toStrictEqual([]);
       const visitor = makeCstVisitor(parser);
-      const result = visitor.visit(cst);
+      const result = visitor.visit(cst, source);
       expect(result.errors).toStrictEqual([]);
     });
 
@@ -202,7 +207,7 @@ annotated text
       const cst = parser.annotatedText();
       expect(parser.errors).toStrictEqual([]);
       const visitor = makeCstVisitor(parser);
-      const result = visitor.visit(cst);
+      const result = visitor.visit(cst, source);
       expect(result.errors[0].location).toStrictEqual({
         line: 3,
         column: 4,
@@ -223,7 +228,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(3);
     expect(result.commands[0].commandName).toBe("A-command");
@@ -245,7 +250,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(3);
     expect(result.commands[0].commandName).toBe("A-command");
@@ -263,7 +268,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors[0].message).toBe(
       "Unexpected this-is-a-different-command-end closing this-is-a-command-start"
     );
@@ -285,7 +290,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(1);
     expect(result.commands[0].children.length).toBe(1);
@@ -302,7 +307,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands[0].commandName).toBe("A");
     expect(result.commands[0].children.length).toBe(0);
@@ -325,7 +330,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands[0].commandName).toBe("command-in-a-block-comment");
     expect(result.commands[0].inContext).toBe("blockComment");
@@ -365,7 +370,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands[0].commandName).toBe("line-commented-block-command");
     expect(result.commands[0].inContext).toBe("lineComment");
@@ -390,7 +395,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands[0].commandName).toBe("not-sure-how-to-test-this");
     expect(result.commands[0].inContext).toBe("none");
@@ -399,7 +404,7 @@ annotated text
   test("descendants inherit context", () => {
     const tokens = lexer.tokenize(`
 // :a-start:
-  :b-start: 
+  :b-start:
     /* :c-start:
       :d-start:
       :d-end:
@@ -415,7 +420,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     const a = result.commands[0];
     expect(a.commandName).toBe("a");
@@ -445,7 +450,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(1);
     const a = result.commands[0];
@@ -454,10 +459,10 @@ the quick brown fox jumped
     // to the end of the last command
     expect(result.commands[0].range.start.line).toBe(2);
     expect(result.commands[0].range.start.column).toBe(4);
-    expect(result.commands[0].range.start.offset).toBe(4);
+    expect(result.commands[0].range.start.offset).toBe(1);
     expect(result.commands[0].range.end.line).toBe(4);
     expect(result.commands[0].range.end.column).toBe(10);
-    expect(result.commands[0].range.end.offset).toBe(50);
+    expect(result.commands[0].range.end.offset).toBe(52);
   });
 
   test("identifies start and end lines for block command content", () => {
@@ -471,7 +476,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(1);
     const a = result.commands[0];
@@ -482,7 +487,7 @@ the quick brown fox jumped
     expect(result.commands[0].contentRange.start.column).toBe(1);
     expect(result.commands[0].contentRange.start.offset).toBe(14);
     expect(result.commands[0].contentRange.end.line).toBe(4);
-    expect(result.commands[0].contentRange.end.column).toBe(3);
+    expect(result.commands[0].contentRange.end.column).toBe(1);
     //expect(result.commands[0].contentRange.end.offset).toBe(43);
   });
 
@@ -503,7 +508,7 @@ and again
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(1);
 
@@ -513,18 +518,18 @@ and again
     // to the end of the last command
     expect(a.range.start.line).toBe(2);
     expect(a.range.start.column).toBe(4);
-    expect(a.range.start.offset).toBe(4);
+    expect(a.range.start.offset).toBe(1);
     expect(a.range.end.line).toBe(10);
     expect(a.range.end.column).toBe(10);
-    expect(a.range.end.offset).toBe(124);
+    expect(a.range.end.offset).toBe(126);
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
     expect(a.contentRange.start.line).toBe(3);
     expect(a.contentRange.start.column).toBe(1);
     expect(a.contentRange.start.offset).toBe(14);
     expect(a.contentRange.end.line).toBe(10);
-    expect(a.contentRange.end.column).toBe(3);
-    expect(a.contentRange.end.offset).toBe(117);
+    expect(a.contentRange.end.column).toBe(1);
+    expect(a.contentRange.end.offset).toBe(115);
 
     const b = result.commands[0].children[0];
     expect(b.commandName).toBe("b");
@@ -532,18 +537,18 @@ and again
     // to the end of the last command
     expect(b.range.start.line).toBe(4);
     expect(b.range.start.column).toBe(4);
-    expect(b.range.start.offset).toBe(44);
+    expect(b.range.start.offset).toBe(41);
     expect(b.range.end.line).toBe(9);
     expect(b.range.end.column).toBe(10);
-    expect(b.range.end.offset).toBe(113);
+    expect(b.range.end.offset).toBe(115);
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
     expect(b.contentRange.start.line).toBe(5);
     expect(b.contentRange.start.column).toBe(1);
     expect(b.contentRange.start.offset).toBe(54);
     expect(b.contentRange.end.line).toBe(9);
-    expect(b.contentRange.end.column).toBe(3);
-    expect(b.contentRange.end.offset).toBe(106);
+    expect(b.contentRange.end.column).toBe(1);
+    expect(b.contentRange.end.offset).toBe(104);
 
     const c = result.commands[0].children[0].children[0];
     expect(c.commandName).toBe("c");
@@ -551,18 +556,18 @@ and again
     // to the end of the last command
     expect(c.range.start.line).toBe(6);
     expect(c.range.start.column).toBe(4);
-    expect(c.range.start.offset).toBe(73);
+    expect(c.range.start.offset).toBe(70);
     expect(c.range.end.line).toBe(8);
     expect(c.range.end.column).toBe(10);
-    expect(c.range.end.offset).toBe(102);
+    expect(c.range.end.offset).toBe(104);
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
     expect(c.contentRange.start.line).toBe(7);
     expect(c.contentRange.start.column).toBe(1);
     expect(c.contentRange.start.offset).toBe(83);
     expect(c.contentRange.end.line).toBe(8);
-    expect(c.contentRange.end.column).toBe(3);
-    expect(c.contentRange.end.offset).toBe(95);
+    expect(c.contentRange.end.column).toBe(1);
+    expect(c.contentRange.end.offset).toBe(93);
   });
 
   test("lines and columns are 1-based index while offsets are 0-based", () => {
@@ -574,7 +579,7 @@ and again
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands[0].commandName).toBe("A-command");
     expect(result.commands[0].range.start.line).toBe(1);
@@ -601,7 +606,7 @@ and again
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(3);
     expect(result.commands[0].commandName).toBe("A-command");
@@ -626,7 +631,7 @@ and again
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(3);
     expect(result.commands[0].commandName).toBe("A-command");
@@ -679,14 +684,14 @@ and again
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(1);
     expect(result.commands[0].contentRange).toBeUndefined();
   });
 
   it("identifies content range for block commands with attributeLists", () => {
-    const source = `:a-start: {
+    const tokenString = `:a-start: {
 
 
 
@@ -697,16 +702,16 @@ and again
 line 9 -- some more content
 line 10 :a-end:
 `;
-    const tokens = lexer.tokenize(source);
+    const tokens = lexer.tokenize(tokenString);
     expect(tokens.errors).toStrictEqual([]);
     parser.input = tokens.tokens;
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(1);
-    const lines = source.split("\n");
+    const lines = tokenString.split("\n");
     expect(result.commands[0].contentRange.start.line).toBe(9);
     expect(lines[result.commands[0].contentRange.start.line - 1]).toBe(
       "line 9 -- some more content"
@@ -714,8 +719,8 @@ line 10 :a-end:
     expect(result.commands[0].contentRange.start.column).toBe(1);
     expect(result.commands[0].contentRange.start.offset).toBe(28);
     expect(result.commands[0].contentRange.end.line).toBe(10);
-    expect(result.commands[0].contentRange.end.column).toBe(8);
-    expect(result.commands[0].contentRange.end.offset).toBe(63);
+    expect(result.commands[0].contentRange.end.column).toBe(1);
+    expect(result.commands[0].contentRange.end.offset).toBe(56);
 
     // Remember lines are 1-based while the lines array starts at index 0
     expect(lines[result.commands[0].contentRange.end.line - 1]).toBe(
@@ -724,23 +729,23 @@ line 10 :a-end:
   });
 
   test("offset matches line + column", () => {
-    const source = `a2345678
+    const tokenString = `a2345678
 b2345678
 c2345678 :a-start:
 //
 // :a-end:
 `;
-    const tokens = lexer.tokenize(source);
+    const tokens = lexer.tokenize(tokenString);
     expect(tokens.errors).toStrictEqual([]);
     parser.input = tokens.tokens;
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commands.length).toBe(1);
     // Re-add newlines since they are included in the offset
-    const lines = source.split("\n").map((line) => `${line}\n`);
+    const lines = tokenString.split("\n").map((line) => `${line}\n`);
     expect(lines[0].length).toBe(9);
     expect(lines[1].length).toBe(9);
     expect(lines[2].length).toBe(19);
@@ -754,13 +759,9 @@ c2345678 :a-start:
       lines[0].length + lines[1].length + lines[2].length
     );
     expect(result.commands[0].contentRange.end.line).toBe(5);
-    expect(result.commands[0].contentRange.end.column).toBe(3);
+    expect(result.commands[0].contentRange.end.column).toBe(1);
     expect(result.commands[0].contentRange.end.offset).toBe(
-      lines[0].length +
-        lines[1].length +
-        lines[2].length +
-        lines[3].length +
-        "//".length // offset points at the space between // and command end
+      lines[0].length + lines[1].length + lines[2].length + lines[3].length
     );
   });
 });

@@ -27,20 +27,6 @@ export async function openFile({
     if (fs.lstatSync(source).isDirectory()) {
       // TODO: support directories
       console.error("directories aren't currently supported");
-      // const directory = source;
-      // fs.readdir(directory, function (err, files) {
-      //   if (err) {
-      //     output.error(err.message);
-      //     reject(err);
-      //   }
-
-      //   const fileArray = files.map((file) =>
-      //     createFileArray({ source: file, stages, destination, type })
-      //   );
-
-      //   builder.run(fileArray, type);
-      //   resolve();
-      // });
     } else {
       const directory = path.dirname(source);
 

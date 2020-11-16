@@ -1,8 +1,41 @@
+export const codeFile = `
 const Realm = require("realm");
 const inquirer = require("inquirer");
 const users = require("./users");
 const schemas = require("./schemas");
 const output = require("../output");
+const { PassThrough } = require("stream");
+
+// :snippet-start: <name>
+// :snippet-end:
+
+// :remove-start:
+// :remove-end:
+
+// :remove:
+
+// :state-machine-start:
+// :state: begin
+// :state: final
+// :state-machine-end:
+
+// localLogin
+// purpose of this step is to tell users they need to use the Realm.user
+// method
+
+
+/begin/createUser.js
+const realm = new Realm()
+
+/final/createUser.js
+const realm= new Realm()
+const user = realm.user(username, password)
+
+
+
+/snippets/snippetName.ext
+
+googleAuth.js
 
 Realm.Sync.setLogLevel("error");
 
@@ -28,8 +61,14 @@ async function openRealm() {
       // // comment in start code: ... ,
       // :hide-end:
       // :code-block-end:
+      // :test-start:
+      it("does some fun things", () => {
+        fail()
+        pass()
+      });
+      // :test-end:
 
-      /* :code-block-start: openRealm2 
+      /* :code-block-start: openRealm2
       :hide-start:*/
       notInStartCode: true,
       inFinalCode: true,
@@ -102,3 +141,4 @@ async function closeRealm() {
 exports.getRealm = getRealm;
 exports.closeRealm = closeRealm;
 exports.run = run;
+`;
