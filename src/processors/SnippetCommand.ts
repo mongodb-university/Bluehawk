@@ -14,6 +14,7 @@ export default class SnippetCommand extends Command {
     super(config);
     this.writeSnippet = this.writeSnippet.bind(this);
   }
+  /* istanbul ignore next */
   writeSnippet(filePath: string, contents: string, id: string): void {
     if (!this.config.writeFileMode) {
       return;
