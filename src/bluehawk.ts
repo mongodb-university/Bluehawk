@@ -1,6 +1,7 @@
 import { makeBlockCommentTokens } from "./lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "./lexer/makeLineCommentToken";
 import { makeCstVisitor } from "./parser/makeCstVisitor";
+import { CommandNode } from "./parser/CommandNode";
 import { validateVisitorResult } from "./parser/validator";
 import { RootParser } from "./parser/RootParser";
 
@@ -22,11 +23,14 @@ export interface BluehawkError {
 
 export class BluehawkResult {
   errors: BluehawkError[];
+  commands: CommandNode[];
+  source: BluehawkSource;
 }
 
 export class BluehawkSource {
   text: string;
   language: string;
+  filePath: string;
 }
 
 export class Bluehawk {
@@ -46,7 +50,8 @@ export class Bluehawk {
     const parser = this.parsers.get(source.language);
     const parseResult = parser.parse(source.text);
     const visitor = makeCstVisitor(parser);
-    const visitorResult = visitor.visit(parseResult.cst);
+    const visitorResult = visitor.visit(parseResult.cst, source);
+
     const validateResult = validateVisitorResult(visitorResult);
     return {
       errors: [
@@ -54,6 +59,8 @@ export class Bluehawk {
         ...visitorResult.errors,
         ...validateResult.errors,
       ],
+      commands: visitorResult.commands,
+      source,
     };
   }
 }

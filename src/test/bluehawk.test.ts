@@ -12,6 +12,7 @@ describe("bluehawk", () => {
     :some-command-end:
 `,
       language: "testlanguage",
+      filePath: "testPath",
     };
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(0);
@@ -25,6 +26,7 @@ describe("bluehawk", () => {
     :some-command-end:
     `,
       language: "testlanguage",
+      filePath: "testPath",
     };
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
@@ -48,6 +50,7 @@ describe("bluehawk", () => {
     :some-command-start:
 `,
       language: "testlanguage",
+      filePath: "testPath",
     };
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
@@ -72,6 +75,7 @@ describe("bluehawk", () => {
     :some-command-end:
 `,
       language: "testlanguage",
+      filePath: "testPath",
     };
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(0);
@@ -87,6 +91,7 @@ describe("bluehawk", () => {
     :code-block-end:
 `,
       language: "testlanguage",
+      filePath: "testPath",
     };
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
@@ -94,7 +99,7 @@ describe("bluehawk", () => {
       location: {
         column: 5,
         line: 3,
-        offset: 25,
+        offset: 22,
       },
       message: "missing ID for command: 'code-block'",
     });

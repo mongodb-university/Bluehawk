@@ -14,7 +14,6 @@ export function buildCodeFiles(source: string, type: string): CodeFile {
   let inBlockComment = false;
   let isCommand = false;
   let inHide = false;
-  let inStepBlock = false;
   let inReplace = false;
   let replaceIndent;
   let replaceOffset;
@@ -28,14 +27,6 @@ export function buildCodeFiles(source: string, type: string): CodeFile {
 
   function handleCommand(command, line) {
     output.addInformational(command, line, line.indexOf(command));
-    if (command.indexOf(":step-start:") > -1) {
-      inStepBlock = true;
-      return;
-    }
-    if (command.indexOf(":step-end:") > -1) {
-      inStepBlock = false;
-      return;
-    }
     if (command.indexOf(":hide-start:") > -1) {
       inHide = true;
       for (let c = 0; c < constants.comments[fileType].line.length; c++) {

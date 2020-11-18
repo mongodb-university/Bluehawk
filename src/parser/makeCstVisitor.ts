@@ -8,8 +8,9 @@ import {
 import { RootParser } from "./RootParser";
 import { jsonErrorToVisitorError } from "./jsonErrorToVisitorError";
 import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
-import { BluehawkError, Location, Range } from "../bluehawk";
+import { BluehawkError, BluehawkSource, Location } from "../bluehawk";
 import { PushParserTokenPayload } from "../lexer/makePushParserTokens";
+import { CommandNode } from "./CommandNode";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
 
@@ -41,86 +42,15 @@ export interface VisitorResult {
   commands: CommandNode[];
 }
 
-type CommandNodeContext =
+export type CommandNodeContext =
   | "none"
   | "stringLiteral"
   | "lineComment"
   | "blockComment";
 
-export class CommandNode {
-  commandName: string;
-  get inContext(): CommandNodeContext {
-    return this._context[this._context.length - 1] || "none";
-  }
-
-  _context = Array<CommandNodeContext>();
-
-  // ranges covered by this node
-  range: Range;
-  contentRange?: Range;
-
-  // Only available in block commands:
-  get id(): string | undefined {
-    return this.attributes?.id;
-  }
-  children?: CommandNode[];
-
-  // Attributes come from JSON and their schema depends on the command.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attributes?: { [member: string]: any };
-
-  // Block Commands operate on their inner range and can have children, IDs, and
-  // attributes.
-  makeChildBlockCommand(commandName: string): CommandNode {
-    assert(this.children);
-    const command = new CommandNode(commandName, this);
-    command.children = [];
-    return command;
-  }
-
-  // Line Commands operate on the line they appear in and cannot have children,
-  // IDs, or attributes.
-  makeChildLineCommand(commandName: string): CommandNode {
-    assert(this.children);
-    return new CommandNode(commandName, this);
-  }
-
-  withErasedBlockCommand(
-    callback: (erasedBlockCommand: CommandNode) => void
-  ): void {
-    assert(this.children);
-    // We erase whatever element created the context and add what would have
-    // been that element's children to the parent node. This is definitely
-    // weird, but only used internally...
-    const node = new CommandNode(
-      "__this_should_not_be_here___please_file_a_bug__"
-    );
-    node.children = [];
-    callback(node);
-    this.children = [...this.children, ...node.children];
-  }
-
-  // The root command is the root node of a parsed document and contains all
-  // other nodes in the document.
-  static rootCommand(): CommandNode {
-    const command = new CommandNode("__root__");
-    command.attributes = new Map();
-    command.children = [];
-    return command;
-  }
-
-  private constructor(commandName: string, parentToAttachTo?: CommandNode) {
-    this.commandName = commandName;
-    if (parentToAttachTo != null) {
-      this._context = [...parentToAttachTo._context];
-      parentToAttachTo.children.push(this);
-    }
-  }
-}
-
 export interface IVisitor {
   parser: RootParser;
-  visit(node: CstNode): VisitorResult;
+  visit(node: CstNode, source: BluehawkSource): VisitorResult;
 }
 
 // While the lexer defines the tokens (words) and the parser defines the syntax,
@@ -200,7 +130,8 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
   // Tuple passed to visitor methods. All errors go to the top level. Visitor
   // methods operate on the parent node, usually by adding child nodes to the
   // parent.
-  interface VA {
+  interface VisitorContext {
+    source: BluehawkSource;
     parent: CommandNode;
     errors: BluehawkError[];
   }
@@ -216,10 +147,10 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
     }
 
     // The entrypoint for the visitor.
-    visit(node: CstNode): VisitorResult {
-      const parent = CommandNode.rootCommand();
+    visit(node: CstNode, source: BluehawkSource): VisitorResult {
+      const parent = CommandNode.rootCommand(source);
       const errors = [];
-      this.$visit([node], { errors, parent });
+      this.$visit([node], { errors, parent, source });
       return {
         errors,
         commands: parent.children,
@@ -228,26 +159,35 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
 
     // chevrotain requires helper methods to begin with a token other than
     // [0-9A-z-_] which leaves... $?
-    private $visit(nodes: CstNode[] | undefined, { parent, errors }: VA) {
+    private $visit(
+      nodes: CstNode[] | undefined,
+      { parent, errors }: VisitorContext
+    ) {
       assert(parent != null);
       if (nodes) {
         nodes.forEach((node) => super.visit(node, { parent, errors }));
       }
     }
 
-    annotatedText(context: AnnotatedTextContext, { parent, errors }: VA) {
-      assert(parent != null);
+    annotatedText(
+      context: AnnotatedTextContext,
+      visitorContext: VisitorContext
+    ) {
+      assert(visitorContext.parent != null);
       // Flatten annotatedText and chunks to one list ordered by appearance in
       // the file and allow each chunk to add to the parent's child list.
       this.$visit(
         (context.chunk ?? []).sort(
           (a, b) => a.location.startOffset - b.location.startOffset
         ),
-        { parent, errors }
+        visitorContext
       );
     }
 
-    attributeList(context: AttributeListContext, { parent, errors }: VA) {
+    attributeList(
+      context: AttributeListContext,
+      { parent, errors }: VisitorContext
+    ) {
       // ⚠️ This should not recursively visit inner attributeLists
       assert(parent != null);
       const AttributeListStart = context.AttributeListStart[0];
@@ -306,7 +246,10 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
       }
     }
 
-    blockCommand(context: BlockCommandContext, { parent, errors }: VA) {
+    blockCommand(
+      context: BlockCommandContext,
+      { parent, errors, source }: VisitorContext
+    ) {
       assert(parent != null);
 
       // Extract the command name ("example") from the
@@ -322,15 +265,14 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         start: {
           line: context.CommandStart[0].startLine,
           column: context.CommandStart[0].startColumn,
-          offset: context.CommandStart[0].startOffset,
+          offset: context.CommandStart[0].startOffset - 3,
         },
         end: {
           line: context.CommandEnd[0].endLine,
           column: context.CommandEnd[0].endColumn,
-          offset: context.CommandEnd[0].endOffset,
+          offset: context.CommandEnd[0].endOffset + 2,
         },
       };
-
       if (context.chunk != undefined) {
         newNode.contentRange = {
           start: {
@@ -340,8 +282,10 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
           },
           end: {
             line: context.CommandEnd[0].startLine,
-            column: context.CommandEnd[0].startColumn - 1,
-            offset: context.CommandEnd[0].startOffset - 1,
+            column: 1, // Always end at the beginning of the line with the end command
+            offset:
+              context.CommandEnd[0].startOffset -
+              (context.CommandEnd[0].startColumn - 1),
           },
         };
       }
@@ -358,11 +302,18 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         });
       }
 
-      this.$visit(context.commandAttribute, { parent: newNode, errors });
-      this.$visit(context.chunk, { parent: newNode, errors });
+      this.$visit(context.commandAttribute, {
+        parent: newNode,
+        errors,
+        source,
+      });
+      this.$visit(context.chunk, { parent: newNode, errors, source });
     }
 
-    blockComment(context: BlockCommentContext, { parent, errors }: VA) {
+    blockComment(
+      context: BlockCommentContext,
+      { parent, errors, source }: VisitorContext
+    ) {
       assert(parent != null);
       // This node (blockComment) should not be included in the final output. We
       // use it to gather child nodes and attach them to the parent node.
@@ -370,13 +321,13 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         erasedBlockCommand._context.push("blockComment");
         this.$visit(
           [...(context.blockComment ?? []), ...(context.command ?? [])],
-          { parent: erasedBlockCommand, errors }
+          { parent: erasedBlockCommand, errors, source }
         );
       });
     }
 
-    chunk(context: ChunkContext, { parent, errors }: VA) {
-      assert(parent != null);
+    chunk(context: ChunkContext, visitorContext: VisitorContext) {
+      assert(visitorContext.parent != null);
       // Like annotatedText, merge all child nodes into a list of children
       // attached to the parent node, ordered by their appearance in the
       // document.
@@ -387,15 +338,16 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
           ...(context.lineComment ?? []),
           ...(context.pushParser ?? []),
         ].sort((a, b) => a.location.startOffset - b.location.startOffset),
-        { parent, errors }
+        visitorContext
       );
     }
 
-    command(context: CommandContext, { parent, errors }: VA) {
+    command(context: CommandContext, visitorContext: VisitorContext) {
+      const { parent } = visitorContext;
       assert(parent != null);
       if (context.blockCommand) {
         assert(!context.Command); // Parser issue!
-        this.$visit(context.blockCommand, { parent, errors });
+        this.$visit(context.blockCommand, visitorContext);
         return;
       }
       assert(context.Command);
@@ -419,7 +371,11 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
       });
     }
 
-    commandAttribute(context: CommandAttributeContext, { parent, errors }: VA) {
+    commandAttribute(
+      context: CommandAttributeContext,
+      visitorContext: VisitorContext
+    ) {
+      const { parent } = visitorContext;
       assert(parent != null);
       const Identifier = context.Identifier;
       const attributeList = context.attributeList;
@@ -430,11 +386,14 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
       } else if (context.attributeList != undefined) {
         assert(!Identifier); // parser issue
         assert(attributeList.length === 1); // should be impossible to have more than 1 list
-        this.$visit(attributeList, { parent, errors });
+        this.$visit(attributeList, visitorContext);
       }
     }
 
-    lineComment(context: LineCommentContext, { parent, errors }: VA) {
+    lineComment(
+      context: LineCommentContext,
+      { parent, errors, source }: VisitorContext
+    ) {
       assert(parent != null);
       const { command } = context;
       if (command === undefined) {
@@ -444,11 +403,18 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         // Any blockCommand that starts in a lineComment by definition MUST be
         // on the same line as the line comment
         erasedBlockCommand._context.push("lineComment");
-        this.$visit(command, { parent: erasedBlockCommand, errors });
+        this.$visit(command, {
+          parent: erasedBlockCommand,
+          errors,
+          source,
+        });
       });
     }
 
-    pushParser(context: PushParserContext, { parent, errors }: VA) {
+    pushParser(
+      context: PushParserContext,
+      { parent, errors, source }: VisitorContext
+    ) {
       // ⚠️ This should not recursively visit inner pushParsers
       assert(parent != null);
       const PushParser = context.PushParser[0];
@@ -503,7 +469,10 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
         });
         return;
       }
-      const result = visitor.visit(parseResult.cst);
+      const result = visitor.visit(parseResult.cst, {
+        ...source,
+        text: substring,
+      });
       parent.children = [...parent.children, ...result.commands];
       result.errors.forEach((error) =>
         errors.push({
@@ -522,7 +491,7 @@ export function makeCstVisitor(parser: RootParser): IVisitor {
       assert(false);
     }
 
-    stringLiteral(context: StringLiteralContext, params: VA) {
+    stringLiteral(context: StringLiteralContext, params: VisitorContext) {
       this.$visit(context.pushParser, params);
     }
   })();

@@ -4,6 +4,11 @@ import { makePushParserTokens } from "../lexer/makePushParserTokens";
 import { makeCstVisitor } from "../parser/makeCstVisitor";
 import { RootParser } from "../parser/RootParser";
 
+const someSource = {
+  language: "mock",
+  filePath: "mock",
+  text: "mock",
+};
 describe("multicomment", () => {
   const parser = new RootParser([
     ...makeBlockCommentTokens(/AA/y, /\/AA/),
@@ -61,7 +66,7 @@ describe("multilang", () => {
 # :command2:
 `);
     expect(parseResult.errors).toStrictEqual([]);
-    const result = visitor.visit(parseResult.cst);
+    const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
       result.commands.map((command) => [command.commandName, command.inContext])
@@ -88,7 +93,7 @@ describe("multilang", () => {
 # :command5:
 `);
     expect(parseResult.errors).toStrictEqual([]);
-    const result = visitor.visit(parseResult.cst);
+    const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
       result.commands.map((command) => [command.commandName, command.inContext])
@@ -114,7 +119,7 @@ describe("multilang", () => {
 ?>
 `);
     expect(parseResult.errors).toStrictEqual([]);
-    const result = visitor.visit(parseResult.cst);
+    const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors[0].message).toContain(
       "blockComment: After Newline, expected BlockCommentEnd but found EOF"
     );
@@ -142,7 +147,7 @@ describe("multilang", () => {
 :command2:
 `);
     const visitor = makeCstVisitor(markdownParser);
-    const result = visitor.visit(parseResult.cst);
+    const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
       result.commands.map((command) => [command.commandName, command.inContext])

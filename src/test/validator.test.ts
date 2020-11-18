@@ -10,6 +10,11 @@ describe("validator", () => {
     makeLineCommentToken(/\/\//),
   ]);
   const { lexer } = parser;
+  const source = {
+    language: "mock",
+    filePath: "mock",
+    text: "mock",
+  };
 
   test("validates non-code-block commands without error", () => {
     const tokens = lexer.tokenize(`
@@ -22,7 +27,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(0);
   });
@@ -38,7 +43,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
     expect(validateResult.errors[0].message).toStrictEqual(
@@ -47,7 +52,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 2,
       column: 4,
-      offset: 4,
+      offset: 1,
     });
   });
 
@@ -66,7 +71,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
     expect(validateResult.errors[0].message).toStrictEqual(
@@ -75,7 +80,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 80,
+      offset: 77,
     });
   });
 
@@ -94,7 +99,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(2);
     expect(validateResult.errors[0].message).toStrictEqual(
@@ -103,7 +108,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 2,
       column: 4,
-      offset: 4,
+      offset: 1,
     });
     expect(validateResult.errors[1].message).toStrictEqual(
       "missing ID for command: 'code-block'"
@@ -111,7 +116,7 @@ the quick brown fox jumped
     expect(validateResult.errors[1].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 74,
+      offset: 71,
     });
   });
 
@@ -126,7 +131,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(0);
   });
@@ -146,7 +151,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
     expect(validateResult.errors[0].message).toStrictEqual(
@@ -155,7 +160,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 90,
+      offset: 87,
     });
   });
 
@@ -174,7 +179,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
     expect(validateResult.errors[0].message).toStrictEqual(
@@ -183,7 +188,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 2,
       column: 4,
-      offset: 4,
+      offset: 1,
     });
   });
 
@@ -202,7 +207,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(0);
   });
@@ -222,7 +227,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.errors.length).toBe(1);
     expect(validateResult.errors[0].message).toStrictEqual(
@@ -231,7 +236,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 102,
+      offset: 99,
     });
   });
 
@@ -246,7 +251,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst);
+    const result = visitor.visit(cst, source);
     const validateResult = validateVisitorResult(result);
     expect(validateResult.commandsById.size).toBe(1);
     expect(
@@ -255,12 +260,12 @@ the quick brown fox jumped
       start: {
         line: 2,
         column: 4,
-        offset: 4,
+        offset: 1,
       },
       end: {
         line: 4,
         column: 19,
-        offset: 96,
+        offset: 98,
       },
     });
   });
