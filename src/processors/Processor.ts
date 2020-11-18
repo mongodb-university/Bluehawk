@@ -16,9 +16,7 @@ export interface CommandResult {
 
 export abstract class Command {
   config: CommandConfig;
-  commandName: string;
   constructor(config: CommandConfig) {
-    this.commandName = config.commandName;
     this.config = config;
     this.process = this.process.bind(this);
   }
@@ -61,6 +59,6 @@ export default class Processor {
    * @param command - The Command to register.
    */
   static registerCommand(command: Command): void {
-    this.commands[command.commandName] = command.process;
+    this.commands[command.config.commandName] = command.process;
   }
 }
