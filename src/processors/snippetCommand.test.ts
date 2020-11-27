@@ -1,4 +1,4 @@
-import { Bluehawk } from "../bluehawk";
+import { Bluehawk, BluehawkResult } from "../bluehawk";
 import SnippetCommand from "./SnippetCommand";
 import Processor from "./Processor";
 import { join } from "path";
@@ -102,7 +102,7 @@ describe("snippet Command", () => {
     fileOutPath: "",
   });
   Processor.registerCommand(command);
-  let output;
+  let output: BluehawkResult;
   it("performs extraction", () => {
     output = bluehawk.run(source);
     expect(command.process(output.commands.pop()).result).toEqual(
