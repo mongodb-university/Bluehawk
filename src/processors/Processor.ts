@@ -14,6 +14,8 @@ export interface CommandResult {
   result: string;
 }
 
+export type Listener = (event: any) => void;
+
 export abstract class Command {
   config: CommandConfig;
   commandName: string;
@@ -25,8 +27,23 @@ export abstract class Command {
   abstract process(command: CommandNode): CommandResult;
 }
 
+/**
+ * TODO
+ *
+ * Processor needs to be refacotored so that it doesn't perform the reduce. It should simply pass the root CommandNode tree to each registered Command
+ * that is configured to process a tree (which implies a small command refactor to signify this).
+ *
+ * Commands should look for other registered commands on this processor in the commands map and invoke them. No side effects should happen from commands (file writing),
+ * instead they need to use the Processor's publish method to notify any subscribers of an encountered event. There will need to be subscribers for snippets and states.
+ */
+
 export default class Processor {
   private static commands: Record<string, CommandProcessor> = {};
+  private static listeners: Listener[] = [];
+
+  static publish(event: any): void {
+    this.listeners.forEach((listener) => listener(event));
+  }
 
   static process(
     { commands, source }: BluehawkResult,
@@ -62,5 +79,9 @@ export default class Processor {
    */
   static registerCommand(command: Command): void {
     this.commands[command.commandName] = command.process;
+  }
+
+  static subscribe(listener: Listener) {
+    this.listeners.push(listener);
   }
 }

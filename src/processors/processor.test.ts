@@ -49,4 +49,10 @@ describe("processor", () => {
     const output = bluehawk.run(source);
     expect(Processor.process(output, bluehawk)).toEqual("42");
   });
+  it("allows subscriptions and pushed events to listeners", () => {
+    const spy = jest.fn();
+    Processor.subscribe(spy);
+    Processor.publish("foo");
+    expect(spy).toHaveBeenCalledWith("foo");
+  });
 });
