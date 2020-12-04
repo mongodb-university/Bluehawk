@@ -1,12 +1,12 @@
 import { BluehawkResult, Bluehawk } from "../bluehawk";
 import { CommandNode } from "../parser/CommandNode";
 
-export type CommandProcessor = (input: CommandNode) => CommandResult;
+export type CommandProcessor = (...input: any) => any;
 export interface CommandConfig {
   commandName: string;
 }
 
-export interface CommandResult {
+export interface ParseCommandResult {
   range: {
     start: number;
     end: number;
@@ -14,17 +14,32 @@ export interface CommandResult {
   result: string;
 }
 
+export type ProcessCommandResult = string;
+
 export type Listener = (event: any) => void;
 
-export abstract class Command {
+abstract class Command {
   config: CommandConfig;
   commandName: string;
   constructor(config: CommandConfig) {
     this.commandName = config.commandName;
     this.config = config;
+  }
+  abstract process(...unknown: any): unknown;
+}
+export abstract class ProcessCommand extends Command {
+  constructor(config: CommandConfig) {
+    super(config);
     this.process = this.process.bind(this);
   }
-  abstract process(command: CommandNode): CommandResult;
+  abstract process(nodes: BluehawkResult, bluehawk: Bluehawk): void;
+}
+export abstract class ParseCommand extends Command {
+  constructor(config: CommandConfig) {
+    super(config);
+    this.process = this.process.bind(this);
+  }
+  abstract process(command: CommandNode): ParseCommandResult;
 }
 
 /**
@@ -38,8 +53,8 @@ export abstract class Command {
  */
 
 export default class Processor {
-  private static commands: Record<string, CommandProcessor> = {};
-  private static listeners: Listener[] = [];
+  static commands: Record<string, CommandProcessor> = {};
+  static listeners: Listener[] = [];
 
   static publish(event: any): void {
     this.listeners.forEach((listener) => listener(event));
@@ -49,28 +64,8 @@ export default class Processor {
     { commands, source }: BluehawkResult,
     bluehawk: Bluehawk
   ): string {
-    return commands.reduce((acc, curr) => {
-      if (this.commands[curr.commandName]) {
-        if (curr.children.length > 0) {
-          acc = this.process(
-            { errors: [], commands: curr.children, source },
-            bluehawk
-          );
-        }
-        const newCommand = bluehawk
-          .run({ ...source, text: acc })
-          .commands.shift();
-        const processorResult = this.commands[newCommand.commandName](
-          newCommand
-        );
-        return (
-          acc.slice(0, processorResult.range.start) +
-          processorResult.result +
-          acc.slice(processorResult.range.end)
-        );
-      }
-      return acc;
-    }, source.text);
+    // todo
+    return "todo";
   }
 
   /**

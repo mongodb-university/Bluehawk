@@ -2,9 +2,9 @@
   "compilerOptions": {
     "outDir": "./build",
     "allowJs": true,
-    "target": "es5",
+    "target": "ES6",
     "esModuleInterop": true,
-    "lib": ["ES2020"]
+    "lib": ["ES2020"],
   },
   "sourceMap": true,
   "include": ["./src/**/*"],

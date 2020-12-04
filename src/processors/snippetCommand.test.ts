@@ -109,19 +109,4 @@ describe("snippet Command", () => {
       snippetOneOnly
     );
   });
-  it("works with the command processor", () => {
-    output = bluehawk.run(source);
-    expect(Processor.process(output, bluehawk)).toEqual(post);
-  });
-
-  it("works with multiple snippets in a file", () => {
-    source = { ...source, text: doubleSnippetIn };
-    output = bluehawk.run(source);
-    expect(Processor.process(output, bluehawk)).toEqual(doubleSnippetOut);
-  });
-  it("works with nested and sibling snippets", () => {
-    source = { ...source, text: nestedIn };
-    output = bluehawk.run(source);
-    expect(Processor.process(output, bluehawk)).toEqual(nestedOut);
-  });
 });
