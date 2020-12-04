@@ -1,7 +1,6 @@
 import { join } from "path";
 import { Bluehawk } from "../bluehawk";
-import { CommandNode } from "../parser/CommandNode";
-import Processor, { CommandConfig } from "./Processor";
+import Processor from "./Processor";
 import StateCommandProcessor from "./StateCommand";
 import RemoveCommand from "./RemoveCommand";
 import SnippetCommand from "./SnippetCommand";
@@ -134,6 +133,9 @@ end
     stateCP.process(parsed, bluehawk);
     expect(notifs[0].event).toEqual("snippet");
     expect(notifs[1].event).toEqual("state");
+    // wait what? Two snippets?
+    // It's because the snippet lives outside of the states
+    // There would only be one snippet publish if it was nested
     expect(notifs[2].event).toEqual("snippet");
     expect(notifs[3].event).toEqual("state");
     expect(notifs[1].state).toEqual("begin");

@@ -2,7 +2,6 @@ import Processor, {
   ParseCommandResult,
   CommandConfig,
   ParseCommand,
-  ProcessCommand,
 } from "./Processor";
 import { strict as assert } from "assert";
 import { CommandNode } from "../parser/CommandNode";
