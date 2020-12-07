@@ -4,7 +4,7 @@
   "description": "",
   "main": "./build",
   "scripts": {
-    "build": "tsc -b",
+    "build": "rm -rf build && tsc -b",
     "watch": "tsc -b -w",
     "test": "jest",
     "verbose": "jest --verbose",
@@ -16,6 +16,8 @@
     "chevrotain": "^7.0.2",
     "fs": "0.0.1-security",
     "fsify": "^4.0.1",
+    "ignore": "^5.1.8",
+    "ignore-walk": "^3.0.3",
     "inquirer": "^7.3.3",
     "line-reader": "^0.4.0",
     "rimraf": "^3.0.2",

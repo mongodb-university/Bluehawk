@@ -121,3 +121,6 @@ dist
 # TS build
 build/
 
+# vscode
+.vscode/
+

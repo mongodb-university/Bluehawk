@@ -10,12 +10,12 @@ describe("stateCommand", () => {
   const singleInput = {
     text: `
 // :state-start: begin
-let foo = undefined;
-console.log(foo);
+// let foo = undefined;
+// console.log(foo);
 // :state-end:
 // :state-start: final
-let foo = defined;
-console.log(foo);
+// let foo = defined;
+// console.log(foo);
 // :state-end:
 end
 `,
@@ -36,15 +36,15 @@ end
   const nestedInput = {
     text: `
 // :state-start: begin
-let foo = undefined;
-console.log(foo);
+// let foo = undefined;
+// console.log(foo);
 // :remove-start:
 someTest()
 // :remove-end:
 // :state-end:
 // :state-start: final
-let foo = defined;
-console.log(foo);
+// let foo = defined;
+// console.log(foo);
 // :state-end:
 end
 `,
@@ -64,8 +64,8 @@ end
   const multipleInput = {
     text: `
 // :state-start: begin
-let foo = undefined;
-console.log(foo);
+// let foo = undefined;
+// console.log(foo);
 // :remove-start:
 someTest()
 // :remove-end:
@@ -77,8 +77,8 @@ flibbertyflappity
 console.log("we are foo");
 // :snippet-end:
 // :state-start: final
-let foo = defined;
-console.log(foo);
+// let foo = defined;
+// console.log(foo);
 // :state-end:
 end
 `,
@@ -108,6 +108,7 @@ end
     const notifs = [];
     Processor.subscribe((event) => notifs.push(event));
     const parsed = bluehawk.run(singleInput);
+    stateCP.findStates(parsed);
     stateCP.process(parsed, bluehawk);
     expect(notifs[0].event).toEqual("state");
     expect(notifs[0].state).toEqual("begin");
@@ -119,6 +120,7 @@ end
     const notifs = [];
     Processor.subscribe((event) => notifs.push(event));
     const parsed = bluehawk.run(nestedInput);
+    stateCP.findStates(parsed);
     stateCP.process(parsed, bluehawk);
     expect(notifs[0].event).toEqual("state");
     expect(notifs[0].state).toEqual("begin");
@@ -130,6 +132,7 @@ end
     const notifs = [];
     Processor.subscribe((event) => notifs.push(event));
     const parsed = bluehawk.run(multipleInput);
+    stateCP.findStates(parsed);
     stateCP.process(parsed, bluehawk);
     expect(notifs[0].event).toEqual("snippet");
     expect(notifs[1].event).toEqual("state");

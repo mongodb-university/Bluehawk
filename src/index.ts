@@ -1,6 +1,7 @@
 import * as yargs from "yargs";
 import { MessageHandler } from "./messageHandler";
 import * as fileHandler from "./fileHandler";
+import * as bhp from "./fs/parseSource";
 
 const output = MessageHandler.getMessageHandler();
 
@@ -9,18 +10,21 @@ async function run(): Promise<void> {
     .usage("Usage: $0 <command> [options]")
     .command("--source", "The file or folder to process")
     .command("--destination", "The output folder")
+    .command("--ignores", "A glob list of patterns to ignore")
     .example(
       "$0 -s ./foo.js -d ./output/",
       "Parse the foo.js file and output results in the output/ directory."
     )
     .alias("s", "source")
     .alias("d", "destination")
+    .alias("i", "ignores")
     .demandOption(["source"])
     .help("h")
     .alias("h", "help").argv;
 
-  if (params.stages instanceof String) {
-    params.stages = params.stages.split(",");
+  let ignores: string[];
+  if (typeof params.ignores == "string") {
+    ignores = (params.ignores as string).split(",");
   }
 
   if (!params.type) {
@@ -32,18 +36,9 @@ async function run(): Promise<void> {
         "the correct file type."
     );
   }
-
   const source = params.source as string;
-  const stages = params.stages as [string];
   const destination = params.destination as string;
-  const type = params.type as string;
-
-  fileHandler.openFile({
-    source,
-    stages,
-    destination,
-    type,
-  });
+  await bhp.main(source, ignores);
 }
 
 run().catch((err) => {
