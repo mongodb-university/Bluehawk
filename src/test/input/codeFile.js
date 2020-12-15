@@ -6,19 +6,6 @@ const schemas = require("./schemas");
 const output = require("../output");
 const { PassThrough } = require("stream");
 
-// :snippet-start: <name>
-// :snippet-end:
-
-// :remove-start:
-// :remove-end:
-
-// :remove:
-
-// :state-machine-start:
-// :state: begin
-// :state: final
-// :state-machine-end:
-
 // localLogin
 // purpose of this step is to tell users they need to use the Realm.user
 // method
@@ -30,7 +17,6 @@ const realm = new Realm()
 /final/createUser.js
 const realm= new Realm()
 const user = realm.user(username, password)
-
 
 
 /snippets/snippetName.ext
@@ -48,49 +34,25 @@ async function openRealm() {
       // There are 3 codeblocks that follow, each testing a different
       // way to comment.
 
-      // :code-block-start:openRealm1
-      // :hide-start:
-
-      notInStartCode: true,
-      inFinalCode: true,
-
-      // :replace-with:A
+      // :state-start: begin
       // // A You should only see this in the start code
       // start1: true,
       // final1: false,
       // // comment in start code: ... ,
-      // :hide-end:
-      // :code-block-end:
-      // :test-start:
+      // :state-end:
+
+      // :state-start: final
+      notInStartCode: true,
+      inFinalCode: true,
+      // :state-end:
+
+      // :remove-start:
       it("does some fun things", () => {
         fail()
         pass()
       });
-      // :test-end:
+      // :remove-end:
 
-      /* :code-block-start: openRealm2
-      :hide-start:*/
-      notInStartCode: true,
-      inFinalCode: true,
-      /* :replace-with:B
-      // B You should only see this in the start code
-      start2: true,
-      final2: false,
-      // comment in start code: ... ,
-      :hide-end:
-      :code-block-end:*/
-
-      // :code-block-start: openRealm3
-      // :hide-start:
-      notInStartCode: true,
-      inFinalCode: true,
-      /* :replace-with:C
-      // C You should only see this in the start code
-      start3: true,
-      final3: false,
-      // comment in start code: ... ,
-      :hide-end:
-      :code-block-end:*/
     },
   };
   realm = Realm.open(config);

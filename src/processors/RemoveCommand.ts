@@ -1,17 +1,13 @@
-import { CommandResult, Command, CommandConfig } from "./Processor";
+import { ParseCommandResult, CommandConfig, ParseCommand } from "./Processor";
 import { strict as assert } from "assert";
 import { CommandNode } from "../parser/CommandNode";
 
-/**
- * SnippetProcessor has the side effect of writing snippet files
- */
-
-export default class RemoveCommand extends Command {
+export default class RemoveCommand extends ParseCommand {
   constructor(cfg: CommandConfig) {
     super(cfg);
   }
 
-  process(command: CommandNode): CommandResult {
+  process(command: CommandNode): ParseCommandResult {
     assert(command.content);
     return {
       range: {
