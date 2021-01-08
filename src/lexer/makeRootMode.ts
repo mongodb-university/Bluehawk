@@ -11,7 +11,6 @@ import {
   PopParser,
   PushParser,
   Space,
-  StringLiteral,
   Text,
 } from "./tokens";
 
@@ -26,7 +25,6 @@ export function makeRootMode(languageTokens: TokenType[]): Array<TokenType> {
       BlockCommentEnd,
       LineComment,
       PushParser,
-      StringLiteral.Start,
     ]),
     Space,
     Newline,
@@ -38,6 +36,5 @@ export function makeRootMode(languageTokens: TokenType[]): Array<TokenType> {
     LineComment,
     BlockCommentStart,
     BlockCommentEnd,
-    ...Object.values(StringLiteral),
   ];
 }

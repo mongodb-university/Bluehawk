@@ -1,7 +1,7 @@
 import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
 import { makePushParserTokens } from "../lexer/makePushParserTokens";
-import { makeCstVisitor } from "../parser/makeCstVisitor";
+import { makeCstVisitor, IVisitor } from "../parser/makeCstVisitor";
 import { RootParser } from "../parser/RootParser";
 
 const someSource = {
@@ -43,21 +43,26 @@ CC
 });
 
 describe("multilang", () => {
+  const parser = new RootParser([
+    ...makeBlockCommentTokens(/<!--/y, /-->/),
+    ...makePushParserTokens(/<\?php/y, /\?>/, {
+      includePopTokenInSubstring: false,
+      includePushTokenInSubstring: false,
+      parserId: "php",
+    }),
+  ]);
+
+  const visitors: { [id: string]: IVisitor } = {};
+  const getParser = (parserId: string): IVisitor => {
+    return visitors[parserId];
+  };
+
   const phpParser = new RootParser([
     ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
     makeLineCommentToken(/\/\/|#/y),
   ]);
-  const phpVisitor = makeCstVisitor(phpParser);
-  const parser = new RootParser([
-    ...makeBlockCommentTokens(/<!--/y, /-->/),
-    ...makePushParserTokens({
-      pushPattern: /<\?php/y,
-      popPattern: /\?>/,
-      includeTokens: false,
-      getInnerVisitor: () => phpVisitor,
-    }),
-  ]);
-  const visitor = makeCstVisitor(parser);
+  visitors["php"] = makeCstVisitor(phpParser, getParser);
+  const visitor = makeCstVisitor(parser, getParser);
 
   it("parses without context switching", () => {
     const parseResult = parser.parse(`
@@ -128,15 +133,17 @@ describe("multilang", () => {
       column: 1,
       offset: 31,
     });
+    expect(result.errors[0].message).toBe(
+      "2:3(4) blockComment: After Newline, expected BlockCommentEnd but found EOF"
+    );
   });
 
   it("handles matching push/pop parser patterns", () => {
     const markdownParser = new RootParser([
-      ...makePushParserTokens({
-        pushPattern: /```/y,
-        popPattern: /```/,
-        includeTokens: false,
-        getInnerVisitor: () => phpVisitor,
+      ...makePushParserTokens(/```/y, /```/, {
+        includePopTokenInSubstring: false,
+        includePushTokenInSubstring: false,
+        parserId: "php", // let's just say it's php so we can reuse the outer visitor
       }),
     ]);
     const parseResult = markdownParser.parse(`
@@ -146,7 +153,7 @@ describe("multilang", () => {
 \`\`\`
 :command2:
 `);
-    const visitor = makeCstVisitor(markdownParser);
+    const visitor = makeCstVisitor(markdownParser, getParser);
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
@@ -156,17 +163,5 @@ describe("multilang", () => {
       ["line-commented-command", "lineComment"],
       ["command2", "none"],
     ]);
-  });
-
-  it("rejects recursive matching dummyPush/pop parser patterns", () => {
-    expect(() =>
-      makePushParserTokens({
-        pushPattern: /```/y,
-        dummyPushPattern: /```/y,
-        popPattern: /```/,
-        includeTokens: false,
-        getInnerVisitor: () => phpVisitor,
-      })
-    ).toThrowError();
   });
 });

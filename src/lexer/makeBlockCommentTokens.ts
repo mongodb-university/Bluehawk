@@ -6,29 +6,20 @@ export interface BlockCommentTokenConfiguration {
   canNest: boolean;
 }
 
-export interface BlockCommentTokenPayload
-  extends BlockCommentTokenConfiguration {
-  endToken: TokenType;
-}
-
 export function makeBlockCommentTokens(
   startPattern: RegExp,
   endPattern: RegExp,
-  configuration: BlockCommentTokenConfiguration = { canNest: true }
+  configuration?: BlockCommentTokenConfiguration
 ): [TokenType, TokenType] {
-  const startCategories = [BlockCommentStart];
-  const tokens: [TokenType, TokenType] = [
+  const tokens = [
     createToken({
       name: "BlockCommentStart",
       label: `BlockCommentStart(${startPattern})`,
-      categories: startCategories,
-      pattern: makePayloadPattern(
-        startPattern,
-        (): BlockCommentTokenPayload => ({
-          ...configuration,
-          endToken: tokens[1],
-        })
-      ),
+      categories: [BlockCommentStart],
+      pattern: makePayloadPattern(startPattern, () => ({
+        ...(configuration ?? {}),
+        endToken: tokens[1],
+      })),
       line_breaks: false,
     }),
     createToken({
