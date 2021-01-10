@@ -3,18 +3,20 @@ import { makeCstVisitor } from "../parser/makeCstVisitor";
 import { validateVisitorResult } from "../parser/validator";
 import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
+import { BluehawkSource } from "../bluehawk";
 
 describe("validator", () => {
+  const source = new BluehawkSource({
+    filePath: "",
+    language: "",
+    text: "",
+  });
+
   const parser = new RootParser([
     ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
     makeLineCommentToken(/\/\//),
   ]);
   const { lexer } = parser;
-  const source = {
-    language: "mock",
-    filePath: "mock",
-    text: "mock",
-  };
 
   test("validates non-code-block commands without error", () => {
     const tokens = lexer.tokenize(`
@@ -52,7 +54,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 2,
       column: 4,
-      offset: 1,
+      offset: 4,
     });
   });
 
@@ -80,7 +82,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 77,
+      offset: 80,
     });
   });
 
@@ -108,7 +110,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 2,
       column: 4,
-      offset: 1,
+      offset: 4,
     });
     expect(validateResult.errors[1].message).toStrictEqual(
       "missing ID for command: 'code-block'"
@@ -116,7 +118,7 @@ the quick brown fox jumped
     expect(validateResult.errors[1].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 71,
+      offset: 74,
     });
   });
 
@@ -160,7 +162,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 87,
+      offset: 90,
     });
   });
 
@@ -188,7 +190,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 2,
       column: 4,
-      offset: 1,
+      offset: 4,
     });
   });
 
@@ -236,7 +238,7 @@ the quick brown fox jumped
     expect(validateResult.errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 99,
+      offset: 102,
     });
   });
 
@@ -260,12 +262,12 @@ the quick brown fox jumped
       start: {
         line: 2,
         column: 4,
-        offset: 1,
+        offset: 4,
       },
       end: {
         line: 4,
         column: 19,
-        offset: 98,
+        offset: 96,
       },
     });
   });

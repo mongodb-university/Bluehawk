@@ -2,10 +2,18 @@ import { VisitorResult } from "./makeCstVisitor";
 import { CommandNode } from "./CommandNode";
 import { BluehawkError } from "../bluehawk";
 
-interface ValidateCstResult {
+export interface ValidateCstResult {
   errors: BluehawkError[];
   commandsById: Map<string, CommandNode>;
 }
+
+// A rule function is registered for a given command name and checks that the
+// given command node conforms to the specification of that command. Errors can
+// be reported into the result.errors array.
+export type Rule = (
+  commandNode: CommandNode,
+  result: ValidateCstResult
+) => void;
 
 export function validateVisitorResult(
   visitorResult: VisitorResult
@@ -29,18 +37,23 @@ function validateCst(
   });
   const rules: { [k: string]: Rule[] } = {
     "code-block": [idIsUnique, hasId],
+    hide: [],
   };
   const rulesForCommand = rules[commandNode.commandName];
-  if (rulesForCommand !== undefined) {
-    rulesForCommand.forEach((rule) => {
-      rule(commandNode, result);
+  if (rulesForCommand === undefined) {
+    /*
+    result.errors.push({
+      location: commandNode.range.start,
+      message: `unknown command '${commandNode.commandName}'`,
     });
+    */
+    return;
   }
+
+  rulesForCommand.forEach((rule) => {
+    rule(commandNode, result);
+  });
 }
-
-// classes for working with rules
-
-type Rule = (commandNode: CommandNode, result: ValidateCstResult) => void;
 
 // rule implementations
 

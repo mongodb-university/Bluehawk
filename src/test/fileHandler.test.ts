@@ -36,34 +36,6 @@ describe("fileHandler createFileInfo", () => {
     expect(actual).toStrictEqual(expected);
   });
 
-  it("handles step files", async () => {
-    source = join(__dirname, "./input/stepFileWithCode.js");
-    destination = dirname(source) + "/output";
-    stepOutputPath = destination + "/steps";
-    codeOutputPath = destination + "/code";
-
-    const actual = createFileInfoArray({
-      source,
-      stages,
-      stepOutputPath,
-      codeOutputPath,
-    });
-    const expected = [
-      {
-        source,
-        step: `${destination}/steps/stepFileWithCode.step.rst`,
-        codeBlock: {
-          start: `${destination}/code/start/stepFileWithCode.codeblock`,
-          final: `${destination}/code/final/stepFileWithCode.codeblock`,
-        },
-        start: `${destination}/code/start/stepFileWithCode.js`,
-        final: `${destination}/code/final/stepFileWithCode.js`,
-      },
-    ];
-
-    expect(actual).toStrictEqual(expected);
-  });
-
   it("handles entire directories by returning and empty array denoting a TODO", async () => {
     source = join(__dirname, "./input");
     destination = dirname(source) + "output";

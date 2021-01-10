@@ -3,7 +3,6 @@ import { makeAttributeListMode } from "./makeAttributeListMode";
 import { makeRootMode } from "./makeRootMode";
 import {
   PopParser,
-  PushParser,
   Newline,
   Space,
   Text,

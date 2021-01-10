@@ -4,6 +4,8 @@ import { makeCstVisitor } from "./parser/makeCstVisitor";
 import { CommandNode } from "./parser/CommandNode";
 import { validateVisitorResult } from "./parser/validator";
 import { RootParser } from "./parser/RootParser";
+import { COMMAND_PATTERN } from "./lexer/tokens";
+import MagicString from "magic-string";
 
 export interface Location {
   line: number;
@@ -28,30 +30,60 @@ export class BluehawkResult {
 }
 
 export class BluehawkSource {
-  text: string;
+  constructor({
+    text,
+    language,
+    filePath,
+    attributes,
+  }: {
+    text: string | MagicString;
+    language: string;
+    filePath: string;
+    attributes?: { [key: string]: string };
+  }) {
+    this.text =
+      typeof text === "string" || text instanceof String
+        ? new MagicString(text as string)
+        : text.clone();
+    this.language = language;
+    this.filePath = filePath;
+    this.attributes = attributes ?? {};
+  }
+
+  // Store the source text as a conveniently editable magic string.
+  // See https://www.npmjs.com/package/magic-string for details.
+  text: MagicString;
   language: string;
   filePath: string;
+  attributes: { [key: string]: string };
 }
 
 export class Bluehawk {
   parsers = new Map<string, RootParser>();
 
   run(source: BluehawkSource): BluehawkResult {
+    // First, quickly check to see if this even has any commands.
+    if (!COMMAND_PATTERN.test(source.text.original)) {
+      return {
+        errors: [],
+        commands: [],
+        source,
+      };
+    }
     if (!this.parsers.has(source.language)) {
       this.parsers.set(
         source.language,
         new RootParser([
           // TODO: map source.language to block/line comment tokens
           ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
-          makeLineCommentToken(/\/\//y),
+          makeLineCommentToken(/\/\/ ?/y),
         ])
       );
     }
     const parser = this.parsers.get(source.language);
-    const parseResult = parser.parse(source.text);
+    const parseResult = parser.parse(source.text.toString());
     const visitor = makeCstVisitor(parser);
     const visitorResult = visitor.visit(parseResult.cst, source);
-
     const validateResult = validateVisitorResult(visitorResult);
     return {
       errors: [

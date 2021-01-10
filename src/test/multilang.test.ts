@@ -1,14 +1,10 @@
+import { BluehawkSource } from "../bluehawk";
 import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
 import { makePushParserTokens } from "../lexer/makePushParserTokens";
 import { makeCstVisitor, IVisitor } from "../parser/makeCstVisitor";
 import { RootParser } from "../parser/RootParser";
 
-const someSource = {
-  language: "mock",
-  filePath: "mock",
-  text: "mock",
-};
 describe("multicomment", () => {
   const parser = new RootParser([
     ...makeBlockCommentTokens(/AA/y, /\/AA/),
@@ -43,6 +39,11 @@ CC
 });
 
 describe("multilang", () => {
+  const someSource = new BluehawkSource({
+    language: "mock",
+    filePath: "mock",
+    text: "mock",
+  });
   const parser = new RootParser([
     ...makeBlockCommentTokens(/<!--/y, /-->/),
     ...makePushParserTokens(/<\?php/y, /\?>/, {

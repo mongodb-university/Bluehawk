@@ -1,10 +1,10 @@
-import { Bluehawk } from "../bluehawk";
+import { Bluehawk, BluehawkSource } from "../bluehawk";
 
 describe("bluehawk", () => {
   const bluehawk = new Bluehawk();
 
   it("handles lexing, parsing, visiting, and validating", () => {
-    const input = {
+    const input = new BluehawkSource({
       text: `
     this is ignored
     :some-command-start:
@@ -13,13 +13,13 @@ describe("bluehawk", () => {
 `,
       language: "testlanguage",
       filePath: "testPath",
-    };
+    });
     const output = bluehawk.run(input);
-    expect(output.errors.length).toBe(0);
+    expect(output.errors).toStrictEqual([]);
   });
 
   it("contains lexing errors", () => {
-    const input = {
+    const input = new BluehawkSource({
       text: `
     :some-command-start: '
     this is ignored
@@ -27,7 +27,7 @@ describe("bluehawk", () => {
     `,
       language: "testlanguage",
       filePath: "testPath",
-    };
+    });
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
     expect(output.errors[0]).toStrictEqual({
@@ -42,7 +42,7 @@ describe("bluehawk", () => {
   });
 
   it("contains parsing errors", () => {
-    const input = {
+    const input = new BluehawkSource({
       text: `
     this is ignored
     :some-command-start:
@@ -51,7 +51,7 @@ describe("bluehawk", () => {
 `,
       language: "testlanguage",
       filePath: "testPath",
-    };
+    });
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
     expect(output.errors[0]).toStrictEqual({
@@ -67,7 +67,7 @@ describe("bluehawk", () => {
 
   it("contains visiting errors", () => {
     // TODO: come up with a decent visiting error
-    const input = {
+    const input = new BluehawkSource({
       text: `
     this is ignored
     :some-command-start:
@@ -76,14 +76,14 @@ describe("bluehawk", () => {
 `,
       language: "testlanguage",
       filePath: "testPath",
-    };
+    });
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(0);
     expect(output.errors[0]).toStrictEqual(undefined);
   });
 
   it("contains validating errors", () => {
-    const input = {
+    const input = new BluehawkSource({
       text: `
     this is ignored
     :code-block-start:
@@ -92,14 +92,14 @@ describe("bluehawk", () => {
 `,
       language: "testlanguage",
       filePath: "testPath",
-    };
+    });
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
     expect(output.errors[0]).toStrictEqual({
       location: {
         column: 5,
         line: 3,
-        offset: 22,
+        offset: 25,
       },
       message: "missing ID for command: 'code-block'",
     });

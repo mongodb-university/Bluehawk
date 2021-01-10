@@ -15,6 +15,7 @@ import {
   Identifier,
   JsonStringLiteral,
   LineComment,
+  StringLiteral,
 } from "../lexer/tokens";
 import { ErrorMessageProvider } from "./ErrorMessageProvider";
 import { BluehawkError } from "../bluehawk";
@@ -56,7 +57,7 @@ annotatedText
   : (chunk)*
 
 attributeList
-  : AttributeListStart (AttributeListStart | AttributeListEnd | StringLiteral | Newline | LineComment)* AttributeListEnd
+  : AttributeListStart (AttributeListStart | AttributeListEnd | JsonStringLiteral | Newline | LineComment)* AttributeListEnd
 
 blockCommand
   : (LineComment)? CommandStart (commandAttribute)? Newline (chunk)* (LineComment)* CommandEnd
@@ -65,7 +66,7 @@ blockComment
   : BlockCommentStart (command | LineComment | NewLine | blockComment†)* BlockCommentEnd
 
 chunk
-  : (command | blockComment | lineComment | pushParser)* Newline
+  : (command | blockComment | lineComment | pushParser | StringLiteral)* Newline
 
 command
   : blockCommand | Command
@@ -120,6 +121,7 @@ export class RootParser extends CstParser implements IParser {
           { ALT: () => this.SUBRULE(this.blockComment) },
           { ALT: () => this.SUBRULE(this.lineComment) },
           { ALT: () => this.SUBRULE(this.pushParser) },
+          { ALT: () => this.CONSUME(StringLiteral) },
         ]);
       });
       this.OR1([

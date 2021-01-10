@@ -26,6 +26,11 @@ const PopParser = createToken({
   pattern: Lexer.NA,
 });
 
+const StringLiteral = createToken({
+  name: "StringLiteral",
+  pattern: Lexer.NA,
+});
+
 const AttributeListEnd = createToken({
   name: "AttributeListEnd",
   pattern: /}/,
@@ -90,6 +95,7 @@ const Identifier = createToken({
 const JsonStringLiteral = createToken({
   name: "JsonStringLiteral",
   pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
+  categories: [StringLiteral],
 });
 
 export {
@@ -110,5 +116,6 @@ export {
   LineComment,
   Newline,
   Space,
+  StringLiteral,
   Text,
 };

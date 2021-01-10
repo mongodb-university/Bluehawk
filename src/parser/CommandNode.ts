@@ -1,6 +1,14 @@
 import { strict as assert } from "assert";
-import { BluehawkSource, Range } from "../bluehawk";
+import { IToken } from "chevrotain";
+import { Range } from "../bluehawk";
 import { CommandNodeContext } from "./makeCstVisitor";
+
+interface VisitorContext {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+  Newline?: IToken[];
+  LineComment?: IToken[];
+}
 
 export class CommandNode {
   commandName: string;
@@ -10,22 +18,17 @@ export class CommandNode {
 
   _context = Array<CommandNodeContext>();
 
-  // ranges covered by this node
+  // For block commands, range from the first character of the command (start)
+  // token to the last character of the command (end) token.
   range: Range;
+
+  // Block commands have an inner range that includes the lines between the
+  // attribute list and the end command token.
   contentRange?: Range;
 
-  source: BluehawkSource;
-
-  // Contains the inner content from the source (block commands only).
-  get content(): string | undefined {
-    const { contentRange } = this;
-    return contentRange
-      ? this.source.text.substring(
-          contentRange.start.offset,
-          contentRange.end.offset
-        )
-      : undefined;
-  }
+  // Range from the beginning of the line on which the command (start) token
+  // appears to the end of the line on which the command (end) token appears.
+  lineRange: Range;
 
   // Only available in block commands:
   get id(): string | undefined {
@@ -37,23 +40,41 @@ export class CommandNode {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attributes?: { [member: string]: any };
 
+  // Potentially useful tokens contained in the node
+  newlines: IToken[];
+  lineComments: IToken[];
+
+  // Imports potentially useful tokens from a visitor context object.
+  // Only use this in visitors that do not create the CommandNode.
+  addTokensFromContext(context: VisitorContext): void {
+    this.newlines.push(...(context.Newline ?? []));
+    this.lineComments.push(...(context.LineComment ?? []));
+  }
+
   // Block Commands operate on their inner range and can have children, IDs, and
   // attributes.
-  makeChildBlockCommand(commandName: string): CommandNode {
+  makeChildBlockCommand(
+    commandName: string,
+    context: VisitorContext
+  ): CommandNode {
     assert(this.children);
-    const command = new CommandNode(commandName, this.source, this);
+    const command = new CommandNode(commandName, context, this);
     command.children = [];
     return command;
   }
 
   // Line Commands operate on the line they appear in and cannot have children,
   // IDs, or attributes.
-  makeChildLineCommand(commandName: string): CommandNode {
+  makeChildLineCommand(
+    commandName: string,
+    context: VisitorContext
+  ): CommandNode {
     assert(this.children);
-    return new CommandNode(commandName, this.source, this);
+    return new CommandNode(commandName, context, this);
   }
 
   withErasedBlockCommand(
+    context: VisitorContext,
     callback: (erasedBlockCommand: CommandNode) => void
   ): void {
     assert(this.children);
@@ -62,17 +83,19 @@ export class CommandNode {
     // weird, but only used internally...
     const node = new CommandNode(
       "__this_should_not_be_here___please_file_a_bug__",
-      this.source
+      context
     );
     node.children = [];
     callback(node);
-    this.children = [...this.children, ...node.children];
+    this.children.push(...node.children);
+    this.newlines.push(...node.newlines);
+    this.lineComments.push(...node.lineComments);
   }
 
   // The root command is the root node of a parsed document and contains all
   // other nodes in the document.
-  static rootCommand(source: BluehawkSource): CommandNode {
-    const command = new CommandNode("__root__", source);
+  static rootCommand(): CommandNode {
+    const command = new CommandNode("__root__", {});
     command.attributes = new Map();
     command.children = [];
     return command;
@@ -80,11 +103,13 @@ export class CommandNode {
 
   private constructor(
     commandName: string,
-    source: BluehawkSource,
+    context: VisitorContext,
     parentToAttachTo?: CommandNode
   ) {
     this.commandName = commandName;
-    this.source = source;
+    this.newlines = [];
+    this.lineComments = [];
+    this.addTokensFromContext(context);
     if (parentToAttachTo != null) {
       this._context = [...parentToAttachTo._context];
       parentToAttachTo.children.push(this);
