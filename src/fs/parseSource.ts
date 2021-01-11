@@ -3,14 +3,17 @@ import * as fs from "fs";
 import ignore from "ignore";
 import * as readline from "readline";
 import { Bluehawk, BluehawkSource } from "../bluehawk";
-import StateCommandProcessor from "../processors/StateCommand";
+import { Processor } from "../processors/Processor";
+import { SnippetCommand } from "../processors/SnippetCommand";
+import { RemoveCommand } from "../processors/RemoveCommand";
+import { StateCommand } from "../processors/StateCommand";
 
 async function fileEntry(
   source: string,
   ignores?: string[]
 ): Promise<string[]> {
   return new Promise((resolve, reject) => {
-    let ig = ignore();
+    const ig = ignore();
     if (!ignores) {
       ignores = [];
     }
@@ -71,18 +74,22 @@ function genSource(file: string): BluehawkSource {
   const text = fs.readFileSync(path.resolve(file), "utf8");
   const language = path.extname(file);
   const filePath = file;
-  return {
+  return new BluehawkSource({
     text,
     language,
     filePath,
-  };
+  });
 }
 
 export async function main(source: string, ignores?: string[]): Promise<void> {
-  const files = await fileEntry(source, ignores);
-  let states: Set<string> = new Set();
+  const processor = new Processor();
+  processor.registerCommand("code-block", SnippetCommand);
+  processor.registerCommand("remove", RemoveCommand);
+  processor.registerCommand("state", StateCommand);
+
   const bluehawk = new Bluehawk();
-  const sc = new StateCommandProcessor({ commandName: "state" });
+  const files = await fileEntry(source, ignores);
+
   files.forEach((file) => {
     const result = bluehawk.run(genSource(file));
     // TODO: remove this error check, informational only during devlopering
@@ -90,13 +97,6 @@ export async function main(source: string, ignores?: string[]): Promise<void> {
       console.error("encountered error in file", file);
       console.error(result.errors[0]);
     }
-    try {
-      const foundStates = sc.findStates(result);
-      if (foundStates) {
-        states = new Set([...states, ...foundStates]);
-      }
-    } catch (e) {
-      console.error(e);
-    }
+    processor.process(result);
   });
 }

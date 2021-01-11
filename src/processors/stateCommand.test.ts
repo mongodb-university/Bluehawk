@@ -1,13 +1,13 @@
 import { join } from "path";
-import { Bluehawk } from "../bluehawk";
-import Processor from "./Processor";
-import StateCommandProcessor from "./StateCommand";
-import RemoveCommand from "./RemoveCommand";
-import SnippetCommand from "./SnippetCommand";
+import { Bluehawk, BluehawkSource } from "../bluehawk";
+import { Processor } from "./Processor";
+import { StateCommand } from "./StateCommand";
+import { RemoveCommand } from "./RemoveCommand";
+import { SnippetCommand } from "./SnippetCommand";
 
 describe("stateCommand", () => {
   const bluehawk = new Bluehawk();
-  const singleInput = {
+  const singleInput = new BluehawkSource({
     text: `
 // :state-start: begin
 // let foo = undefined;
@@ -21,7 +21,7 @@ end
 `,
     language: "javascript",
     filePath: join(__dirname, "stateCommand.test.ts"),
-  };
+  });
   const singleBegin = `
 let foo = undefined;
 console.log(foo);
@@ -33,7 +33,7 @@ console.log(foo);
 end
 `;
 
-  const nestedInput = {
+  const nestedInput = new BluehawkSource({
     text: `
 // :state-start: begin
 // let foo = undefined;
@@ -49,8 +49,8 @@ someTest()
 end
 `,
     language: "javascript",
-    filePath: join(__dirname, "stateCommand.test.ts"),
-  };
+    filePath: "stateCommand.test.js",
+  });
   const nestedBegin = `
 let foo = undefined;
 console.log(foo);
@@ -61,8 +61,15 @@ let foo = defined;
 console.log(foo);
 end
 `;
-  const multipleInput = {
-    text: `
+
+  const processor = new Processor();
+  processor.registerCommand("state", StateCommand);
+  processor.registerCommand("remove", RemoveCommand);
+  processor.registerCommand("snippet", SnippetCommand);
+
+  it("processes nested commands", () => {
+    const multipleInput = new BluehawkSource({
+      text: `
 // :state-start: begin
 // let foo = undefined;
 // console.log(foo);
@@ -82,68 +89,38 @@ console.log("we are foo");
 // :state-end:
 end
 `,
-    language: "javascript",
-    filePath: join(__dirname, "stateCommand.test.ts"),
-  };
-  const multipleBegin = `
+      language: "javascript",
+      filePath: "stateCommand.test.js",
+    });
+    const multipleBegin = `
 let foo = undefined;
 console.log(foo);
 console.log("we are foo");
 end
 `;
-  const multipleFinal = `
+    const multipleFinal = `
 console.log("we are foo");
-let foo = defined;
-console.log(foo);
+// let foo = defined;
+// console.log(foo);
 end
 `;
-  const stateCP = new StateCommandProcessor({ commandName: "state" });
-  Processor.registerCommand(stateCP);
-  const removeCP = new RemoveCommand({ commandName: "remove" });
-  Processor.registerCommand(removeCP);
-  const snippetCP = new SnippetCommand({ commandName: "snippet" });
-  Processor.registerCommand(snippetCP);
-
-  it("processes only state", () => {
-    const notifs = [];
-    Processor.subscribe((event) => notifs.push(event));
-    const parsed = bluehawk.run(singleInput);
-    stateCP.findStates(parsed);
-    stateCP.process(parsed, bluehawk);
-    expect(notifs[0].event).toEqual("state");
-    expect(notifs[0].state).toEqual("begin");
-    expect(notifs[0].content).toEqual(singleBegin);
-    expect(notifs[1].state).toEqual("final");
-    expect(notifs[1].content).toEqual(singleEnd);
-  });
-  it("processes nested commands", () => {
-    const notifs = [];
-    Processor.subscribe((event) => notifs.push(event));
-    const parsed = bluehawk.run(nestedInput);
-    stateCP.findStates(parsed);
-    stateCP.process(parsed, bluehawk);
-    expect(notifs[0].event).toEqual("state");
-    expect(notifs[0].state).toEqual("begin");
-    expect(notifs[0].content).toEqual(nestedBegin);
-    expect(notifs[1].state).toEqual("final");
-    expect(notifs[1].content).toEqual(nestedFinal);
-  });
-  it("processes nested commands", () => {
-    const notifs = [];
-    Processor.subscribe((event) => notifs.push(event));
-    const parsed = bluehawk.run(multipleInput);
-    stateCP.findStates(parsed);
-    stateCP.process(parsed, bluehawk);
-    expect(notifs[0].event).toEqual("snippet");
-    expect(notifs[1].event).toEqual("state");
+    const bluehawkResult = bluehawk.run(multipleInput);
+    expect(bluehawkResult.source.filePath).toBe("stateCommand.test.js");
+    const files = processor.process(bluehawkResult);
     // wait what? Two snippets?
     // It's because the snippet lives outside of the states
     // There would only be one snippet publish if it was nested
-    expect(notifs[2].event).toEqual("snippet");
-    expect(notifs[3].event).toEqual("state");
-    expect(notifs[1].state).toEqual("begin");
-    expect(notifs[1].content).toEqual(multipleBegin);
-    expect(notifs[3].state).toEqual("final");
-    expect(notifs[3].content).toEqual(multipleFinal);
+    expect(Object.keys(files)).toStrictEqual([
+      "stateCommand.test.js",
+      "stateCommand.test.js.state.begin",
+      "stateCommand.test.js.state.begin.codeblock.foo",
+      "stateCommand.test.js.codeblock.foo",
+      "stateCommand.test.js.state.final",
+      "stateCommand.test.js.state.final.codeblock.foo",
+    ]);
+
+    expect(
+      files["stateCommand.test.js.state.final"].source.text.toString()
+    ).toBe(multipleFinal);
   });
 });

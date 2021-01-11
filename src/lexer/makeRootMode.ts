@@ -26,7 +26,7 @@ export function makeRootMode(languageTokens: TokenType[]): Array<TokenType> {
       BlockCommentEnd,
       LineComment,
       PushParser,
-      StringLiteral.Start,
+      StringLiteral,
     ]),
     Space,
     Newline,
@@ -38,6 +38,6 @@ export function makeRootMode(languageTokens: TokenType[]): Array<TokenType> {
     LineComment,
     BlockCommentStart,
     BlockCommentEnd,
-    ...Object.values(StringLiteral),
+    StringLiteral,
   ];
 }

@@ -1,82 +1,77 @@
-import { BluehawkResult, Bluehawk } from "../bluehawk";
+import { BluehawkResult, BluehawkSource } from "../bluehawk";
 import { CommandNode } from "../parser/CommandNode";
 
-export type CommandProcessor = (...input: any) => any;
-export interface CommandConfig {
-  commandName: string;
+export type BluehawkFiles = { [pathName: string]: BluehawkResult };
+
+export interface ProcessRequest {
+  // The processor that initiated this request
+  processor: Processor;
+
+  // The result being processed by the rootProcessor
+  bluehawkResult: BluehawkResult;
+
+  // The specific command to process
+  command: CommandNode;
 }
 
-export interface ParseCommandResult {
-  range: {
-    start: number;
-    end: number;
+// The implementation that actually carries out the command.
+export type CommandProcessor = (request: ProcessRequest) => void;
+
+export class Processor {
+  processors: Record<string, CommandProcessor> = {};
+
+  // Processes the given bluehawk result under an alternative path.
+  fork(
+    newPath: string,
+    bluehawkResult: BluehawkResult,
+    attributes?: { [key: string]: string }
+  ): void {
+    if (this._outputFiles[newPath] !== undefined) {
+      return;
+    }
+    const newResult = {
+      ...bluehawkResult,
+      source: new BluehawkSource({
+        ...bluehawkResult.source,
+        filePath: newPath,
+        attributes,
+      }),
+    };
+    this._outputFiles[newPath] = newResult;
+    this._process(newResult.commands, newResult);
+  }
+
+  // Processes the given bluehawk result, returning a map of file paths to
+  // processed bluehawk results.
+  process = (result: BluehawkResult): BluehawkFiles => {
+    // Clear the state (FIXME: state could be passed in the request)
+    this._outputFiles = {};
+    this.fork(result.source.filePath, result);
+    return this._outputFiles;
   };
-  result: string;
-}
 
-export type ProcessCommandResult = string;
+  private _process = (
+    commandSubset: CommandNode[],
+    result: BluehawkResult
+  ): void => {
+    commandSubset.forEach((command) => {
+      const processor = this.processors[command.commandName];
+      if (processor !== undefined) {
+        processor({
+          processor: this,
+          bluehawkResult: result,
+          command,
+        });
+      }
+      if (command.children !== undefined) {
+        this._process(command.children, result);
+      }
+    });
+  };
 
-export type Listener = (event: any) => void;
-
-abstract class Command {
-  config: CommandConfig;
-  commandName: string;
-  constructor(config: CommandConfig) {
-    this.commandName = config.commandName;
-    this.config = config;
-  }
-  abstract process(...unknown: any): unknown;
-}
-export abstract class ProcessCommand extends Command {
-  constructor(config: CommandConfig) {
-    super(config);
-    this.process = this.process.bind(this);
-  }
-  abstract process(nodes: BluehawkResult, bluehawk: Bluehawk): void;
-}
-export abstract class ParseCommand extends Command {
-  constructor(config: CommandConfig) {
-    super(config);
-    this.process = this.process.bind(this);
-  }
-  abstract process(command: CommandNode): ParseCommandResult;
-}
-
-/**
- * TODO
- *
- * Processor needs to be refacotored so that it doesn't perform the reduce. It should simply pass the root CommandNode tree to each registered Command
- * that is configured to process a tree (which implies a small command refactor to signify this).
- *
- * Commands should look for other registered commands on this processor in the commands map and invoke them. No side effects should happen from commands (file writing),
- * instead they need to use the Processor's publish method to notify any subscribers of an encountered event. There will need to be subscribers for snippets and states.
- */
-
-export default class Processor {
-  static commands: Record<string, CommandProcessor> = {};
-  static listeners: Listener[] = [];
-
-  static publish(event: any): void {
-    this.listeners.forEach((listener) => listener(event));
+  registerCommand(name: string, command: CommandProcessor): void {
+    this.processors[name] = command;
   }
 
-  static process(
-    { commands, source }: BluehawkResult,
-    bluehawk: Bluehawk
-  ): string {
-    // todo
-    return "todo";
-  }
-
-  /**
-   *
-   * @param command - The Command to register.
-   */
-  static registerCommand(command: Command): void {
-    this.commands[command.commandName] = command.process;
-  }
-
-  static subscribe(listener: Listener) {
-    this.listeners.push(listener);
-  }
+  private _outputFiles: BluehawkFiles = {};
 }

@@ -26,46 +26,10 @@ const PopParser = createToken({
   pattern: Lexer.NA,
 });
 
-// For patterns that pair with PopParser but don't exactly match PushParser. For
-// example, in JS, '${' is string interpolation start and '}' is end. '}' can
-// also be used in JS to close a scope or object, but its corresponding opener
-// ('{') would be ignored by the parser. To prevent treating those '}'s as
-// interpolation ends, we provide '{' as a "dummy" corresponding to each '}'
-// before the actual interpolation-ending '}'.
-const DummyPushParser = createToken({
-  name: "DummyPushParser",
+const StringLiteral = createToken({
+  name: "StringLiteral",
   pattern: Lexer.NA,
 });
-
-// A set of abstract tokens for string literals that optionally allow inline
-// interpolation (template literal).
-//
-//    e.g. `This is a ${ {"templateLiteral": true} }.`
-//         ^          ^^ ^                       ^ ^ ^
-//        Start       || |                       | | End
-//                    IS |                       | IE
-//                     Dummy                     IE
-// IS = InterpolationStart (PushParser)
-// IE = InterpolationEnd (PopParser)
-// Dummy = PushParserDummy
-
-const StringLiteral = {
-  Start: createToken({
-    name: "StringLiteralStart",
-    pattern: Lexer.NA,
-  }),
-
-  // For escaping (e.g. \\n, \", etc.)
-  Escape: createToken({
-    name: "StringLiteralEscape",
-    pattern: Lexer.NA,
-  }),
-
-  End: createToken({
-    name: "StringLiteralEnd",
-    pattern: Lexer.NA,
-  }),
-};
 
 const AttributeListEnd = createToken({
   name: "AttributeListEnd",
@@ -131,11 +95,14 @@ const Identifier = createToken({
 const JsonStringLiteral = createToken({
   name: "JsonStringLiteral",
   pattern: /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/,
+  categories: [StringLiteral],
 });
 
 export {
   AttributeListEnd,
   AttributeListStart,
+  PopParser,
+  PushParser,
   BlockCommentEnd,
   BlockCommentStart,
   COMMAND_END_PATTERN,
@@ -144,13 +111,10 @@ export {
   Command,
   CommandEnd,
   CommandStart,
-  DummyPushParser,
   Identifier,
   JsonStringLiteral,
   LineComment,
   Newline,
-  PopParser,
-  PushParser,
   Space,
   StringLiteral,
   Text,
