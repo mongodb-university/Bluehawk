@@ -1,4 +1,5 @@
-import { Bluehawk, BluehawkSource } from "../bluehawk";
+import { Bluehawk } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 import { RemoveCommand } from "./RemoveCommand";
 import { Processor } from "./Processor";
 
@@ -23,7 +24,7 @@ console.log(bar);
     const source = new BluehawkSource({
       text: singleInput,
       language: "javascript",
-      filePath: "test.js",
+      path: "test.js",
     });
 
     const bluehawkResult = bluehawk.run(source);
@@ -47,7 +48,7 @@ d
 e
 `,
       language: "javascript",
-      filePath: "test.js",
+      path: "test.js",
     });
 
     const bluehawkResult = bluehawk.run(source);

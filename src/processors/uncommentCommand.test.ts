@@ -1,4 +1,5 @@
-import { Bluehawk, BluehawkSource } from "../bluehawk";
+import { Bluehawk } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 import { UncommentCommand } from "./UncommentCommand";
 import { RemoveCommand } from "./RemoveCommand";
 import { Processor } from "./Processor";
@@ -18,7 +19,7 @@ no comment
 // :uncomment-end:
 `,
       language: "javascript",
-      filePath: "uncomment.test.js",
+      path: "uncomment.test.js",
     });
 
     const bluehawkResult = bluehawk.run(source);
@@ -40,7 +41,7 @@ no comment
 // :uncomment-end:
 `,
       language: "javascript",
-      filePath: "uncomment.test.js",
+      path: "uncomment.test.js",
     });
 
     const bluehawkResult = bluehawk.run(source);
@@ -64,7 +65,7 @@ no comment
 // :uncomment-end:
 `,
       language: "javascript",
-      filePath: "uncomment.test.js",
+      path: "uncomment.test.js",
     });
 
     const bluehawkResult = bluehawk.run(source);
@@ -89,7 +90,7 @@ no comment
 // :uncomment-end:
 `,
       language: "javascript",
-      filePath: "uncomment.test.js",
+      path: "uncomment.test.js",
     });
 
     const bluehawkResult = bluehawk.run(source);

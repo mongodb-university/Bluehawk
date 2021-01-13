@@ -8,12 +8,16 @@ export const StateCommand = (request: ProcessRequest): void => {
   const stateAttribute = source.attributes["state"];
   if (stateAttribute === undefined) {
     // We are not processing in a state file, so start one
-    processor.fork(`${source.filePath}.state.${command.id}`, bluehawkResult, {
-      ...source.attributes,
-      // Set the state attribute for next time StateCommand is invoked on the
-      // new file
-      state: command.id,
-    });
+    processor.fork(
+      source.pathWithInfix(`state.${command.id}`),
+      bluehawkResult,
+      {
+        ...source.attributes,
+        // Set the state attribute for next time StateCommand is invoked on the
+        // new file
+        state: command.id,
+      }
+    );
     return;
   }
 

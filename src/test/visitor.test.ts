@@ -2,7 +2,7 @@ import { RootParser } from "../parser/RootParser";
 import { makeCstVisitor } from "../parser/makeCstVisitor";
 import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
-import { BluehawkSource } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 
 describe("visitor", () => {
   const parser = new RootParser([
@@ -13,7 +13,7 @@ describe("visitor", () => {
   const source = new BluehawkSource({
     language: "mock",
     text: "mock",
-    filePath: "mock",
+    path: "mock",
   });
 
   it("can be constructed", () => {
@@ -89,6 +89,7 @@ annotated text
     expect(result.errors[0].message).toBe(
       "Unexpected this-is-a-different-command-end closing this-is-a-command-start"
     );
+    expect(result.commands.length).toBe(0);
   });
 
   it("supports nested commands", () => {

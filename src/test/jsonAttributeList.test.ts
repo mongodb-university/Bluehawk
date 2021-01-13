@@ -2,7 +2,7 @@ import { RootParser } from "../parser/RootParser";
 import { makeCstVisitor } from "../parser/makeCstVisitor";
 import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
-import { BluehawkSource } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 
 describe("JSON attribute lists", () => {
   const parser = new RootParser([
@@ -13,7 +13,7 @@ describe("JSON attribute lists", () => {
   const source = new BluehawkSource({
     language: "mock",
     text: "mock",
-    filePath: "mock",
+    path: "mock",
   });
 
   it("accepts empty attribute lists", () => {
