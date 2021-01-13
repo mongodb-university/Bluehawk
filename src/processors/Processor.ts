@@ -1,4 +1,5 @@
-import { BluehawkResult, BluehawkSource } from "../bluehawk";
+import { BluehawkResult } from "../bluehawk";
+import { BluehawkSource, CommandAttributes } from "../BluehawkSource";
 import { CommandNode } from "../parser/CommandNode";
 
 export type BluehawkFiles = { [pathName: string]: BluehawkResult };
@@ -24,21 +25,25 @@ export class Processor {
   fork(
     newPath: string,
     bluehawkResult: BluehawkResult,
-    attributes?: { [key: string]: string }
-  ): void {
+    additionalAttributes?: CommandAttributes
+  ): BluehawkResult {
     if (this._outputFiles[newPath] !== undefined) {
       return;
     }
+    const { source } = bluehawkResult;
     const newResult = {
       ...bluehawkResult,
       source: new BluehawkSource({
         ...bluehawkResult.source,
-        filePath: newPath,
-        attributes,
+        path: newPath,
+        attributes: {
+          ...source.attributes,
+          ...(additionalAttributes ?? {}),
+        },
       }),
     };
     this._outputFiles[newPath] = newResult;
-    this._process(newResult.commands, newResult);
+    return this._process(newResult.commands, newResult);
   }
 
   // Processes the given bluehawk result, returning a map of file paths to
@@ -46,27 +51,29 @@ export class Processor {
   process = (result: BluehawkResult): BluehawkFiles => {
     // Clear the state (FIXME: state could be passed in the request)
     this._outputFiles = {};
-    this.fork(result.source.filePath, result);
+    this.fork(result.source.path, result);
     return this._outputFiles;
   };
 
   private _process = (
     commandSubset: CommandNode[],
     result: BluehawkResult
-  ): void => {
+  ): BluehawkResult => {
     commandSubset.forEach((command) => {
       const processor = this.processors[command.commandName];
-      if (processor !== undefined) {
-        processor({
-          processor: this,
-          bluehawkResult: result,
-          command,
-        });
+      if (processor === undefined) {
+        return;
       }
+      processor({
+        processor: this,
+        bluehawkResult: result,
+        command,
+      });
       if (command.children !== undefined) {
         this._process(command.children, result);
       }
     });
+    return result;
   };
 
   registerCommand(name: string, command: CommandProcessor): void {

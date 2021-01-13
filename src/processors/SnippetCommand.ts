@@ -1,13 +1,15 @@
 import { IToken } from "chevrotain";
 import MagicString from "magic-string";
-import { BluehawkSource } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 import { CommandNode } from "../parser/CommandNode";
 import { flatten } from "../parser/flatten";
 import { ProcessRequest } from "./Processor";
 import { removeMetaRange } from "./removeMetaRange";
 
-function dedentRange(s: MagicString, command: CommandNode): MagicString {
-  const { contentRange } = command;
+function dedentRange(
+  s: MagicString,
+  { contentRange }: CommandNode
+): MagicString {
   if (contentRange == null) {
     return s;
   }
@@ -20,6 +22,9 @@ function dedentRange(s: MagicString, command: CommandNode): MagicString {
 
   // Find minimum indentation in the content block
   const minimumIndentation = lines.reduce((min, line) => {
+    if (line.length === 0) {
+      return min;
+    }
     const match = line.match(/^\s+/);
     if (!match) {
       // No indentation
@@ -37,17 +42,12 @@ function dedentRange(s: MagicString, command: CommandNode): MagicString {
     return s;
   }
 
-  // Get all newlines in the hierarchy in order to work with original string
-  // offsets
-  const newlines = flatten(command).reduce(
-    (acc, cur) => [...acc, ...cur.newlines],
-    [] as IToken[]
-  );
-
   // Dedent lines
-  newlines.forEach((newline) =>
-    s.remove(newline.endOffset + 1, newline.endOffset + 1 + minimumIndentation)
-  );
+  let offset = contentRange.start.offset;
+  lines.forEach((line) => {
+    s.remove(offset, offset + Math.min(line.length, minimumIndentation));
+    offset += line.length + 1;
+  });
 }
 
 export const SnippetCommand = (request: ProcessRequest): void => {
@@ -59,19 +59,27 @@ export const SnippetCommand = (request: ProcessRequest): void => {
   removeMetaRange(source.text, command);
 
   // Copy text to new working copy
-  const textClone = source.text.clone();
+  const clonedSnippet = source.text.snip(
+    contentRange.start.offset,
+    contentRange.end.offset
+  );
 
   // Dedent
-  dedentRange(textClone, command);
+  dedentRange(clonedSnippet, command);
 
   // Fork subset code block to another file
-  processor.fork(`${source.filePath}.codeblock.${command.id}`, {
-    commands: command.children ?? [],
-    errors: [],
-    source: new BluehawkSource({
-      filePath: source.filePath,
-      language: source.language,
-      text: textClone.slice(contentRange.start.offset, contentRange.end.offset),
-    }),
-  });
+  processor.fork(
+    source.pathWithInfix(`codeblock.${command.id}`),
+    {
+      commands: command.children ?? [],
+      errors: [],
+      source: new BluehawkSource({
+        ...source,
+        text: clonedSnippet,
+      }),
+    },
+    {
+      snippet: command.id,
+    }
+  );
 };

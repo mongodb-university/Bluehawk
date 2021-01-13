@@ -1,4 +1,4 @@
-import { BluehawkSource } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
 import { makePushParserTokens } from "../lexer/makePushParserTokens";
@@ -41,7 +41,7 @@ CC
 describe("multilang", () => {
   const someSource = new BluehawkSource({
     language: "mock",
-    filePath: "mock",
+    path: "mock",
     text: "mock",
   });
   const parser = new RootParser([

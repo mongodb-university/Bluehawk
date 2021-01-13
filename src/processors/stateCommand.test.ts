@@ -1,5 +1,5 @@
-import { join } from "path";
-import { Bluehawk, BluehawkSource } from "../bluehawk";
+import { Bluehawk } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 import { Processor } from "./Processor";
 import { StateCommand } from "./StateCommand";
 import { RemoveCommand } from "./RemoveCommand";
@@ -20,7 +20,7 @@ describe("stateCommand", () => {
 end
 `,
     language: "javascript",
-    filePath: join(__dirname, "stateCommand.test.ts"),
+    path: "stateCommand.test.ts",
   });
   const singleBegin = `
 let foo = undefined;
@@ -49,7 +49,7 @@ someTest()
 end
 `,
     language: "javascript",
-    filePath: "stateCommand.test.js",
+    path: "stateCommand.test.js",
   });
   const nestedBegin = `
 let foo = undefined;
@@ -90,7 +90,7 @@ console.log("we are foo");
 end
 `,
       language: "javascript",
-      filePath: "stateCommand.test.js",
+      path: "stateCommand.test.js",
     });
     const multipleBegin = `
 let foo = undefined;
@@ -105,22 +105,22 @@ console.log("we are foo");
 end
 `;
     const bluehawkResult = bluehawk.run(multipleInput);
-    expect(bluehawkResult.source.filePath).toBe("stateCommand.test.js");
+    expect(bluehawkResult.source.path).toBe("stateCommand.test.js");
     const files = processor.process(bluehawkResult);
     // wait what? Two snippets?
     // It's because the snippet lives outside of the states
     // There would only be one snippet publish if it was nested
     expect(Object.keys(files)).toStrictEqual([
       "stateCommand.test.js",
-      "stateCommand.test.js.state.begin",
-      "stateCommand.test.js.state.begin.codeblock.foo",
-      "stateCommand.test.js.codeblock.foo",
-      "stateCommand.test.js.state.final",
-      "stateCommand.test.js.state.final.codeblock.foo",
+      "./stateCommand.test.state.begin.js",
+      "./stateCommand.test.state.begin.codeblock.foo.js",
+      "./stateCommand.test.codeblock.foo.js",
+      "./stateCommand.test.state.final.js",
+      "./stateCommand.test.state.final.codeblock.foo.js",
     ]);
 
     expect(
-      files["stateCommand.test.js.state.final"].source.text.toString()
+      files["./stateCommand.test.state.final.js"].source.text.toString()
     ).toBe(multipleFinal);
   });
 });

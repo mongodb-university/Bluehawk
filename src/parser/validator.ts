@@ -32,7 +32,7 @@ function validateCst(
   commandNode: CommandNode,
   result: ValidateCstResult
 ): void {
-  commandNode.children.forEach((child) => {
+  commandNode.children?.forEach((child) => {
     validateCst(child, result);
   });
   const rules: { [k: string]: Rule[] } = {

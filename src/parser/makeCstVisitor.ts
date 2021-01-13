@@ -8,7 +8,8 @@ import {
 import { RootParser } from "./RootParser";
 import { jsonErrorToVisitorError } from "./jsonErrorToVisitorError";
 import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
-import { BluehawkError, BluehawkSource, Location } from "../bluehawk";
+import { BluehawkError, Location } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 import { PushParserPayload } from "../lexer/makePushParserTokens";
 import { CommandNode } from "./CommandNode";
 
@@ -265,17 +266,27 @@ export function makeCstVisitor(
     ) {
       assert(parent != null);
 
+      const CommandStart = context.CommandStart[0];
+      const CommandEnd = context.CommandEnd[0];
+
       // Extract the command name ("example") from the
       // ":example-start:"/":example-end:" tokens
-      const commandName = COMMAND_START_PATTERN.exec(
-        context.CommandStart[0].image
-      )[1];
+      const commandName = COMMAND_START_PATTERN.exec(CommandStart.image)[1];
       assert(commandName);
+      const endCommandName = COMMAND_END_PATTERN.exec(CommandEnd.image)[1];
+      assert(endCommandName);
+
+      // Compare start/end name to ensure it is the same command
+      if (commandName !== endCommandName) {
+        errors.push({
+          location: locationFromToken(context.CommandEnd[0]),
+          message: `Unexpected ${endCommandName}-end closing ${commandName}-start`,
+        });
+        return;
+      }
 
       const newNode = parent.makeChildBlockCommand(commandName, context);
 
-      const CommandStart = context.CommandStart[0];
-      const CommandEnd = context.CommandEnd[0];
       newNode.range = {
         start: {
           line: CommandStart.startLine,
@@ -312,18 +323,6 @@ export function makeCstVisitor(
               (context.CommandEnd[0].startColumn - 1),
           },
         };
-      }
-
-      const endCommandName = COMMAND_END_PATTERN.exec(
-        context.CommandEnd[0].image
-      )[1];
-
-      // Compare start/end name to ensure it is the same command
-      if (newNode.commandName !== endCommandName) {
-        errors.push({
-          location: locationFromToken(context.CommandEnd[0]),
-          message: `Unexpected ${endCommandName}-end closing ${newNode.commandName}-start`,
-        });
       }
 
       this.$visit(context.commandAttribute, {

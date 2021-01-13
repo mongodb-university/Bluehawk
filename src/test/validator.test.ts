@@ -3,11 +3,11 @@ import { makeCstVisitor } from "../parser/makeCstVisitor";
 import { validateVisitorResult } from "../parser/validator";
 import { makeBlockCommentTokens } from "../lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../lexer/makeLineCommentToken";
-import { BluehawkSource } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 
 describe("validator", () => {
   const source = new BluehawkSource({
-    filePath: "",
+    path: "",
     language: "",
     text: "",
   });
@@ -270,5 +270,18 @@ the quick brown fox jumped
         offset: 96,
       },
     });
+  });
+
+  it("handles line commands", () => {
+    const tokens = lexer.tokenize(`// :unknown-line-command:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst, source);
+    const validateResult = validateVisitorResult(result);
+    expect(validateResult.commandsById.size).toBe(0);
   });
 });

@@ -1,4 +1,5 @@
-import { Bluehawk, BluehawkSource } from "../bluehawk";
+import { Bluehawk } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 
 describe("bluehawk", () => {
   const bluehawk = new Bluehawk();
@@ -12,7 +13,7 @@ describe("bluehawk", () => {
     :some-command-end:
 `,
       language: "testlanguage",
-      filePath: "testPath",
+      path: "testPath",
     });
     const output = bluehawk.run(input);
     expect(output.errors).toStrictEqual([]);
@@ -26,7 +27,7 @@ describe("bluehawk", () => {
     :some-command-end:
     `,
       language: "testlanguage",
-      filePath: "testPath",
+      path: "testPath",
     });
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
@@ -50,7 +51,7 @@ describe("bluehawk", () => {
     :some-command-start:
 `,
       language: "testlanguage",
-      filePath: "testPath",
+      path: "testPath",
     });
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);
@@ -75,7 +76,7 @@ describe("bluehawk", () => {
     :some-command-end:
 `,
       language: "testlanguage",
-      filePath: "testPath",
+      path: "testPath",
     });
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(0);
@@ -91,7 +92,7 @@ describe("bluehawk", () => {
     :code-block-end:
 `,
       language: "testlanguage",
-      filePath: "testPath",
+      path: "testPath",
     });
     const output = bluehawk.run(input);
     expect(output.errors.length).toBe(1);

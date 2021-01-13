@@ -2,7 +2,8 @@ import * as path from "path";
 import * as fs from "fs";
 import ignore from "ignore";
 import * as readline from "readline";
-import { Bluehawk, BluehawkSource } from "../bluehawk";
+import { Bluehawk, BluehawkResult } from "../bluehawk";
+import { BluehawkSource } from "../BluehawkSource";
 import { Processor } from "../processors/Processor";
 import { SnippetCommand } from "../processors/SnippetCommand";
 import { RemoveCommand } from "../processors/RemoveCommand";
@@ -73,30 +74,47 @@ async function fileEntry(
 function genSource(file: string): BluehawkSource {
   const text = fs.readFileSync(path.resolve(file), "utf8");
   const language = path.extname(file);
-  const filePath = file;
-  return new BluehawkSource({
-    text,
-    language,
-    filePath,
-  });
+  return new BluehawkSource({ text, language, path: file });
 }
 
-export async function main(source: string, ignores?: string[]): Promise<void> {
+const bluehawk = new Bluehawk();
+
+export async function main(
+  source: string,
+  ignores?: string[]
+): Promise<BluehawkResult[]> {
   const processor = new Processor();
   processor.registerCommand("code-block", SnippetCommand);
+  processor.registerCommand("snippet", SnippetCommand);
   processor.registerCommand("remove", RemoveCommand);
+
+  // TODO: "hide" is deprecated and "replace-with" will not work as originally
+  processor.registerCommand("hide", RemoveCommand);
+
+  // hide and replace-with now belong to "state"
   processor.registerCommand("state", StateCommand);
 
-  const bluehawk = new Bluehawk();
-  const files = await fileEntry(source, ignores);
+  return (await fileEntry(source, ignores)).reduce((acc, file) => {
+    try {
+      const result = bluehawk.run(genSource(file));
+      if (result.errors.length !== 0) {
+        console.error(
+          `Error in ${file}:\n${result.errors
+            .map(
+              (error) =>
+                `  at line ${error.location.line} col ${error.location.column}: ${error.message}`
+            )
+            .join("\n")}`
+        );
+        return acc;
+      }
+      return [...acc, ...Object.values(processor.process(result))];
+    } catch (e) {
+      console.error(`Encountered the following error while processing ${file}:
+${e.stack}
 
-  files.forEach((file) => {
-    const result = bluehawk.run(genSource(file));
-    // TODO: remove this error check, informational only during devlopering
-    if (result.errors.length > 0) {
-      console.error("encountered error in file", file);
-      console.error(result.errors[0]);
+This is probably a bug in Bluehawk. Please send this stack trace (and the contents of ${file}, if possible) to the Bluehawk development team at https://github.com/mongodb-university/Bluehawk/issues/new`);
+      return acc;
     }
-    processor.process(result);
-  });
+  }, [] as BluehawkResult[]);
 }

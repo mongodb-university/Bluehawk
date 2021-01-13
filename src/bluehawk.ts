@@ -5,7 +5,7 @@ import { CommandNode } from "./parser/CommandNode";
 import { validateVisitorResult } from "./parser/validator";
 import { RootParser } from "./parser/RootParser";
 import { COMMAND_PATTERN } from "./lexer/tokens";
-import MagicString from "magic-string";
+import { BluehawkSource } from "./BluehawkSource";
 
 export interface Location {
   line: number;
@@ -27,35 +27,6 @@ export class BluehawkResult {
   errors: BluehawkError[];
   commands: CommandNode[];
   source: BluehawkSource;
-}
-
-export class BluehawkSource {
-  constructor({
-    text,
-    language,
-    filePath,
-    attributes,
-  }: {
-    text: string | MagicString;
-    language: string;
-    filePath: string;
-    attributes?: { [key: string]: string };
-  }) {
-    this.text =
-      typeof text === "string" || text instanceof String
-        ? new MagicString(text as string)
-        : text.clone();
-    this.language = language;
-    this.filePath = filePath;
-    this.attributes = attributes ?? {};
-  }
-
-  // Store the source text as a conveniently editable magic string.
-  // See https://www.npmjs.com/package/magic-string for details.
-  text: MagicString;
-  language: string;
-  filePath: string;
-  attributes: { [key: string]: string };
 }
 
 export class Bluehawk {
