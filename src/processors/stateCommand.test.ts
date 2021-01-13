@@ -112,15 +112,15 @@ end
     // There would only be one snippet publish if it was nested
     expect(Object.keys(files)).toStrictEqual([
       "stateCommand.test.js",
-      "./stateCommand.test.state.begin.js",
-      "./stateCommand.test.state.begin.codeblock.foo.js",
-      "./stateCommand.test.codeblock.foo.js",
-      "./stateCommand.test.state.final.js",
-      "./stateCommand.test.state.final.codeblock.foo.js",
+      "stateCommand.test.js#state.begin",
+      "stateCommand.test.codeblock.foo.js#state.begin",
+      "stateCommand.test.codeblock.foo.js",
+      "stateCommand.test.js#state.final",
+      "stateCommand.test.codeblock.foo.js#state.final",
     ]);
 
     expect(
-      files["./stateCommand.test.state.final.js"].source.text.toString()
+      files["stateCommand.test.js#state.final"].source.text.toString()
     ).toBe(multipleFinal);
   });
 });

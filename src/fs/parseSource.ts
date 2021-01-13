@@ -4,10 +4,11 @@ import ignore from "ignore";
 import * as readline from "readline";
 import { Bluehawk, BluehawkResult } from "../bluehawk";
 import { BluehawkSource } from "../BluehawkSource";
-import { Processor } from "../processors/Processor";
+import { Listener, Processor, ProcessRequest } from "../processors/Processor";
 import { SnippetCommand } from "../processors/SnippetCommand";
 import { RemoveCommand } from "../processors/RemoveCommand";
 import { StateCommand } from "../processors/StateCommand";
+import { UncommentCommand } from "../processors/UncommentCommand";
 
 async function fileEntry(
   source: string,
@@ -32,7 +33,6 @@ async function fileEntry(
           if (
             fs.lstatSync(path.join(path.resolve(source), file)).isDirectory()
           ) {
-            console.log(path.resolve(file));
             fileArray = traverse(
               path.join(path.resolve(source), file),
               fileArray
@@ -81,8 +81,9 @@ const bluehawk = new Bluehawk();
 
 export async function main(
   source: string,
-  ignores?: string[]
-): Promise<BluehawkResult[]> {
+  ignores: string[] | undefined,
+  onFileProcessed: Listener[]
+): Promise<void> {
   const processor = new Processor();
   processor.registerCommand("code-block", SnippetCommand);
   processor.registerCommand("snippet", SnippetCommand);
@@ -94,7 +95,18 @@ export async function main(
   // hide and replace-with now belong to "state"
   processor.registerCommand("state", StateCommand);
 
-  return (await fileEntry(source, ignores)).reduce((acc, file) => {
+  // uncomment the block in the state
+  processor.registerCommand(
+    "state-uncomment",
+    (request: ProcessRequest): void => {
+      UncommentCommand(request);
+      StateCommand(request);
+    }
+  );
+
+  onFileProcessed.forEach((listener) => processor.subscribe(listener));
+
+  (await fileEntry(source, ignores)).forEach((file) => {
     try {
       const result = bluehawk.run(genSource(file));
       if (result.errors.length !== 0) {
@@ -106,15 +118,14 @@ export async function main(
             )
             .join("\n")}`
         );
-        return acc;
+        return;
       }
-      return [...acc, ...Object.values(processor.process(result))];
+      processor.process(result);
     } catch (e) {
       console.error(`Encountered the following error while processing ${file}:
 ${e.stack}
 
 This is probably a bug in Bluehawk. Please send this stack trace (and the contents of ${file}, if possible) to the Bluehawk development team at https://github.com/mongodb-university/Bluehawk/issues/new`);
-      return acc;
     }
-  }, [] as BluehawkResult[]);
+  });
 }

@@ -1,8 +1,6 @@
-import { IToken } from "chevrotain";
 import MagicString from "magic-string";
 import { BluehawkSource } from "../BluehawkSource";
 import { CommandNode } from "../parser/CommandNode";
-import { flatten } from "../parser/flatten";
 import { ProcessRequest } from "./Processor";
 import { removeMetaRange } from "./removeMetaRange";
 
@@ -68,18 +66,18 @@ export const SnippetCommand = (request: ProcessRequest): void => {
   dedentRange(clonedSnippet, command);
 
   // Fork subset code block to another file
-  processor.fork(
-    source.pathWithInfix(`codeblock.${command.id}`),
-    {
+  processor.fork({
+    bluehawkResult: {
       commands: command.children ?? [],
       errors: [],
       source: new BluehawkSource({
         ...source,
+        path: source.pathWithInfix(`codeblock.${command.id}`),
         text: clonedSnippet,
       }),
     },
-    {
+    newAttributes: {
       snippet: command.id,
-    }
-  );
+    },
+  });
 };

@@ -18,41 +18,66 @@ export interface ProcessRequest {
 // The implementation that actually carries out the command.
 export type CommandProcessor = (request: ProcessRequest) => void;
 
+export type Listener = (result: BluehawkResult) => void;
+
 export class Processor {
   processors: Record<string, CommandProcessor> = {};
+  listeners = new Set<Listener>();
 
-  // Processes the given bluehawk result under an alternative path.
-  fork(
-    newPath: string,
-    bluehawkResult: BluehawkResult,
-    additionalAttributes?: CommandAttributes
-  ): BluehawkResult {
-    if (this._outputFiles[newPath] !== undefined) {
+  // Subscribe to processed file events
+  subscribe(listener: Listener): void {
+    this.listeners.add(listener);
+  }
+
+  // Publish a processed file
+  publish(result: BluehawkResult): void {
+    this.listeners.forEach((listener) => listener(result));
+  }
+
+  // Processes the given Bluehawk result, optionally under an alternative id,
+  // and emits the file.
+  fork({
+    bluehawkResult,
+    newPath,
+    newModifier,
+    newAttributes,
+  }: {
+    bluehawkResult: BluehawkResult;
+    newPath?: string;
+    newModifier?: string;
+    newAttributes?: CommandAttributes;
+  }): void {
+    const { source } = bluehawkResult;
+    const modifier = BluehawkSource.makeModifier(source.modifier, newModifier);
+    const fileId = BluehawkSource.makeId(newPath ?? source.path, modifier);
+    if (this._outputFiles[fileId] !== undefined) {
       return;
     }
-    const { source } = bluehawkResult;
     const newResult = {
       ...bluehawkResult,
       source: new BluehawkSource({
-        ...bluehawkResult.source,
-        path: newPath,
+        ...source,
+        modifier,
         attributes: {
           ...source.attributes,
-          ...(additionalAttributes ?? {}),
+          ...(newAttributes ?? {}),
         },
       }),
     };
-    this._outputFiles[newPath] = newResult;
-    return this._process(newResult.commands, newResult);
+    this._outputFiles[fileId] = newResult;
+    const result = this._process(newResult.commands, newResult);
+    this.publish(result);
   }
 
-  // Processes the given bluehawk result, returning a map of file paths to
-  // processed bluehawk results.
-  process = (result: BluehawkResult): BluehawkFiles => {
+  // Processes the given Bluehawk result. Resulting files are emitted to
+  // listeners, which can be added with subscribe().
+  process = (bluehawkResult: BluehawkResult): BluehawkFiles => {
     // Clear the state (FIXME: state could be passed in the request)
     this._outputFiles = {};
-    this.fork(result.source.path, result);
-    return this._outputFiles;
+    this.fork({ bluehawkResult });
+    const outputFiles = this._outputFiles;
+    this._outputFiles = {};
+    return outputFiles;
   };
 
   private _process = (
