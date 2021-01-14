@@ -32,11 +32,11 @@ console.log(bar);
     const files = processor.process(bluehawkResult);
     expect(Object.keys(files)).toStrictEqual([
       "snippet.test.js",
-      "./snippet.test.codeblock.foo.js",
+      "snippet.test.codeblock.foo.js",
     ]);
-    expect(
-      files["./snippet.test.codeblock.foo.js"].source.text.toString()
-    ).toBe(`${snippet}\n`);
+    expect(files["snippet.test.codeblock.foo.js"].source.text.toString()).toBe(
+      `${snippet}\n`
+    );
   });
 
   it("dedents the snippet", () => {
@@ -54,9 +54,7 @@ console.log(bar);
 
     const bluehawkResult = bluehawk.run(source);
     const files = processor.process(bluehawkResult);
-    expect(
-      files["./snippet.test.codeblock.foo.js"].source.text.toString()
-    ).toBe(
+    expect(files["snippet.test.codeblock.foo.js"].source.text.toString()).toBe(
       `  abc
    def
 ghi
@@ -85,7 +83,7 @@ ghi
     const files = processor.process(bluehawkResult);
     expect(
       files[
-        "./snippet.test.codeblock.delete-collection.swift"
+        "snippet.test.codeblock.delete-collection.swift"
       ].source.text.toString()
     ).toBe(
       `let realm = try! Realm()
@@ -112,9 +110,9 @@ try! realm.write {
 
     const bluehawkResult = bluehawk.run(source);
     const files = processor.process(bluehawkResult);
-    expect(
-      files["./snippet.test.codeblock.foo.js"].source.text.toString()
-    ).toBe("");
+    expect(files["snippet.test.codeblock.foo.js"].source.text.toString()).toBe(
+      ""
+    );
   });
 
   it("handles adjusted offsets", () => {
@@ -132,8 +130,8 @@ hide this
 
     const bluehawkResult = bluehawk.run(source);
     const files = processor.process(bluehawkResult);
-    expect(
-      files["./snippet.test.codeblock.foo.js"].source.text.toString()
-    ).toBe("");
+    expect(files["snippet.test.codeblock.foo.js"].source.text.toString()).toBe(
+      ""
+    );
   });
 });
