@@ -1,35 +1,22 @@
 # Bluehawk
 
-A file-parsing tool & markup schema
+Bluehawk is a markup processor for extracting and manipulating arbitrary code.
+In particular, it can:
 
-## What it does
+- Extract code examples for use in documentation
+- Replace "finished" code with "todo" code for a branch in a tutorial repo
 
-Given a file (or directory of files) that use the markup tags, Bluehawk parses
-the file and outputs one or more files. There are 2 main processes:
+## Background
 
-- **Step files:** Bluehawk will generate a markdown file with numbered steps and
-  included code blocks. You can import this as some -- or all -- of the steps
-  in a tutorial.
+A concept originally lifted from another internal project called "peekaboo", the
+idea is that you can develop finalized code (say, a complete tutorial
+application that runs), and then strip out parts that you want the learner to
+figure out and code themselves. So, one code base (compiles, passes tests, etc.)
+can be used to generate both a "starter" version for a learner and a "final"
+version so they can check their work... or just download it and cheat.
 
-- **Code files:** For each code file that has one or more code-blocks defined,
-  Bluehawk generates a minimum of 4 files:
-
-  - Each code block, pulled out of the main code file, and parsed into it's
-    "start" and "final" states. These files are saved
-    as ** _{original_file_name}_.codeblock._{code_block_id}_._{extension}_ **
-
-  - The entire code file, with all of the code-blocks parsed into their
-    "start" and "final" states. These files are saved in the **start** and
-    **final** folders with the original file name.
-
-### Start and Final?
-
-A concept originally lifted from another internal project called "peekaboo",
-the idea is that you can develop a final code solution (say, a complete tutorial
-application), and then strip out parts that you want the learner to figure out
-and code themselves. So, one code base (compiles, passes tests, etc.) can be used
-to generate both a "starter" version for a learner and a "final" version so they
-can check their work....or just download it and cheat.
+Additionally, we needed a way to leave our code examples in compileable,
+testable projects while extracting the relevant part to paste in our docs.
 
 ## How to run Bluehawk
 
@@ -42,7 +29,7 @@ npm install
 To build, run:
 
 ```
-npm run-script build
+npm run build
 ```
 
 If compilation is successful, you can run bluehawk like so:
@@ -57,18 +44,42 @@ Which you can alias (until release):
 alias bluehawk="node /path/to/bluehawk/build/index.js"
 ```
 
-The `-s or --source` parameter is required. Other optional parameters include:
+The `-s or --source` parameter is required.
 
-- `-d or --destination` defines the output location. Under the specified location,
-  Bluehawk creates the following structure:
+In order to do anything useful, you can use the following flags:
 
-  ```
-  {output}
-  |-> steps
-  |-> code
-      |-> start
-      |-> final
-  ```
+- `--state <state name>`: Output the given `state name` version of files. When Bluehawk
+  encounters a `state` command (see below), multiple versions of the source file
+  are spawned. Each version removes any code in state commands that are **not**
+  marked with the corresponding state name. This flag determines which version
+  to eventually write to disk.
+
+  When not combined with `snippets`, this retains the relative structure of the
+  project.
+- `--snippets`: Output snippet files only. Can be combined with `--state`.
+- `-d or --destination` defines the output location.
+
+
+## Command Markup
+
+When generating code blocks from a code file, use the following markup. Note: you
+use either single-line commenting or block commenting for all tags to keep the
+compiler happy.
+
+| Syntax                      | Description                                                                                              |
+| --------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **:snippet-start:** _id_    | Creates a new snippet file, which will be output as `<sourcefilename>.codeblock.<source file extension>` |
+|                             |                                                                             |
+| **:remove-start:**          | The inner content will be removed from all output.                          |
+|                             |                                                                             |
+| **:state-start:** _state_   | Marks this content for removal from any state file except _state_.          |
+|                             |                                                                             |
+| **:state-uncomment-start:** _state_  | Marks this content for removal from any state file except _state_ and also removes up to one layer of comment tokens. |
+
+All commands that end with `-start` have a corresponding `-end` command. You use
+start and end commands to delineate blocks of content. Generally, the command
+operates on the content within the block.
+
 
 ## Running Tests
 
@@ -93,107 +104,3 @@ npm run coverage
 ```
 
 You can also run tests with breakpoints in VS Code with F5. See .vscode/launch.json.
-
-## The Markup
-
-There are 2 categories of tags, corresponding to the two output types:
-
-### Step Files
-
-Insert the following "tags" to define the beginning and end of a tutorial step.
-For each "step block", Bluehawk will create a new numbered step, with an `id` and
-title that correspond to the values you provide.
-
-**:step-start:** Creates a new step in the step file and copies the text found in the
-following comment lines until a :step-end: is encountered. Both the `title` and `id`
-properties are required:
-
-```
-:step-start: {
-    id: ...,
-    title: ...
-}
-```
-
-**:step-end:** Ends the current step. It has no properties.
-
-**:include-code-block:** Indicates that a code-block needs to be created here
-using code found elsewhere in this file until a :step-end: is encountered.
-
-```
-:include-code-block: {
-  id: ...,
-  code-state: "start" | "final"
-  emphasize-lines: 1 | 1-4 | 1,5,7
-  line-numbers: true | false
-}
-```
-
-<br>
-<br>
-
-### Code Files
-
-When generating code blocks from a code file, use the following markup. Note: you
-use either single-line commenting or block commenting for all tags to keep the
-compiler happy.
-
-| Syntax                      | Description                                                                                                                 |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **:code-block-start:** _id_ | Creates a new step in the step file and defines the start of a chunk of code to be placed within a code-block directive.    |
-|                             |                                                                                                                             |
-| **:hide-start:**            | When generating the starting code, hide the following lines until you reach a **:hide-end:** or **:replace-with:** command. |
-|                             |                                                                                                                             |
-| **:replace-with:**          | Stop removing lines of code, and insert the following lines until you reach a **:hide-end:** command.                       |
-|                             |                                                                                                                             |
-| **:hide-end:**              | Stop removing lines of code                                                                                                 |
-| **:code-block-end:**        | End of the code block.                                                                                                      |
-
-<br>
-<br>
-
-### Start, End, Hide, Replace...I'm confused.
-
-All code and comments between **:hide-start:** and **:hide-end:** will not be
-included in the "start" version of the output, _except_ whatever is between the
-**:hide-start:** and **:replace-with:** tags. All code in the hide block
-_will_ be included in the "final" output _except_ the lines defined in the
-"replace" section. For a simple example, consider the following input:
-
-```
-// :code-block-start:openRealm1
-// :hide-start:
-
-notInStartCode: true,
-inFinalCode: true,
-
-// :replace-with:
-// // A You should only see this in the start code
-// start1: true,
-// final1: false,
-// // comment in start code: ... ,
-// :hide-end:
-// :code-block-end:
-```
-
-Bluehawk will generate the following output:
-
-**Start version**
-
-```
-// A You should only see this in the start code
-start1: true,
-final1: false,
-// comment in start code: ... ,
-```
-
-**Final version**
-
-```
-notInStartCode: true,
-inFinalCode: true,
-```
-
-## FYI
-
-[PD & Deets](https://docs.google.com/document/d/12PnbCABQanA7ps6izhVvR9Zgc5aVhTKplgaexaHbjco/edit)
