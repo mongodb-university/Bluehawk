@@ -4,7 +4,7 @@ import * as fileHandler from "./fileHandler";
 import * as bhp from "./fs/parseSource";
 import fs from "fs";
 import path from "path";
-import { Bluehawk, BluehawkResult } from "./bluehawk";
+import { BluehawkResult } from "./bluehawk";
 import { Listener } from "./processors/Processor";
 
 const output = MessageHandler.getMessageHandler();
