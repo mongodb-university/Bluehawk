@@ -2,13 +2,14 @@ import * as path from "path";
 import * as fs from "fs";
 import ignore from "ignore";
 import * as readline from "readline";
-import { Bluehawk, BluehawkResult } from "../bluehawk";
+import { Bluehawk } from "../bluehawk";
 import { BluehawkSource } from "../BluehawkSource";
 import { Listener, Processor, ProcessRequest } from "../processors/Processor";
 import { SnippetCommand } from "../processors/SnippetCommand";
 import { RemoveCommand } from "../processors/RemoveCommand";
 import { StateCommand } from "../processors/StateCommand";
 import { UncommentCommand } from "../processors/UncommentCommand";
+import { isBinary } from "istextorbinary";
 
 async function fileEntry(
   source: string,
@@ -82,7 +83,8 @@ const bluehawk = new Bluehawk();
 export async function main(
   source: string,
   ignores: string[] | undefined,
-  onFileProcessed: Listener[]
+  onFileProcessed: Listener[],
+  onBinaryFile?: (path: string) => void
 ): Promise<void> {
   const processor = new Processor();
   processor.registerCommand("code-block", SnippetCommand);
@@ -108,6 +110,10 @@ export async function main(
 
   (await fileEntry(source, ignores)).forEach((file) => {
     try {
+      if (isBinary(file)) {
+        onBinaryFile && onBinaryFile(file);
+        return;
+      }
       const result = bluehawk.run(genSource(file));
       if (result.errors.length !== 0) {
         console.error(

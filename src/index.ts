@@ -56,6 +56,7 @@ async function run(): Promise<void> {
     [path: string]: boolean;
   } = {};
 
+  let onBinaryFile: (path: string) => void = undefined;
   // Output snippet files -- exclude full state files
   if (snippets) {
     listeners.push((result: BluehawkResult) => {
@@ -91,6 +92,29 @@ async function run(): Promise<void> {
       });
     });
   } else if (params.state) {
+    const sourceParam = params.source as string;
+    const projectRoot = !fs.lstatSync(sourceParam as string).isDirectory()
+      ? path.dirname(sourceParam)
+      : sourceParam;
+    onBinaryFile = (filePath: string) => {
+      // Copy binary files directly
+      const directory = path.join(
+        params.destination as string,
+        path.relative(projectRoot, path.dirname(filePath))
+      );
+      const targetPath = path.join(directory, path.basename(filePath));
+      fs.mkdir(directory, { recursive: true }, (error) => {
+        if (error) {
+          throw error;
+        }
+        fs.copyFile(filePath, targetPath, (error) => {
+          if (error) {
+            throw error;
+          }
+          console.log(`copied binary file ${filePath} -> ${targetPath}`);
+        });
+      });
+    };
     listeners.push((result: BluehawkResult) => {
       const { source } = result;
       if (source.attributes.snippet) {
@@ -120,11 +144,6 @@ async function run(): Promise<void> {
         stateVersionWrittenForPath[source.path] = true;
       }
 
-      const sourceParam = params.source as string;
-      const projectRoot = !fs.lstatSync(sourceParam as string).isDirectory()
-        ? path.dirname(sourceParam)
-        : sourceParam;
-
       // Use the same relative path
       const directory = path.join(
         destination,
@@ -147,7 +166,7 @@ async function run(): Promise<void> {
 
   const source = params.source as string;
   const destination = params.destination as string;
-  await bhp.main(source, ignores, listeners);
+  await bhp.main(source, ignores, listeners, onBinaryFile);
 
   if (params.state && Object.keys(stateVersionWrittenForPath).length === 0) {
     console.warn(
