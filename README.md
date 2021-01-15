@@ -68,7 +68,7 @@ compiler happy.
 
 | Syntax                      | Description                                                                                              |
 | --------------------------- | -------------------------------------------------------------------------------------------------------- |
-| **:snippet-start:** _id_    | Creates a new snippet file, which will be output as `<sourcefilename>.codeblock.<source file extension>` |
+| **:snippet-start:** _id_    | Creates a new snippet file, which will be output as `<sourcefilename>.codeblock.<id>.<source file extension>` |
 |                             |                                                                             |
 | **:remove-start:**          | The inner content will be removed from all output.                          |
 |                             |                                                                             |
