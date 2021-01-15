@@ -2,10 +2,12 @@
   "compilerOptions": {
     "outDir": "./build",
     "allowJs": true,
-    "target": "es5",
-    "esModuleInterop": true
+    "target": "ES5",
+    "esModuleInterop": true,
+    "lib": ["ES2020"],
+    "downlevelIteration": true
   },
   "sourceMap": true,
   "include": ["./src/**/*"],
-  "exclude": ["./src/js-test", "./src/test"]
+  "exclude": ["./**/*.test.ts"]
 }

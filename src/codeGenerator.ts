@@ -1,5 +1,7 @@
-import * as output from "./output";
 import * as constants from "./constants";
+import { MessageHandler } from "./messageHandler";
+
+const output = MessageHandler.getMessageHandler();
 
 export interface CodeFile {
   start: string;
@@ -12,7 +14,6 @@ export function buildCodeFiles(source: string, type: string): CodeFile {
   let inBlockComment = false;
   let isCommand = false;
   let inHide = false;
-  let inStepBlock = false;
   let inReplace = false;
   let replaceIndent;
   let replaceOffset;
@@ -25,15 +26,7 @@ export function buildCodeFiles(source: string, type: string): CodeFile {
   }
 
   function handleCommand(command, line) {
-    //output.info(command, line, line.indexOf(command))
-    if (command.indexOf(":step-start:") > -1) {
-      inStepBlock = true;
-      return;
-    }
-    if (command.indexOf(":step-end:") > -1) {
-      inStepBlock = false;
-      return;
-    }
+    output.addInformational(command, line, line.indexOf(command));
     if (command.indexOf(":hide-start:") > -1) {
       inHide = true;
       for (let c = 0; c < constants.comments[fileType].line.length; c++) {
@@ -52,7 +45,7 @@ export function buildCodeFiles(source: string, type: string): CodeFile {
       inReplace = true;
       for (let c = 0; c < constants.comments[fileType].line.length; c++) {
         const commentType = constants.comments[fileType].line[c];
-        output.info(line, commentType, line.indexOf(commentType));
+        output.addInformational(line, commentType, line.indexOf(commentType));
         if (line.indexOf(commentType) > -1) {
           const regex = new RegExp(commentType, "g");
           replaceOffset = line.indexOf(line.match(regex));

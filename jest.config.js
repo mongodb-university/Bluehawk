@@ -1,5 +1,7 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  testPathIgnorePatterns: ["js-test/"],
+  collectCoverage: true,
+  coverageReporters: ["text", "html"],
+  coverageDirectory: "<rootDir>/coverage",
 };
