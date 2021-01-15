@@ -49,7 +49,7 @@ const AttributeListStart = createToken({
 
 const Space = createToken({
   name: "Spaces",
-  pattern: /[\t ]+/,
+  pattern: /[^\S\r\n]/,
   group: Lexer.SKIPPED,
 });
 
