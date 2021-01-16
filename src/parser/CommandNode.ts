@@ -3,6 +3,9 @@ import { IToken } from "chevrotain";
 import { Range } from "../Range";
 import { CommandNodeContext } from "./visitor/makeCstVisitor";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type CommandNodeAttributes = { [member: string]: any };
+
 interface VisitorContext {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
@@ -38,7 +41,7 @@ export class CommandNode {
 
   // Attributes come from JSON and their schema depends on the command.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attributes?: { [member: string]: any };
+  attributes?: CommandNodeAttributes;
 
   // Potentially useful tokens contained in the node
   newlines: IToken[];
@@ -96,7 +99,6 @@ export class CommandNode {
   // other nodes in the document.
   static rootCommand(): CommandNode {
     const command = new CommandNode("__root__", {});
-    command.attributes = new Map();
     command.children = [];
     return command;
   }
@@ -110,8 +112,9 @@ export class CommandNode {
     this.newlines = [];
     this.lineComments = [];
     this.addTokensFromContext(context);
-    if (parentToAttachTo != null) {
+    if (parentToAttachTo !== undefined) {
       this._context = [...parentToAttachTo._context];
+      assert(parentToAttachTo.children);
       parentToAttachTo.children.push(this);
     }
   }
