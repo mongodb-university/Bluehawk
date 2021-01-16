@@ -6,7 +6,8 @@
     "esModuleInterop": true,
     "lib": ["ES2020"],
     "downlevelIteration": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "strict": true
   },
   "sourceMap": true,
   "include": ["./src/**/*"]

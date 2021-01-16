@@ -39,7 +39,7 @@ export class MessageHandler {
 }
 
 class DiagnosticMessage {
-  messageType: string;
+  messageType = "";
   prefix = "";
   message: string[];
   constructor(...message: string[]) {
@@ -48,21 +48,21 @@ class DiagnosticMessage {
 }
 
 export class WarningMessage extends DiagnosticMessage {
-  messageType: "warning";
-  prefix: "\n⚠️\t";
+  messageType = "warning";
+  prefix = "\n⚠️\t";
 }
 
 export class ImportantMessage extends DiagnosticMessage {
-  messageType: "important";
-  prefix: "\n❗\t";
+  messageType = "important";
+  prefix = "\n❗\t";
 }
 
 export class InfoMessage extends DiagnosticMessage {
-  messageType: "info";
+  messageType = "info";
 }
 
 export class ErrorMessage extends DiagnosticMessage {
-  messageType: "error";
+  messageType = "error";
 }
 
 type NonErrorMessage = WarningMessage | ImportantMessage | InfoMessage;

@@ -141,7 +141,7 @@ export function makeCstVisitor(
 
   interface PushParserContext {
     PushParser: IToken[];
-    PopParser: IToken[];
+    [correspondingPopParserName: string]: IToken[];
   }
 
   // Tuple passed to visitor methods. All errors go to the top level. Visitor
@@ -166,7 +166,7 @@ export function makeCstVisitor(
     // The entrypoint for the visitor.
     visit(node: CstNode, source: Document): VisitorResult {
       const parent = CommandNode.rootCommand();
-      const errors = [];
+      const errors: BluehawkError[] = [];
       this.$visit([node], { errors, parent, source });
       return {
         errors,
@@ -513,6 +513,7 @@ export function makeCstVisitor(
       // We need to know exactly which PopParser token we are looking for.
       const PopParser = context[endToken.name][0];
       assert(PopParser);
+      assert(PopParser.endOffset);
 
       const startLocation = includePushTokenInSubstring
         ? locationFromToken(PushParser)

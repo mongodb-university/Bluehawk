@@ -111,6 +111,31 @@ export class CommandNode {
     this.commandName = commandName;
     this.newlines = [];
     this.lineComments = [];
+    // FIXME: ranges should always be valid, so pass them in the constructor
+    this.range = {
+      start: {
+        column: -1,
+        line: -1,
+        offset: -1,
+      },
+      end: {
+        column: -1,
+        line: -1,
+        offset: -1,
+      },
+    };
+    this.lineRange = {
+      start: {
+        column: -1,
+        line: -1,
+        offset: -1,
+      },
+      end: {
+        column: -1,
+        line: -1,
+        offset: -1,
+      },
+    };
     this.addTokensFromContext(context);
     if (parentToAttachTo !== undefined) {
       this._context = [...parentToAttachTo._context];

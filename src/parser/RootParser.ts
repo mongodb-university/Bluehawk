@@ -1,3 +1,4 @@
+import { strict as assert } from "assert";
 import { CstNode, CstParser, Lexer, TokenType } from "chevrotain";
 import { makeLexer } from "./lexer/makeLexer";
 import { makeRootMode } from "./lexer/makeRootMode";
@@ -21,17 +22,6 @@ import { ErrorMessageProvider } from "./ErrorMessageProvider";
 import { BluehawkError } from "../BluehawkError";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step2_parsing.html
-
-type Rule = (idx?: number) => CstNode;
-
-interface ParserResult {
-  cst?: CstNode;
-  errors: BluehawkError[];
-}
-
-export interface IParser {
-  parse(text: string): ParserResult;
-}
 
 // Comment awareness prevents bluehawk from outputting half-commented code
 // blocks.
@@ -83,20 +73,31 @@ pushParser
 † = if canNestBlockComments
 */
 
+type Rule = (idx?: number) => CstNode;
+
+interface ParserResult {
+  cst?: CstNode;
+  errors: BluehawkError[];
+}
+
+export interface IParser {
+  parse(text: string): ParserResult;
+}
+
 // While the lexer defines the tokens of the language, the parser defines the
 // syntax.
 export class RootParser extends CstParser implements IParser {
   lexer: Lexer;
 
-  annotatedText: Rule;
-  chunk: Rule;
-  blockCommand: Rule;
-  command: Rule;
-  commandAttribute: Rule;
-  blockComment: Rule;
-  lineComment: Rule;
-  attributeList: Rule;
-  pushParser: Rule;
+  annotatedText: Rule = UndefinedRule;
+  chunk: Rule = UndefinedRule;
+  blockCommand: Rule = UndefinedRule;
+  command: Rule = UndefinedRule;
+  commandAttribute: Rule = UndefinedRule;
+  blockComment: Rule = UndefinedRule;
+  lineComment: Rule = UndefinedRule;
+  attributeList: Rule = UndefinedRule;
+  pushParser: Rule = UndefinedRule;
 
   constructor(languageTokens: TokenType[]) {
     super(makeRootMode(languageTokens), {
@@ -275,4 +276,11 @@ export class RootParser extends CstParser implements IParser {
       ],
     };
   }
+}
+
+// Chevrotain assigns the rules after construction. Initializing rule properties
+// with this rule quashes the "Property 'annotatedText' has no initializer and
+// is not definitely assigned in the constructor." error.
+function UndefinedRule(): CstNode {
+  assert(false);
 }
