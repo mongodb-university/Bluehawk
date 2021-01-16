@@ -5,10 +5,10 @@ import * as readline from "readline";
 import { Bluehawk } from "../bluehawk";
 import { Document } from "../Document";
 import { Listener, ProcessRequest } from "../processor/Processor";
-import { SnippetCommand } from "../processor/SnippetCommand";
-import { RemoveCommand } from "../processor/RemoveCommand";
-import { StateCommand } from "../processor/StateCommand";
-import { UncommentCommand } from "../processor/UncommentCommand";
+import { SnippetCommand } from "../commands/SnippetCommand";
+import { RemoveCommand } from "../commands/RemoveCommand";
+import { StateCommand } from "../commands/StateCommand";
+import { UncommentCommand } from "../commands/UncommentCommand";
 import { isBinary } from "istextorbinary";
 
 async function fileEntry(

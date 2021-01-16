@@ -1,10 +1,10 @@
 import { IToken } from "chevrotain";
 import { flatten } from "../parser/flatten";
-import { ProcessRequest } from "./Processor";
-import { CommandProcessor } from "./CommandProcessor";
+import { ProcessRequest } from "../processor/Processor";
+import { Command } from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
 
-export const UncommentCommand: CommandProcessor = {
+export const UncommentCommand: Command = {
   rules: [],
   process: (request: ProcessRequest): void => {
     const { command, parseResult } = request;

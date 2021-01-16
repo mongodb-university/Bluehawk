@@ -56,7 +56,7 @@ function nextLineAfterToken(token: IToken, fullText: string): Location {
 
 export interface VisitorResult {
   errors: BluehawkError[];
-  commands: CommandNode[];
+  commandNodes: CommandNode[];
 }
 
 export type CommandNodeContext =
@@ -166,7 +166,7 @@ export function makeCstVisitor(
       this.$visit([node], { errors, parent, source });
       return {
         errors,
-        commands: parent.children,
+        commandNodes: parent.children,
       };
     }
 
@@ -527,7 +527,7 @@ export function makeCstVisitor(
         return;
       }
       const result = visitor.visit(parseResult.cst, source);
-      parent.children.push(...result.commands);
+      parent.children.push(...result.commandNodes);
       result.errors.forEach((error) =>
         errors.push({
           component: "visitor",

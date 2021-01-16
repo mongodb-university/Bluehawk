@@ -1,9 +1,9 @@
-import { ProcessRequest } from "./Processor";
-import { CommandProcessor } from "./CommandProcessor";
+import { ProcessRequest } from "../processor/Processor";
+import { Command } from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
-import { hasId } from "./validator";
+import { hasId } from "../processor/validator";
 
-export const StateCommand: CommandProcessor = {
+export const StateCommand: Command = {
   rules: [hasId],
   process: (request: ProcessRequest): void => {
     const { command, processor, parseResult } = request;

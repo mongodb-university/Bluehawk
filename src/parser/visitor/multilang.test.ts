@@ -75,7 +75,10 @@ describe("multilang", () => {
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
-      result.commands.map((command) => [command.commandName, command.inContext])
+      result.commandNodes.map((command) => [
+        command.commandName,
+        command.inContext,
+      ])
     ).toStrictEqual([
       ["block-commented-command", "blockComment"],
       ["command", "none"],
@@ -102,7 +105,10 @@ describe("multilang", () => {
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
-      result.commands.map((command) => [command.commandName, command.inContext])
+      result.commandNodes.map((command) => [
+        command.commandName,
+        command.inContext,
+      ])
     ).toStrictEqual([
       ["block-commented-command", "blockComment"],
       ["command", "none"],
@@ -158,7 +164,10 @@ describe("multilang", () => {
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
-      result.commands.map((command) => [command.commandName, command.inContext])
+      result.commandNodes.map((command) => [
+        command.commandName,
+        command.inContext,
+      ])
     ).toStrictEqual([
       ["command", "none"],
       ["line-commented-command", "lineComment"],

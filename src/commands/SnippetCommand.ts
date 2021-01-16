@@ -1,10 +1,10 @@
 import MagicString from "magic-string";
 import { Document } from "../Document";
 import { CommandNode } from "../parser/CommandNode";
-import { ProcessRequest } from "./Processor";
-import { CommandProcessor } from "./CommandProcessor";
+import { ProcessRequest } from "../processor/Processor";
+import { Command } from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
-import { hasId, idIsUnique } from "./validator";
+import { hasId, idIsUnique } from "../processor/validator";
 
 function dedentRange(
   s: MagicString,
@@ -50,7 +50,7 @@ function dedentRange(
   });
 }
 
-export const SnippetCommand: CommandProcessor = {
+export const SnippetCommand: Command = {
   rules: [hasId, idIsUnique],
   process: (request: ProcessRequest): void => {
     const { command, processor, parseResult } = request;
@@ -72,7 +72,7 @@ export const SnippetCommand: CommandProcessor = {
     // Fork subset code block to another file
     processor.fork({
       parseResult: {
-        commands: command.children ?? [],
+        commandNodes: command.children ?? [],
         errors: [],
         source: new Document({
           ...source,

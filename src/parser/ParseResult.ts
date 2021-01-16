@@ -4,6 +4,6 @@ import { BluehawkError } from "../BluehawkError";
 
 export class ParseResult {
   errors: BluehawkError[];
-  commands: CommandNode[];
+  commandNodes: CommandNode[];
   source: Document;
 }

@@ -1,9 +1,9 @@
-import { Rule } from "./validator";
-import { ProcessRequest } from "./Processor";
+import { Rule } from "../processor/validator";
+import { ProcessRequest } from "../processor/Processor";
 
 // The implementation that actually carries out the command.
 
-export interface CommandProcessor {
+export interface Command {
   // Rules to determine if the command meets requirements before processing is
   // possible
   rules: Rule[];

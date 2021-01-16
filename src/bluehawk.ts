@@ -6,14 +6,14 @@ import { RootParser } from "./parser/RootParser";
 import { COMMAND_PATTERN } from "./parser/lexer/tokens";
 import { Document } from "./Document";
 import { Listener, Processor, BluehawkFiles } from "./processor/Processor";
-import { CommandProcessor } from "./processor/CommandProcessor";
+import { Command } from "./commands/Command";
 import { ParseResult } from "./parser/ParseResult";
 
 // The frontend of Bluehawk
 export class Bluehawk {
   // Register the given command on the processor and validator. This enables
   // support for the command under the given name.
-  registerCommand(name: string, command: CommandProcessor): void {
+  registerCommand(name: string, command: Command): void {
     this.processor.registerCommand(name, command);
   }
 
@@ -23,7 +23,7 @@ export class Bluehawk {
     if (!COMMAND_PATTERN.test(source.text.original)) {
       return {
         errors: [],
-        commands: [],
+        commandNodes: [],
         source,
       };
     }
@@ -39,7 +39,7 @@ export class Bluehawk {
     const parseResult = parser.parse(source.text.original);
     const visitorResult = visitor.visit(parseResult.cst, source);
     const validateErrors = validateCommands(
-      visitorResult.commands,
+      visitorResult.commandNodes,
       this.processor.processors
     );
     return {
@@ -48,7 +48,7 @@ export class Bluehawk {
         ...visitorResult.errors,
         ...validateErrors,
       ],
-      commands: visitorResult.commands,
+      commandNodes: visitorResult.commandNodes,
       source,
     };
   };

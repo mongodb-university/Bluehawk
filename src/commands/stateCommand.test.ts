@@ -6,60 +6,6 @@ import { SnippetCommand } from "./SnippetCommand";
 
 describe("stateCommand", () => {
   const bluehawk = new Bluehawk();
-  const singleInput = new Document({
-    text: `
-// :state-start: begin
-// let foo = undefined;
-// console.log(foo);
-// :state-end:
-// :state-start: final
-// let foo = defined;
-// console.log(foo);
-// :state-end:
-end
-`,
-    language: "javascript",
-    path: "stateCommand.test.ts",
-  });
-  const singleBegin = `
-let foo = undefined;
-console.log(foo);
-end
-`;
-  const singleEnd = `
-let foo = defined;
-console.log(foo);
-end
-`;
-
-  const nestedInput = new Document({
-    text: `
-// :state-start: begin
-// let foo = undefined;
-// console.log(foo);
-// :remove-start:
-someTest()
-// :remove-end:
-// :state-end:
-// :state-start: final
-// let foo = defined;
-// console.log(foo);
-// :state-end:
-end
-`,
-    language: "javascript",
-    path: "stateCommand.test.js",
-  });
-  const nestedBegin = `
-let foo = undefined;
-console.log(foo);
-end
-`;
-  const nestedFinal = `
-let foo = defined;
-console.log(foo);
-end
-`;
 
   bluehawk.registerCommand("state", StateCommand);
   bluehawk.registerCommand("remove", RemoveCommand);
@@ -90,12 +36,7 @@ end
       language: "javascript",
       path: "stateCommand.test.js",
     });
-    const multipleBegin = `
-let foo = undefined;
-console.log(foo);
-console.log("we are foo");
-end
-`;
+
     const multipleFinal = `
 console.log("we are foo");
 // let foo = defined;

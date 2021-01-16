@@ -40,7 +40,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commands, {});
+    const errors = validateCommands(result.commandNodes, {});
     expect(errors.length).toBe(0);
   });
 
@@ -56,7 +56,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commands, commandProcessors);
+    const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
       "missing ID for command: 'code-block'"
@@ -84,7 +84,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commands, commandProcessors);
+    const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
       "missing ID for command: 'code-block'"
@@ -112,7 +112,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commands, commandProcessors);
+    const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(2);
     expect(errors[0].message).toStrictEqual(
       "missing ID for command: 'code-block'"
@@ -144,7 +144,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commands, commandProcessors);
+    const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(0);
   });
 
@@ -164,7 +164,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commands, commandProcessors);
+    const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
       "duplicate ID 'totallyuniqueid' found"
@@ -192,7 +192,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commands, commandProcessors);
+    const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
       "missing ID for command: 'code-block'"
@@ -220,7 +220,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commands, commandProcessors);
+    const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(0);
   });
 
@@ -240,7 +240,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commands, commandProcessors);
+    const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
       "duplicate ID 'totallyuniqueid' found"

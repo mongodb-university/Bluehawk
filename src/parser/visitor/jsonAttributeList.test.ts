@@ -27,8 +27,8 @@ describe("JSON attribute lists", () => {
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commands[0].commandName).toBe("A-command");
-    expect(result.commands[0].attributes).toStrictEqual({});
+    expect(result.commandNodes[0].commandName).toBe("A-command");
+    expect(result.commandNodes[0].attributes).toStrictEqual({});
   });
 
   it("attaches well-formed attribute lists to commands", () => {
@@ -51,8 +51,8 @@ describe("JSON attribute lists", () => {
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commands[0].commandName).toBe("A-command");
-    expect(result.commands[0].attributes).toStrictEqual({
+    expect(result.commandNodes[0].commandName).toBe("A-command");
+    expect(result.commandNodes[0].attributes).toStrictEqual({
       a: 1,
       b: false,
       c: true,
@@ -83,7 +83,7 @@ describe("JSON attribute lists", () => {
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    expect(result.commands[0].attributes).toBeUndefined();
+    expect(result.commandNodes[0].attributes).toBeUndefined();
     expect(result.errors[0].message).toBe("Unexpected number in JSON");
     expect(result.errors[0].location).toStrictEqual({
       line: 5,

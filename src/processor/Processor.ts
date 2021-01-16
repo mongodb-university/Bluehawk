@@ -1,7 +1,7 @@
 import { ParseResult } from "../parser/ParseResult";
 import { Document, CommandAttributes } from "../Document";
 import { CommandNode } from "../parser/CommandNode";
-import { CommandProcessor } from "./CommandProcessor";
+import { Command } from "../commands/Command";
 
 export type BluehawkFiles = { [pathName: string]: ParseResult };
 
@@ -16,7 +16,7 @@ export interface ProcessRequest {
   command: CommandNode;
 }
 
-export type CommandProcessors = Record<string, CommandProcessor>;
+export type CommandProcessors = Record<string, Command>;
 
 export type Listener = (result: ParseResult) => void;
 
@@ -65,7 +65,7 @@ export class Processor {
       }),
     };
     this._outputFiles[fileId] = newResult;
-    const result = this._process(newResult.commands, newResult);
+    const result = this._process(newResult.commandNodes, newResult);
     this.publish(result);
   }
 
@@ -101,7 +101,7 @@ export class Processor {
     return result;
   };
 
-  registerCommand(name: string, command: CommandProcessor): void {
+  registerCommand(name: string, command: Command): void {
     this.processors[name] = command;
   }
 

@@ -17,14 +17,14 @@ export type Rule = (
 ) => void;
 
 export function validateCommands(
-  commands: CommandNode[],
+  commandNodes: CommandNode[],
   commandProcessorMap: CommandProcessors
 ): BluehawkError[] {
   const validateResult = {
     errors: [],
     commandsById: new Map<string, CommandNode>(),
   };
-  flatten({ children: commands } as CommandNode).forEach((commandNode) => {
+  flatten({ children: commandNodes } as CommandNode).forEach((commandNode) => {
     const processor = commandProcessorMap[commandNode.commandName];
     if (processor === undefined) {
       // TODO: warn unknown command
