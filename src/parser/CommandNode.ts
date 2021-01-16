@@ -1,7 +1,7 @@
 import { strict as assert } from "assert";
 import { IToken } from "chevrotain";
-import { Range } from "../bluehawk";
-import { CommandNodeContext } from "./makeCstVisitor";
+import { Range } from "../Range";
+import { CommandNodeContext } from "./visitor/makeCstVisitor";
 
 interface VisitorContext {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
