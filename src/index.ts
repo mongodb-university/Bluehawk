@@ -1,11 +1,10 @@
 import * as yargs from "yargs";
-import { MessageHandler } from "./messageHandler";
-import * as fileHandler from "./fileHandler";
-import * as bhp from "./fs/parseSource";
+import { MessageHandler } from "./io/messageHandler";
+import * as bhp from "./io/parseSource";
 import fs from "fs";
 import path from "path";
-import { BluehawkResult } from "./bluehawk";
-import { Listener } from "./processors/Processor";
+import { ParseResult } from "./parser/ParseResult";
+import { Listener } from "./processor/Processor";
 
 const output = MessageHandler.getMessageHandler();
 
@@ -34,16 +33,6 @@ async function run(): Promise<void> {
     ignores = (params.ignores as string).split(",");
   }
 
-  if (!params.type) {
-    params.type = fileHandler.getFileType(params.source as string);
-    output.addImportant(
-      "I have auto-detected a file type of '" +
-        params.type +
-        "'. If this is incorrect, \nuse the --t or -type parameter to specify " +
-        "the correct file type."
-    );
-  }
-
   const { snippets } = params;
 
   const listeners: Listener[] = [];
@@ -59,7 +48,7 @@ async function run(): Promise<void> {
   let onBinaryFile: (path: string) => void = undefined;
   // Output snippet files -- exclude full state files
   if (snippets) {
-    listeners.push((result: BluehawkResult) => {
+    listeners.push((result: ParseResult) => {
       const { source } = result;
       if (source.attributes["snippet"] === undefined) {
         return;
@@ -115,7 +104,7 @@ async function run(): Promise<void> {
         });
       });
     };
-    listeners.push((result: BluehawkResult) => {
+    listeners.push((result: ParseResult) => {
       const { source } = result;
       if (source.attributes.snippet) {
         // Not a pure state file

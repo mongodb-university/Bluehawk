@@ -1,69 +1,68 @@
-import { makeBlockCommentTokens } from "./lexer/makeBlockCommentTokens";
-import { makeLineCommentToken } from "./lexer/makeLineCommentToken";
-import { makeCstVisitor } from "./parser/makeCstVisitor";
-import { CommandNode } from "./parser/CommandNode";
-import { validateVisitorResult } from "./parser/validator";
+import { makeBlockCommentTokens } from "./parser/lexer/makeBlockCommentTokens";
+import { makeLineCommentToken } from "./parser/lexer/makeLineCommentToken";
+import { makeCstVisitor, IVisitor } from "./parser/visitor/makeCstVisitor";
+import { validateCommands } from "./processor/validator";
 import { RootParser } from "./parser/RootParser";
-import { COMMAND_PATTERN } from "./lexer/tokens";
-import { BluehawkSource } from "./BluehawkSource";
+import { COMMAND_PATTERN } from "./parser/lexer/tokens";
+import { Document } from "./Document";
+import { Listener, Processor, BluehawkFiles } from "./processor/Processor";
+import { Command } from "./commands/Command";
+import { ParseResult } from "./parser/ParseResult";
 
-export interface Location {
-  line: number;
-  column: number;
-  offset: number;
-}
-
-export interface Range {
-  start: Location;
-  end: Location;
-}
-
-export interface BluehawkError {
-  message: string;
-  location: Location;
-}
-
-export class BluehawkResult {
-  errors: BluehawkError[];
-  commands: CommandNode[];
-  source: BluehawkSource;
-}
-
+// The frontend of Bluehawk
 export class Bluehawk {
-  parsers = new Map<string, RootParser>();
+  // Register the given command on the processor and validator. This enables
+  // support for the command under the given name.
+  registerCommand(name: string, command: Command): void {
+    this.processor.registerCommand(name, command);
+  }
 
-  run(source: BluehawkSource): BluehawkResult {
+  // Parses the given source file into commands.
+  parse = (source: Document): ParseResult => {
     // First, quickly check to see if this even has any commands.
     if (!COMMAND_PATTERN.test(source.text.original)) {
       return {
         errors: [],
-        commands: [],
+        commandNodes: [],
         source,
       };
     }
     if (!this.parsers.has(source.language)) {
-      this.parsers.set(
-        source.language,
-        new RootParser([
-          // TODO: map source.language to block/line comment tokens
-          ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
-          makeLineCommentToken(/\/\/ ?/y),
-        ])
-      );
+      const parser = new RootParser([
+        // TODO: map source.language to block/line comment tokens
+        ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
+        makeLineCommentToken(/\/\/ ?/y),
+      ]);
+      this.parsers.set(source.language, [parser, makeCstVisitor(parser)]);
     }
-    const parser = this.parsers.get(source.language);
-    const parseResult = parser.parse(source.text.toString());
-    const visitor = makeCstVisitor(parser);
+    const [parser, visitor] = this.parsers.get(source.language);
+    const parseResult = parser.parse(source.text.original);
     const visitorResult = visitor.visit(parseResult.cst, source);
-    const validateResult = validateVisitorResult(visitorResult);
+    const validateErrors = validateCommands(
+      visitorResult.commandNodes,
+      this.processor.processors
+    );
     return {
       errors: [
         ...parseResult.errors,
         ...visitorResult.errors,
-        ...validateResult.errors,
+        ...validateErrors,
       ],
-      commands: visitorResult.commands,
+      commandNodes: visitorResult.commandNodes,
       source,
     };
+  };
+
+  // Subscribe to processed documents as they are done processing by Bluehawk.
+  subscribe(listener: Listener): void {
+    this.processor.subscribe(listener);
   }
+
+  // Executes the commands on the given source. Use subscribe() to get results.
+  process = (parseResult: ParseResult): BluehawkFiles => {
+    return this.processor.process(parseResult);
+  };
+
+  private parsers = new Map<string, [RootParser, IVisitor]>();
+  private processor = new Processor();
 }

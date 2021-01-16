@@ -1,6 +1,6 @@
 import { CstNode, CstParser, Lexer, TokenType } from "chevrotain";
-import { makeLexer } from "../lexer/makeLexer";
-import { makeRootMode } from "../lexer/makeRootMode";
+import { makeLexer } from "./lexer/makeLexer";
+import { makeRootMode } from "./lexer/makeRootMode";
 import {
   AttributeListStart,
   AttributeListEnd,
@@ -16,9 +16,9 @@ import {
   JsonStringLiteral,
   LineComment,
   StringLiteral,
-} from "../lexer/tokens";
+} from "./lexer/tokens";
 import { ErrorMessageProvider } from "./ErrorMessageProvider";
-import { BluehawkError } from "../bluehawk";
+import { BluehawkError } from "../BluehawkError";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step2_parsing.html
 
@@ -230,14 +230,17 @@ export class RootParser extends CstParser implements IParser {
 
   parse(text: string): { cst: CstNode; errors: BluehawkError[] } {
     const tokens = this.lexer.tokenize(text);
-    const tokenErrors = tokens.errors.map((error) => ({
-      location: {
-        line: error.line,
-        column: error.column,
-        offset: error.offset,
-      },
-      message: error.message,
-    }));
+    const tokenErrors = tokens.errors.map(
+      (error): BluehawkError => ({
+        component: "lexer",
+        location: {
+          line: error.line,
+          column: error.column,
+          offset: error.offset,
+        },
+        message: error.message,
+      })
+    );
     let cst: CstNode;
     if (tokenErrors.length === 0) {
       this.input = tokens.tokens;
@@ -247,26 +250,29 @@ export class RootParser extends CstParser implements IParser {
       cst,
       errors: [
         ...tokenErrors,
-        ...this.errors.map((error) => {
-          // Retrieve the error location from the message because I can't seem
-          // to find it on the actual error object.
-          const [
-            ,
-            line,
-            column,
-            offset,
-          ] = /^([0-9]+):([0-9]+)\(([0-9]+)\)/
-            .exec(error.message)
-            .map((result) => parseInt(result));
-          return {
-            location: {
+        ...this.errors.map(
+          (error): BluehawkError => {
+            // Retrieve the error location from the message because I can't seem
+            // to find it on the actual error object.
+            const [
+              ,
               line,
               column,
               offset,
-            },
-            message: error.message,
-          };
-        }),
+            ] = /^([0-9]+):([0-9]+)\(([0-9]+)\)/
+              .exec(error.message)
+              .map((result) => parseInt(result));
+            return {
+              component: "parser",
+              location: {
+                line,
+                column,
+                offset,
+              },
+              message: error.message,
+            };
+          }
+        ),
       ],
     };
   }
