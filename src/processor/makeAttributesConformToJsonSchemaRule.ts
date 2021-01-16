@@ -1,12 +1,12 @@
 import { CommandNode } from "../parser/CommandNode";
-import Ajv, { JSONSchemaType } from "ajv";
+import Ajv, { JSONSchemaType, AnySchema } from "ajv";
 import { Rule, ValidateCstResult } from "./validator";
 
 const ajv = new Ajv();
 
 // Creates a rule that checks attributes against the given JSON schema.
-export const makeAttributesConformToJsonSchemaRule = <Type>(
-  schema: JSONSchemaType<Type>
+export const makeAttributesConformToJsonSchemaRule = <Type = unknown>(
+  schema: JSONSchemaType<Type> | AnySchema
 ): Rule => {
   const validate = ajv.compile(schema);
   return (
