@@ -8,7 +8,7 @@ export function tokenCategoryFilter(
 ): TokenType[] {
   return tokens.filter(
     (token) =>
-      token.CATEGORIES.find((category) => categories.includes(category)) !==
+      token.CATEGORIES?.find((category) => categories.includes(category)) !==
       undefined
   );
 }

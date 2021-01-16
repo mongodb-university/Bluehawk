@@ -30,6 +30,10 @@ export const StateCommand: Command = {
     // Strip all other states
     if (stateAttribute !== command.id) {
       const { contentRange } = command;
+      if (contentRange === undefined) {
+        // TODO: diagnostics
+        return;
+      }
       source.text.remove(contentRange.start.offset, contentRange.end.offset);
     }
   },

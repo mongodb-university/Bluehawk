@@ -34,7 +34,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
 
   type MyType = {
     requiredNumber: number;
-    notNegative: number;
+    notNegative?: number;
   };
 
   it("reports errors", () => {
@@ -42,7 +42,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
       type: "object",
       properties: {
         requiredNumber: { type: "number" },
-        notNegative: { type: "number", minimum: 0 },
+        notNegative: { type: "number", minimum: 0, nullable: true },
       },
       required: ["requiredNumber"],
       additionalProperties: false,
@@ -74,7 +74,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
       type: "object",
       properties: {
         requiredNumber: { type: "number" },
-        notNegative: { type: "number", minimum: 0 },
+        notNegative: { type: "number", minimum: 0, nullable: true },
       },
       required: ["requiredNumber"],
       additionalProperties: false,
@@ -120,7 +120,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
       type: "object",
       properties: {
         requiredNumber: { type: "number" },
-        notNegative: { type: "number", minimum: 0 },
+        notNegative: { type: "number", minimum: 0, nullable: true },
       },
       required: ["requiredNumber"],
       additionalProperties: false,

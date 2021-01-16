@@ -7,7 +7,7 @@ export function removeMetaRange(
   s: MagicString,
   { lineRange, contentRange }: { lineRange: Range; contentRange?: Range }
 ): MagicString {
-  if (contentRange == null) {
+  if (contentRange === undefined) {
     s.remove(lineRange.start.offset, lineRange.end.offset);
   } else {
     s.remove(lineRange.start.offset, contentRange.start.offset);

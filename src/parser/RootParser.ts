@@ -88,15 +88,15 @@ pushParser
 export class RootParser extends CstParser implements IParser {
   lexer: Lexer;
 
-  annotatedText?: Rule;
-  chunk?: Rule;
-  blockCommand?: Rule;
-  command?: Rule;
-  commandAttribute?: Rule;
-  blockComment?: Rule;
-  lineComment?: Rule;
-  attributeList?: Rule;
-  pushParser?: Rule;
+  annotatedText: Rule;
+  chunk: Rule;
+  blockCommand: Rule;
+  command: Rule;
+  commandAttribute: Rule;
+  blockComment: Rule;
+  lineComment: Rule;
+  attributeList: Rule;
+  pushParser: Rule;
 
   constructor(languageTokens: TokenType[]) {
     super(makeRootMode(languageTokens), {
@@ -228,7 +228,7 @@ export class RootParser extends CstParser implements IParser {
     this.performSelfAnalysis();
   }
 
-  parse(text: string): { cst: CstNode; errors: BluehawkError[] } {
+  parse(text: string): { cst?: CstNode; errors: BluehawkError[] } {
     const tokens = this.lexer.tokenize(text);
     const tokenErrors = tokens.errors.map(
       (error): BluehawkError => ({
@@ -241,11 +241,14 @@ export class RootParser extends CstParser implements IParser {
         message: error.message,
       })
     );
-    let cst: CstNode;
-    if (tokenErrors.length === 0) {
-      this.input = tokens.tokens;
-      cst = this.annotatedText();
+    if (tokenErrors.length !== 0) {
+      return {
+        cst: undefined,
+        errors: tokenErrors,
+      };
     }
+    this.input = tokens.tokens;
+    const cst = this.annotatedText();
     return {
       cst,
       errors: [
@@ -254,14 +257,10 @@ export class RootParser extends CstParser implements IParser {
           (error): BluehawkError => {
             // Retrieve the error location from the message because I can't seem
             // to find it on the actual error object.
-            const [
-              ,
-              line,
-              column,
-              offset,
-            ] = /^([0-9]+):([0-9]+)\(([0-9]+)\)/
-              .exec(error.message)
-              .map((result) => parseInt(result));
+            const lineColumnOffset = /^([0-9]+):([0-9]+)\(([0-9]+)\)/
+              .exec(error?.message)
+              ?.map((result) => parseInt(result)) ?? [-1, -1, -1, -1];
+            const [, line, column, offset] = lineColumnOffset;
             return {
               component: "parser",
               location: {

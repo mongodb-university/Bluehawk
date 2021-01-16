@@ -13,14 +13,12 @@ import { isBinary } from "istextorbinary";
 
 async function fileEntry(
   source: string,
-  ignores?: string[]
+  ignoresOrUndefined?: string[]
 ): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const ig = ignore();
-    if (!ignores) {
-      ignores = [];
-    }
-    function traverse(source: string, fileArray = []): string[] {
+    const ignores = ignoresOrUndefined ?? [];
+    function traverse(source: string, fileArray = [] as string[]): string[] {
       let files: string[] = [];
       if (fs.lstatSync(path.resolve(source)).isFile()) {
         return [source];

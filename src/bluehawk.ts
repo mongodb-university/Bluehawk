@@ -8,6 +8,7 @@ import { Document } from "./Document";
 import { Listener, Processor, BluehawkFiles } from "./processor/Processor";
 import { Command } from "./commands/Command";
 import { ParseResult } from "./parser/ParseResult";
+import { strict as assert } from "assert";
 
 // The frontend of Bluehawk
 export class Bluehawk {
@@ -35,8 +36,17 @@ export class Bluehawk {
       ]);
       this.parsers.set(source.language, [parser, makeCstVisitor(parser)]);
     }
-    const [parser, visitor] = this.parsers.get(source.language);
+    const parserVisitorTuple = this.parsers.get(source.language);
+    assert(parserVisitorTuple !== undefined);
+    const [parser, visitor] = parserVisitorTuple;
     const parseResult = parser.parse(source.text.original);
+    if (parseResult.cst === undefined) {
+      return {
+        commandNodes: [],
+        errors: parseResult.errors,
+        source,
+      };
+    }
     const visitorResult = visitor.visit(parseResult.cst, source);
     const validateErrors = validateCommands(
       visitorResult.commandNodes,

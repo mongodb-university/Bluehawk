@@ -18,21 +18,23 @@ import { CommandNode } from "../CommandNode";
 
 function locationFromToken(token: IToken): Location {
   return {
-    line: token.startLine,
-    column: token.startColumn,
-    offset: token.startOffset,
+    line: token.startLine ?? -1,
+    column: token.startColumn ?? -1,
+    offset: token.startOffset ?? -1,
   };
 }
 
 function locationAfterToken(token: IToken, fullText: string): Location {
-  const location = {
-    line: token.endLine,
-    column: token.endColumn,
-    offset: token.endOffset,
+  const location: Location = {
+    line: token.endLine ?? -1,
+    column: token.endColumn ?? -1,
+    offset: token.endOffset ?? -1,
   };
   // Ensure the line/column are correctly rolled over if the character is
   // actually a newline
-  if (/\r|\n/.test(fullText[location.offset])) {
+  const index = location.offset;
+  assert(index !== undefined);
+  if (/\r|\n/.test(fullText[index])) {
     location.column = 1;
     location.line += 1;
   }
@@ -40,6 +42,8 @@ function locationAfterToken(token: IToken, fullText: string): Location {
 }
 
 function nextLineAfterToken(token: IToken, fullText: string): Location {
+  assert(token.endOffset !== undefined);
+  assert(token.endLine !== undefined);
   const re = /.*(\r\n|\r|\n)/y;
   re.lastIndex = token.endOffset;
   const match = re.exec(fullText);
@@ -166,7 +170,7 @@ export function makeCstVisitor(
       this.$visit([node], { errors, parent, source });
       return {
         errors,
-        commandNodes: parent.children,
+        commandNodes: parent.children ?? [],
       };
     }
 
@@ -191,7 +195,8 @@ export function makeCstVisitor(
       // the file and allow each chunk to add to the parent's child list.
       this.$visit(
         (context.chunk ?? []).sort(
-          (a, b) => a.location.startOffset - b.location.startOffset
+          (a, b) =>
+            (a.location?.startOffset ?? 0) - (b.location?.startOffset ?? 0)
         ),
         visitorContext
       );
@@ -220,6 +225,8 @@ export function makeCstVisitor(
         "Unexpected empty payload in AttributeListStart! This is a bug in the parser. Please submit a bug report containing the document that caused this assertion failure."
       );
 
+      assert(AttributeListEnd.endOffset !== undefined);
+
       // Reminder: substr(startOffset, length) vs. substring(startOffset, endOffset)
       let json = fullText.substring(
         AttributeListStart.startOffset,
@@ -229,6 +236,7 @@ export function makeCstVisitor(
       // There may be line comments to strip out
       if (context.LineComment) {
         context.LineComment.forEach((LineComment) => {
+          assert(LineComment.endOffset !== undefined);
           // Make offsets relative to the JSON string, not the overall document
           const startOffset =
             LineComment.startOffset - AttributeListStart.startOffset;
@@ -253,9 +261,9 @@ export function makeCstVisitor(
       } catch (error) {
         errors.push(
           jsonErrorToVisitorError(error, json, {
-            line: AttributeListStart.startLine,
-            column: AttributeListStart.startColumn,
-            offset: AttributeListStart.startOffset,
+            line: AttributeListStart.startLine ?? -1,
+            column: AttributeListStart.startColumn ?? -1,
+            offset: AttributeListStart.startOffset ?? -1,
           })
         );
       }
@@ -272,10 +280,14 @@ export function makeCstVisitor(
 
       // Extract the command name ("example") from the
       // ":example-start:"/":example-end:" tokens
-      const commandName = COMMAND_START_PATTERN.exec(CommandStart.image)[1];
-      assert(commandName);
-      const endCommandName = COMMAND_END_PATTERN.exec(CommandEnd.image)[1];
-      assert(endCommandName);
+      const startPatternResult = COMMAND_START_PATTERN.exec(CommandStart.image);
+      assert(startPatternResult !== null);
+      const commandName = startPatternResult[1];
+      assert(commandName !== null);
+      const endPatternResult = COMMAND_END_PATTERN.exec(CommandEnd.image);
+      assert(endPatternResult !== null);
+      const endCommandName = endPatternResult[1];
+      assert(endCommandName !== null);
 
       // Compare start/end name to ensure it is the same command
       if (commandName !== endCommandName) {
@@ -289,6 +301,11 @@ export function makeCstVisitor(
 
       const newNode = parent.makeChildBlockCommand(commandName, context);
 
+      assert(CommandStart.startLine !== undefined);
+      assert(CommandStart.startColumn !== undefined);
+      assert(CommandEnd.endLine !== undefined);
+      assert(CommandEnd.endColumn !== undefined);
+      assert(CommandEnd.endOffset !== undefined);
       newNode.range = {
         start: {
           line: CommandStart.startLine,
@@ -310,6 +327,10 @@ export function makeCstVisitor(
         end: nextLineAfterToken(CommandEnd, source.text.original),
       };
 
+      assert(context.Newline[0].endLine !== undefined);
+      assert(context.Newline[0].endOffset !== undefined);
+      assert(context.CommandEnd[0].startColumn !== undefined);
+      assert(context.CommandEnd[0].startLine !== undefined);
       if (context.chunk != undefined) {
         newNode.contentRange = {
           start: {
@@ -365,7 +386,11 @@ export function makeCstVisitor(
           ...(context.command ?? []),
           ...(context.lineComment ?? []),
           ...(context.pushParser ?? []),
-        ].sort((a, b) => a.location.startOffset - b.location.startOffset),
+        ].sort((a, b) => {
+          assert(a.location !== undefined);
+          assert(b.location !== undefined);
+          return a.location.startOffset - b.location.startOffset;
+        }),
         visitorContext
       );
     }
@@ -380,10 +405,16 @@ export function makeCstVisitor(
         return;
       }
       assert(context.Command);
-
       context.Command.forEach((Command) => {
+        const commandPatternResult = COMMAND_PATTERN.exec(Command.image);
+        assert(commandPatternResult !== null);
+        assert(Command.startLine !== undefined);
+        assert(Command.startColumn !== undefined);
+        assert(Command.endLine !== undefined);
+        assert(Command.endColumn !== undefined);
+        assert(Command.endOffset !== undefined);
         const newNode = parent.makeChildLineCommand(
-          COMMAND_PATTERN.exec(Command.image)[1],
+          commandPatternResult[1],
           context
         );
         newNode.range = {
@@ -422,7 +453,7 @@ export function makeCstVisitor(
         assert(!attributeList); // parser issue
         assert(Identifier[0].image.length > 0);
         parent.attributes = { id: Identifier[0].image };
-      } else if (context.attributeList != undefined) {
+      } else if (attributeList !== undefined) {
         assert(!Identifier); // parser issue
         assert(attributeList.length === 1); // should be impossible to have more than 1 list
         this.$visit(attributeList, visitorContext);
@@ -458,6 +489,7 @@ export function makeCstVisitor(
       // ⚠️ This should not recursively visit inner pushParsers
       assert(parent != null);
       parent.addTokensFromContext(context);
+
       const PushParser = context.PushParser[0];
       assert(PushParser);
 
@@ -494,6 +526,7 @@ export function makeCstVisitor(
           : PopParser.startOffset
       );
 
+      assert(getParser !== undefined);
       const visitor = getParser(parserId);
       if (!visitor) {
         errors.push({
@@ -508,7 +541,6 @@ export function makeCstVisitor(
       const parseResult = parser.parse(substring);
       parseResult.errors.forEach((error) =>
         errors.push({
-          component: "visitor",
           ...error,
           location: innerLocationToOuterLocation(
             error.location,
@@ -527,10 +559,10 @@ export function makeCstVisitor(
         return;
       }
       const result = visitor.visit(parseResult.cst, source);
+      assert(parent.children !== undefined);
       parent.children.push(...result.commandNodes);
       result.errors.forEach((error) =>
         errors.push({
-          component: "visitor",
           ...error,
           location: innerLocationToOuterLocation(
             error.location,
