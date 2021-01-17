@@ -6,7 +6,7 @@ import { RootParser } from "./parser/RootParser";
 import { COMMAND_PATTERN } from "./parser/lexer/tokens";
 import { Document } from "./Document";
 import { Listener, Processor, BluehawkFiles } from "./processor/Processor";
-import { Command } from "./commands/Command";
+import { AnyCommand } from "./commands/Command";
 import { ParseResult } from "./parser/ParseResult";
 import { strict as assert } from "assert";
 
@@ -14,7 +14,7 @@ import { strict as assert } from "assert";
 export class Bluehawk {
   // Register the given command on the processor and validator. This enables
   // support for the command under the given name.
-  registerCommand(name: string, command: Command): void {
+  registerCommand(name: string, command: AnyCommand): void {
     this.processor.registerCommand(name, command);
   }
 

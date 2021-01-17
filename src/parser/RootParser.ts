@@ -47,7 +47,7 @@ annotatedText
   : (chunk)*
 
 attributeList
-  : AttributeListStart (AttributeListStart | AttributeListEnd | JsonStringLiteral | Newline | LineComment)* AttributeListEnd
+  : AttributeListStart (attributeList | JsonStringLiteral | Newline | LineComment)* AttributeListEnd
 
 blockCommand
   : (LineComment)? CommandStart (commandAttribute)? Newline (chunk)* (LineComment)* CommandEnd

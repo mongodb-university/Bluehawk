@@ -25,7 +25,7 @@ describe("replace command", () => {
 
   it("errors when invalid attribute list is given", () => {
     const source = new Document({
-      text: `// :replace-start: { "numbersNotAllowed": 1 }
+      text: `// :replace-start: {"terms":{"numbersNotAllowed": 1}}
 // :replace-end:
 `,
       language: "javascript",
@@ -34,16 +34,17 @@ describe("replace command", () => {
 
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors[0].message).toBe(
-      "attribute list for 'replace' command/numbersNotAllowed should be string"
+      "attribute list for 'replace' command/terms/numbersNotAllowed should be string"
     );
   });
 
   it("replaces keys with values", () => {
     const source = new Document({
       text: `// :replace-start: {
+// "terms": {
 //   "Replace Me": "It works!",
 //   "test2": "--replaced--"
-// }
+// }}
 leave this alone
 go ahead and Replace Me
 and see test2
@@ -54,7 +55,7 @@ and see test2
     });
 
     const parseResult = bluehawk.parse(source);
-    expect(parseResult.errors.length).toBe(0);
+    expect(parseResult.errors).toStrictEqual([]);
     const files = bluehawk.process(parseResult);
     expect(files["replace.test.js"].source.text.toString())
       .toBe(`leave this alone
@@ -65,10 +66,10 @@ and see --replaced--
 
   it("is case sensitive", () => {
     const source = new Document({
-      text: `// :replace-start: {
+      text: `// :replace-start: {"terms": {
 //   "Notice the Case": "It works!",
 //   "UNCHANGED": "changed"
-// }
+// }}
 leave this alone
 go ahead and notice the case
 and see unchanged
@@ -94,7 +95,7 @@ and see unchanged
 replaceme
 ---
 // :replace-start: {
-//   "replaceme": "replaced"
+//   "terms": {"replaceme": "replaced"}
 // }
 replaceme
 left alone
@@ -133,9 +134,9 @@ replaceme
 
   it("can't match outside of its block", () => {
     const source = new Document({
-      text: `// :replace-start: {
+      text: `// :replace-start: {"terms": {
 //   ":replace-": "hacked"
-// }
+// }}
 :replace- :replace- :rep
 :replace-end:
 `,
@@ -153,9 +154,9 @@ replaceme
 
   it("interoperates with remove", () => {
     const source = new Document({
-      text: `// :replace-start: {
+      text: `// :replace-start: {"terms": {
 //   "removethis": ""
-// }
+// }}
 leave this alone
 removethis1
 // :remove-start:
@@ -179,5 +180,21 @@ andremovethisaswell
 4
 andaswell
 `);
+  });
+
+  it("doesn't unexpectedly use id as a replacement", () => {
+    const source = new Document({
+      text: `// :replace-start: foo
+it's my id
+:replace-end:
+`,
+      language: "javascript",
+      path: "replace.test.js",
+    });
+
+    const parseResult = bluehawk.parse(source);
+    expect(parseResult.errors[0].message).toBe(
+      "attribute list for 'replace' command should have required property 'terms'"
+    );
   });
 });

@@ -92,9 +92,10 @@ export function makeCstVisitor(
   }
 
   interface AttributeListContext {
-    AttributeListStart: IToken[];
-    AttributeListEnd: IToken[];
-    LineComment: IToken[];
+    AttributeListStart?: IToken[];
+    AttributeListEnd?: IToken[];
+    attributeList?: CstNode[];
+    LineComment?: IToken[];
   }
 
   interface BlockCommandContext {
@@ -206,14 +207,34 @@ export function makeCstVisitor(
       context: AttributeListContext,
       { parent, errors }: VisitorContext
     ) {
-      // ⚠️ This should not recursively visit inner attributeLists
       assert(parent != null);
+
+      // ⚠️ This should not recursively $visit() inner attributeLists to avoid
+      // repeated parsing of JSON. Manually flatten the tree to extract tokens.
+      const lineComments = context.LineComment ?? [];
+      const visitInnerAttributeList = (attributeList?: CstNode[]) => {
+        if (attributeList === undefined) {
+          return;
+        }
+        attributeList.forEach((cstNode) => {
+          // ⚠️ Here be dragons -- `CstChildrenDictionary` _might_ be equivalent
+          // to AttributeListContext. If the syntax changed, this would not
+          // notice automatically. Check carefully.
+          const childContext = (cstNode.children as unknown) as AttributeListContext;
+          parent.addTokensFromContext(childContext);
+          lineComments.push(...(childContext.LineComment ?? []));
+          visitInnerAttributeList(childContext.attributeList);
+        });
+      };
+      visitInnerAttributeList(context.attributeList);
+      parent.addTokensFromContext(context);
+
+      assert(context.AttributeListStart !== undefined);
+      assert(context.AttributeListEnd !== undefined);
       const AttributeListStart = context.AttributeListStart[0];
       const AttributeListEnd = context.AttributeListEnd[0];
       assert(AttributeListStart);
       assert(AttributeListEnd);
-
-      parent.addTokensFromContext(context);
 
       // Retrieve the full text document as the custom payload from the token.
       // Note that AttributeListStart was created with a custom pattern that
@@ -234,21 +255,19 @@ export function makeCstVisitor(
       );
 
       // There may be line comments to strip out
-      if (context.LineComment) {
-        context.LineComment.forEach((LineComment) => {
-          assert(LineComment.endOffset !== undefined);
-          // Make offsets relative to the JSON string, not the overall document
-          const startOffset =
-            LineComment.startOffset - AttributeListStart.startOffset;
-          const endOffset =
-            LineComment.endOffset - AttributeListStart.startOffset; // [sic]
-          // Replace line comments with harmless spaces
-          json =
-            json.substring(0, startOffset) +
-            " ".repeat(LineComment.image.length) +
-            json.substring(endOffset + 1);
-        });
-      }
+      lineComments.forEach((LineComment) => {
+        assert(LineComment.endOffset !== undefined);
+        // Make offsets relative to the JSON string, not the overall document
+        const startOffset =
+          LineComment.startOffset - AttributeListStart.startOffset;
+        const endOffset =
+          LineComment.endOffset - AttributeListStart.startOffset; // [sic]
+        // Replace line comments with harmless spaces
+        json =
+          json.substring(0, startOffset) +
+          " ".repeat(LineComment.image.length) +
+          json.substring(endOffset + 1);
+      });
 
       try {
         const object = JSON.parse(json);
