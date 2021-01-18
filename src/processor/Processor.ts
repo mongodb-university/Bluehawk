@@ -5,18 +5,9 @@ import { Command } from "../commands/Command";
 
 export type BluehawkFiles = { [pathName: string]: ParseResult };
 
-interface ForkArgs {
-  parseResult: ParseResult;
-  newPath?: string;
-  newModifier?: string;
-  newAttributes?: CommandAttributes;
-}
-
-interface ForkArgsWithState extends ForkArgs {
-  _processorState: ProcessorState;
-}
-
 export interface ProcessRequest {
+  // Process the given Bluehawk result, optionally under an alternative id, and
+  // emit the file.
   fork: (args: ForkArgs) => Promise<void>;
 
   // The overall result being processed by the processor
@@ -26,26 +17,23 @@ export interface ProcessRequest {
   command: CommandNode;
 }
 
-class ProcessorState {
-  files: BluehawkFiles = {};
-}
-
 export type CommandProcessors = Record<string, Command>;
 
-export type Listener = (result: ParseResult) => void;
+export type Listener = (result: ParseResult) => void | Promise<void>;
 
 export class Processor {
   processors: CommandProcessors = {};
-  listeners = new Set<Listener>();
+  listeners: Listener[] = [];
 
   // Subscribe to processed file events
   subscribe(listener: Listener): void {
-    this.listeners.add(listener);
+    this.listeners.push(listener);
   }
 
   // Publish a processed file
-  publish(result: ParseResult): void {
-    this.listeners.forEach((listener) => listener(result));
+  async publish(result: ParseResult): Promise<void> {
+    const promises = this.listeners.map((listener) => listener(result));
+    await Promise.all(promises);
   }
 
   // Processes the given Bluehawk result, optionally under an alternative id,
@@ -81,7 +69,7 @@ export class Processor {
       newResult
     );
     await Promise.all(promises);
-    this.publish(newResult);
+    await this.publish(newResult);
   }
 
   // Processes the given Bluehawk result. Resulting files are also emitted to
@@ -128,4 +116,19 @@ export class Processor {
   registerCommand(name: string, command: Command): void {
     this.processors[name] = command;
   }
+}
+
+export interface ForkArgs {
+  parseResult: ParseResult;
+  newPath?: string;
+  newModifier?: string;
+  newAttributes?: CommandAttributes;
+}
+
+interface ForkArgsWithState extends ForkArgs {
+  _processorState: ProcessorState;
+}
+
+class ProcessorState {
+  files: BluehawkFiles = {};
 }

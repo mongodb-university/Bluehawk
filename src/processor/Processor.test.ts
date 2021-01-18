@@ -1,6 +1,7 @@
 import { Bluehawk } from "../bluehawk";
 import { removeMetaRange } from "../commands/removeMetaRange";
 import { Document } from "../Document";
+import { ParseResult } from "../parser/ParseResult";
 
 describe("processor", () => {
   const bluehawk = new Bluehawk();
@@ -18,7 +19,7 @@ describe("processor", () => {
             "async command executed"
           );
           resolve();
-        }, 50);
+        }, 10);
       });
     },
   });
@@ -59,6 +60,38 @@ c
 b
 c
 async command executed`);
+    done();
+  });
+
+  it("supports async listeners", async (done) => {
+    const source = new Document({
+      text: `abc\n`,
+      language: "javascript",
+      path: "test.js",
+    });
+
+    const bluehawk = new Bluehawk();
+    const parseResult = bluehawk.parse(source);
+
+    let didCallListener = 0;
+    let didWaitForListener = 0;
+    for (let i = 0; i < 10; ++i) {
+      const listener = (result: ParseResult) => {
+        didCallListener += 1;
+        return new Promise<void>((resolve) => {
+          setTimeout(() => {
+            didWaitForListener += 1;
+            resolve();
+          }, 10 - i);
+        });
+      };
+      bluehawk.subscribe(listener);
+    }
+    expect(didCallListener).toBe(0);
+    expect(didWaitForListener).toBe(0);
+    await bluehawk.process(parseResult);
+    expect(didCallListener).toBe(10);
+    expect(didWaitForListener).toBe(10);
     done();
   });
 });
