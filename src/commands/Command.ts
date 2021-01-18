@@ -9,5 +9,5 @@ export interface Command {
   rules: Rule[];
 
   // Implementation of the command
-  process: (request: ProcessRequest) => void;
+  process: (request: ProcessRequest) => void | Promise<void>;
 }

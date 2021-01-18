@@ -11,7 +11,7 @@ describe("stateCommand", () => {
   bluehawk.registerCommand("remove", RemoveCommand);
   bluehawk.registerCommand("snippet", SnippetCommand);
 
-  it("processes nested commands", () => {
+  it("processes nested commands", async (done) => {
     const multipleInput = new Document({
       text: `
 // :state-start: begin
@@ -45,7 +45,7 @@ end
 `;
     const parseResult = bluehawk.parse(multipleInput);
     expect(parseResult.source.path).toBe("stateCommand.test.js");
-    const files = bluehawk.process(parseResult);
+    const files = await bluehawk.process(parseResult);
     // wait what? Two snippets?
     // It's because the snippet lives outside of the states
     // There would only be one snippet publish if it was nested
@@ -61,5 +61,6 @@ end
     expect(
       files["stateCommand.test.js#state.final"].source.text.toString()
     ).toBe(multipleFinal);
+    done();
   });
 });

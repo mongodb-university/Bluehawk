@@ -5,15 +5,29 @@ import { Command } from "../commands/Command";
 
 export type BluehawkFiles = { [pathName: string]: ParseResult };
 
+interface ForkArgs {
+  parseResult: ParseResult;
+  newPath?: string;
+  newModifier?: string;
+  newAttributes?: CommandAttributes;
+}
+
+interface ForkArgsWithState extends ForkArgs {
+  _processorState: ProcessorState;
+}
+
 export interface ProcessRequest {
-  // The processor that initiated this request
-  processor: Processor;
+  fork: (args: ForkArgs) => Promise<void>;
 
   // The overall result being processed by the processor
   parseResult: ParseResult;
 
   // The specific command to process
   command: CommandNode;
+}
+
+class ProcessorState {
+  files: BluehawkFiles = {};
 }
 
 export type CommandProcessors = Record<string, Command>;
@@ -36,21 +50,17 @@ export class Processor {
 
   // Processes the given Bluehawk result, optionally under an alternative id,
   // and emits the file.
-  fork({
+  async fork({
+    _processorState,
     parseResult,
     newPath,
     newModifier,
     newAttributes,
-  }: {
-    parseResult: ParseResult;
-    newPath?: string;
-    newModifier?: string;
-    newAttributes?: CommandAttributes;
-  }): void {
+  }: ForkArgsWithState): Promise<void> {
     const { source } = parseResult;
     const modifier = Document.makeModifier(source.modifier, newModifier);
     const fileId = Document.makeId(newPath ?? source.path, modifier);
-    if (this._outputFiles[fileId] !== undefined) {
+    if (_processorState.files[fileId] !== undefined) {
       return;
     }
     const newResult = {
@@ -64,46 +74,58 @@ export class Processor {
         },
       }),
     };
-    this._outputFiles[fileId] = newResult;
-    const result = this._process(newResult.commandNodes, newResult);
-    this.publish(result);
+    _processorState.files[fileId] = newResult;
+    const promises = this._process(
+      _processorState,
+      newResult.commandNodes,
+      newResult
+    );
+    await Promise.all(promises);
+    this.publish(newResult);
   }
 
-  // Processes the given Bluehawk result. Resulting files are emitted to
+  // Processes the given Bluehawk result. Resulting files are also emitted to
   // listeners, which can be added with subscribe().
-  process = (parseResult: ParseResult): BluehawkFiles => {
-    // Clear the state (FIXME: state could be passed in the request)
-    this._outputFiles = {};
-    this.fork({ parseResult });
-    const outputFiles = this._outputFiles;
-    this._outputFiles = {};
-    return outputFiles;
+  process = async (parseResult: ParseResult): Promise<BluehawkFiles> => {
+    const _processorState = new ProcessorState();
+    await this.fork({ parseResult, _processorState });
+    return _processorState.files;
   };
 
   private _process = (
+    _processorState: ProcessorState,
     commandSubset: CommandNode[],
     result: ParseResult
-  ): ParseResult => {
-    commandSubset.forEach((command) => {
+  ): Promise<void>[] => {
+    return commandSubset.reduce((promises, command): Promise<void>[] => {
       const processor = this.processors[command.commandName];
       if (processor === undefined) {
-        return;
+        return promises;
       }
-      processor.process({
-        processor: this,
+      // Commands are not necessarily async
+      const maybePromise = processor.process({
+        fork: (args: ForkArgs) => {
+          return this.fork({
+            ...args,
+            _processorState,
+          });
+        },
         parseResult: result,
         command,
       });
-      if (command.children !== undefined) {
-        this._process(command.children, result);
+      if (maybePromise instanceof Promise) {
+        promises.push(maybePromise);
       }
-    });
-    return result;
+      if (command.children !== undefined) {
+        promises.push(
+          ...this._process(_processorState, command.children, result)
+        );
+      }
+      return promises;
+    }, [] as Promise<void>[]);
   };
 
   registerCommand(name: string, command: Command): void {
     this.processors[name] = command;
   }
-
-  private _outputFiles: BluehawkFiles = {};
 }
