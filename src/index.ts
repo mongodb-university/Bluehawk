@@ -16,7 +16,11 @@ async function run(): Promise<void> {
     .command("--ignores", "A glob list of patterns to ignore")
     .command("--state", "Which state to render")
     .boolean("snippets")
-    .describe("snippets", "Output snippet files only")
+    .string("plugin")
+    .describe({
+      snippets: "Output snippet files only",
+      plugin: "Path to plugin JS file",
+    })
     .example(
       "$0 -s ./foo.js -d ./output/",
       "Parse the foo.js file and output results in the output/ directory."
@@ -155,7 +159,7 @@ async function run(): Promise<void> {
 
   const source = params.source as string;
   const destination = params.destination as string;
-  await bhp.main(source, ignores, listeners, onBinaryFile);
+  await bhp.main(source, ignores, listeners, onBinaryFile, params.plugin);
 
   if (params.state && Object.keys(stateVersionWrittenForPath).length === 0) {
     console.warn(

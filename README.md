@@ -188,6 +188,36 @@ All commands that end with `-start` have a corresponding `-end` command. You use
 start and end commands to delineate blocks of content. Generally, the command
 operates on the content within the block.
 
+## Plugins
+
+You can add commands and listeners by creating a JS file or node project that
+implements the register() function:
+
+```js
+// myPlugin.js
+exports.register = (bluehawk) => {
+  // Register a new command, :my-command:
+  bluehawk.registerCommand("my-command", {
+    rules: [],
+    process: (request) => {
+      // Execute command
+    }
+  });
+
+  // Register a document listener
+  bluehawk.subscribe((finishedDocument) => {
+    // Do something with finishedDocument
+  });
+};
+```
+
+Usage:
+
+```shell
+bluehawk --plugin ./myPlugin --source source.txt
+```
+
+You can pass the --plugin flag multiple times to load different plugins.
 
 ## Running Tests
 
