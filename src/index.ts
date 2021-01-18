@@ -48,7 +48,7 @@ async function run(): Promise<void> {
   let onBinaryFile: (path: string) => void = undefined;
   // Output snippet files -- exclude full state files
   if (snippets) {
-    listeners.push((result: ParseResult) => {
+    listeners.push((result: ParseResult): void | Promise<void> => {
       const { source } = result;
       if (source.attributes["snippet"] === undefined) {
         return;
@@ -72,12 +72,14 @@ async function run(): Promise<void> {
           stateVersionWrittenForPath[source.path] = true;
         }
       }
-
-      fs.writeFile(targetPath, source.text.toString(), "utf8", (error) => {
-        if (error) {
-          throw error;
-        }
-        console.log(`${source.path} -> ${targetPath}`);
+      return new Promise((resolve, reject) => {
+        fs.writeFile(targetPath, source.text.toString(), "utf8", (error) => {
+          if (error) {
+            return reject(error);
+          }
+          console.log(`${source.path} -> ${targetPath}`);
+          resolve();
+        });
       });
     });
   } else if (params.state) {
@@ -104,7 +106,7 @@ async function run(): Promise<void> {
         });
       });
     };
-    listeners.push((result: ParseResult) => {
+    listeners.push((result: ParseResult): void | Promise<void> => {
       const { source } = result;
       if (source.attributes.snippet) {
         // Not a pure state file
@@ -133,21 +135,24 @@ async function run(): Promise<void> {
         stateVersionWrittenForPath[source.path] = true;
       }
 
-      // Use the same relative path
-      const directory = path.join(
-        destination,
-        path.relative(projectRoot, path.dirname(source.path))
-      );
-      const targetPath = path.join(directory, source.basename);
-      fs.mkdir(directory, { recursive: true }, (error) => {
-        if (error) {
-          throw error;
-        }
-        fs.writeFile(targetPath, source.text.toString(), "utf8", (error) => {
+      return new Promise((resolve, reject) => {
+        // Use the same relative path
+        const directory = path.join(
+          destination,
+          path.relative(projectRoot, path.dirname(source.path))
+        );
+        const targetPath = path.join(directory, source.basename);
+        fs.mkdir(directory, { recursive: true }, (error) => {
           if (error) {
-            throw error;
+            return reject(error);
           }
-          console.log(`${source.path} -> ${targetPath}`);
+          fs.writeFile(targetPath, source.text.toString(), "utf8", (error) => {
+            if (error) {
+              return reject(error);
+            }
+            console.log(`${source.path} -> ${targetPath}`);
+            resolve();
+          });
         });
       });
     });
