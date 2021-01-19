@@ -5,7 +5,9 @@
     "target": "ES5",
     "esModuleInterop": true,
     "lib": ["ES2020"],
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "strictNullChecks": true,
+    "strict": true
   },
   "sourceMap": true,
   "include": ["./src/**/*"]

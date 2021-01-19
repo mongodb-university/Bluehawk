@@ -1,7 +1,7 @@
 import { ParseResult } from "../parser/ParseResult";
 import { Document, CommandAttributes } from "../Document";
 import { CommandNode } from "../parser/CommandNode";
-import { Command } from "../commands/Command";
+import { AnyCommand } from "../commands/Command";
 
 export type BluehawkFiles = { [pathName: string]: ParseResult };
 
@@ -17,7 +17,7 @@ export interface ProcessRequest {
   command: CommandNode;
 }
 
-export type CommandProcessors = Record<string, Command>;
+export type CommandProcessors = Record<string, AnyCommand>;
 
 export type Listener = (result: ParseResult) => void | Promise<void>;
 
@@ -113,7 +113,7 @@ export class Processor {
     }, [] as Promise<void>[]);
   };
 
-  registerCommand(name: string, command: Command): void {
+  registerCommand(name: string, command: AnyCommand): void {
     this.processors[name] = command;
   }
 }

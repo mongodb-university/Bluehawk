@@ -205,6 +205,7 @@ bad second line
       expect(result.tokens[0].image).toBe(":block-command-start:");
       expect(result.tokens[1].image).toBe("{");
       parser.input = result.tokens.slice(1); // CommandStart required to get lexer in JSON mode
+      expect(parser.attributeList).toBeDefined();
       parser.attributeList();
       expect(parser.errors).toStrictEqual([]);
     });

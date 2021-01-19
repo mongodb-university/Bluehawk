@@ -1,3 +1,4 @@
+import { strict as assert } from "assert";
 import { CstNode, CstParser, Lexer, TokenType } from "chevrotain";
 import { makeLexer } from "./lexer/makeLexer";
 import { makeRootMode } from "./lexer/makeRootMode";
@@ -21,17 +22,6 @@ import { ErrorMessageProvider } from "./ErrorMessageProvider";
 import { BluehawkError } from "../BluehawkError";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step2_parsing.html
-
-type Rule = (idx?: number) => CstNode;
-
-interface ParserResult {
-  cst?: CstNode;
-  errors: BluehawkError[];
-}
-
-export interface IParser {
-  parse(text: string): ParserResult;
-}
 
 // Comment awareness prevents bluehawk from outputting half-commented code
 // blocks.
@@ -57,7 +47,7 @@ annotatedText
   : (chunk)*
 
 attributeList
-  : AttributeListStart (AttributeListStart | AttributeListEnd | JsonStringLiteral | Newline | LineComment)* AttributeListEnd
+  : AttributeListStart (attributeList | JsonStringLiteral | Newline | LineComment)* AttributeListEnd
 
 blockCommand
   : (LineComment)? CommandStart (commandAttribute)? Newline (chunk)* (LineComment)* CommandEnd
@@ -83,20 +73,31 @@ pushParser
 † = if canNestBlockComments
 */
 
+type Rule = (idx?: number) => CstNode;
+
+interface ParserResult {
+  cst?: CstNode;
+  errors: BluehawkError[];
+}
+
+export interface IParser {
+  parse(text: string): ParserResult;
+}
+
 // While the lexer defines the tokens of the language, the parser defines the
 // syntax.
 export class RootParser extends CstParser implements IParser {
   lexer: Lexer;
 
-  annotatedText?: Rule;
-  chunk?: Rule;
-  blockCommand?: Rule;
-  command?: Rule;
-  commandAttribute?: Rule;
-  blockComment?: Rule;
-  lineComment?: Rule;
-  attributeList?: Rule;
-  pushParser?: Rule;
+  annotatedText: Rule = UndefinedRule;
+  chunk: Rule = UndefinedRule;
+  blockCommand: Rule = UndefinedRule;
+  command: Rule = UndefinedRule;
+  commandAttribute: Rule = UndefinedRule;
+  blockComment: Rule = UndefinedRule;
+  lineComment: Rule = UndefinedRule;
+  attributeList: Rule = UndefinedRule;
+  pushParser: Rule = UndefinedRule;
 
   constructor(languageTokens: TokenType[]) {
     super(makeRootMode(languageTokens), {
@@ -228,7 +229,7 @@ export class RootParser extends CstParser implements IParser {
     this.performSelfAnalysis();
   }
 
-  parse(text: string): { cst: CstNode; errors: BluehawkError[] } {
+  parse(text: string): { cst?: CstNode; errors: BluehawkError[] } {
     const tokens = this.lexer.tokenize(text);
     const tokenErrors = tokens.errors.map(
       (error): BluehawkError => ({
@@ -241,11 +242,14 @@ export class RootParser extends CstParser implements IParser {
         message: error.message,
       })
     );
-    let cst: CstNode;
-    if (tokenErrors.length === 0) {
-      this.input = tokens.tokens;
-      cst = this.annotatedText();
+    if (tokenErrors.length !== 0) {
+      return {
+        cst: undefined,
+        errors: tokenErrors,
+      };
     }
+    this.input = tokens.tokens;
+    const cst = this.annotatedText();
     return {
       cst,
       errors: [
@@ -254,14 +258,10 @@ export class RootParser extends CstParser implements IParser {
           (error): BluehawkError => {
             // Retrieve the error location from the message because I can't seem
             // to find it on the actual error object.
-            const [
-              ,
-              line,
-              column,
-              offset,
-            ] = /^([0-9]+):([0-9]+)\(([0-9]+)\)/
-              .exec(error.message)
-              .map((result) => parseInt(result));
+            const lineColumnOffset = /^([0-9]+):([0-9]+)\(([0-9]+)\)/
+              .exec(error?.message)
+              ?.map((result) => parseInt(result)) ?? [-1, -1, -1, -1];
+            const [, line, column, offset] = lineColumnOffset;
             return {
               component: "parser",
               location: {
@@ -276,4 +276,11 @@ export class RootParser extends CstParser implements IParser {
       ],
     };
   }
+}
+
+// Chevrotain assigns the rules after construction. Initializing rule properties
+// with this rule quashes the "Property 'annotatedText' has no initializer and
+// is not definitely assigned in the constructor." error.
+function UndefinedRule(): CstNode {
+  assert(false);
 }

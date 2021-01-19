@@ -32,10 +32,10 @@ async function run(): Promise<void> {
     .help("h")
     .alias("h", "help").argv;
 
-  let ignores: string[];
-  if (typeof params.ignores == "string") {
-    ignores = (params.ignores as string).split(",");
-  }
+  const ignores: string[] =
+    typeof params.ignores === "string" || params.ignores instanceof String
+      ? (params.ignores as string).split(",")
+      : [];
 
   const { snippets } = params;
 
@@ -49,7 +49,7 @@ async function run(): Promise<void> {
     [path: string]: boolean;
   } = {};
 
-  let onBinaryFile: (path: string) => void = undefined;
+  let onBinaryFile: ((path: string) => void) | undefined = undefined;
   // Output snippet files -- exclude full state files
   if (snippets) {
     listeners.push((result: ParseResult): void | Promise<void> => {

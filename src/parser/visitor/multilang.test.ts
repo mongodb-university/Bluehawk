@@ -25,7 +25,7 @@ CC
     for (let i = 1; i < 4; ++i) {
       expect(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        Object.keys((parseResult.cst.children.chunk[i] as any).children)[0]
+        Object.keys((parseResult.cst?.children.chunk[i] as any).children)[0]
       ).toBe("blockComment");
     }
   });
@@ -72,6 +72,10 @@ describe("multilang", () => {
 # :command2:
 `);
     expect(parseResult.errors).toStrictEqual([]);
+    expect(parseResult.cst).toBeDefined();
+    if (parseResult.cst === undefined) {
+      return;
+    }
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
@@ -102,6 +106,10 @@ describe("multilang", () => {
 # :command5:
 `);
     expect(parseResult.errors).toStrictEqual([]);
+    expect(parseResult.cst).toBeDefined();
+    if (parseResult.cst === undefined) {
+      return;
+    }
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
@@ -131,6 +139,10 @@ describe("multilang", () => {
 ?>
 `);
     expect(parseResult.errors).toStrictEqual([]);
+    expect(parseResult.cst).toBeDefined();
+    if (parseResult.cst === undefined) {
+      return;
+    }
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors[0].message).toContain(
       "blockComment: After Newline, expected BlockCommentEnd but found EOF"
@@ -161,6 +173,10 @@ describe("multilang", () => {
 :command2:
 `);
     const visitor = makeCstVisitor(markdownParser, getParser);
+    expect(parseResult.cst).toBeDefined();
+    if (parseResult.cst === undefined) {
+      return;
+    }
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
