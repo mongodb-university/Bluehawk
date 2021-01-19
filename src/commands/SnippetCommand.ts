@@ -15,7 +15,10 @@ function dedentRange(
   }
 
   // Get inner content and split by line break
-  const content = s.slice(contentRange.start.offset, contentRange.end.offset);
+  const content = s.original.substring(
+    contentRange.start.offset,
+    contentRange.end.offset
+  );
   const lines = content.split(/\r\n|\r|\n/);
   // Remove trailing newline
   lines.pop();
