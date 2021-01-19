@@ -6,7 +6,7 @@ import { hasId } from "../processor/validator";
 export const StateCommand: Command = {
   rules: [hasId],
   process: (request: ProcessRequest): void => {
-    const { command, processor, parseResult } = request;
+    const { command, fork, parseResult } = request;
     const { source } = parseResult;
 
     // Strip tags
@@ -16,7 +16,7 @@ export const StateCommand: Command = {
 
     if (stateAttribute === undefined) {
       // We are not processing in a state file, so start one
-      processor.fork({
+      fork({
         parseResult,
         newModifier: `state.${command.id}`,
         newAttributes: {

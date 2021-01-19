@@ -53,7 +53,7 @@ function dedentRange(
 export const SnippetCommand: Command = {
   rules: [hasId, idIsUnique],
   process: (request: ProcessRequest): void => {
-    const { command, processor, parseResult } = request;
+    const { command, parseResult, fork } = request;
     const { source } = parseResult;
     const { contentRange } = command;
 
@@ -70,7 +70,7 @@ export const SnippetCommand: Command = {
     dedentRange(clonedSnippet, command);
 
     // Fork subset code block to another file
-    processor.fork({
+    fork({
       parseResult: {
         commandNodes: command.children ?? [],
         errors: [],
