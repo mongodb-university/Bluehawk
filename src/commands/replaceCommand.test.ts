@@ -2,11 +2,13 @@ import { Bluehawk } from "../bluehawk";
 import { Document } from "../Document";
 import { ReplaceCommand } from "./ReplaceCommand";
 import { RemoveCommand } from "./RemoveCommand";
+import { SnippetCommand } from "./SnippetCommand";
 
 describe("replace command", () => {
   const bluehawk = new Bluehawk();
   bluehawk.registerCommand("replace", ReplaceCommand);
   bluehawk.registerCommand("remove", RemoveCommand);
+  bluehawk.registerCommand("code-block", SnippetCommand);
 
   it("errors when no attribute list is given", () => {
     const source = new Document({
@@ -201,5 +203,177 @@ it's my id
     expect(parseResult.errors[0].message).toBe(
       "attribute list for 'replace' command should have required property 'terms'"
     );
+  });
+
+  it("handles a real-world example", async (done) => {
+    const source = new Document({
+      text: `// :replace-start: {
+//   "terms": {
+//     "ReadWriteDataExamples_": ""
+//   }
+// }
+import XCTest
+import RealmSwift
+
+// :code-block-start: models
+class ReadWriteDataExamples_Dog: Object {
+    @objc dynamic var name = ""
+    @objc dynamic var age = 0
+}
+
+class ReadWriteDataExamples_DogOwner: Object {
+    @objc dynamic var id = 0
+
+    // To-many relationship - a dog owner can have many dogs
+    let dogs = List<ReadWriteDataExamples_Dog>()
+    
+    // Inverse relationship - an owner can be a member of many clubs
+    let clubs = LinkingObjects(fromType: ReadWriteDataExamples_DogClub.self, property: "members")
+
+    override static func primaryKey() -> String? {
+        return "id"
+    }
+}
+
+class ReadWriteDataExamples_DogClub: Object {
+    @objc dynamic var name = ""
+    let members = List<ReadWriteDataExamples_DogOwner>()
+}
+// :code-block-end:
+
+class ReadWriteData: XCTestCase {
+    func testCreateNewObject() {
+        // :code-block-start: create-a-new-object
+        // (1) Create a ReadWriteDataExamples_Dog object and then set its properties
+        let myReadWriteDataExamples_Dog = ReadWriteDataExamples_Dog()
+        myReadWriteDataExamples_Dog.name = "Rex"
+        myReadWriteDataExamples_Dog.age = 10
+        
+        // (2) Create a ReadWriteDataExamples_Dog object from a dictionary
+        let myOtherReadWriteDataExamples_Dog = ReadWriteDataExamples_Dog(value: ["name" : "Pluto", "age": 3])
+
+        // (3) Create a ReadWriteDataExamples_Dog object from an array
+        let myThirdReadWriteDataExamples_Dog = ReadWriteDataExamples_Dog(value: ["Fido", 5])
+        
+        // Get the default realm. You only need to do this once per thread.
+        let realm = try! Realm()
+
+        // Add to the realm inside a transaction
+        try! realm.write {
+            realm.add(myReadWriteDataExamples_Dog)
+        }
+        // :code-block-end:
+    }
+}
+
+// :replace-end:
+`,
+      language: "javascript",
+      path: "replace.test.js",
+    });
+
+    const parseResult = bluehawk.parse(source);
+    expect(parseResult.errors.length).toBe(0);
+    const files = await bluehawk.process(parseResult);
+    expect(files["replace.test.js"].source.text.toString()).toBe(`import XCTest
+import RealmSwift
+
+class Dog: Object {
+    @objc dynamic var name = ""
+    @objc dynamic var age = 0
+}
+
+class DogOwner: Object {
+    @objc dynamic var id = 0
+
+    // To-many relationship - a dog owner can have many dogs
+    let dogs = List<Dog>()
+    
+    // Inverse relationship - an owner can be a member of many clubs
+    let clubs = LinkingObjects(fromType: DogClub.self, property: "members")
+
+    override static func primaryKey() -> String? {
+        return "id"
+    }
+}
+
+class DogClub: Object {
+    @objc dynamic var name = ""
+    let members = List<DogOwner>()
+}
+
+class ReadWriteData: XCTestCase {
+    func testCreateNewObject() {
+        // (1) Create a Dog object and then set its properties
+        let myDog = Dog()
+        myDog.name = "Rex"
+        myDog.age = 10
+        
+        // (2) Create a Dog object from a dictionary
+        let myOtherDog = Dog(value: ["name" : "Pluto", "age": 3])
+
+        // (3) Create a Dog object from an array
+        let myThirdDog = Dog(value: ["Fido", 5])
+        
+        // Get the default realm. You only need to do this once per thread.
+        let realm = try! Realm()
+
+        // Add to the realm inside a transaction
+        try! realm.write {
+            realm.add(myDog)
+        }
+    }
+}
+
+`);
+    expect(files["replace.test.codeblock.models.js"].source.text.toString())
+      .toBe(`class Dog: Object {
+    @objc dynamic var name = ""
+    @objc dynamic var age = 0
+}
+
+class DogOwner: Object {
+    @objc dynamic var id = 0
+
+    // To-many relationship - a dog owner can have many dogs
+    let dogs = List<Dog>()
+    
+    // Inverse relationship - an owner can be a member of many clubs
+    let clubs = LinkingObjects(fromType: DogClub.self, property: "members")
+
+    override static func primaryKey() -> String? {
+        return "id"
+    }
+}
+
+class DogClub: Object {
+    @objc dynamic var name = ""
+    let members = List<DogOwner>()
+}
+`);
+    expect(
+      files[
+        "replace.test.codeblock.create-a-new-object.js"
+      ].source.text.toString()
+    ).toBe(`// (1) Create a Dog object and then set its properties
+let myDog = Dog()
+myDog.name = "Rex"
+myDog.age = 10
+
+// (2) Create a Dog object from a dictionary
+let myOtherDog = Dog(value: ["name" : "Pluto", "age": 3])
+
+// (3) Create a Dog object from an array
+let myThirdDog = Dog(value: ["Fido", 5])
+
+// Get the default realm. You only need to do this once per thread.
+let realm = try! Realm()
+
+// Add to the realm inside a transaction
+try! realm.write {
+    realm.add(myDog)
+}
+`);
+    done();
   });
 });
