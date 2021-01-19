@@ -1,3 +1,4 @@
+import { strict as assert } from "assert";
 import { IToken } from "chevrotain";
 import { flatten } from "../parser/flatten";
 import { ProcessRequest } from "../processor/Processor";
@@ -14,7 +15,7 @@ export const UncommentCommand: Command = {
     removeMetaRange(source.text, command);
 
     const { contentRange } = command;
-    if (contentRange == null) {
+    if (contentRange == undefined) {
       return;
     }
 
@@ -30,9 +31,10 @@ export const UncommentCommand: Command = {
         (lineComment, i) =>
           i === 0 || lineComments[i - 1].startLine !== lineComment.startLine
       )
-      .forEach((lineComment) =>
+      .forEach((lineComment) => {
+        assert(lineComment.endOffset !== undefined);
         // Delete the line comment
-        source.text.remove(lineComment.startOffset, lineComment.endOffset + 1)
-      );
+        source.text.remove(lineComment.startOffset, lineComment.endOffset + 1);
+      });
   },
 };

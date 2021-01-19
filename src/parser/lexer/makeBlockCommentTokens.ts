@@ -11,7 +11,7 @@ export function makeBlockCommentTokens(
   endPattern: RegExp,
   configuration?: BlockCommentTokenConfiguration
 ): [TokenType, TokenType] {
-  const tokens = [
+  const tokens: [TokenType, TokenType] = [
     createToken({
       name: "BlockCommentStart",
       label: `BlockCommentStart(${startPattern})`,

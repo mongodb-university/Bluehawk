@@ -10,17 +10,16 @@ import { RemoveCommand } from "../commands/RemoveCommand";
 import { StateCommand } from "../commands/StateCommand";
 import { UncommentCommand } from "../commands/UncommentCommand";
 import { isBinary } from "istextorbinary";
+import { ReplaceCommand } from "../commands/ReplaceCommand";
 
 async function fileEntry(
   source: string,
-  ignores?: string[]
+  ignoresOrUndefined?: string[]
 ): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const ig = ignore();
-    if (!ignores) {
-      ignores = [];
-    }
-    function traverse(source: string, fileArray = []): string[] {
+    const ignores = ignoresOrUndefined ?? [];
+    function traverse(source: string, fileArray = [] as string[]): string[] {
       let files: string[] = [];
       if (fs.lstatSync(path.resolve(source)).isFile()) {
         return [source];
@@ -86,6 +85,7 @@ export async function main(
 ): Promise<void> {
   const bluehawk = new Bluehawk();
   bluehawk.registerCommand("code-block", SnippetCommand);
+  bluehawk.registerCommand("replace", ReplaceCommand);
   bluehawk.registerCommand("snippet", SnippetCommand);
   bluehawk.registerCommand("remove", RemoveCommand);
 
@@ -97,7 +97,7 @@ export async function main(
 
   // uncomment the block in the state
   bluehawk.registerCommand("state-uncomment", {
-    rules: [],
+    rules: [...StateCommand.rules],
     process: (request: ProcessRequest): void => {
       UncommentCommand.process(request);
       StateCommand.process(request);

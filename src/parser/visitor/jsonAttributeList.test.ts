@@ -164,7 +164,10 @@ describe("JSON attribute lists", () => {
     const tokens = lexer.tokenize(`// :A-command-start: {
 // "a": 1,
 // "b": 2,
-// "c": 3
+// "c": 3,
+// "d": // { 
+//   "a": 1
+// }
 //}
 // :A-command-end:
 `);
@@ -175,6 +178,32 @@ describe("JSON attribute lists", () => {
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
+    expect(result.commandNodes[0].attributes).toStrictEqual({
+      a: 1,
+      b: 2,
+      c: 3,
+      d: { a: 1 },
+    });
+  });
+
+  it("does not strip line comments in strings", () => {
+    const tokens = lexer.tokenize(`// :A-command-start: {
+// "a": "//",
+// "b": { // "c": "// //" }
+//}
+// :A-command-end:
+`);
+    expect(tokens.errors).toStrictEqual([]);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst, source);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.commandNodes[0].attributes).toStrictEqual({
+      a: "//",
+      b: { c: "// //" },
+    });
   });
 
   it("accurately reports error positions in commented JSON", () => {

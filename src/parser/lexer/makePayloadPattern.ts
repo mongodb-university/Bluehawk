@@ -31,7 +31,7 @@ export function makePayloadPattern<PayloadType>(
       offset: number,
       tokens: IToken[],
       groups: { [groupName: string]: IToken[] }
-    ): RegExpExecArray => {
+    ): RegExpExecArray | null => {
       // start the search at the offset
       pattern.lastIndex = offset;
 

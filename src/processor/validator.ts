@@ -2,6 +2,7 @@ import { CommandNode } from "../parser/CommandNode";
 import { BluehawkError } from "../BluehawkError";
 import { flatten } from "../parser/flatten";
 import { CommandProcessors } from "./Processor";
+import { makeAttributesConformToJsonSchemaRule } from "./makeAttributesConformToJsonSchemaRule";
 
 export interface ValidateCstResult {
   errors: BluehawkError[];
@@ -30,6 +31,14 @@ export function validateCommands(
       // TODO: warn unknown command
       return;
     }
+
+    if (processor.attributesSchema !== undefined) {
+      const attributeSchemaValidator = makeAttributesConformToJsonSchemaRule(
+        processor.attributesSchema
+      );
+      attributeSchemaValidator(commandNode, validateResult);
+    }
+
     processor.rules.forEach((rule) => {
       rule(commandNode, validateResult);
     });

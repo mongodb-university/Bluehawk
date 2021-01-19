@@ -111,8 +111,10 @@ annotated text
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commandNodes.length).toBe(1);
-    expect(result.commandNodes[0].children.length).toBe(1);
-    expect(result.commandNodes[0].children[0].children.length).toBe(2);
+    expect((result.commandNodes[0].children ?? []).length).toBe(1);
+    expect(
+      (result.commandNodes[0].children ?? [])[0].children?.length ?? 0
+    ).toBe(2);
   });
 
   it("supports id commands", () => {
@@ -128,7 +130,7 @@ annotated text
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(result.commandNodes[0].commandName).toBe("A");
-    expect(result.commandNodes[0].children.length).toBe(0);
+    expect((result.commandNodes[0].children ?? []).length).toBe(0);
     expect(result.commandNodes[0].id).toBe("label");
   });
 
@@ -251,12 +253,24 @@ annotated text
     const a = result.commandNodes[0];
     expect(a.commandName).toBe("a");
     expect(a.inContext).toBe("lineComment");
+    expect(a.children).toBeDefined();
+    if (a.children === undefined) {
+      return;
+    }
     const b = a.children[0];
     expect(b.commandName).toBe("b");
     expect(b.inContext).toBe("lineComment");
+    expect(b.children).toBeDefined();
+    if (b.children === undefined) {
+      return;
+    }
     const c = b.children[0];
     expect(c.commandName).toBe("c");
     expect(c.inContext).toBe("blockComment");
+    expect(c.children).toBeDefined();
+    if (c.children === undefined) {
+      return;
+    }
     const d = c.children[0];
     expect(d.commandName).toBe("d");
     expect(d.inContext).toBe("blockComment");
@@ -309,6 +323,10 @@ the quick brown fox jumped
     expect(a.commandName).toBe("a");
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
+    expect(result.commandNodes[0].contentRange).toBeDefined();
+    if (result.commandNodes[0].contentRange === undefined) {
+      return;
+    }
     expect(result.commandNodes[0].contentRange.start.line).toBe(3);
     expect(result.commandNodes[0].contentRange.start.column).toBe(1);
     expect(result.commandNodes[0].contentRange.start.offset).toBe(14);
@@ -350,6 +368,10 @@ and again
     expect(a.range.end.offset).toBe(124);
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
+    expect(a.contentRange).toBeDefined();
+    if (a.contentRange === undefined) {
+      return;
+    }
     expect(a.contentRange.start.line).toBe(3);
     expect(a.contentRange.start.column).toBe(1);
     expect(a.contentRange.start.offset).toBe(14);
@@ -357,7 +379,7 @@ and again
     expect(a.contentRange.end.column).toBe(1);
     expect(a.contentRange.end.offset).toBe(115);
 
-    const b = result.commandNodes[0].children[0];
+    const b = (result.commandNodes[0].children ?? [])[0];
     expect(b.commandName).toBe("b");
     // range describes the total block range, from the start of the first command
     // to the end of the last command
@@ -369,6 +391,10 @@ and again
     expect(b.range.end.offset).toBe(113);
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
+    expect(b.contentRange).toBeDefined();
+    if (b.contentRange === undefined) {
+      return;
+    }
     expect(b.contentRange.start.line).toBe(5);
     expect(b.contentRange.start.column).toBe(1);
     expect(b.contentRange.start.offset).toBe(54);
@@ -376,7 +402,7 @@ and again
     expect(b.contentRange.end.column).toBe(1);
     expect(b.contentRange.end.offset).toBe(104);
 
-    const c = result.commandNodes[0].children[0].children[0];
+    const c = ((result.commandNodes[0].children ?? [])[0].children ?? [])[0];
     expect(c.commandName).toBe("c");
     // range describes the total block range, from the start of the first command
     // to the end of the last command
@@ -388,6 +414,10 @@ and again
     expect(c.range.end.offset).toBe(102);
     // contentRange describes the range of the block's content, including sub-commands
     // but not the current start/endcommands
+    expect(c.contentRange).toBeDefined();
+    if (c.contentRange === undefined) {
+      return;
+    }
     expect(c.contentRange.start.line).toBe(7);
     expect(c.contentRange.start.column).toBe(1);
     expect(c.contentRange.start.offset).toBe(83);
@@ -538,6 +568,10 @@ line 10 :a-end:
     expect(result.errors).toStrictEqual([]);
     expect(result.commandNodes.length).toBe(1);
     const lines = tokenString.split("\n");
+    expect(result.commandNodes[0].contentRange).toBeDefined();
+    if (result.commandNodes[0].contentRange === undefined) {
+      return;
+    }
     expect(result.commandNodes[0].contentRange.start.line).toBe(9);
     expect(lines[result.commandNodes[0].contentRange.start.line - 1]).toBe(
       "line 9 -- some more content"
@@ -575,7 +609,7 @@ line 10 :a-end:
       result.commandNodes[0].lineComments.map((token) => token.startLine)
     ).toStrictEqual([3]);
     expect(
-      result.commandNodes[0].children[0].lineComments.map(
+      (result.commandNodes[0].children ?? [])[0].lineComments.map(
         (token) => token.startLine
       )
     ).toStrictEqual([5]);
@@ -603,7 +637,10 @@ c2345678 :a-start:
     expect(lines[2].length).toBe(19);
     expect(lines[3].length).toBe(3);
     expect(lines[4].length).toBe(11);
-
+    expect(result.commandNodes[0].contentRange).toBeDefined();
+    if (result.commandNodes[0].contentRange === undefined) {
+      return;
+    }
     expect(result.commandNodes[0].contentRange.start.line).toBe(4);
     expect(result.commandNodes[0].contentRange.start.column).toBe(1);
 

@@ -10,7 +10,7 @@ function dedentRange(
   s: MagicString,
   { contentRange }: CommandNode
 ): MagicString {
-  if (contentRange == null) {
+  if (contentRange === undefined) {
     return s;
   }
 
@@ -31,11 +31,11 @@ function dedentRange(
       return 0;
     }
     const indentLength = match[0].length;
-    if (min == null) {
+    if (min === undefined) {
       return indentLength;
     }
     return indentLength < min ? indentLength : min;
-  }, null as number | null);
+  }, undefined as number | undefined);
 
   // In this case ambiguity between 0 and null is ok
   if (!minimumIndentation) {
@@ -48,6 +48,8 @@ function dedentRange(
     s.remove(offset, offset + Math.min(line.length, minimumIndentation));
     offset += line.length + 1;
   });
+
+  return s;
 }
 
 export const SnippetCommand: Command = {
@@ -56,6 +58,11 @@ export const SnippetCommand: Command = {
     const { command, parseResult, fork } = request;
     const { source } = parseResult;
     const { contentRange } = command;
+
+    if (contentRange === undefined) {
+      // TODO: diagnostics
+      return;
+    }
 
     // Strip tags
     removeMetaRange(source.text, command);
