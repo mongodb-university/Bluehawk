@@ -59,7 +59,7 @@ export class Bluehawk {
   }
 
   // Executes the commands on the given source. Use subscribe() to get results.
-  process = (parseResult: ParseResult): BluehawkFiles => {
+  process = async (parseResult: ParseResult): Promise<BluehawkFiles> => {
     return this.processor.process(parseResult);
   };
 

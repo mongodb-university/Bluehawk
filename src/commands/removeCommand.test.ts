@@ -34,7 +34,7 @@ line 3`);
     expect(s.toString()).toBe(`line 3`);
   });
 
-  it("strips text", () => {
+  it("strips text", async (done) => {
     const singleInput = `const bar = "foo"
 
 // :remove-start:
@@ -54,14 +54,15 @@ console.log(bar);
     });
 
     const parseResult = bluehawk.parse(source);
-    const files = bluehawk.process(parseResult);
+    const files = await bluehawk.process(parseResult);
     expect(files["test.js"].source.text.toString()).toBe(`const bar = "foo"
 
 console.log(bar);
 `);
+    done();
   });
 
-  it("nests", () => {
+  it("nests", async (done) => {
     const source = new Document({
       text: `a
 :remove-start:
@@ -78,11 +79,12 @@ e
     });
 
     const parseResult = bluehawk.parse(source);
-    const files = bluehawk.process(parseResult);
+    const files = await bluehawk.process(parseResult);
     expect(files["test.js"].source.text.toString()).toBe(
       `a
 e
 `
     );
+    done();
   });
 });

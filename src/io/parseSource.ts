@@ -106,7 +106,9 @@ export async function main(
 
   onFileProcessed.forEach((listener) => bluehawk.subscribe(listener));
 
-  (await fileEntry(source, ignores)).forEach((file) => {
+  const files = await fileEntry(source, ignores);
+
+  const promises = files.map(async (file) => {
     try {
       if (isBinary(file)) {
         onBinaryFile && onBinaryFile(file);
@@ -124,7 +126,7 @@ export async function main(
         );
         return;
       }
-      bluehawk.process(result);
+      await bluehawk.process(result);
     } catch (e) {
       console.error(`Encountered the following error while processing ${file}:
 ${e.stack}
@@ -132,4 +134,5 @@ ${e.stack}
 This is probably a bug in Bluehawk. Please send this stack trace (and the contents of ${file}, if possible) to the Bluehawk development team at https://github.com/mongodb-university/Bluehawk/issues/new`);
     }
   });
+  await Promise.all(promises);
 }

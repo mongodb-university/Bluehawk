@@ -8,7 +8,7 @@ describe("uncomment command", () => {
   bluehawk.registerCommand("uncomment", UncommentCommand);
   bluehawk.registerCommand("remove", RemoveCommand);
 
-  it("uncomments", () => {
+  it("uncomments", async (done) => {
     const source = new Document({
       text: `// :uncomment-start:
 //comment
@@ -21,16 +21,17 @@ no comment
     });
 
     const parseResult = bluehawk.parse(source);
-    const files = bluehawk.process(parseResult);
+    const files = await bluehawk.process(parseResult);
     expect(files["uncomment.test.js"].source.text.toString()).toBe(
       `comment
 no comment
 // double comment
 `
     );
+    done();
   });
 
-  it("handles one space after comments", () => {
+  it("handles one space after comments", async (done) => {
     const source = new Document({
       text: `// :uncomment-start:
 // comment
@@ -43,16 +44,17 @@ no comment
     });
 
     const parseResult = bluehawk.parse(source);
-    const files = bluehawk.process(parseResult);
+    const files = await bluehawk.process(parseResult);
     expect(files["uncomment.test.js"].source.text.toString()).toBe(
       `comment
 no comment
 // double comment
 `
     );
+    done();
   });
 
-  it("nests", () => {
+  it("nests", async (done) => {
     const source = new Document({
       text: `// :uncomment-start:
 // comment
@@ -67,16 +69,17 @@ no comment
     });
 
     const parseResult = bluehawk.parse(source);
-    const files = bluehawk.process(parseResult);
+    const files = await bluehawk.process(parseResult);
     expect(files["uncomment.test.js"].source.text.toString()).toBe(
       `comment
 no comment
 // double comment
 `
     );
+    done();
   });
 
-  it("pairs with remove", () => {
+  it("pairs with remove", async (done) => {
     const source = new Document({
       text: `// :uncomment-start:
 // comment
@@ -92,11 +95,12 @@ no comment
     });
 
     const parseResult = bluehawk.parse(source);
-    const files = bluehawk.process(parseResult);
+    const files = await bluehawk.process(parseResult);
     expect(files["uncomment.test.js"].source.text.toString()).toBe(
       `comment
 // double comment
 `
     );
+    done();
   });
 });
