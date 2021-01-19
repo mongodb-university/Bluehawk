@@ -12,6 +12,20 @@ import { UncommentCommand } from "../commands/UncommentCommand";
 import { isBinary } from "istextorbinary";
 import { ReplaceCommand } from "../commands/ReplaceCommand";
 
+const loadPlugin = async (
+  pluginPath: string,
+  bluehawk: Bluehawk
+): Promise<string> => {
+  // Convert relative path (from user's cwd) to absolute path -- as import()
+  // expects relative paths from Bluehawk bin directory
+  const absolutePath = path.isAbsolute(pluginPath)
+    ? pluginPath
+    : path.resolve(process.cwd(), pluginPath);
+  const plugin = await import(absolutePath);
+  plugin.register(bluehawk);
+  return absolutePath;
+};
+
 async function fileEntry(
   source: string,
   ignoresOrUndefined?: string[]
@@ -81,7 +95,8 @@ export async function main(
   source: string,
   ignores: string[] | undefined,
   onFileProcessed: Listener[],
-  onBinaryFile?: (path: string) => void
+  onBinaryFile?: (path: string) => void,
+  plugin?: string[] | string
 ): Promise<void> {
   const bluehawk = new Bluehawk();
   bluehawk.registerCommand("code-block", SnippetCommand);
@@ -105,6 +120,13 @@ export async function main(
   });
 
   onFileProcessed.forEach((listener) => bluehawk.subscribe(listener));
+
+  if (Array.isArray(plugin)) {
+    const promises = plugin.map((plugin) => loadPlugin(plugin, bluehawk));
+    await Promise.all(promises);
+  } else if (typeof plugin === "string") {
+    await loadPlugin(plugin, bluehawk);
+  }
 
   const files = await fileEntry(source, ignores);
 
