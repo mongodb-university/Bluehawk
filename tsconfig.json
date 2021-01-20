@@ -7,8 +7,13 @@
     "lib": ["ES2020"],
     "downlevelIteration": true,
     "strictNullChecks": true,
-    "strict": true
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true
   },
   "sourceMap": true,
-  "include": ["./src/**/*"]
+  "include": [
+    "./src/**/*.ts"
+  ],
+  "exclude": ["./**/*.test.ts"]
 }

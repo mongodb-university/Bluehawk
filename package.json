@@ -1,8 +1,23 @@
 {
   "name": "bluehawk",
-  "version": "1.0.0",
-  "description": "",
-  "main": "./build",
+  "version": "0.0.1",
+  "description": "A markup language and tool for extracting code examples, checkpointing tutorials, and dynamically transforming text",
+  "keywords": [
+    "docs",
+    "docs-as-code",
+    "docs tools",
+    "tutorials",
+    "code examples",
+    "code snippets"
+  ],
+  "homepage": "https://github.com/mongodb-university/Bluehawk#readme",
+  "bugs": {
+    "url": "https://github.com/mongodb-university/Bluehawk/issues"
+  },
+  "main": "./build/bluehawk",
+  "bin": {
+    "bluehawk": "./build/cli/index.js"
+  },
   "scripts": {
     "build": "rm -rf build && tsc -b",
     "watch": "tsc -b -w",
@@ -10,27 +25,18 @@
     "verbose": "jest --verbose",
     "coverage": "jest --coverage"
   },
-  "author": "",
+  "author": "MongoDB Developer Education Team",
   "license": "ISC",
   "dependencies": {
     "ajv": "^7.0.3",
     "chevrotain": "^7.0.2",
-    "fs": "0.0.1-security",
-    "fsify": "^4.0.1",
     "ignore": "^5.1.8",
-    "ignore-walk": "^3.0.3",
-    "inquirer": "^7.3.3",
     "istextorbinary": "^5.12.0",
-    "line-reader": "^0.4.0",
     "magic-string": "^0.25.7",
-    "rimraf": "^3.0.2",
-    "vscode-languageserver": "^6.1.1",
-    "vscode-languageserver-textdocument": "^1.0.1",
     "yargs": "^15.4.1"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.10.4",
-    "@types/ignore-walk": "^3.0.1",
     "@types/node": "^12.12.0",
     "@typescript-eslint/eslint-plugin": "^4.4.0",
     "@typescript-eslint/parser": "^4.0.0",

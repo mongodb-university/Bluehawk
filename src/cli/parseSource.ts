@@ -2,29 +2,19 @@ import * as path from "path";
 import * as fs from "fs";
 import ignore from "ignore";
 import * as readline from "readline";
-import { Bluehawk } from "../bluehawk";
-import { Document } from "../Document";
-import { Listener, ProcessRequest } from "../processor/Processor";
-import { SnippetCommand } from "../commands/SnippetCommand";
-import { RemoveCommand } from "../commands/RemoveCommand";
-import { StateCommand } from "../commands/StateCommand";
-import { UncommentCommand } from "../commands/UncommentCommand";
 import { isBinary } from "istextorbinary";
-import { ReplaceCommand } from "../commands/ReplaceCommand";
-
-const loadPlugin = async (
-  pluginPath: string,
-  bluehawk: Bluehawk
-): Promise<string> => {
-  // Convert relative path (from user's cwd) to absolute path -- as import()
-  // expects relative paths from Bluehawk bin directory
-  const absolutePath = path.isAbsolute(pluginPath)
-    ? pluginPath
-    : path.resolve(process.cwd(), pluginPath);
-  const plugin = await import(absolutePath);
-  plugin.register(bluehawk);
-  return absolutePath;
-};
+import {
+  Bluehawk,
+  Document,
+  Listener,
+  ProcessRequest,
+  RemoveCommand,
+  ReplaceCommand,
+  SnippetCommand,
+  StateCommand,
+  UncommentCommand,
+  loadPlugin,
+} from "../bluehawk";
 
 async function fileEntry(
   source: string,
