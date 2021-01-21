@@ -26,7 +26,11 @@
     "coverage": "jest --coverage"
   },
   "author": "MongoDB Developer Education Team",
-  "license": "ISC",
+  "license": "Apache-2.0"
+--
+
+
+",
   "dependencies": {
     "ajv": "^7.0.3",
     "chevrotain": "^7.0.2",
