@@ -1,14 +1,10 @@
 import * as yargs from "yargs";
-import { MessageHandler } from "./io/messageHandler";
-import * as bhp from "./io/parseSource";
 import fs from "fs";
 import path from "path";
-import { ParseResult } from "./parser/ParseResult";
-import { Listener } from "./processor/Processor";
+import * as bhp from "./parseSource";
+import { ParseResult, Listener } from "../bluehawk";
 
-const output = MessageHandler.getMessageHandler();
-
-async function run(): Promise<void> {
+export async function run(): Promise<void> {
   const params = yargs
     .usage("Usage: $0 <command> [options]")
     .command("--source", "The file or folder to process")
@@ -172,10 +168,3 @@ async function run(): Promise<void> {
     );
   }
 }
-
-run().catch((err) => {
-  output.addError(err);
-  console.error(err);
-});
-
-export default run;
