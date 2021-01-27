@@ -143,13 +143,13 @@ npm run build
 If compilation is successful, you can run bluehawk like so:
 
 ```sh
-node build/index.js -s <folder to source file or directory>
+node build/cli/index.js -s <folder to source file or directory>
 ```
 
 Which you can alias (until release):
 
 ```sh
-alias bluehawk="node /path/to/bluehawk/build/index.js"
+alias bluehawk="node /path/to/bluehawk/build/cli/index.js"
 ```
 
 The `-s or --source` parameter is required.
