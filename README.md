@@ -143,7 +143,7 @@ npm run build
 If compilation is successful, you can run bluehawk like so:
 
 ```sh
-node build/cli/index.js -s <folder to source file or directory>
+node build/cli/index.js -s <folder to source file or directory> -d <destination directory> --snippets
 ```
 
 Which you can alias (until release):
@@ -294,5 +294,4 @@ object after a block command to configure the block command's attributes. The
 lexer has "modes" so after it encounters a block command, it goes into an
 attribute mode, which will either accept the command identifier (i.e.
 :some-command-start: this-is-the-identifier) or the attribute list JSON.
-
 
