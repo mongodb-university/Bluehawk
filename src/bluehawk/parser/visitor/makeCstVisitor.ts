@@ -154,9 +154,7 @@ export function makeCstVisitor(
     errors: BluehawkError[];
   }
 
-  return new (class CstVisitor extends parser.getBaseCstVisitorConstructor() {
-    parser = parser;
-
+  const visitor = new (class CstVisitor extends parser.getBaseCstVisitorConstructor() {
     constructor() {
       super();
       // The "validateVisitor" method is a helper utility which performs static analysis
@@ -164,26 +162,12 @@ export function makeCstVisitor(
       this.validateVisitor();
     }
 
-    // The entrypoint for the visitor.
-    visit(node: CstNode, source: Document): VisitorResult {
-      const parent = CommandNode.rootCommand();
-      const errors: BluehawkError[] = [];
-      this.$visit([node], { errors, parent, source });
-      return {
-        errors,
-        commandNodes: parent.children ?? [],
-      };
-    }
-
-    // chevrotain requires helper methods to begin with a token other than
-    // [0-9A-z-_] which leaves... $?
-    private $visit(
-      nodes: CstNode[] | undefined,
-      visitorContext: VisitorContext
-    ) {
-      assert(visitorContext.parent != null);
-      if (nodes) {
+    visit(nodes?: CstNode[] | CstNode, visitorContext?: VisitorContext) {
+      assert(visitorContext?.parent !== undefined);
+      if (Array.isArray(nodes)) {
         nodes.forEach((node) => super.visit(node, visitorContext));
+      } else if (nodes !== undefined) {
+        super.visit(nodes, visitorContext);
       }
     }
 
@@ -194,7 +178,7 @@ export function makeCstVisitor(
       assert(visitorContext.parent != null);
       // Flatten annotatedText and chunks to one list ordered by appearance in
       // the file and allow each chunk to add to the parent's child list.
-      this.$visit(
+      this.visit(
         (context.chunk ?? []).sort(
           (a, b) =>
             (a.location?.startOffset ?? 0) - (b.location?.startOffset ?? 0)
@@ -367,12 +351,12 @@ export function makeCstVisitor(
         };
       }
 
-      this.$visit(context.commandAttribute, {
+      this.visit(context.commandAttribute, {
         parent: newNode,
         errors,
         source,
       });
-      this.$visit(context.chunk, { parent: newNode, errors, source });
+      this.visit(context.chunk, { parent: newNode, errors, source });
     }
 
     blockComment(
@@ -384,7 +368,7 @@ export function makeCstVisitor(
       // use it to gather child nodes and attach them to the parent node.
       parent.withErasedBlockCommand(context, (erasedBlockCommand) => {
         erasedBlockCommand._context.push("blockComment");
-        this.$visit(
+        this.visit(
           [...(context.blockComment ?? []), ...(context.command ?? [])],
           { parent: erasedBlockCommand, errors, source }
         );
@@ -399,7 +383,7 @@ export function makeCstVisitor(
       // Like annotatedText, merge all child nodes into a list of children
       // attached to the parent node, ordered by their appearance in the
       // document.
-      this.$visit(
+      this.visit(
         [
           ...(context.blockComment ?? []),
           ...(context.command ?? []),
@@ -420,7 +404,7 @@ export function makeCstVisitor(
       parent.addTokensFromContext(context);
       if (context.blockCommand) {
         assert(!context.Command); // Parser issue!
-        this.$visit(context.blockCommand, visitorContext);
+        this.visit(context.blockCommand, visitorContext);
         return;
       }
       assert(context.Command);
@@ -475,7 +459,7 @@ export function makeCstVisitor(
       } else if (attributeList !== undefined) {
         assert(!Identifier); // parser issue
         assert(attributeList.length === 1); // should be impossible to have more than 1 list
-        this.$visit(attributeList, visitorContext);
+        this.visit(attributeList, visitorContext);
       }
     }
 
@@ -493,7 +477,7 @@ export function makeCstVisitor(
         // Any blockCommand that starts in a lineComment by definition MUST be
         // on the same line as the line comment
         erasedBlockCommand._context.push("lineComment");
-        this.$visit(command, {
+        this.visit(command, {
           parent: erasedBlockCommand,
           errors,
           source,
@@ -593,4 +577,23 @@ export function makeCstVisitor(
       );
     }
   })();
+
+  // The entrypoint for the visitor. Chevrotain's validateVisitor() requires
+  // that all methods correspond to a grammar rule, so this helper must be
+  // external.
+  const visit = (node: CstNode, source: Document): VisitorResult => {
+    const parent = CommandNode.rootCommand();
+    const errors: BluehawkError[] = [];
+    visitor.visit([node], { errors, parent, source });
+    return {
+      errors,
+      commandNodes: parent.children ?? [],
+    };
+  };
+
+  // Return the IVisitor
+  return {
+    parser,
+    visit,
+  };
 }
