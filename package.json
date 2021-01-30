@@ -29,7 +29,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "ajv": "^7.0.3",
-    "chevrotain": "^7.0.2",
+    "chevrotain": "^7.1.0",
     "ignore": "^5.1.8",
     "istextorbinary": "^5.12.0",
     "magic-string": "^0.25.7",
