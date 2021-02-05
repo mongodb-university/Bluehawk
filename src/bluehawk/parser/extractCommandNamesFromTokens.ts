@@ -8,11 +8,11 @@ export function extractCommandNamesFromTokens(
 ): [string, string] {
   const startPatternResult = COMMAND_START_PATTERN.exec(startToken.image);
   assert(startPatternResult !== null);
+  assert(startPatternResult.length > 1);
   const commandName = startPatternResult[1];
-  assert(commandName !== null);
   const endPatternResult = COMMAND_END_PATTERN.exec(endToken.image);
   assert(endPatternResult !== null);
+  assert(endPatternResult.length > 1);
   const endCommandName = endPatternResult[1];
-  assert(endCommandName !== null);
   return [commandName, endCommandName];
 }
