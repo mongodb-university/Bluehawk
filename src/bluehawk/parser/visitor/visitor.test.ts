@@ -75,7 +75,7 @@ annotated text
     expect(result.commandNodes[2].commandName).toBe("C-command");
   });
 
-  it("detects mismatched command names", () => {
+  it("detects mismatched non-nested command names", () => {
     const tokens = lexer.tokenize(`
 :this-is-a-command-start:
 :this-is-a-different-command-end:
@@ -652,5 +652,19 @@ c2345678 :a-start:
     expect(result.commandNodes[0].contentRange.end.offset).toBe(
       lines[0].length + lines[1].length + lines[2].length + lines[3].length
     );
+  });
+
+  it("detects mismatched closing tags", () => {
+    const input = `:a-start:
+:b-start:
+b-end: // TYPO!
+:a-end:
+`;
+    const { errors } = parser.parse(input);
+    expect(errors[0].message).toBe("Unexpected ':a-end:' closing ':b-start:'");
+    expect(errors[1].message).toBe(
+      "4:8(43) blockCommand: After Newline, expected CommandEnd but found EOF"
+    );
+    expect(errors.length).toBe(2);
   });
 });

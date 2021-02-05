@@ -20,6 +20,8 @@ import {
 } from "./lexer/tokens";
 import { ErrorMessageProvider } from "./ErrorMessageProvider";
 import { BluehawkError } from "../BluehawkError";
+import { locationFromToken } from "./locationFromToken";
+import { extractCommandNamesFromTokens } from "./extractCommandNamesFromTokens";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step2_parsing.html
 
@@ -149,8 +151,27 @@ export class RootParser extends CstParser implements IParser {
       this.OPTION1(() => this.SUBRULE(this.commandAttribute));
       this.CONSUME(Newline);
       this.MANY(() => this.SUBRULE(this.chunk));
-      const endToken = startToken.payload?.endToken ?? CommandEnd;
-      this.CONSUME(endToken);
+      const endToken = this.CONSUME(startToken.payload?.endToken ?? CommandEnd);
+
+      if (this.RECORDING_PHASE) {
+        return;
+      }
+
+      // Detect command start/end name mismatch here or we might never get to
+      // the semantic stage that can actually tell command names apart. We don't
+      // want to have a token for every registered command, so receiving the
+      // paired endToken in the payload doesn't quite work out.
+      const [startCommandName, endCommandName] = extractCommandNamesFromTokens(
+        startToken,
+        endToken
+      );
+      if (startCommandName !== endCommandName) {
+        this._bluehawkErrors.push({
+          component: "parser",
+          location: locationFromToken(endToken),
+          message: `Unexpected '${endToken.image}' closing '${startToken.image}'`,
+        });
+      }
     });
 
     this.RULE("commandAttribute", () => {
@@ -230,6 +251,7 @@ export class RootParser extends CstParser implements IParser {
   }
 
   parse(text: string): { cst?: CstNode; errors: BluehawkError[] } {
+    this._bluehawkErrors = [];
     const tokens = this.lexer.tokenize(text);
     const tokenErrors = tokens.errors.map(
       (error): BluehawkError => ({
@@ -254,6 +276,7 @@ export class RootParser extends CstParser implements IParser {
       cst,
       errors: [
         ...tokenErrors,
+        ...this._bluehawkErrors,
         ...this.errors.map(
           (error): BluehawkError => {
             // Retrieve the error location from the message because I can't seem
@@ -276,6 +299,10 @@ export class RootParser extends CstParser implements IParser {
       ],
     };
   }
+
+  // Private channel returned from parse() for early warnings that can be more
+  // helpful than normal parser errors.
+  private _bluehawkErrors: BluehawkError[] = [];
 }
 
 // Chevrotain assigns the rules after construction. Initializing rule properties
