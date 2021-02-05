@@ -8,55 +8,18 @@ import {
 import { RootParser } from "../RootParser";
 import { jsonErrorToVisitorError } from "./jsonErrorToVisitorError";
 import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
-import { Location } from "../../Location";
 import { BluehawkError } from "../../BluehawkError";
 import { Document } from "../../Document";
 import { PushParserPayload } from "../lexer/makePushParserTokens";
 import { CommandNode } from "../CommandNode";
+import {
+  locationFromToken,
+  locationAfterToken,
+  nextLineAfterToken,
+} from "../locationFromToken";
+import { extractCommandNamesFromTokens } from "../extractCommandNamesFromTokens";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
-
-function locationFromToken(token: IToken): Location {
-  return {
-    line: token.startLine ?? -1,
-    column: token.startColumn ?? -1,
-    offset: token.startOffset ?? -1,
-  };
-}
-
-function locationAfterToken(token: IToken, fullText: string): Location {
-  const location: Location = {
-    line: token.endLine ?? -1,
-    column: token.endColumn ?? -1,
-    offset: token.endOffset ?? -1,
-  };
-  // Ensure the line/column are correctly rolled over if the character is
-  // actually a newline
-  const index = location.offset;
-  assert(index !== undefined);
-  if (/\r|\n/.test(fullText[index])) {
-    location.column = 1;
-    location.line += 1;
-  }
-  return location;
-}
-
-function nextLineAfterToken(token: IToken, fullText: string): Location {
-  assert(token.endOffset !== undefined);
-  assert(token.endLine !== undefined);
-  const re = /.*(\r\n|\r|\n)/y;
-  re.lastIndex = token.endOffset;
-  const match = re.exec(fullText);
-  if (!match) {
-    // This is a weird case. Must be at EOF.
-    return locationAfterToken(token, fullText);
-  }
-  return {
-    column: 1,
-    line: token.endLine + 1,
-    offset: token.endOffset + match[0].length,
-  };
-}
 
 export interface VisitorResult {
   errors: BluehawkError[];
@@ -281,16 +244,10 @@ export function makeCstVisitor(
       const CommandStart = context.CommandStart[0];
       const CommandEnd = context.CommandEnd[0];
 
-      // Extract the command name ("example") from the
-      // ":example-start:"/":example-end:" tokens
-      const startPatternResult = COMMAND_START_PATTERN.exec(CommandStart.image);
-      assert(startPatternResult !== null);
-      const commandName = startPatternResult[1];
-      assert(commandName !== null);
-      const endPatternResult = COMMAND_END_PATTERN.exec(CommandEnd.image);
-      assert(endPatternResult !== null);
-      const endCommandName = endPatternResult[1];
-      assert(endCommandName !== null);
+      const [commandName, endCommandName] = extractCommandNamesFromTokens(
+        CommandStart,
+        CommandEnd
+      );
 
       // Compare start/end name to ensure it is the same command
       if (commandName !== endCommandName) {
