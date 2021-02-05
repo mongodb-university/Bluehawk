@@ -1,6 +1,6 @@
 {
   "name": "bluehawk",
-  "version": "0.0.2-0",
+  "version": "0.1.0",
   "description": "A markup language and tool for extracting code examples, checkpointing tutorials, and dynamically transforming text",
   "keywords": [
     "docs",
