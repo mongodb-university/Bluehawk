@@ -1,4 +1,7 @@
 {
+  "git": {
+    "pushRepo": "upstream"
+  },
   "github": {
     "release": true
   }
