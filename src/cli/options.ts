@@ -25,6 +25,17 @@ export function withDestinationOption<T>(
   }).check((argv) => !Array.isArray(argv.state));
 }
 
+export function withIgnoreOption<T>(
+  yargs: Argv<T>
+): Argv<T & { ignore?: string | string[] }> {
+  return option(yargs, "ignore", {
+    alias: "i",
+    string: true,
+    describe:
+      "ignore a certain file pattern (like gitignore) when traversing project files",
+  });
+}
+
 export function withPluginOption<T>(
   yargs: Argv<T>
 ): Argv<T & { plugin?: string | string[] }> {

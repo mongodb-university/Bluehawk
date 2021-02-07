@@ -10,7 +10,11 @@ export async function loadProjectPaths(project: Project): Promise<string[]> {
   const source = project.rootPath;
   return new Promise((resolve, reject) => {
     const ig = ignore();
-    const ignores = project.ignores ?? [];
+    const ignores = Array.isArray(project.ignore)
+      ? project.ignore
+      : typeof project.ignore === "string"
+      ? [project.ignore]
+      : [];
     function traverse(source: string, fileArray = [] as string[]): string[] {
       let files: string[] = [];
       if (fs.lstatSync(path.resolve(source)).isFile()) {

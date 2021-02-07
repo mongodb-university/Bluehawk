@@ -4,5 +4,5 @@ export interface Project {
   rootPath: string;
 
   // An optional collection of patterns of files to be ignored, a la gitignore.
-  ignores?: string[];
+  ignore?: string | string[];
 }

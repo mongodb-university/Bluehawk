@@ -31,7 +31,7 @@ export const getBluehawk = (() => {
     },
   });
 
-  return async (pluginPaths: string[]) => {
+  return async (pluginPaths?: string | string[]) => {
     await bluehawk.loadPlugin(pluginPaths);
     return bluehawk;
   };
