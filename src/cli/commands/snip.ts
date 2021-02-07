@@ -1,8 +1,12 @@
 import * as fs from "fs";
 import * as path from "path";
 import { CommandModule, Arguments, Argv } from "yargs";
-import { parseAndProcessProject, ParseResult, Project } from "../../bluehawk";
-import { getBluehawk } from "../cli";
+import {
+  parseAndProcessProject,
+  ParseResult,
+  Project,
+  getBluehawk,
+} from "../../bluehawk";
 import {
   withDestinationOption,
   withPluginOption,

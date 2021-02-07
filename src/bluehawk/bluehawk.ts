@@ -11,7 +11,7 @@ import { ParseResult } from "./parser/ParseResult";
 import { strict as assert } from "assert";
 import * as path from "path";
 import * as fs from "fs";
-import { isBinary } from "istextorbinary/compiled-types";
+import { isBinary } from "istextorbinary";
 
 // The frontend of Bluehawk
 export class Bluehawk {

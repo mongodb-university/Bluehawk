@@ -23,10 +23,12 @@ CC
 `);
     expect(parseResult.errors).toStrictEqual([]);
     for (let i = 1; i < 4; ++i) {
-      expect(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        Object.keys((parseResult.cst?.children.chunk[i] as any).children)[0]
-      ).toBe("blockComment");
+      const kids = parseResult.cst?.children;
+      expect(kids).toBeDefined();
+      expect(kids?.chunk).toBeDefined();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const chunk = kids?.chunk && (kids?.chunk[i] as any);
+      expect(Object.keys(chunk.children)[0]).toBe("blockComment");
     }
   });
 
