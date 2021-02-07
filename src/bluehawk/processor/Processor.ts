@@ -23,16 +23,22 @@ export type Listener = (result: ParseResult) => void | Promise<void>;
 
 export class Processor {
   processors: CommandProcessors = {};
-  listeners: Listener[] = [];
+  listeners = new Set<Listener>();
 
   // Subscribe to processed file events
   subscribe(listener: Listener): void {
-    this.listeners.push(listener);
+    if (this.listeners.has(listener)) {
+      console.warn(`Skipping already registered listener: ${listener}`);
+      return;
+    }
+    this.listeners.add(listener);
   }
 
   // Publish a processed file
   async publish(result: ParseResult): Promise<void> {
-    const promises = this.listeners.map((listener) => listener(result));
+    const promises = Array.from(this.listeners.values()).map((listener) =>
+      listener(result)
+    );
     await Promise.all(promises);
   }
 

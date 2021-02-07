@@ -2,11 +2,45 @@ import * as yargs from "yargs";
 import fs from "fs";
 import path from "path";
 import * as bhp from "./parseSource";
-import { ParseResult, Listener } from "../bluehawk";
+import {
+  ParseResult,
+  Listener,
+  Bluehawk,
+  SnippetCommand,
+  ReplaceCommand,
+  RemoveCommand,
+  StateCommand,
+  ProcessRequest,
+  UncommentCommand,
+} from "../bluehawk";
 
-export interface MainArgs {
-  destination?: string;
-}
+const getBluehawk = (() => {
+  const bluehawk = new Bluehawk();
+  bluehawk.registerCommand("code-block", SnippetCommand);
+  bluehawk.registerCommand("replace", ReplaceCommand);
+  bluehawk.registerCommand("snippet", SnippetCommand);
+  bluehawk.registerCommand("remove", RemoveCommand);
+
+  // TODO: "hide" is deprecated and "replace-with" will not work as originally
+  bluehawk.registerCommand("hide", RemoveCommand);
+
+  // hide and replace-with now belong to "state"
+  bluehawk.registerCommand("state", StateCommand);
+
+  // uncomment the block in the state
+  bluehawk.registerCommand("state-uncomment", {
+    rules: [...StateCommand.rules],
+    process: (request: ProcessRequest): void => {
+      UncommentCommand.process(request);
+      StateCommand.process(request);
+    },
+  });
+
+  return async (pluginPaths: string[]) => {
+    await bluehawk.loadPlugin(pluginPaths);
+    return bluehawk;
+  };
+})();
 
 export async function run(): Promise<void> {
   yargs

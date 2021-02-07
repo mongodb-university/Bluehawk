@@ -9,6 +9,9 @@ import { Listener, Processor, BluehawkFiles } from "./processor/Processor";
 import { AnyCommand } from "./commands/Command";
 import { ParseResult } from "./parser/ParseResult";
 import { strict as assert } from "assert";
+import * as path from "path";
+import * as fs from "fs";
+import { isBinary } from "istextorbinary/compiled-types";
 
 // The frontend of Bluehawk
 export class Bluehawk {
@@ -63,8 +66,38 @@ export class Bluehawk {
     };
   };
 
-  // Subscribe to processed documents as they are done processing by Bluehawk.
-  subscribe(listener: Listener): void {
+  // Parse the document at the given path.
+  loadFileAndParse = async (sourcePath: string): Promise<ParseResult> => {
+    return new Promise((resolve, reject) => {
+      if (isBinary(sourcePath)) {
+        return reject(
+          new Error(
+            `Binary file encountered at path '${sourcePath}'. Bluehawk does not parse binary files.`
+          )
+        );
+      }
+
+      const language = path.extname(sourcePath);
+      fs.readFile(path.resolve(sourcePath), "utf8", (error, text) => {
+        if (error) {
+          return reject(error);
+        }
+        const document = new Document({ text, language, path: sourcePath });
+        try {
+          resolve(this.parse(document));
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  };
+
+  // Subscribe to processed documents as they are processed by Bluehawk.
+  subscribe(listener: Listener | Listener[]): void {
+    if (Array.isArray(listener)) {
+      listener.forEach((listener) => this.subscribe(listener));
+      return;
+    }
     this.processor.subscribe(listener);
   }
 
@@ -73,6 +106,47 @@ export class Bluehawk {
     return this.processor.process(parseResult);
   };
 
+  // Load the given plugin(s). A plugin is a js file or module that exports a
+  // `register(bluehawk)` function. `register()` takes this bluehawk instance
+  // and can register commands, add listeners, etc. The plugin at a given path
+  // will only be loaded once.
+  loadPlugin = async (
+    pluginPath: string | string[] | undefined
+  ): Promise<void> => {
+    if (pluginPath === undefined) {
+      return;
+    }
+
+    if (Array.isArray(pluginPath)) {
+      const promises = pluginPath.map((path) => this.loadPlugin(path));
+      await Promise.all(promises);
+      return;
+    }
+
+    if (typeof pluginPath !== "string") {
+      console.warn(
+        `Invalid argument to loadPlugin: ${pluginPath} (typeof == ${typeof pluginPath}`
+      );
+      return;
+    }
+
+    // Check if the plugin has already been loaded
+    if (this._loadedPlugins.has(pluginPath)) {
+      console.warn(`Skipping already loaded plugin: ${pluginPath}`);
+      return;
+    }
+
+    // Convert relative path (from user's cwd) to absolute path -- as import()
+    // expects relative paths from Bluehawk bin directory
+    const absolutePath = path.isAbsolute(pluginPath)
+      ? pluginPath
+      : path.resolve(process.cwd(), pluginPath);
+    const plugin = await import(absolutePath);
+    await plugin.register(this);
+    this._loadedPlugins.add(pluginPath);
+  };
+
   private parsers = new Map<string, [RootParser, IVisitor]>();
   private processor = new Processor();
+  private _loadedPlugins = new Set<string>();
 }
