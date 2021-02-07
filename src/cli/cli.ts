@@ -4,30 +4,23 @@ import path from "path";
 import * as bhp from "./parseSource";
 import { ParseResult, Listener } from "../bluehawk";
 
-export async function run(): Promise<void> {
-  const params = yargs
-    .usage("Usage: $0 <command> [options]")
-    .command("--source", "The file or folder to process")
-    .command("--destination", "The output folder")
-    .command("--ignores", "A glob list of patterns to ignore")
-    .command("--state", "Which state to render")
-    .boolean("snippets")
-    .string("plugin")
-    .describe({
-      snippets: "Output snippet files only",
-      plugin: "Path to plugin JS file",
-    })
-    .example(
-      "$0 -s ./foo.js -d ./output/",
-      "Parse the foo.js file and output results in the output/ directory."
-    )
-    .alias("s", "source")
-    .alias("d", "destination")
-    .alias("i", "ignores")
-    .demandOption(["source"])
-    .help("h")
-    .alias("h", "help").argv;
+export interface MainArgs {
+  destination?: string;
+}
 
+export async function run(): Promise<void> {
+  yargs
+    .commandDir("commands", {
+      extensions:
+        process.env.NODE_ENV === "development" ? ["js", "ts"] : ["js"],
+      visit(commandModule) {
+        return commandModule.default;
+      },
+    })
+    .demandCommand()
+    .help().argv;
+
+  /*
   const ignores: string[] =
     typeof params.ignores === "string" || params.ignores instanceof String
       ? (params.ignores as string).split(",")
@@ -167,4 +160,5 @@ export async function run(): Promise<void> {
       `Warning: state '${params.state}' never found in source ${source}`
     );
   }
+  */
 }
