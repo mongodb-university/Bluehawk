@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path";
 import { CommandModule, Arguments, Argv } from "yargs";
 import { Listener, ParseResult } from "../../bluehawk";
 import {
@@ -7,7 +5,6 @@ import {
   withPluginOption,
   withStateOption,
 } from "../options";
-import * as bhp from "../parseSource";
 
 interface SnipArgs {
   paths: string[];

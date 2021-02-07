@@ -1,10 +1,5 @@
 import * as yargs from "yargs";
-import fs from "fs";
-import path from "path";
-import * as bhp from "./parseSource";
 import {
-  ParseResult,
-  Listener,
   Bluehawk,
   SnippetCommand,
   ReplaceCommand,
@@ -14,7 +9,7 @@ import {
   UncommentCommand,
 } from "../bluehawk";
 
-const getBluehawk = (() => {
+export const getBluehawk = (() => {
   const bluehawk = new Bluehawk();
   bluehawk.registerCommand("code-block", SnippetCommand);
   bluehawk.registerCommand("replace", ReplaceCommand);

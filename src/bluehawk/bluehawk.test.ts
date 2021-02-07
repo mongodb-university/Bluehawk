@@ -1,4 +1,3 @@
-import { CommandProcessors } from "./processor/Processor";
 import { hasId, idIsUnique } from "./processor/validator";
 import { Bluehawk } from "./bluehawk";
 import { Document } from "./Document";
