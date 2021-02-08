@@ -1,5 +1,9 @@
 {
   "name": "bluehawk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mongodb-university/Bluehawk"
+  },
   "version": "0.1.0",
   "description": "A markup language and tool for extracting code examples, checkpointing tutorials, and dynamically transforming text",
   "keywords": [

@@ -1,5 +1,5 @@
 import { Stats } from "fs";
-import { System } from "../System";
+import { System } from "../../bluehawk/System";
 import { copy } from "./copy";
 
 describe("copy", () => {
@@ -13,10 +13,19 @@ describe("copy", () => {
           isDirectory() {
             return false;
           },
+          isFile() {
+            return false;
+          },
         } as unknown) as Stats;
       },
       mkdir: async (path, options) => {
         return;
+      },
+      readdir: async (path, options) => {
+        return [];
+      },
+      readFile: async (path, options) => {
+        return "";
       },
       writeFile: async (path, data, options) => {
         return;
@@ -29,5 +38,7 @@ describe("copy", () => {
     });
 
     expect(errors).toStrictEqual([]);
+
+    done();
   });
 });

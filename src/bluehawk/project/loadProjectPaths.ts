@@ -1,68 +1,47 @@
 import * as path from "path";
-import * as fs from "fs";
 import ignore from "ignore";
-import * as readline from "readline";
 import { Project } from "./Project";
+import { System } from "../System";
 
 // Given a source entry point path, load all paths to files within, mindful of
 // .gitignore.
 export async function loadProjectPaths(project: Project): Promise<string[]> {
   const source = project.rootPath;
-  return new Promise((resolve, reject) => {
-    const ig = ignore();
-    const ignores = Array.isArray(project.ignore)
-      ? project.ignore
-      : typeof project.ignore === "string"
-      ? [project.ignore]
-      : [];
-    function traverse(source: string, fileArray = [] as string[]): string[] {
-      let files: string[] = [];
-      if (fs.lstatSync(path.resolve(source)).isFile()) {
-        return [source];
-      } else {
-        files = fs.readdirSync(source);
-      }
-      files.forEach((file) => {
-        if (
-          !ig.ignores(path.relative(process.cwd(), path.join(source, file)))
-        ) {
-          if (
-            fs.lstatSync(path.join(path.resolve(source), file)).isDirectory()
-          ) {
-            fileArray = traverse(
-              path.join(path.resolve(source), file),
-              fileArray
-            );
-          } else {
-            fileArray.push(path.join(source, file));
-          }
-        }
-      });
-      return fileArray;
+  const ig = ignore();
+  const ignores = Array.isArray(project.ignore)
+    ? project.ignore
+    : typeof project.ignore === "string"
+    ? [project.ignore]
+    : [];
+
+  async function traverse(source: string): Promise<string[]> {
+    const stats = await System.fs.lstat(path.resolve(source));
+    if (stats.isFile()) {
+      return [source];
     }
-    try {
-      if (fs.existsSync(path.join(path.resolve(source), ".gitignore"))) {
-        const ri = readline.createInterface({
-          input: fs.createReadStream(
-            path.join(path.resolve(source), ".gitignore")
-          ),
-        });
-        ri.on("line", (line) => {
-          if (!(line.startsWith("#") || line.trim().length == 0)) {
-            ignores.push(line);
-          }
-        });
-        ri.on("close", () => {
-          ig.add(ignores);
-          resolve(traverse(source));
-        });
-      } else {
-        ig.add(ignores);
-        resolve(traverse(source));
+    if (!stats.isDirectory()) {
+      return [];
+    }
+    const files = await System.fs.readdir(source);
+    const promises = files.map(
+      async (file): Promise<string[]> => {
+        if (ig.ignores(path.relative(process.cwd(), path.join(source, file)))) {
+          return [];
+        }
+        return await traverse(path.join(path.resolve(source), file));
       }
-    } catch (e) {
-      console.error(e);
-      reject(e);
+    );
+    return (await Promise.all(promises)).flat();
+  }
+
+  const gitignorePath = path.join(path.resolve(source), ".gitignore");
+  const gitignore = await System.fs.readFile(gitignorePath, "utf8");
+  const lines = gitignore.split(/\r\n|\r|\n/);
+  lines.forEach((line) => {
+    if (!(line.startsWith("#") || line.trim().length == 0)) {
+      ignores.push(line);
     }
   });
+  ig.add(ignores);
+  return traverse(source);
 }
