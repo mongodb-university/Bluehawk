@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import { Stats } from "fs";
 import * as path from "path";
 import { CommandModule, Arguments, Argv } from "yargs";
 import {
@@ -13,6 +13,7 @@ import {
   withStateOption,
   withIgnoreOption,
 } from "../options";
+import { System } from "../System";
 
 interface CopyArgs {
   rootPath: string;
@@ -22,31 +23,38 @@ interface CopyArgs {
   ignore?: string | string[];
 }
 
-const handler = async (args: Arguments<CopyArgs>): Promise<void> => {
+const handler = async (args: Arguments<CopyArgs>): Promise<string[]> => {
+  const errors: string[] = [];
   const { destination, ignore, plugin, rootPath } = args;
   const bluehawk = await getBluehawk(plugin);
-  const projectDirectory = !fs.lstatSync(rootPath).isDirectory()
+  let stats: Stats;
+  try {
+    stats = await System.fs.lstat(rootPath);
+  } catch (error) {
+    console.error(`Could not load stats for ${rootPath}: ${error.message}`);
+    return;
+  }
+  const projectDirectory = !stats.isDirectory()
     ? path.dirname(rootPath)
     : rootPath;
+
   const desiredState = args.state;
 
-  const onBinaryFile = (filePath: string) => {
+  const onBinaryFile = async (filePath: string) => {
     // Copy binary files directly
     const directory = path.join(
       destination,
       path.relative(projectDirectory, path.dirname(filePath))
     );
     const targetPath = path.join(directory, path.basename(filePath));
-    fs.mkdir(directory, { recursive: true }, (error) => {
-      if (error) {
-        throw error;
-      }
-      fs.copyFile(filePath, targetPath, (error) => {
-        if (error) {
-          throw error;
-        }
-      });
-    });
+    try {
+      await System.fs.mkdir(directory, { recursive: true });
+      await System.fs.copyFile(filePath, targetPath);
+    } catch (error) {
+      const message = `Failed to copy file ${filePath} to ${targetPath}: ${error.message}`;
+      console.error(message);
+      errors.push(message);
+    }
   };
 
   // If a file contains the state command, the processor will generate multiple
@@ -57,7 +65,7 @@ const handler = async (args: Arguments<CopyArgs>): Promise<void> => {
     [path: string]: boolean;
   } = {};
 
-  bluehawk.subscribe((result: ParseResult) => {
+  bluehawk.subscribe(async (result: ParseResult) => {
     const { source } = result;
     if (source.attributes.snippet) {
       // Not a pure state file
@@ -86,25 +94,21 @@ const handler = async (args: Arguments<CopyArgs>): Promise<void> => {
       stateVersionWrittenForPath[source.path] = true;
     }
 
-    return new Promise((resolve, reject) => {
-      // Use the same relative path
-      const directory = path.join(
-        destination,
-        path.relative(projectDirectory, path.dirname(source.path))
-      );
-      const targetPath = path.join(directory, source.basename);
-      fs.mkdir(directory, { recursive: true }, (error) => {
-        if (error) {
-          return reject(error);
-        }
-        fs.writeFile(targetPath, source.text.toString(), "utf8", (error) => {
-          if (error) {
-            return reject(error);
-          }
-          resolve();
-        });
-      });
-    });
+    // Use the same relative path
+    const directory = path.join(
+      destination,
+      path.relative(projectDirectory, path.dirname(source.path))
+    );
+    const targetPath = path.join(directory, source.basename);
+
+    try {
+      await System.fs.mkdir(directory, { recursive: true });
+      await System.fs.writeFile(targetPath, source.text.toString(), "utf8");
+    } catch (error) {
+      const message = `Failed to write file ${targetPath} (based on ${source.path}): ${error.message}`;
+      console.error(message);
+      errors.push(message);
+    }
   });
 
   const project: Project = {
@@ -114,10 +118,12 @@ const handler = async (args: Arguments<CopyArgs>): Promise<void> => {
   await parseAndProcessProject(project, bluehawk, onBinaryFile);
 
   if (desiredState && Object.keys(stateVersionWrittenForPath).length === 0) {
-    console.warn(
-      `Warning: state '${desiredState}' never found in ${projectDirectory}`
-    );
+    const message = `Warning: state '${desiredState}' never found in ${projectDirectory}`;
+    console.warn(message);
+    errors.push(message);
   }
+
+  return errors;
 };
 
 const commandModule: CommandModule<{ rootPath: string }, CopyArgs> = {

@@ -5,6 +5,7 @@ export async function run(): Promise<void> {
     .commandDir("commands", {
       extensions:
         process.env.NODE_ENV === "development" ? ["js", "ts"] : ["js"],
+      exclude: /\.test\.[jt]s$/,
       visit(commandModule) {
         return commandModule.default;
       },

@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import * as path from "path";
 import { CommandModule, Arguments, Argv } from "yargs";
 import {
@@ -13,6 +12,7 @@ import {
   withStateOption,
   withIgnoreOption,
 } from "../options";
+import { System } from "../System";
 
 interface SnipArgs {
   paths: string[];
@@ -40,7 +40,7 @@ const handler = async ({
   } = {};
 
   // Define the handler for generating snippet files.
-  bluehawk.subscribe((result: ParseResult) => {
+  bluehawk.subscribe(async (result: ParseResult) => {
     const { source } = result;
     if (source.attributes["snippet"] === undefined) {
       return;
@@ -64,14 +64,13 @@ const handler = async ({
         stateVersionWrittenForPath[source.path] = true;
       }
     }
-    return new Promise((resolve, reject) => {
-      fs.writeFile(targetPath, source.text.toString(), "utf8", (error) => {
-        if (error) {
-          return reject(error);
-        }
-        resolve();
-      });
-    });
+    try {
+      await System.fs.writeFile(targetPath, source.text.toString(), "utf8");
+    } catch (error) {
+      console.error(
+        `Failed to write ${targetPath} (based on ${source.path}): ${error.message}`
+      );
+    }
   });
 
   // Run through all given source paths and process them.
