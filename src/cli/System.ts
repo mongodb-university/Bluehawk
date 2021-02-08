@@ -1,4 +1,5 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
+/* eslint @typescript-eslint/explicit-module-boundary-types: 0 */
 import {
   promises as fs,
   Stats,
@@ -29,11 +30,8 @@ export interface FileSystem {
   // Use signatures from fs.promises.
 }
 
-// The default file system. Wraps fs directly.
-const defaultFileSystem: FileSystem = fs;
-
 // The system instance to be used by CLI commands.
 export const System = {
   // override this to mock
-  fs: defaultFileSystem,
+  fs: fs as FileSystem,
 };

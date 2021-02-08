@@ -15,7 +15,7 @@ import {
 } from "../options";
 import { System } from "../System";
 
-interface CopyArgs {
+export interface CopyArgs {
   rootPath: string;
   destination: string;
   plugin?: string | string[];
@@ -23,22 +23,23 @@ interface CopyArgs {
   ignore?: string | string[];
 }
 
-const handler = async (args: Arguments<CopyArgs>): Promise<string[]> => {
-  const errors: string[] = [];
+export const copy = async (args: CopyArgs): Promise<string[]> => {
   const { destination, ignore, plugin, rootPath } = args;
+  const desiredState = args.state;
+  const errors: string[] = [];
   const bluehawk = await getBluehawk(plugin);
   let stats: Stats;
   try {
     stats = await System.fs.lstat(rootPath);
   } catch (error) {
-    console.error(`Could not load stats for ${rootPath}: ${error.message}`);
-    return;
+    const message = `Could not load stats for ${rootPath}: ${error.message}`;
+    console.error(message);
+    errors.push(message);
+    return errors;
   }
   const projectDirectory = !stats.isDirectory()
     ? path.dirname(rootPath)
     : rootPath;
-
-  const desiredState = args.state;
 
   const onBinaryFile = async (filePath: string) => {
     // Copy binary files directly
@@ -133,7 +134,7 @@ const commandModule: CommandModule<{ rootPath: string }, CopyArgs> = {
       withPluginOption(withStateOption(withDestinationOption(yargs)))
     );
   },
-  handler,
+  handler: async (args: Arguments<CopyArgs>) => await copy(args),
   aliases: [],
   describe:
     "clone source project to destination with Bluehawk commands processed",
