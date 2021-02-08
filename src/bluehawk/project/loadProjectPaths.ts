@@ -6,7 +6,7 @@ import { System } from "../System";
 // Given a source entry point path, load all paths to files within, mindful of
 // .gitignore.
 export async function loadProjectPaths(project: Project): Promise<string[]> {
-  const source = project.rootPath;
+  const projectRoot = path.resolve(project.rootPath);
   const ig = ignore();
   const ignores = Array.isArray(project.ignore)
     ? project.ignore
@@ -14,34 +14,40 @@ export async function loadProjectPaths(project: Project): Promise<string[]> {
     ? [project.ignore]
     : [];
 
-  async function traverse(source: string): Promise<string[]> {
-    const stats = await System.fs.lstat(path.resolve(source));
+  async function traverse(absolutePath: string): Promise<string[]> {
+    const stats = await System.fs.lstat(absolutePath);
     if (stats.isFile()) {
-      return [source];
+      return [path.relative(process.cwd(), absolutePath)];
     }
     if (!stats.isDirectory()) {
       return [];
     }
-    const files = await System.fs.readdir(source);
+    const files = await System.fs.readdir(absolutePath);
     const promises = files.map(
       async (file): Promise<string[]> => {
-        if (ig.ignores(path.relative(process.cwd(), path.join(source, file)))) {
+        const absoluteSubpath = path.join(absolutePath, file);
+        if (ig.ignores(path.relative(projectRoot, absoluteSubpath))) {
           return [];
         }
-        return await traverse(path.join(path.resolve(source), file));
+        return await traverse(absoluteSubpath);
       }
     );
     return (await Promise.all(promises)).flat();
   }
 
-  const gitignorePath = path.join(path.resolve(source), ".gitignore");
-  const gitignore = await System.fs.readFile(gitignorePath, "utf8");
-  const lines = gitignore.split(/\r\n|\r|\n/);
-  lines.forEach((line) => {
-    if (!(line.startsWith("#") || line.trim().length == 0)) {
-      ignores.push(line);
-    }
-  });
-  ig.add(ignores);
-  return traverse(source);
+  try {
+    // TODO: Recursively grab gitignore from each directory if it exists
+    const gitignorePath = path.join(projectRoot, ".gitignore");
+    const gitignore = await System.fs.readFile(gitignorePath, "utf8");
+    const lines = gitignore.split(/\r\n|\r|\n/);
+    lines.forEach((line) => {
+      if (!(line.startsWith("#") || line.trim().length == 0)) {
+        ignores.push(line);
+      }
+    });
+    ig.add(ignores);
+  } catch {
+    // no gitignore -- oh well
+  }
+  return traverse(projectRoot);
 }
