@@ -90,9 +90,14 @@ async command executed`);
     expect(didCallListener).toBe(0);
     expect(didWaitForListener).toBe(0);
     await bluehawk.process(parseResult);
-    expect(didCallListener).toBe(10);
-    expect(didWaitForListener).toBe(10);
-    done();
+
+    // Processor fires off files to listeners and doesn't wait for the result,
+    // so we must set a timeout here
+    setTimeout(() => {
+      expect(didCallListener).toBe(10);
+      expect(didWaitForListener).toBe(10);
+      done();
+    }, 11);
   });
 
   it("does not stop on misbehaving listeners", async (done) => {
@@ -137,8 +142,13 @@ async command executed`);
 
 This is probably not a bug in the Bluehawk library itself. Please check with the listener implementer.`,
     ]);
-    expect(didCallListener).toBe(9);
-    expect(didWaitForListener).toBe(9);
-    done();
+
+    // Processor fires off files to listeners and doesn't wait for the result,
+    // so we must set a timeout here
+    setTimeout(() => {
+      expect(didCallListener).toBe(9);
+      expect(didWaitForListener).toBe(9);
+      done();
+    }, 11);
   });
 });
