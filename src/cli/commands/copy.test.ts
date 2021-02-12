@@ -1,5 +1,5 @@
 import { Stats } from "fs";
-import { System } from "../../bluehawk/System";
+import { System } from "../../bluehawk";
 import { copy } from "./copy";
 
 describe("copy", () => {

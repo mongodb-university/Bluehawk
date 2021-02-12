@@ -1,7 +1,7 @@
 import * as path from "path";
 import ignore from "ignore";
 import { Project } from "./Project";
-import { System } from "../System";
+import { System } from "../io/System";
 
 // Given a source entry point path, load all paths to files within, mindful of
 // .gitignore.

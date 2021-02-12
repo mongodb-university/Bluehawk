@@ -12,7 +12,7 @@ import {
   withStateOption,
   withIgnoreOption,
 } from "../options";
-import { System } from "../../bluehawk/System";
+import { System } from "../../bluehawk/io/System";
 
 interface SnipArgs {
   paths: string[];

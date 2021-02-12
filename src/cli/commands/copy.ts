@@ -13,7 +13,7 @@ import {
   withStateOption,
   withIgnoreOption,
 } from "../options";
-import { System } from "../../bluehawk/System";
+import { System } from "../../bluehawk/io/System";
 
 export interface CopyArgs {
   rootPath: string;

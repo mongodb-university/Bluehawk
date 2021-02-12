@@ -9,8 +9,7 @@ import {
   WriteFileOptions,
 } from "fs";
 
-// Mockable async fs standin. CLI commands should use this instead of the fs
-// library directly.
+// Mockable async fs standin. Use this instead of the fs library directly.
 export interface FileSystem {
   copyFile(src: PathLike, dest: PathLike, flags?: number): Promise<void>;
 
