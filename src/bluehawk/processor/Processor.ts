@@ -27,17 +27,24 @@ export class Processor {
 
   // Subscribe to processed file events
   subscribe(listener: Listener): void {
-    if (this.listeners.has(listener)) {
-      console.warn(`Skipping already registered listener: ${listener}`);
-      return;
-    }
     this.listeners.add(listener);
   }
 
   // Publish a processed file
   async publish(result: ParseResult): Promise<void> {
-    const promises = Array.from(this.listeners.values()).map((listener) =>
-      listener(result)
+    const promises = Array.from(this.listeners.values()).map(
+      async (listener) => {
+        try {
+          await listener(result);
+        } catch (error) {
+          // Don't let listener exceptions disrupt the processor or other listeners.
+          console.error(
+            `When processing result '${result.source.path}', a listener failed with the following error: ${error}
+
+This is probably not a bug in the Bluehawk library itself. Please check with the listener implementer.`
+          );
+        }
+      }
     );
     await Promise.all(promises);
   }
