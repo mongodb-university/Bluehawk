@@ -9,9 +9,6 @@ import { CommandProcessors } from "./Processor";
 describe("validator", () => {
   const commandProcessors: CommandProcessors = {
     "code-block": {
-      process: () => {
-        return;
-      },
       rules: [idIsUnique, hasId],
     },
   };

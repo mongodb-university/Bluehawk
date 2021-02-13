@@ -1,3 +1,8 @@
 export { ParseResult } from "./ParseResult";
-export { CommandNode, LineCommandNode, BlockCommandNode } from "./CommandNode";
+export {
+  LineCommandNode,
+  BlockCommandNode,
+  AnyCommandNode,
+} from "./CommandNode";
+export * from "./flatten";
 export * from "./lexer";

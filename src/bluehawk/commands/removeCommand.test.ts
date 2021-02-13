@@ -87,4 +87,23 @@ e
     );
     done();
   });
+
+  it("requires no attributes", () => {
+    const input = `// :remove-start: {
+  "id": "hey"
+}
+// :remove-end:
+`;
+
+    const source = new Document({
+      text: input,
+      language: "javascript",
+      path: "test.js",
+    });
+
+    const parseResult = bluehawk.parse(source);
+    expect(parseResult.errors[0].message).toStrictEqual(
+      "attribute list for 'remove' command should be null"
+    );
+  });
 });

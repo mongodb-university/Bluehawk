@@ -1,5 +1,5 @@
 import { Bluehawk } from "../bluehawk";
-import { Command } from "../commands/Command";
+import { Command, NoAttributes, NoAttributesSchema } from "../commands/Command";
 import { removeMetaRange } from "../commands/removeMetaRange";
 import { Document } from "../Document";
 import { ParseResult } from "../parser/ParseResult";
@@ -7,8 +7,8 @@ import { ParseResult } from "../parser/ParseResult";
 describe("processor", () => {
   const bluehawk = new Bluehawk();
 
-  const AppendMessageAfterDelayCommand: Command = {
-    rules: [],
+  const AppendMessageAfterDelayCommand: Command<NoAttributes> = {
+    attributesSchema: NoAttributesSchema,
     process: (request): Promise<void> => {
       return new Promise((resolve) => {
         setTimeout(() => {

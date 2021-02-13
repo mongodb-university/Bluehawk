@@ -1,9 +1,8 @@
-import { ProcessRequest } from "../processor/Processor";
-import { Command } from "./Command";
+import { Command, NoAttributes, NoAttributesSchema } from "./Command";
 
-export const RemoveCommand: Command = {
-  rules: [], // TODO: Accepts no attributes
-  process: ({ commandNode, parseResult }: ProcessRequest): void => {
+export const RemoveCommand: Command<NoAttributes> = {
+  attributesSchema: NoAttributesSchema,
+  process({ commandNode, parseResult }) {
     const { lineRange } = commandNode;
     parseResult.source.text.remove(
       lineRange.start.offset,

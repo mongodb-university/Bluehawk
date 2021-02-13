@@ -2,9 +2,13 @@ import MagicString from "magic-string";
 import { Document } from "../Document";
 import { BlockCommandNode } from "../parser/CommandNode";
 import { ProcessRequest } from "../processor/Processor";
-import { BlockCommand } from "./Command";
+import { idIsUnique } from "../processor/validator";
+import {
+  BlockCommand,
+  IdRequiredAttributes,
+  IdRequiredAttributesSchema,
+} from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
-import { hasId, idIsUnique } from "../processor/validator";
 
 function dedentRange(
   s: MagicString,
@@ -55,8 +59,9 @@ function dedentRange(
   return s;
 }
 
-export const SnippetCommand: BlockCommand = {
-  rules: [hasId, idIsUnique],
+export const SnippetCommand: BlockCommand<IdRequiredAttributes> = {
+  attributesSchema: IdRequiredAttributesSchema,
+  rules: [idIsUnique],
   process: (request: ProcessRequest<BlockCommandNode>): void => {
     const { commandNode, parseResult, fork } = request;
     const { source } = parseResult;

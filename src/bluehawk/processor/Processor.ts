@@ -1,13 +1,11 @@
 import { ParseResult } from "../parser/ParseResult";
 import { Document, CommandAttributes } from "../Document";
-import { BlockCommandNode, LineCommandNode } from "../parser/CommandNode";
+import { AnyCommandNode } from "../parser/CommandNode";
 import { AnyCommand, Command } from "../commands/Command";
 
 export type BluehawkFiles = { [pathName: string]: ParseResult };
 
-export interface ProcessRequest<
-  CommandNodeType = BlockCommandNode | LineCommandNode
-> {
+export interface ProcessRequest<CommandNodeType = AnyCommandNode> {
   // Process the given Bluehawk result, optionally under an alternative id, and
   // emit the file.
   fork: (args: ForkArgs) => Promise<void>;
@@ -96,7 +94,7 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
 
   private _process = (
     _processorState: ProcessorState,
-    commandSubset: (LineCommandNode | BlockCommandNode)[],
+    commandSubset: AnyCommandNode[],
     result: ParseResult
   ): Promise<void>[] => {
     return commandSubset.reduce((promises, commandNode): Promise<void>[] => {

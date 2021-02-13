@@ -3,7 +3,7 @@ import { IToken } from "chevrotain";
 import { Range } from "../Range";
 
 // The CommandNode represents a command found by the visitor.
-export interface CommandNode {
+interface CommandNode {
   type: "line" | "block";
 
   // The name of the command (without -start or -end).
@@ -54,9 +54,11 @@ export interface LineCommandNode extends CommandNode {
 export interface BlockCommandNode extends CommandNode {
   type: "block";
   contentRange: Range;
-  children: (BlockCommandNode | LineCommandNode)[];
+  children: AnyCommandNode[];
   attributes: CommandNodeAttributes;
 }
+
+export type AnyCommandNode = LineCommandNode | BlockCommandNode;
 
 export type CommandNodeContext =
   | "none"

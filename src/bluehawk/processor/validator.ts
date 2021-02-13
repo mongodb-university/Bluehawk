@@ -1,37 +1,33 @@
-import {
-  BlockCommandNode,
-  CommandNode,
-  LineCommandNode,
-} from "../parser/CommandNode";
+import { AnyCommandNode } from "../parser";
 import { BluehawkError } from "../BluehawkError";
-import { flatten } from "../parser/flatten";
+import { flatten } from "../parser";
 import { CommandProcessors } from "./Processor";
 import { makeAttributesConformToJsonSchemaRule } from "./makeAttributesConformToJsonSchemaRule";
 
 export interface ValidateCstResult {
   errors: BluehawkError[];
-  commandsById: Map<string, CommandNode>;
+  commandsById: Map<string, AnyCommandNode>;
 }
 
 // A rule function is registered for a given command name and checks that the
 // given command node conforms to the specification of that command. Errors can
 // be reported into the result.errors array.
 export type Rule = (
-  commandNode: LineCommandNode | BlockCommandNode,
+  commandNode: AnyCommandNode,
   result: ValidateCstResult
 ) => void;
 
 export function validateCommands(
-  commandNodes: (LineCommandNode | BlockCommandNode)[],
+  commandNodes: AnyCommandNode[],
   commandProcessorMap: CommandProcessors
 ): BluehawkError[] {
   const validateResult = {
     errors: [],
-    commandsById: new Map<string, LineCommandNode | BlockCommandNode>(),
+    commandsById: new Map<string, AnyCommandNode>(),
   };
   flatten({
     children: commandNodes,
-  } as BlockCommandNode | LineCommandNode).forEach((commandNode) => {
+  } as AnyCommandNode).forEach((commandNode) => {
     const processor = commandProcessorMap[commandNode.commandName];
     if (processor === undefined) {
       // TODO: warn unknown command
@@ -45,7 +41,7 @@ export function validateCommands(
       attributeSchemaValidator(commandNode, validateResult);
     }
 
-    processor.rules.forEach((rule) => {
+    processor.rules?.forEach((rule) => {
       rule(commandNode, validateResult);
     });
   });
@@ -55,7 +51,7 @@ export function validateCommands(
 // standard rule implementations
 
 export const idIsUnique: Rule = (
-  commandNode: CommandNode,
+  commandNode: AnyCommandNode,
   result: ValidateCstResult
 ) => {
   if (commandNode.id !== undefined) {
@@ -74,7 +70,7 @@ export const idIsUnique: Rule = (
 };
 
 export const hasId: Rule = (
-  commandNode: CommandNode,
+  commandNode: AnyCommandNode,
   result: ValidateCstResult
 ) => {
   if (commandNode.id === undefined) {

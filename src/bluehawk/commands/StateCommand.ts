@@ -1,11 +1,13 @@
-import { ProcessRequest } from "../processor/Processor";
-import { Command } from "./Command";
+import {
+  BlockCommand,
+  IdRequiredAttributes,
+  IdRequiredAttributesSchema,
+} from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
-import { hasId } from "../processor/validator";
 
-export const StateCommand: Command = {
-  rules: [hasId],
-  process: (request: ProcessRequest): void => {
+export const StateCommand: BlockCommand<IdRequiredAttributes> = {
+  attributesSchema: IdRequiredAttributesSchema,
+  process(request) {
     const { commandNode, fork, parseResult } = request;
     const { source } = parseResult;
 

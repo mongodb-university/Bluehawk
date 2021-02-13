@@ -4,11 +4,13 @@ import {
   ReplaceCommand,
   RemoveCommand,
   StateCommand,
-  ProcessRequest,
   UncommentCommand,
 } from ".";
-import { BlockCommand } from "./commands";
-import { BlockCommandNode } from "./parser";
+import {
+  BlockCommand,
+  IdRequiredAttributes,
+  IdRequiredAttributesSchema,
+} from "./commands";
 
 let bluehawk: Bluehawk | undefined = undefined;
 
@@ -29,9 +31,9 @@ export const getBluehawk = async (
     // hide and replace-with now belong to "state"
     bluehawk.registerCommand("state", StateCommand);
 
-    const StateUncommentCommand: BlockCommand = {
-      rules: [...StateCommand.rules],
-      process: (request: ProcessRequest<BlockCommandNode>): void => {
+    const StateUncommentCommand: BlockCommand<IdRequiredAttributes> = {
+      attributesSchema: IdRequiredAttributesSchema,
+      process(request) {
         UncommentCommand.process(request);
         StateCommand.process(request);
       },

@@ -8,7 +8,7 @@ import { BluehawkError } from "../../BluehawkError";
 import { Document } from "../../Document";
 import { PushParserPayload } from "../lexer/makePushParserTokens";
 import {
-  BlockCommandNode,
+  AnyCommandNode,
   CommandNodeImpl,
   LineCommandNode,
 } from "../CommandNode";
@@ -23,7 +23,7 @@ import { extractCommandNamesFromTokens } from "../extractCommandNamesFromTokens"
 
 export interface VisitorResult {
   errors: BluehawkError[];
-  commandNodes: (BlockCommandNode | LineCommandNode)[];
+  commandNodes: AnyCommandNode[];
 }
 
 export interface IVisitor {

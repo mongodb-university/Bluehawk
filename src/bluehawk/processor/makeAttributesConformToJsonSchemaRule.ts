@@ -1,4 +1,4 @@
-import { CommandNode } from "../parser/CommandNode";
+import { AnyCommandNode } from "../parser";
 import Ajv, { JSONSchemaType, AnySchema } from "ajv";
 import { Rule, ValidateCstResult } from "./validator";
 
@@ -10,11 +10,22 @@ export const makeAttributesConformToJsonSchemaRule = <Type = unknown>(
 ): Rule => {
   const validate = ajv.compile(schema);
   return (
-    { attributes, range, commandName }: CommandNode,
+    { attributes, range, commandName }: AnyCommandNode,
     result: ValidateCstResult
   ) => {
     if (validate(attributes)) {
       return;
+    }
+    if (validate.errors?.length === 1 && attributes === undefined) {
+      // Provide an exception for attributes being 'undefined' instead of null
+      const { dataPath, params, message } = validate.errors[0];
+      if (
+        dataPath === "" &&
+        params.type === "null" &&
+        message === "should be null"
+      ) {
+        return;
+      }
     }
     result.errors.push({
       component: "validator",

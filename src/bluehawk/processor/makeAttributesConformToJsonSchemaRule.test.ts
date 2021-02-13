@@ -1,8 +1,8 @@
 import { JSONSchemaType } from "ajv";
 import {
-  CommandNode,
   CommandNodeImpl,
   CommandNodeAttributes,
+  AnyCommandNode,
 } from "../parser/CommandNode";
 import { Range } from "../Range";
 import { makeAttributesConformToJsonSchemaRule } from "./makeAttributesConformToJsonSchemaRule";
@@ -28,12 +28,14 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
     };
   };
 
-  const mockCommandNode = (attributes?: CommandNodeAttributes): CommandNode => {
+  const mockCommandNode = (
+    attributes?: CommandNodeAttributes
+  ): AnyCommandNode => {
     const node = CommandNodeImpl.rootCommand();
     node.commandName = "mock";
     node.range = mockRange;
     node.attributes = attributes;
-    return node;
+    return node as AnyCommandNode;
   };
 
   type MyType = {

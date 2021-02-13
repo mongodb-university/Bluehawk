@@ -23,8 +23,6 @@ export const ReplaceCommand: Command<ReplaceCommandAttributes> = {
     },
   },
 
-  rules: [],
-
   process: ({ commandNode, parseResult }: ProcessRequest): void => {
     const attributes = commandNode.attributes as
       | ReplaceCommandAttributes
