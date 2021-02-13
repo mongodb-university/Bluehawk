@@ -1,7 +1,6 @@
-import { ParseResult } from "../parser/ParseResult";
+import { AnyCommandNode, ParseResult } from "../parser";
 import { Document, CommandAttributes } from "../Document";
-import { AnyCommandNode } from "../parser/CommandNode";
-import { AnyCommand, Command } from "../commands/Command";
+import { AnyCommand } from "../commands";
 
 export type BluehawkFiles = { [pathName: string]: ParseResult };
 
@@ -102,8 +101,9 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
       if (command === undefined) {
         return promises;
       }
+      // TODO: validate BlockCommand/LineCommand mode support
       // Commands are not necessarily async
-      const maybePromise = (command as Command).process({
+      const maybePromise = (command as AnyCommand).process({
         fork: (args: ForkArgs) => {
           return this.fork({
             ...args,

@@ -1,5 +1,4 @@
-import { ProcessRequest } from "../processor/Processor";
-import { Command } from "./Command";
+import { makeBlockCommand } from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
 
 type ReplaceCommandAttributes = {
@@ -9,7 +8,7 @@ type ReplaceCommandAttributes = {
   };
 };
 
-export const ReplaceCommand: Command<ReplaceCommandAttributes> = {
+export const ReplaceCommand = makeBlockCommand<ReplaceCommandAttributes>({
   attributesSchema: {
     type: "object",
     required: ["terms"],
@@ -23,15 +22,8 @@ export const ReplaceCommand: Command<ReplaceCommandAttributes> = {
     },
   },
 
-  process: ({ commandNode, parseResult }: ProcessRequest): void => {
-    const attributes = commandNode.attributes as
-      | ReplaceCommandAttributes
-      | undefined;
-    if (attributes === undefined) {
-      // TODO: error (though this can't happen if the validator was used
-      return;
-    }
-
+  process({ commandNode, parseResult }) {
+    const attributes = commandNode.attributes as ReplaceCommandAttributes;
     const { source } = parseResult;
     const { text } = source;
 
@@ -64,4 +56,4 @@ export const ReplaceCommand: Command<ReplaceCommandAttributes> = {
       }
     });
   },
-};
+});

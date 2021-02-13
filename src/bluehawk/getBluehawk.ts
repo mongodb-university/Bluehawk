@@ -7,7 +7,7 @@ import {
   UncommentCommand,
 } from ".";
 import {
-  BlockCommand,
+  makeBlockCommand,
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
 } from "./commands";
@@ -31,13 +31,13 @@ export const getBluehawk = async (
     // hide and replace-with now belong to "state"
     bluehawk.registerCommand("state", StateCommand);
 
-    const StateUncommentCommand: BlockCommand<IdRequiredAttributes> = {
+    const StateUncommentCommand = makeBlockCommand<IdRequiredAttributes>({
       attributesSchema: IdRequiredAttributesSchema,
       process(request) {
         UncommentCommand.process(request);
         StateCommand.process(request);
       },
-    };
+    });
 
     // uncomment the block in the state
     bluehawk.registerCommand("state-uncomment", StateUncommentCommand);

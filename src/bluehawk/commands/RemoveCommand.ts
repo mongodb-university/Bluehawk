@@ -1,6 +1,10 @@
-import { Command, NoAttributes, NoAttributesSchema } from "./Command";
+import {
+  makeBlockOrLineCommand,
+  NoAttributes,
+  NoAttributesSchema,
+} from "./Command";
 
-export const RemoveCommand: Command<NoAttributes> = {
+export const RemoveCommand = makeBlockOrLineCommand<NoAttributes>({
   attributesSchema: NoAttributesSchema,
   process({ commandNode, parseResult }) {
     const { lineRange } = commandNode;
@@ -9,4 +13,4 @@ export const RemoveCommand: Command<NoAttributes> = {
       lineRange.end.offset
     );
   },
-};
+});

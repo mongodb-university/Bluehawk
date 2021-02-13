@@ -4,7 +4,7 @@ import { BlockCommandNode } from "../parser/CommandNode";
 import { ProcessRequest } from "../processor/Processor";
 import { idIsUnique } from "../processor/validator";
 import {
-  BlockCommand,
+  makeBlockCommand,
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
 } from "./Command";
@@ -59,7 +59,7 @@ function dedentRange(
   return s;
 }
 
-export const SnippetCommand: BlockCommand<IdRequiredAttributes> = {
+export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
   attributesSchema: IdRequiredAttributesSchema,
   rules: [idIsUnique],
   process: (request: ProcessRequest<BlockCommandNode>): void => {
@@ -100,4 +100,4 @@ export const SnippetCommand: BlockCommand<IdRequiredAttributes> = {
       },
     });
   },
-};
+});

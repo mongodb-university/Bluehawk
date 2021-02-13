@@ -1,11 +1,11 @@
 import {
-  BlockCommand,
+  makeBlockCommand,
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
 } from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
 
-export const StateCommand: BlockCommand<IdRequiredAttributes> = {
+export const StateCommand = makeBlockCommand<IdRequiredAttributes>({
   attributesSchema: IdRequiredAttributesSchema,
   process(request) {
     const { commandNode, fork, parseResult } = request;
@@ -39,4 +39,4 @@ export const StateCommand: BlockCommand<IdRequiredAttributes> = {
       source.text.remove(contentRange.start.offset, contentRange.end.offset);
     }
   },
-};
+});

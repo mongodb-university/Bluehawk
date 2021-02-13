@@ -5,12 +5,16 @@ import { makeBlockCommentTokens } from "../parser/lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../parser/lexer/makeLineCommentToken";
 import { Document } from "../Document";
 import { CommandProcessors } from "./Processor";
+import { makeLineCommand } from "../commands/Command";
 
 describe("validator", () => {
   const commandProcessors: CommandProcessors = {
-    "code-block": {
+    "code-block": makeLineCommand({
       rules: [idIsUnique, hasId],
-    },
+      process(request) {
+        // do nothing
+      },
+    }),
   };
 
   const source = new Document({

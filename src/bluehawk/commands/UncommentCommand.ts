@@ -1,10 +1,10 @@
 import { strict as assert } from "assert";
 import { IToken } from "chevrotain";
 import { AnyCommandNode, flatten } from "../parser";
-import { BlockCommand, NoAttributes, NoAttributesSchema } from "./Command";
+import { makeBlockCommand, NoAttributes, NoAttributesSchema } from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
 
-export const UncommentCommand: BlockCommand<NoAttributes> = {
+export const UncommentCommand = makeBlockCommand<NoAttributes>({
   attributesSchema: NoAttributesSchema,
   process(request) {
     const { commandNode, parseResult } = request;
@@ -36,4 +36,4 @@ export const UncommentCommand: BlockCommand<NoAttributes> = {
         source.text.remove(lineComment.startOffset, lineComment.endOffset + 1);
       });
   },
-};
+});
