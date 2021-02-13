@@ -1,6 +1,7 @@
 import { Rule } from "../processor/validator";
 import { ProcessRequest } from "../processor/Processor";
 import { AnySchema, JSONSchemaType } from "ajv";
+import { BlockCommandNode, LineCommandNode } from "../parser";
 
 // The implementation that actually carries out the command.
 
@@ -14,11 +15,26 @@ export interface AnyCommand {
   // Validator rules to determine if the command meets requirements before
   // processing is possible
   rules: Rule[];
+}
 
-  // Implementation of the command
+// A command can operate on a line or block.
+export interface Command<AttributesType = unknown> extends AnyCommand {
+  attributesSchema?: JSONSchemaType<AttributesType>;
+
+  // The implementation of the command
   process: (request: ProcessRequest) => void | Promise<void>;
 }
 
-export interface Command<AttributesType = unknown> extends AnyCommand {
+export interface BlockCommand<AttributesType = unknown> extends AnyCommand {
   attributesSchema?: JSONSchemaType<AttributesType>;
+
+  // The implementation of the command
+  process: (request: ProcessRequest<BlockCommandNode>) => void | Promise<void>;
+}
+
+export interface LineCommand<AttributesType = unknown> extends AnyCommand {
+  attributesSchema?: JSONSchemaType<AttributesType>;
+
+  // The implementation of the command
+  process: (request: ProcessRequest<LineCommandNode>) => void | Promise<void>;
 }

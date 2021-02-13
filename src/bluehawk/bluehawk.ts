@@ -17,7 +17,10 @@ import { isBinary } from "istextorbinary";
 export class Bluehawk {
   // Register the given command on the processor and validator. This enables
   // support for the command under the given name.
-  registerCommand(name: string, command: AnyCommand): void {
+  registerCommand<Command extends AnyCommand>(
+    name: string,
+    command: Command
+  ): void {
     this.processor.registerCommand(name, command);
   }
 

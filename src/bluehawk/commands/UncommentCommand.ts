@@ -1,26 +1,29 @@
 import { strict as assert } from "assert";
 import { IToken } from "chevrotain";
+import { BlockCommandNode, LineCommandNode } from "../parser";
 import { flatten } from "../parser/flatten";
 import { ProcessRequest } from "../processor/Processor";
-import { Command } from "./Command";
+import { BlockCommand } from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
 
-export const UncommentCommand: Command = {
+export const UncommentCommand: BlockCommand = {
   rules: [],
-  process: (request: ProcessRequest): void => {
-    const { command, parseResult } = request;
+  process: (request: ProcessRequest<BlockCommandNode>): void => {
+    const { commandNode, parseResult } = request;
     const { source } = parseResult;
 
     // Strip tags
-    removeMetaRange(source.text, command);
+    removeMetaRange(source.text, commandNode);
 
-    const { contentRange } = command;
+    const { contentRange } = commandNode;
     if (contentRange == undefined) {
       return;
     }
 
     // Get all line comments in the hierarchy
-    const lineComments = flatten(command)
+    const lineComments = flatten(
+      commandNode as BlockCommandNode | LineCommandNode
+    )
       .reduce((acc, cur) => [...acc, ...cur.lineComments], [] as IToken[])
       .sort((a, b) => a.startOffset - b.startOffset);
 

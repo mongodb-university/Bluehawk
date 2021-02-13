@@ -1,4 +1,8 @@
-import { CommandNode } from "../parser/CommandNode";
+import {
+  BlockCommandNode,
+  CommandNode,
+  LineCommandNode,
+} from "../parser/CommandNode";
 import { BluehawkError } from "../BluehawkError";
 import { flatten } from "../parser/flatten";
 import { CommandProcessors } from "./Processor";
@@ -13,19 +17,21 @@ export interface ValidateCstResult {
 // given command node conforms to the specification of that command. Errors can
 // be reported into the result.errors array.
 export type Rule = (
-  commandNode: CommandNode,
+  commandNode: LineCommandNode | BlockCommandNode,
   result: ValidateCstResult
 ) => void;
 
 export function validateCommands(
-  commandNodes: CommandNode[],
+  commandNodes: (LineCommandNode | BlockCommandNode)[],
   commandProcessorMap: CommandProcessors
 ): BluehawkError[] {
   const validateResult = {
     errors: [],
-    commandsById: new Map<string, CommandNode>(),
+    commandsById: new Map<string, LineCommandNode | BlockCommandNode>(),
   };
-  flatten({ children: commandNodes } as CommandNode).forEach((commandNode) => {
+  flatten({
+    children: commandNodes,
+  } as BlockCommandNode | LineCommandNode).forEach((commandNode) => {
     const processor = commandProcessorMap[commandNode.commandName];
     if (processor === undefined) {
       // TODO: warn unknown command

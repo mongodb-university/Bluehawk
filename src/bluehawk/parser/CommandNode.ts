@@ -4,6 +4,8 @@ import { Range } from "../Range";
 
 // The CommandNode represents a command found by the visitor.
 export interface CommandNode {
+  type: "line" | "block";
+
   // The name of the command (without -start or -end).
   commandName: string;
 
@@ -38,16 +40,21 @@ export interface CommandNode {
   attributes?: CommandNodeAttributes;
 }
 
+// A line command applies to a specific line and does not have -start or -end
+// tags.
 export interface LineCommandNode extends CommandNode {
+  type: "line";
   id: undefined;
   contentRange: undefined;
   children: undefined;
   attributes: undefined;
 }
 
+// A block command applies to a range of lines and has -start and -end tags.
 export interface BlockCommandNode extends CommandNode {
+  type: "block";
   contentRange: Range;
-  children: CommandNode[];
+  children: (BlockCommandNode | LineCommandNode)[];
   attributes: CommandNodeAttributes;
 }
 
@@ -68,6 +75,7 @@ interface VisitorContext {
 }
 
 export class CommandNodeImpl implements CommandNode {
+  type: "line" | "block";
   commandName: string;
   get inContext(): CommandNodeContext {
     return this._context[this._context.length - 1] || "none";
@@ -100,8 +108,7 @@ export class CommandNodeImpl implements CommandNode {
     context: VisitorContext
   ): CommandNodeImpl {
     assert(this.children);
-    const command = new CommandNodeImpl(commandName, context, this);
-    command.children = [];
+    const command = new CommandNodeImpl("block", commandName, context, this);
     return command;
   }
 
@@ -112,7 +119,7 @@ export class CommandNodeImpl implements CommandNode {
     context: VisitorContext
   ): CommandNodeImpl {
     assert(this.children);
-    return new CommandNodeImpl(commandName, context, this);
+    return new CommandNodeImpl("line", commandName, context, this);
   }
 
   withErasedBlockCommand(
@@ -124,11 +131,12 @@ export class CommandNodeImpl implements CommandNode {
     // been that element's children to the parent node. This is definitely
     // weird, but only used internally...
     const node = new CommandNodeImpl(
+      "block",
       "__this_should_not_be_here___please_file_a_bug__",
       context
     );
-    node.children = [];
     callback(node);
+    assert(node.children); // Enforced by setting type to "block"
     this.children.push(...node.children);
     this.newlines.push(...node.newlines);
     this.lineComments.push(...node.lineComments);
@@ -137,16 +145,21 @@ export class CommandNodeImpl implements CommandNode {
   // The root command is the root node of a parsed document and contains all
   // other nodes in the document.
   static rootCommand(): CommandNodeImpl {
-    const command = new CommandNodeImpl("__root__", {});
-    command.children = [];
+    const command = new CommandNodeImpl("block", "__root__", {});
     return command;
   }
 
   private constructor(
+    type: "block" | "line",
     commandName: string,
     context: VisitorContext,
     parentToAttachTo?: CommandNodeImpl
   ) {
+    this.type = type;
+    if (type === "block") {
+      this.children = [];
+    }
+
     this.commandName = commandName;
     this.newlines = [];
     this.lineComments = [];

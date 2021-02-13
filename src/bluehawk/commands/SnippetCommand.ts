@@ -1,14 +1,14 @@
 import MagicString from "magic-string";
 import { Document } from "../Document";
-import { CommandNode } from "../parser/CommandNode";
+import { BlockCommandNode } from "../parser/CommandNode";
 import { ProcessRequest } from "../processor/Processor";
-import { Command } from "./Command";
+import { BlockCommand } from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
 import { hasId, idIsUnique } from "../processor/validator";
 
 function dedentRange(
   s: MagicString,
-  { contentRange }: CommandNode
+  { contentRange }: BlockCommandNode
 ): MagicString {
   if (contentRange === undefined) {
     return s;
@@ -55,12 +55,12 @@ function dedentRange(
   return s;
 }
 
-export const SnippetCommand: Command = {
+export const SnippetCommand: BlockCommand = {
   rules: [hasId, idIsUnique],
-  process: (request: ProcessRequest): void => {
-    const { command, parseResult, fork } = request;
+  process: (request: ProcessRequest<BlockCommandNode>): void => {
+    const { commandNode, parseResult, fork } = request;
     const { source } = parseResult;
-    const { contentRange } = command;
+    const { contentRange } = commandNode;
 
     if (contentRange === undefined) {
       // TODO: diagnostics
@@ -68,7 +68,7 @@ export const SnippetCommand: Command = {
     }
 
     // Strip tags
-    removeMetaRange(source.text, command);
+    removeMetaRange(source.text, commandNode);
 
     // Copy text to new working copy
     const clonedSnippet = source.text.snip(
@@ -77,21 +77,21 @@ export const SnippetCommand: Command = {
     );
 
     // Dedent
-    dedentRange(clonedSnippet, command);
+    dedentRange(clonedSnippet, commandNode);
 
     // Fork subset code block to another file
     fork({
       parseResult: {
-        commandNodes: command.children ?? [],
+        commandNodes: commandNode.children ?? [],
         errors: [],
         source: new Document({
           ...source,
-          path: source.pathWithInfix(`codeblock.${command.id}`),
+          path: source.pathWithInfix(`codeblock.${commandNode.id}`),
           text: clonedSnippet,
         }),
       },
       newAttributes: {
-        snippet: command.id,
+        snippet: commandNode.id,
       },
     });
   },

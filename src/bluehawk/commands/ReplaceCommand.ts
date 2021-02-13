@@ -25,8 +25,8 @@ export const ReplaceCommand: Command<ReplaceCommandAttributes> = {
 
   rules: [],
 
-  process: ({ command, parseResult }: ProcessRequest): void => {
-    const attributes = command.attributes as
+  process: ({ commandNode, parseResult }: ProcessRequest): void => {
+    const attributes = commandNode.attributes as
       | ReplaceCommandAttributes
       | undefined;
     if (attributes === undefined) {
@@ -38,9 +38,9 @@ export const ReplaceCommand: Command<ReplaceCommandAttributes> = {
     const { text } = source;
 
     // Strip tags
-    removeMetaRange(text, command);
+    removeMetaRange(text, commandNode);
 
-    const { contentRange } = command;
+    const { contentRange } = commandNode;
     if (contentRange == undefined) {
       // TODO: error
       return;

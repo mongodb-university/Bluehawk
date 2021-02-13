@@ -7,6 +7,8 @@ import {
   ProcessRequest,
   UncommentCommand,
 } from ".";
+import { BlockCommand } from "./commands";
+import { BlockCommandNode } from "./parser";
 
 let bluehawk: Bluehawk | undefined = undefined;
 
@@ -27,14 +29,16 @@ export const getBluehawk = async (
     // hide and replace-with now belong to "state"
     bluehawk.registerCommand("state", StateCommand);
 
-    // uncomment the block in the state
-    bluehawk.registerCommand("state-uncomment", {
+    const StateUncommentCommand: BlockCommand = {
       rules: [...StateCommand.rules],
-      process: (request: ProcessRequest): void => {
+      process: (request: ProcessRequest<BlockCommandNode>): void => {
         UncommentCommand.process(request);
         StateCommand.process(request);
       },
-    });
+    };
+
+    // uncomment the block in the state
+    bluehawk.registerCommand("state-uncomment", StateUncommentCommand);
   }
 
   await bluehawk.loadPlugin(pluginPaths);

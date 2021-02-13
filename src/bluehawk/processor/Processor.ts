@@ -1,11 +1,13 @@
 import { ParseResult } from "../parser/ParseResult";
 import { Document, CommandAttributes } from "../Document";
-import { CommandNode } from "../parser/CommandNode";
-import { AnyCommand } from "../commands/Command";
+import { BlockCommandNode, LineCommandNode } from "../parser/CommandNode";
+import { AnyCommand, Command } from "../commands/Command";
 
 export type BluehawkFiles = { [pathName: string]: ParseResult };
 
-export interface ProcessRequest {
+export interface ProcessRequest<
+  CommandNodeType = BlockCommandNode | LineCommandNode
+> {
   // Process the given Bluehawk result, optionally under an alternative id, and
   // emit the file.
   fork: (args: ForkArgs) => Promise<void>;
@@ -14,7 +16,7 @@ export interface ProcessRequest {
   parseResult: ParseResult;
 
   // The specific command to process
-  command: CommandNode;
+  commandNode: CommandNodeType;
 }
 
 export type CommandProcessors = Record<string, AnyCommand>;
@@ -94,16 +96,16 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
 
   private _process = (
     _processorState: ProcessorState,
-    commandSubset: CommandNode[],
+    commandSubset: (LineCommandNode | BlockCommandNode)[],
     result: ParseResult
   ): Promise<void>[] => {
-    return commandSubset.reduce((promises, command): Promise<void>[] => {
-      const processor = this.processors[command.commandName];
-      if (processor === undefined) {
+    return commandSubset.reduce((promises, commandNode): Promise<void>[] => {
+      const command = this.processors[commandNode.commandName];
+      if (command === undefined) {
         return promises;
       }
       // Commands are not necessarily async
-      const maybePromise = processor.process({
+      const maybePromise = (command as Command).process({
         fork: (args: ForkArgs) => {
           return this.fork({
             ...args,
@@ -111,21 +113,24 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
           });
         },
         parseResult: result,
-        command,
+        commandNode,
       });
       if (maybePromise instanceof Promise) {
         promises.push(maybePromise);
       }
-      if (command.children !== undefined) {
+      if (commandNode.children !== undefined) {
         promises.push(
-          ...this._process(_processorState, command.children, result)
+          ...this._process(_processorState, commandNode.children, result)
         );
       }
       return promises;
     }, [] as Promise<void>[]);
   };
 
-  registerCommand(name: string, command: AnyCommand): void {
+  registerCommand<Command extends AnyCommand>(
+    name: string,
+    command: Command
+  ): void {
     this.processors[name] = command;
   }
 }

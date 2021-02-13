@@ -6,11 +6,11 @@ import { hasId } from "../processor/validator";
 export const StateCommand: Command = {
   rules: [hasId],
   process: (request: ProcessRequest): void => {
-    const { command, fork, parseResult } = request;
+    const { commandNode, fork, parseResult } = request;
     const { source } = parseResult;
 
     // Strip tags
-    removeMetaRange(source.text, command);
+    removeMetaRange(source.text, commandNode);
 
     const stateAttribute = source.attributes["state"];
 
@@ -18,18 +18,18 @@ export const StateCommand: Command = {
       // We are not processing in a state file, so start one
       fork({
         parseResult,
-        newModifier: `state.${command.id}`,
+        newModifier: `state.${commandNode.id}`,
         newAttributes: {
           // Set the state attribute for next time StateCommand is invoked on the
           // new file
-          state: command.id,
+          state: commandNode.id,
         },
       });
     }
 
     // Strip all other states
-    if (stateAttribute !== command.id) {
-      const { contentRange } = command;
+    if (stateAttribute !== commandNode.id) {
+      const { contentRange } = commandNode;
       if (contentRange === undefined) {
         // TODO: diagnostics
         return;

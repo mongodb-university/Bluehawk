@@ -1,4 +1,5 @@
 import { Bluehawk } from "../bluehawk";
+import { Command } from "../commands/Command";
 import { removeMetaRange } from "../commands/removeMetaRange";
 import { Document } from "../Document";
 import { ParseResult } from "../parser/ParseResult";
@@ -6,23 +7,28 @@ import { ParseResult } from "../parser/ParseResult";
 describe("processor", () => {
   const bluehawk = new Bluehawk();
 
-  bluehawk.registerCommand("append-message-after-delay", {
+  const AppendMessageAfterDelayCommand: Command = {
     rules: [],
     process: (request): Promise<void> => {
       return new Promise((resolve) => {
         setTimeout(() => {
-          const { command, parseResult } = request;
+          const { commandNode, parseResult } = request;
           const { source } = parseResult;
-          removeMetaRange(source.text, command);
+          removeMetaRange(source.text, commandNode);
           source.text.appendLeft(
-            command.range.end.offset,
+            commandNode.range.end.offset,
             "async command executed"
           );
           resolve();
         }, 10);
       });
     },
-  });
+  };
+
+  bluehawk.registerCommand(
+    "append-message-after-delay",
+    AppendMessageAfterDelayCommand
+  );
 
   it("ignores unknown commands", async (done) => {
     // NOTE: This is not necessarily the desired behavior, but it is the current
