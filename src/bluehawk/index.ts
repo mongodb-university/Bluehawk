@@ -1,10 +1,10 @@
 export { Bluehawk } from "./bluehawk";
 export { Document } from "./Document";
-export { Listener, ProcessRequest } from "./processor/Processor";
-export { ParseResult } from "./parser/ParseResult";
-export { RemoveCommand } from "./commands/RemoveCommand";
-export { ReplaceCommand } from "./commands/ReplaceCommand";
-export { SnippetCommand } from "./commands/SnippetCommand";
-export { StateCommand } from "./commands/StateCommand";
-export { UncommentCommand } from "./commands/UncommentCommand";
-export { loadPlugin } from "./loadPlugin";
+export { OnBinaryFileFunction } from "./OnBinaryFileFunction";
+export { parseAndProcess } from "./parseAndProcess";
+export { getBluehawk } from "./getBluehawk";
+export * from "./io/System";
+export * from "./commands";
+export * from "./parser";
+export * from "./processor";
+export * from "./project";

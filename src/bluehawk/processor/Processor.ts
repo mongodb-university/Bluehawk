@@ -23,17 +23,29 @@ export type Listener = (result: ParseResult) => void | Promise<void>;
 
 export class Processor {
   processors: CommandProcessors = {};
-  listeners: Listener[] = [];
+  listeners = new Set<Listener>();
 
   // Subscribe to processed file events
   subscribe(listener: Listener): void {
-    this.listeners.push(listener);
+    this.listeners.add(listener);
   }
 
   // Publish a processed file
-  async publish(result: ParseResult): Promise<void> {
-    const promises = this.listeners.map((listener) => listener(result));
-    await Promise.all(promises);
+  publish(result: ParseResult): void {
+    // Fire and forget, don't wait for listeners to complete before continuing
+    // to process files.
+    this.listeners.forEach(async (listener) => {
+      try {
+        await listener(result);
+      } catch (error) {
+        // Don't let listener exceptions disrupt the processor or other listeners.
+        console.error(
+          `When processing result '${result.source.path}', a listener failed with the following error: ${error}
+
+This is probably not a bug in the Bluehawk library itself. Please check with the listener implementer.`
+        );
+      }
+    });
   }
 
   // Processes the given Bluehawk result, optionally under an alternative id,
@@ -69,7 +81,7 @@ export class Processor {
       newResult
     );
     await Promise.all(promises);
-    await this.publish(newResult);
+    this.publish(newResult);
   }
 
   // Processes the given Bluehawk result. Resulting files are also emitted to

@@ -90,8 +90,65 @@ async command executed`);
     expect(didCallListener).toBe(0);
     expect(didWaitForListener).toBe(0);
     await bluehawk.process(parseResult);
-    expect(didCallListener).toBe(10);
-    expect(didWaitForListener).toBe(10);
-    done();
+
+    // Processor fires off files to listeners and doesn't wait for the result,
+    // so we must set a timeout here
+    setTimeout(() => {
+      expect(didCallListener).toBe(10);
+      expect(didWaitForListener).toBe(10);
+      done();
+    }, 11);
+  });
+
+  it("does not stop on misbehaving listeners", async (done) => {
+    const source = new Document({
+      text: `abc\n`,
+      language: "javascript",
+      path: "test.js",
+    });
+
+    const bluehawk = new Bluehawk();
+    const parseResult = bluehawk.parse(source);
+
+    let didCallListener = 0;
+    let didWaitForListener = 0;
+    for (let i = 0; i < 10; ++i) {
+      const listener = (result: ParseResult) => {
+        if (i === 5) {
+          // Naughty listener!
+          throw new Error("I'm misbehavin'!");
+        }
+        didCallListener += 1;
+        return new Promise<void>((resolve) => {
+          setTimeout(() => {
+            didWaitForListener += 1;
+            resolve();
+          }, 10 - i);
+        });
+      };
+      bluehawk.subscribe(listener);
+    }
+    expect(didCallListener).toBe(0);
+    expect(didWaitForListener).toBe(0);
+    const originalError = console.error;
+    const errors: string[] = [];
+    console.error = (s: string) => {
+      errors.push(s);
+    };
+    await bluehawk.process(parseResult);
+    console.error = originalError;
+    expect(errors).toStrictEqual([
+      `When processing result 'test.js', a listener failed with the following error: Error: I'm misbehavin'!
+
+This is probably not a bug in the Bluehawk library itself. Please check with the listener implementer.`,
+    ]);
+
+    // Processor fires off files to listeners and doesn't wait for the result,
+    // so we must set a timeout here
+    setTimeout(() => {
+      expect(didCallListener).toBe(9);
+      expect(didWaitForListener).toBe(9);
+      done();
+    }, 11);
   });
 });
