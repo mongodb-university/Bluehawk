@@ -21,27 +21,45 @@ export function validateCommands(
   commandNodes: AnyCommandNode[],
   commandProcessorMap: CommandProcessors
 ): BluehawkError[] {
-  const validateResult = {
+  const validateResult: ValidateCstResult = {
     errors: [],
-    commandsById: new Map<string, AnyCommandNode>(),
+    commandsById: new Map(),
   };
   flatten({
     children: commandNodes,
   } as AnyCommandNode).forEach((commandNode) => {
-    const processor = commandProcessorMap[commandNode.commandName];
-    if (processor === undefined) {
+    const command = commandProcessorMap[commandNode.commandName];
+    if (command === undefined) {
       // TODO: warn unknown command
       return;
     }
 
-    if (processor.attributesSchema !== undefined) {
+    if (commandNode.type === "block" && !command.supportsBlockMode) {
+      validateResult.errors.push({
+        component: "validator",
+        location: commandNode.range.start,
+        message: `'${commandNode.commandName}' cannot be used in block mode (i.e. with -start and -end)`,
+      });
+      return;
+    }
+
+    if (commandNode.type === "line" && !command.supportsLineMode) {
+      validateResult.errors.push({
+        component: "validator",
+        location: commandNode.range.start,
+        message: `'${commandNode.commandName}' cannot be used in single line mode (i.e. without -start and -end around a block)`,
+      });
+      return;
+    }
+
+    if (command.attributesSchema !== undefined) {
       const attributeSchemaValidator = makeAttributesConformToJsonSchemaRule(
-        processor.attributesSchema
+        command.attributesSchema
       );
       attributeSchemaValidator(commandNode, validateResult);
     }
 
-    processor.rules?.forEach((rule) => {
+    command.rules?.forEach((rule) => {
       rule(commandNode, validateResult);
     });
   });
@@ -66,18 +84,5 @@ export const idIsUnique: Rule = (
       // otherwise, add the command id to the set
       result.commandsById.set(commandNode.id, commandNode);
     }
-  }
-};
-
-export const hasId: Rule = (
-  commandNode: AnyCommandNode,
-  result: ValidateCstResult
-) => {
-  if (commandNode.id === undefined) {
-    result.errors.push({
-      component: "validator",
-      location: commandNode.range.start,
-      message: `missing ID for command: '${commandNode.commandName}'`,
-    });
   }
 };

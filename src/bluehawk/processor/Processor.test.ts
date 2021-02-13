@@ -1,6 +1,9 @@
 import { Bluehawk } from "../bluehawk";
 import {
+  IdRequiredAttributes,
+  IdRequiredAttributesSchema,
   makeBlockCommand,
+  makeLineCommand,
   NoAttributes,
   NoAttributesSchema,
 } from "../commands/Command";
@@ -160,5 +163,74 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
       expect(didWaitForListener).toBe(9);
       done();
     }, 11);
+  });
+
+  it("passes correct command node type to ", async (done) => {
+    const bluehawk = new Bluehawk();
+
+    const state = {
+      calledLineCommandProcess: false,
+      calledBlockCommandProcess: false,
+    };
+    const LineCommand = makeLineCommand({
+      process({ commandNode }) {
+        expect(commandNode.attributes).toBeUndefined();
+        expect(commandNode.children).toBeUndefined();
+        expect(commandNode.contentRange).toBeUndefined();
+        expect(commandNode.commandName).toBe("line-command");
+        expect(commandNode.id).toBeUndefined();
+        expect(commandNode.type).toBe("line");
+        state.calledLineCommandProcess = true;
+      },
+    });
+
+    const BlockCommand = makeBlockCommand<IdRequiredAttributes>({
+      attributesSchema: IdRequiredAttributesSchema,
+      process({ commandNode }) {
+        expect(commandNode.attributes).toBeDefined();
+        expect(commandNode.children).toBeDefined();
+        expect(commandNode.contentRange).toBeDefined();
+        expect(commandNode.id).toBe("test");
+        expect(commandNode.type).toBe("block");
+        state.calledBlockCommandProcess = true;
+      },
+    });
+
+    bluehawk.registerCommand("line-command", LineCommand);
+    bluehawk.registerCommand("block-command", BlockCommand);
+
+    await (async () => {
+      const result = bluehawk.parse(
+        new Document({
+          text: `:line-command-start:
+:line-command-end:
+:block-command:
+`,
+          language: "javascript",
+          path: "test.js",
+        })
+      );
+      // Validate that line-command and block-command cannot be used in the
+      // opposite mode
+      expect(result.errors.map((error) => error.message)).toStrictEqual([
+        "'line-command' cannot be used in block mode (i.e. with -start and -end)",
+        "'block-command' cannot be used in single line mode (i.e. without -start and -end around a block)",
+      ]);
+
+      // Command nodes exist anyway? (TODO: should they be removed if they do
+      // not pass the validator?)
+      expect(result.commandNodes.length).toBe(2);
+    })();
+    const result = bluehawk.parse(
+      new Document({
+        text: `:line-command:\n`,
+        language: "javascript",
+        path: "test.js",
+      })
+    );
+    expect(result.errors).toStrictEqual([]);
+    await bluehawk.process(result);
+    expect(state.calledLineCommandProcess).toBe(true);
+    done();
   });
 });

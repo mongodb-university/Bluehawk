@@ -19,7 +19,7 @@ interface Command {
 export interface AnyCommand extends Command {
   supportsBlockMode: boolean;
   supportsLineMode: boolean;
-  process: (request: ProcessRequest<AnyCommandNode>) => void | Promise<void>;
+  process: (request: ProcessRequest) => void | Promise<void>;
 }
 
 // Create a block command implementation. AttributesType is a type that

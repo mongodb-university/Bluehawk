@@ -1,3 +1,4 @@
+import { strict as assert } from "assert";
 import { AnyCommandNode, ParseResult } from "../parser";
 import { Document, CommandAttributes } from "../Document";
 import { AnyCommand } from "../commands";
@@ -101,18 +102,24 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
       if (command === undefined) {
         return promises;
       }
-      // TODO: validate BlockCommand/LineCommand mode support
       // Commands are not necessarily async
-      const maybePromise = (command as AnyCommand).process({
-        fork: (args: ForkArgs) => {
-          return this.fork({
-            ...args,
-            _processorState,
-          });
-        },
-        parseResult: result,
-        commandNode,
-      });
+      const maybePromise = (() => {
+        assert(
+          (commandNode.type === "line" && command.supportsLineMode) ||
+            (commandNode.type === "block" && command.supportsBlockMode),
+          `${commandNode.commandName} found as a ${commandNode.type} command, which is an unsupported mode for the corresponding command processor. (This should have been reported as an error by the parser and the nodes should not have been sent to the processor.)`
+        );
+        return command.process({
+          fork: (args: ForkArgs) => {
+            return this.fork({
+              ...args,
+              _processorState,
+            });
+          },
+          parseResult: result,
+          commandNode,
+        });
+      })();
       if (maybePromise instanceof Promise) {
         promises.push(maybePromise);
       }

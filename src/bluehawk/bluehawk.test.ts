@@ -1,15 +1,24 @@
-import { hasId, idIsUnique } from "./processor/validator";
+import { idIsUnique } from "./processor/validator";
 import { Bluehawk } from "./bluehawk";
 import { Document } from "./Document";
+import {
+  IdRequiredAttributes,
+  IdRequiredAttributesSchema,
+  makeBlockCommand,
+} from "./commands";
 
 describe("bluehawk", () => {
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand("code-block", {
-    process: () => {
-      return;
-    },
-    rules: [idIsUnique, hasId],
-  });
+  bluehawk.registerCommand(
+    "code-block",
+    makeBlockCommand<IdRequiredAttributes>({
+      attributesSchema: IdRequiredAttributesSchema,
+      process(request) {
+        return;
+      },
+      rules: [idIsUnique],
+    })
+  );
 
   it("handles lexing, parsing, visiting, and validating", () => {
     const input = new Document({
@@ -112,7 +121,7 @@ describe("bluehawk", () => {
         line: 3,
         offset: 25,
       },
-      message: "missing ID for command: 'code-block'",
+      message: "attribute list for 'code-block' command should be object",
     });
   });
 });
