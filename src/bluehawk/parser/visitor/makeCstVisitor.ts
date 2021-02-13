@@ -7,7 +7,11 @@ import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
 import { BluehawkError } from "../../BluehawkError";
 import { Document } from "../../Document";
 import { PushParserPayload } from "../lexer/makePushParserTokens";
-import { CommandNode, CommandNodeImpl } from "../CommandNode";
+import {
+  BlockCommandNode,
+  CommandNodeImpl,
+  LineCommandNode,
+} from "../CommandNode";
 import {
   locationFromToken,
   locationAfterToken,
@@ -19,7 +23,7 @@ import { extractCommandNamesFromTokens } from "../extractCommandNamesFromTokens"
 
 export interface VisitorResult {
   errors: BluehawkError[];
-  commandNodes: CommandNode[];
+  commandNodes: (BlockCommandNode | LineCommandNode)[];
 }
 
 export interface IVisitor {
@@ -534,7 +538,9 @@ export function makeCstVisitor(
     visitor.visit([node], { errors, parent, source });
     return {
       errors,
-      commandNodes: parent.children ?? [],
+      commandNodes: (parent.children ?? []).map(
+        (child) => child.asBlockCommandNode() ?? (child as LineCommandNode)
+      ),
     };
   };
 

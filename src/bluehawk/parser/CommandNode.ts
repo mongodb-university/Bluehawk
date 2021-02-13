@@ -36,14 +36,6 @@ export interface CommandNode {
 
   // Attributes come from JSON and their schema depends on the command.
   attributes?: CommandNodeAttributes;
-
-  // Convenience function that returns this instance as a block command or
-  // undefined if it is not a block command.
-  asBlockCommandNode: () => BlockCommandNode | undefined;
-
-  // Convenience function that returns this instance as a line command or
-  // undefined if it is not a block command.
-  asLineCommandNode: () => LineCommandNode | undefined;
 }
 
 export interface LineCommandNode extends CommandNode {
@@ -89,7 +81,7 @@ export class CommandNodeImpl implements CommandNode {
     return this.attributes?.id;
   }
   contentRange?: Range;
-  children?: CommandNode[];
+  children?: CommandNodeImpl[];
   attributes?: CommandNodeAttributes;
   newlines: IToken[];
   lineComments: IToken[];
