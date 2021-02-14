@@ -1,19 +1,30 @@
+import { strict as assert } from "assert";
 import { RootParser } from "../parser/RootParser";
 import { makeCstVisitor } from "../parser/visitor/makeCstVisitor";
-import { validateCommands, idIsUnique, hasId } from "./validator";
+import { validateCommands, idIsUnique } from "./validator";
 import { makeBlockCommentTokens } from "../parser/lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../parser/lexer/makeLineCommentToken";
 import { Document } from "../Document";
 import { CommandProcessors } from "./Processor";
+import {
+  IdRequiredAttributes,
+  IdRequiredAttributesSchema,
+  makeBlockCommand,
+  makeBlockOrLineCommand,
+  makeLineCommand,
+  NoAttributes,
+  NoAttributesSchema,
+} from "../commands/Command";
 
 describe("validator", () => {
   const commandProcessors: CommandProcessors = {
-    "code-block": {
-      process: () => {
-        return;
+    "code-block": makeBlockCommand<IdRequiredAttributes>({
+      attributesSchema: IdRequiredAttributesSchema,
+      rules: [idIsUnique],
+      process(request) {
+        // do nothing
       },
-      rules: [idIsUnique, hasId],
-    },
+    }),
   };
 
   const source = new Document({
@@ -59,7 +70,7 @@ the quick brown fox jumped
     const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "missing ID for command: 'code-block'"
+      "attribute list for 'code-block' command should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -87,7 +98,7 @@ the quick brown fox jumped
     const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "missing ID for command: 'code-block'"
+      "attribute list for 'code-block' command should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 6,
@@ -115,7 +126,7 @@ the quick brown fox jumped
     const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(2);
     expect(errors[0].message).toStrictEqual(
-      "missing ID for command: 'code-block'"
+      "attribute list for 'code-block' command should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -123,7 +134,7 @@ the quick brown fox jumped
       offset: 4,
     });
     expect(errors[1].message).toStrictEqual(
-      "missing ID for command: 'code-block'"
+      "attribute list for 'code-block' command should be object"
     );
     expect(errors[1].location).toStrictEqual({
       line: 6,
@@ -195,7 +206,7 @@ the quick brown fox jumped
     const errors = validateCommands(result.commandNodes, commandProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "missing ID for command: 'code-block'"
+      "attribute list for 'code-block' command should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -250,5 +261,62 @@ the quick brown fox jumped
       column: 4,
       offset: 102,
     });
+  });
+
+  it("validates block or line mode support on commands", () => {
+    const commandProcessors: CommandProcessors = {
+      lineOnlyCommand: makeLineCommand({
+        process(request) {
+          // do nothing
+        },
+      }),
+      blockOnlyCommand: makeBlockCommand<NoAttributes>({
+        attributesSchema: NoAttributesSchema,
+        process(request) {
+          // do nothing
+        },
+      }),
+      blockOrLineCommand: makeBlockOrLineCommand({
+        attributesSchema: NoAttributesSchema,
+        process(request) {
+          // do nothing
+        },
+      }),
+    };
+
+    const parseResult = parser.parse(`:lineOnlyCommand-start:
+:lineOnlyCommand-end:
+:blockOnlyCommand:
+:blockOrLineCommand:
+:blockOrLineCommand-start:
+:blockOrLineCommand-end:
+`);
+    expect(parseResult.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    assert(parseResult.cst !== undefined);
+    const result = visitor.visit(parseResult.cst, source);
+    const errors = validateCommands(result.commandNodes, commandProcessors);
+    expect(errors).toStrictEqual([
+      {
+        component: "validator",
+        location: {
+          column: 1,
+          line: 1,
+          offset: 0,
+        },
+        message:
+          "'lineOnlyCommand' cannot be used in block mode (i.e. with -start and -end)",
+      },
+      {
+        component: "validator",
+        location: {
+          column: 1,
+          line: 3,
+          offset: 46,
+        },
+        message:
+          "'blockOnlyCommand' cannot be used in single line mode (i.e. without -start and -end around a block)",
+      },
+    ]);
   });
 });

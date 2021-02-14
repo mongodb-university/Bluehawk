@@ -4,9 +4,13 @@ import {
   ReplaceCommand,
   RemoveCommand,
   StateCommand,
-  ProcessRequest,
   UncommentCommand,
 } from ".";
+import {
+  makeBlockCommand,
+  IdRequiredAttributes,
+  IdRequiredAttributesSchema,
+} from "./commands";
 
 let bluehawk: Bluehawk | undefined = undefined;
 
@@ -27,14 +31,16 @@ export const getBluehawk = async (
     // hide and replace-with now belong to "state"
     bluehawk.registerCommand("state", StateCommand);
 
-    // uncomment the block in the state
-    bluehawk.registerCommand("state-uncomment", {
-      rules: [...StateCommand.rules],
-      process: (request: ProcessRequest): void => {
+    const StateUncommentCommand = makeBlockCommand<IdRequiredAttributes>({
+      attributesSchema: IdRequiredAttributesSchema,
+      process(request) {
         UncommentCommand.process(request);
         StateCommand.process(request);
       },
     });
+
+    // uncomment the block in the state
+    bluehawk.registerCommand("state-uncomment", StateUncommentCommand);
   }
 
   await bluehawk.loadPlugin(pluginPaths);

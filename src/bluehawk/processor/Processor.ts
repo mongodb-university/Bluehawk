@@ -1,11 +1,11 @@
-import { ParseResult } from "../parser/ParseResult";
+import { strict as assert } from "assert";
+import { AnyCommandNode, ParseResult } from "../parser";
 import { Document, CommandAttributes } from "../Document";
-import { CommandNode } from "../parser/CommandNode";
-import { AnyCommand } from "../commands/Command";
+import { AnyCommand } from "../commands";
 
 export type BluehawkFiles = { [pathName: string]: ParseResult };
 
-export interface ProcessRequest {
+export interface ProcessRequest<CommandNodeType = AnyCommandNode> {
   // Process the given Bluehawk result, optionally under an alternative id, and
   // emit the file.
   fork: (args: ForkArgs) => Promise<void>;
@@ -14,7 +14,7 @@ export interface ProcessRequest {
   parseResult: ParseResult;
 
   // The specific command to process
-  command: CommandNode;
+  commandNode: CommandNodeType;
 }
 
 export type CommandProcessors = Record<string, AnyCommand>;
@@ -94,38 +94,48 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
 
   private _process = (
     _processorState: ProcessorState,
-    commandSubset: CommandNode[],
+    commandSubset: AnyCommandNode[],
     result: ParseResult
   ): Promise<void>[] => {
-    return commandSubset.reduce((promises, command): Promise<void>[] => {
-      const processor = this.processors[command.commandName];
-      if (processor === undefined) {
+    return commandSubset.reduce((promises, commandNode): Promise<void>[] => {
+      const command = this.processors[commandNode.commandName];
+      if (command === undefined) {
         return promises;
       }
       // Commands are not necessarily async
-      const maybePromise = processor.process({
-        fork: (args: ForkArgs) => {
-          return this.fork({
-            ...args,
-            _processorState,
-          });
-        },
-        parseResult: result,
-        command,
-      });
+      const maybePromise = (() => {
+        assert(
+          (commandNode.type === "line" && command.supportsLineMode) ||
+            (commandNode.type === "block" && command.supportsBlockMode),
+          `${commandNode.commandName} found as a ${commandNode.type} command, which is an unsupported mode for the corresponding command processor. (This should have been reported as an error by the parser and the nodes should not have been sent to the processor.)`
+        );
+        return command.process({
+          fork: (args: ForkArgs) => {
+            return this.fork({
+              ...args,
+              _processorState,
+            });
+          },
+          parseResult: result,
+          commandNode,
+        });
+      })();
       if (maybePromise instanceof Promise) {
         promises.push(maybePromise);
       }
-      if (command.children !== undefined) {
+      if (commandNode.children !== undefined) {
         promises.push(
-          ...this._process(_processorState, command.children, result)
+          ...this._process(_processorState, commandNode.children, result)
         );
       }
       return promises;
     }, [] as Promise<void>[]);
   };
 
-  registerCommand(name: string, command: AnyCommand): void {
+  registerCommand<Command extends AnyCommand>(
+    name: string,
+    command: Command
+  ): void {
     this.processors[name] = command;
   }
 }

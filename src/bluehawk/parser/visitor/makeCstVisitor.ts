@@ -1,17 +1,17 @@
 import { CstNode, IToken } from "chevrotain";
 import { strict as assert } from "assert";
-import {
-  COMMAND_END_PATTERN,
-  COMMAND_PATTERN,
-  COMMAND_START_PATTERN,
-} from "../lexer/tokens";
+import { COMMAND_PATTERN } from "../lexer/tokens";
 import { RootParser } from "../RootParser";
 import { jsonErrorToVisitorError } from "./jsonErrorToVisitorError";
 import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
 import { BluehawkError } from "../../BluehawkError";
 import { Document } from "../../Document";
 import { PushParserPayload } from "../lexer/makePushParserTokens";
-import { CommandNode } from "../CommandNode";
+import {
+  AnyCommandNode,
+  CommandNodeImpl,
+  LineCommandNode,
+} from "../CommandNode";
 import {
   locationFromToken,
   locationAfterToken,
@@ -23,14 +23,8 @@ import { extractCommandNamesFromTokens } from "../extractCommandNamesFromTokens"
 
 export interface VisitorResult {
   errors: BluehawkError[];
-  commandNodes: CommandNode[];
+  commandNodes: AnyCommandNode[];
 }
-
-export type CommandNodeContext =
-  | "none"
-  | "stringLiteral"
-  | "lineComment"
-  | "blockComment";
 
 export interface IVisitor {
   parser: RootParser;
@@ -113,7 +107,7 @@ export function makeCstVisitor(
   // parent.
   interface VisitorContext {
     source: Document;
-    parent: CommandNode;
+    parent: CommandNodeImpl;
     errors: BluehawkError[];
   }
 
@@ -521,7 +515,7 @@ export function makeCstVisitor(
       }
       const result = visitor.visit(parseResult.cst, source);
       assert(parent.children !== undefined);
-      parent.children.push(...result.commandNodes);
+      parent.children.push(...(result.commandNodes as CommandNodeImpl[]));
       result.errors.forEach((error) =>
         errors.push({
           ...error,
@@ -539,12 +533,14 @@ export function makeCstVisitor(
   // that all methods correspond to a grammar rule, so this helper must be
   // external.
   const visit = (node: CstNode, source: Document): VisitorResult => {
-    const parent = CommandNode.rootCommand();
+    const parent = CommandNodeImpl.rootCommand();
     const errors: BluehawkError[] = [];
     visitor.visit([node], { errors, parent, source });
     return {
       errors,
-      commandNodes: parent.children ?? [],
+      commandNodes: (parent.children ?? []).map(
+        (child) => child.asBlockCommandNode() ?? (child as LineCommandNode)
+      ),
     };
   };
 

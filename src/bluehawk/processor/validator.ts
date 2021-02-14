@@ -1,45 +1,65 @@
-import { CommandNode } from "../parser/CommandNode";
+import { AnyCommandNode } from "../parser";
 import { BluehawkError } from "../BluehawkError";
-import { flatten } from "../parser/flatten";
+import { flatten } from "../parser";
 import { CommandProcessors } from "./Processor";
 import { makeAttributesConformToJsonSchemaRule } from "./makeAttributesConformToJsonSchemaRule";
 
 export interface ValidateCstResult {
   errors: BluehawkError[];
-  commandsById: Map<string, CommandNode>;
+  commandsById: Map<string, AnyCommandNode>;
 }
 
 // A rule function is registered for a given command name and checks that the
 // given command node conforms to the specification of that command. Errors can
 // be reported into the result.errors array.
 export type Rule = (
-  commandNode: CommandNode,
+  commandNode: AnyCommandNode,
   result: ValidateCstResult
 ) => void;
 
 export function validateCommands(
-  commandNodes: CommandNode[],
+  commandNodes: AnyCommandNode[],
   commandProcessorMap: CommandProcessors
 ): BluehawkError[] {
-  const validateResult = {
+  const validateResult: ValidateCstResult = {
     errors: [],
-    commandsById: new Map<string, CommandNode>(),
+    commandsById: new Map(),
   };
-  flatten({ children: commandNodes } as CommandNode).forEach((commandNode) => {
-    const processor = commandProcessorMap[commandNode.commandName];
-    if (processor === undefined) {
+  flatten({
+    children: commandNodes,
+  } as AnyCommandNode).forEach((commandNode) => {
+    const command = commandProcessorMap[commandNode.commandName];
+    if (command === undefined) {
       // TODO: warn unknown command
       return;
     }
 
-    if (processor.attributesSchema !== undefined) {
+    if (commandNode.type === "block" && !command.supportsBlockMode) {
+      validateResult.errors.push({
+        component: "validator",
+        location: commandNode.range.start,
+        message: `'${commandNode.commandName}' cannot be used in block mode (i.e. with -start and -end)`,
+      });
+      return;
+    }
+
+    if (commandNode.type === "line" && !command.supportsLineMode) {
+      validateResult.errors.push({
+        component: "validator",
+        location: commandNode.range.start,
+        message: `'${commandNode.commandName}' cannot be used in single line mode (i.e. without -start and -end around a block)`,
+      });
+      return;
+    }
+
+    if (command.attributesSchema !== undefined) {
       const attributeSchemaValidator = makeAttributesConformToJsonSchemaRule(
-        processor.attributesSchema
+        command.attributesSchema
       );
       attributeSchemaValidator(commandNode, validateResult);
     }
 
-    processor.rules.forEach((rule) => {
+    command.rules?.forEach((rule) => {
       rule(commandNode, validateResult);
     });
   });
@@ -49,7 +69,7 @@ export function validateCommands(
 // standard rule implementations
 
 export const idIsUnique: Rule = (
-  commandNode: CommandNode,
+  commandNode: AnyCommandNode,
   result: ValidateCstResult
 ) => {
   if (commandNode.id !== undefined) {
@@ -64,18 +84,5 @@ export const idIsUnique: Rule = (
       // otherwise, add the command id to the set
       result.commandsById.set(commandNode.id, commandNode);
     }
-  }
-};
-
-export const hasId: Rule = (
-  commandNode: CommandNode,
-  result: ValidateCstResult
-) => {
-  if (commandNode.id === undefined) {
-    result.errors.push({
-      component: "validator",
-      location: commandNode.range.start,
-      message: `missing ID for command: '${commandNode.commandName}'`,
-    });
   }
 };

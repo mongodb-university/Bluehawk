@@ -87,4 +87,48 @@ e
     );
     done();
   });
+
+  it("requires no attributes", () => {
+    const input = `// :remove-start: {
+  "id": "hey"
+}
+// :remove-end:
+`;
+
+    const source = new Document({
+      text: input,
+      language: "javascript",
+      path: "test.js",
+    });
+
+    const parseResult = bluehawk.parse(source);
+    expect(parseResult.errors[0].message).toStrictEqual(
+      "attribute list for 'remove' command should be null"
+    );
+  });
+
+  it("works as a line command", async (done) => {
+    const input = `leave this
+this should be removed // :remove:
+and leave this
+this should also be removed // :remove: // do it
+but not this
+`;
+
+    const source = new Document({
+      text: input,
+      language: "javascript",
+      path: "test.js",
+    });
+
+    const parseResult = bluehawk.parse(source);
+    const files = await bluehawk.process(parseResult);
+    expect(files["test.js"].source.text.toString()).toBe(
+      `leave this
+and leave this
+but not this
+`
+    );
+    done();
+  });
 });

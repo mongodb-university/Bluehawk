@@ -178,7 +178,7 @@ andremovethisaswell
     });
 
     const parseResult = bluehawk.parse(source);
-    expect(parseResult.errors.length).toBe(0);
+    expect(parseResult.errors).toStrictEqual([]);
     const files = await bluehawk.process(parseResult);
     expect(files["replace.test.js"].source.text.toString())
       .toBe(`leave this alone
