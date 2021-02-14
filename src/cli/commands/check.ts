@@ -7,10 +7,10 @@ import {
   getBluehawk,
 } from "../../bluehawk";
 import { withIgnoreOption, withJsonOption } from "../options";
-import { System } from "../../bluehawk/io/System";
 import { MainArgs } from "../cli";
 import { BluehawkError } from "../../bluehawk/BluehawkError";
 import { printJsonResult } from "../printJsonResult";
+import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
 interface CheckArgs extends MainArgs {
   paths: string[];
@@ -20,11 +20,19 @@ interface CheckArgs extends MainArgs {
 export const check = async (args: Arguments<CheckArgs>): Promise<void> => {
   const { ignore, json, paths, plugin } = args;
   const bluehawk = await getBluehawk(plugin);
-  const errors: BluehawkError[] = [];
+  const fileToErrorMap = new Map<string, BluehawkError[]>();
+
+  const addErrors = (filePath: string, errors: BluehawkError[]) => {
+    logErrorsToConsole(filePath, errors);
+    const existingErrors = fileToErrorMap.get(filePath) ?? [];
+    fileToErrorMap.set(filePath, [...existingErrors, ...errors]);
+  };
 
   // Define the handler for generating snippet files.
-  bluehawk.subscribe(({ errors }) => {
-    errors.push(...errors);
+  bluehawk.subscribe(({ source, errors }) => {
+    if (errors.length !== 0) {
+      addErrors(source.path, errors);
+    }
   });
 
   // Run through all given source paths and process them.
@@ -33,17 +41,17 @@ export const check = async (args: Arguments<CheckArgs>): Promise<void> => {
       rootPath,
       ignore,
     };
-    return parseAndProcessProject(project, bluehawk);
+    return parseAndProcessProject(project, bluehawk, undefined, addErrors);
   });
 
   await Promise.all(promises);
 
   if (json) {
-    printJsonResult(args, { errors });
+    const errorsByPath = Object.fromEntries(Array.from(fileToErrorMap));
+    printJsonResult(args, errorsByPath);
   }
 
-  // Errors already reported to console
-  process.exit(errors.length === 0 ? 0 : 1);
+  process.exit(fileToErrorMap.size);
 };
 
 const commandModule: CommandModule<

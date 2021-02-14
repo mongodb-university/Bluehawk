@@ -4,4 +4,5 @@ export interface BluehawkError {
   component: "lexer" | "parser" | "visitor" | "validator" | "processor";
   message: string;
   location: Location;
+  sourcePath?: string;
 }

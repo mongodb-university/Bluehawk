@@ -5,4 +5,5 @@ module.exports = {
   collectCoverage: true,
   coverageReporters: ["text", "html"],
   coverageDirectory: "<rootDir>/coverage",
+  modulePathIgnorePatterns: ["<rootDir>/build"],
 };
