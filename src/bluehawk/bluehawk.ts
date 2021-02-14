@@ -10,8 +10,8 @@ import { AnyCommand } from "./commands/Command";
 import { ParseResult } from "./parser/ParseResult";
 import { strict as assert } from "assert";
 import * as path from "path";
-import * as fs from "fs";
 import { isBinary } from "istextorbinary";
+import { System } from "./io/System";
 
 interface BluehawkConfiguration {
   commands?: AnyCommand[];
@@ -89,30 +89,16 @@ export class Bluehawk {
     };
   };
 
-  // Parse the document at the given path.
-  loadFileAndParse = async (sourcePath: string): Promise<ParseResult> => {
-    return new Promise((resolve, reject) => {
-      if (isBinary(sourcePath)) {
-        return reject(
-          new Error(
-            `Binary file encountered at path '${sourcePath}'. Bluehawk does not parse binary files.`
-          )
-        );
-      }
-
-      const language = path.extname(sourcePath);
-      fs.readFile(path.resolve(sourcePath), "utf8", (error, text) => {
-        if (error) {
-          return reject(error);
-        }
-        const document = new Document({ text, language, path: sourcePath });
-        try {
-          resolve(this.parse(document));
-        } catch (error) {
-          reject(error);
-        }
-      });
-    });
+  // Load the document at the given path.
+  readFile = async (sourcePath: string): Promise<Document> => {
+    if (isBinary(sourcePath)) {
+      throw new Error(
+        `Binary file encountered at path '${sourcePath}'. Bluehawk does not parse binary files.`
+      );
+    }
+    const language = path.extname(sourcePath);
+    const text = await System.fs.readFile(path.resolve(sourcePath), "utf8");
+    return new Document({ text, language, path: sourcePath });
   };
 
   // Subscribe to processed documents as they are processed by Bluehawk.
