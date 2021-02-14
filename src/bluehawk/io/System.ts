@@ -1,54 +1,22 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 /* eslint @typescript-eslint/explicit-module-boundary-types: 0 */
-import {
-  promises as fs,
-  constants as fsConstants,
-  Stats,
-  MakeDirectoryOptions,
-  PathLike,
-  WriteFileOptions,
-} from "fs";
+import fs from "fs";
+import { fs as memfs } from "memfs";
 
-// Mockable async fs standin. Use this instead of the fs library directly.
-export interface FileSystem {
-  copyFile(src: PathLike, dest: PathLike, flags?: number): Promise<void>;
-
-  lstat(path: PathLike): Promise<Stats>;
-
-  mkdir(
-    path: PathLike,
-    options?: number | string | MakeDirectoryOptions | undefined | null
-  ): Promise<void>;
-
-  readdir(
-    path: PathLike,
-    options?:
-      | { encoding?: BufferEncoding | null; withFileTypes?: false }
-      | BufferEncoding
-      | null
-  ): Promise<string[]>;
-
-  readFile(
-    path: PathLike,
-    options:
-      | { encoding: BufferEncoding; flag?: string | number }
-      | BufferEncoding
-  ): Promise<string>;
-
-  writeFile(
-    path: PathLike | fs.FileHandle,
-    data: any,
-    options?: WriteFileOptions
-  ): Promise<void>;
-
-  // Declare more functionality from fs here as needed.
-  // Use signatures from fs.promises.
-}
-
-// The system instance to be used by CLI commands.
+// Mockable fs implementation. Use this instead of fs directly.
 export const System = {
-  fsConstants,
+  fs: fs.promises,
 
-  // override this to mock
-  fs: fs as FileSystem,
+  useMemfs() {
+    // You can use this in a jest file like so:
+    /*
+    beforeAll(System.useMemfs);
+    afterAll(System.useRealfs);
+    */
+    System.fs = (memfs.promises as unknown) as typeof fs.promises;
+  },
+
+  useRealfs() {
+    System.fs = fs.promises;
+  },
 };
