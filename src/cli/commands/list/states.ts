@@ -6,6 +6,7 @@ import {
 } from "../../../bluehawk";
 import { MainArgs } from "../../cli";
 import { withIgnoreOption, withJsonOption } from "../../options";
+import { printJsonResult } from "../../printJsonResult";
 
 interface ListStatesArgs extends MainArgs {
   paths: string[];
@@ -40,9 +41,7 @@ export const listStates = async (
   );
 
   if (json) {
-    console.log(
-      JSON.stringify({ paths, ignore, plugin, states: Array.from(statesFound) })
-    );
+    printJsonResult(args, { states: Array.from(statesFound) });
     return;
   }
 

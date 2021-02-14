@@ -1,12 +1,44 @@
 import { Arguments, CommandModule } from "yargs";
 import { getBluehawk } from "../../../bluehawk";
 import { MainArgs } from "../../cli";
+import { withJsonOption } from "../../options";
+import { printJsonResult } from "../../printJsonResult";
 
-const handler = async ({ plugin }: Arguments<MainArgs>): Promise<void> => {
+const handler = async (
+  args: Arguments<MainArgs & { json?: boolean }>
+): Promise<void> => {
+  const { plugin, json } = args;
   const bluehawk = await getBluehawk(plugin);
 
   const { processor } = bluehawk;
   const { processors } = processor;
+
+  if (json) {
+    const commands = Object.entries(processors).map(
+      ([registeredName, command]) => {
+        const aliasOf =
+          registeredName !== command.name ? command.name : undefined;
+        const name = registeredName;
+        const {
+          description,
+          supportsBlockMode,
+          supportsLineMode,
+          attributesSchema,
+        } = command;
+        return {
+          name,
+          aliasOf,
+          description,
+          supportsBlockMode,
+          supportsLineMode,
+          attributesSchema,
+        };
+      }
+    );
+    printJsonResult(args, { commands });
+    return;
+  }
+
   const commandsListText = Object.entries(processors)
     .map(([registeredName, command]) => {
       const isAlias = registeredName !== command.name;
@@ -31,8 +63,11 @@ const handler = async ({ plugin }: Arguments<MainArgs>): Promise<void> => {
   console.log(`available markup commands:\n\n${commandsListText}`);
 };
 
-const commandModule: CommandModule<MainArgs> = {
+const commandModule: CommandModule<MainArgs, MainArgs & { json?: boolean }> = {
   command: "commands",
+  builder(args) {
+    return withJsonOption(args);
+  },
   handler,
   aliases: [],
   describe: "list available commands",
