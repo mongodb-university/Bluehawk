@@ -13,15 +13,35 @@ import * as path from "path";
 import * as fs from "fs";
 import { isBinary } from "istextorbinary";
 
+interface BluehawkConfiguration {
+  commands?: AnyCommand[];
+  commandAliases?: [string, AnyCommand][];
+}
+
 // The frontend of Bluehawk
 export class Bluehawk {
+  constructor(configuration?: BluehawkConfiguration) {
+    if (configuration === undefined) {
+      return;
+    }
+
+    const { commands, commandAliases } = configuration;
+
+    if (commands !== undefined) {
+      commands.forEach((command) => this.registerCommand(command));
+    }
+
+    if (commandAliases !== undefined) {
+      commandAliases.forEach((nameCommandPair) =>
+        this.registerCommand(nameCommandPair[1], nameCommandPair[0])
+      );
+    }
+  }
+
   // Register the given command on the processor and validator. This enables
   // support for the command under the given name.
-  registerCommand<Command extends AnyCommand>(
-    name: string,
-    command: Command
-  ): void {
-    this.processor.registerCommand(name, command);
+  registerCommand(command: AnyCommand, alternateName?: string): void {
+    this.processor.registerCommand(command, alternateName);
   }
 
   // Parses the given source file into commands.

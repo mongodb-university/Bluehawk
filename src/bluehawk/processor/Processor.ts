@@ -132,11 +132,8 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
     }, [] as Promise<void>[]);
   };
 
-  registerCommand<Command extends AnyCommand>(
-    name: string,
-    command: Command
-  ): void {
-    this.processors[name] = command;
+  registerCommand(command: AnyCommand, alternateName?: string): void {
+    this.processors[alternateName ?? command.name] = command;
   }
 }
 

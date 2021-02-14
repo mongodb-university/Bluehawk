@@ -15,6 +15,7 @@ describe("processor", () => {
   const bluehawk = new Bluehawk();
 
   const AppendMessageAfterDelayCommand = makeBlockCommand<NoAttributes>({
+    name: "append-message-after-delay",
     attributesSchema: NoAttributesSchema,
     process: (request): Promise<void> => {
       return new Promise((resolve) => {
@@ -32,10 +33,7 @@ describe("processor", () => {
     },
   });
 
-  bluehawk.registerCommand(
-    "append-message-after-delay",
-    AppendMessageAfterDelayCommand
-  );
+  bluehawk.registerCommand(AppendMessageAfterDelayCommand);
 
   it("ignores unknown commands", async (done) => {
     // NOTE: This is not necessarily the desired behavior, but it is the current
@@ -173,6 +171,7 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
       calledBlockCommandProcess: false,
     };
     const LineCommand = makeLineCommand({
+      name: "line-command",
       process({ commandNode }) {
         expect(commandNode.attributes).toBeUndefined();
         expect(commandNode.children).toBeUndefined();
@@ -185,6 +184,7 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
     });
 
     const BlockCommand = makeBlockCommand<IdRequiredAttributes>({
+      name: "block-command",
       attributesSchema: IdRequiredAttributesSchema,
       process({ commandNode }) {
         expect(commandNode.attributes).toBeDefined();
@@ -196,8 +196,8 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
       },
     });
 
-    bluehawk.registerCommand("line-command", LineCommand);
-    bluehawk.registerCommand("block-command", BlockCommand);
+    bluehawk.registerCommand(LineCommand);
+    bluehawk.registerCommand(BlockCommand);
 
     await (async () => {
       const result = bluehawk.parse(

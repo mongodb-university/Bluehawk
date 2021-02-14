@@ -5,6 +5,7 @@ import { makeBlockCommand, NoAttributes, NoAttributesSchema } from "./Command";
 import { removeMetaRange } from "./removeMetaRange";
 
 export const UncommentCommand = makeBlockCommand<NoAttributes>({
+  name: "uncomment",
   attributesSchema: NoAttributesSchema,
   process(request) {
     const { commandNode, parseResult } = request;

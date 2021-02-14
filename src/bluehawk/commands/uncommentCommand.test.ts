@@ -5,8 +5,8 @@ import { RemoveCommand } from "./RemoveCommand";
 
 describe("uncomment command", () => {
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand("uncomment", UncommentCommand);
-  bluehawk.registerCommand("remove", RemoveCommand);
+  bluehawk.registerCommand(UncommentCommand);
+  bluehawk.registerCommand(RemoveCommand);
 
   it("uncomments", async (done) => {
     const source = new Document({

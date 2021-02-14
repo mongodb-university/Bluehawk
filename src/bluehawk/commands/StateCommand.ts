@@ -6,6 +6,7 @@ import {
 import { removeMetaRange } from "./removeMetaRange";
 
 export const StateCommand = makeBlockCommand<IdRequiredAttributes>({
+  name: "state",
   attributesSchema: IdRequiredAttributesSchema,
   process(request) {
     const { commandNode, fork, parseResult } = request;
