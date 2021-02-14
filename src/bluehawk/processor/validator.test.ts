@@ -19,6 +19,7 @@ import {
 describe("validator", () => {
   const commandProcessors: CommandProcessors = {
     "code-block": makeBlockCommand<IdRequiredAttributes>({
+      name: "code-block",
       attributesSchema: IdRequiredAttributesSchema,
       rules: [idIsUnique],
       process(request) {
@@ -266,17 +267,20 @@ the quick brown fox jumped
   it("validates block or line mode support on commands", () => {
     const commandProcessors: CommandProcessors = {
       lineOnlyCommand: makeLineCommand({
+        name: "lineOnlyCommand",
         process(request) {
           // do nothing
         },
       }),
       blockOnlyCommand: makeBlockCommand<NoAttributes>({
+        name: "blockOnlyCommand",
         attributesSchema: NoAttributesSchema,
         process(request) {
           // do nothing
         },
       }),
       blockOrLineCommand: makeBlockOrLineCommand({
+        name: "blockOrLineCommand",
         attributesSchema: NoAttributesSchema,
         process(request) {
           // do nothing
