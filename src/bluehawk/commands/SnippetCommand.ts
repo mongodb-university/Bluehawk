@@ -61,6 +61,7 @@ function dedentRange(
 
 export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
   name: "snippet",
+  description: "identifies snippets for extraction into standalone files",
   attributesSchema: IdRequiredAttributesSchema,
   rules: [idIsUnique],
   process: (request: ProcessRequest<BlockCommandNode>): void => {

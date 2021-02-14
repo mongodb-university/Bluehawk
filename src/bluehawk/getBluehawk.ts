@@ -21,6 +21,7 @@ export const getBluehawk = async (
   if (bluehawk === undefined) {
     const StateUncommentCommand = makeBlockCommand<IdRequiredAttributes>({
       name: "state-uncomment",
+      description: "combines 'uncomment' and 'state'",
       attributesSchema: IdRequiredAttributesSchema,
       process(request) {
         UncommentCommand.process(request);

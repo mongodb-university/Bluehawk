@@ -10,6 +10,8 @@ type ReplaceCommandAttributes = {
 
 export const ReplaceCommand = makeBlockCommand<ReplaceCommandAttributes>({
   name: "replace",
+  description:
+    "given 'terms' object in the attribute list, replaces term keys with corresponding values within the block",
   attributesSchema: {
     type: "object",
     required: ["terms"],

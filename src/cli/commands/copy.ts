@@ -7,18 +7,17 @@ import {
   Project,
   getBluehawk,
 } from "../../bluehawk";
+import { MainArgs } from "../cli";
 import {
   withDestinationOption,
-  withPluginOption,
   withStateOption,
   withIgnoreOption,
 } from "../options";
 import { System } from "../../bluehawk/io/System";
 
-export interface CopyArgs {
+export interface CopyArgs extends MainArgs {
   rootPath: string;
   destination: string;
-  plugin?: string | string[];
   state?: string;
   ignore?: string | string[];
 }
@@ -130,9 +129,7 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
 const commandModule: CommandModule<{ rootPath: string }, CopyArgs> = {
   command: "copy <rootPath>",
   builder: (yargs): Argv<CopyArgs> => {
-    return withIgnoreOption(
-      withPluginOption(withStateOption(withDestinationOption(yargs)))
-    );
+    return withIgnoreOption(withStateOption(withDestinationOption(yargs)));
   },
   handler: async (args: Arguments<CopyArgs>) => await copy(args),
   aliases: [],

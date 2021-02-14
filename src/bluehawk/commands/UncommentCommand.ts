@@ -6,6 +6,8 @@ import { removeMetaRange } from "./removeMetaRange";
 
 export const UncommentCommand = makeBlockCommand<NoAttributes>({
   name: "uncomment",
+  description:
+    "removes up to one line comment token from every line in its range",
   attributesSchema: NoAttributesSchema,
   process(request) {
     const { commandNode, parseResult } = request;
