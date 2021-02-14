@@ -31,7 +31,7 @@ const handler = async ({ plugin }: Arguments<MainArgs>): Promise<void> => {
   console.log(`available markup commands:\n\n${commandsListText}`);
 };
 
-const commandModule: CommandModule = {
+const commandModule: CommandModule<MainArgs> = {
   command: "commands",
   handler,
   aliases: [],

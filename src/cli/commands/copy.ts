@@ -126,7 +126,10 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
   return errors;
 };
 
-const commandModule: CommandModule<{ rootPath: string }, CopyArgs> = {
+const commandModule: CommandModule<
+  MainArgs & { rootPath: string },
+  CopyArgs
+> = {
   command: "copy <rootPath>",
   builder: (yargs): Argv<CopyArgs> => {
     return withIgnoreOption(withStateOption(withDestinationOption(yargs)));

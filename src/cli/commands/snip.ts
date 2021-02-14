@@ -90,7 +90,7 @@ const handler = async ({
   }
 };
 
-const commandModule: CommandModule<{ paths: string[] }, SnipArgs> = {
+const commandModule: CommandModule<MainArgs & { paths: string[] }, SnipArgs> = {
   command: "snip <paths..>",
   builder: (yargs): Argv<SnipArgs> => {
     return withIgnoreOption(withStateOption(withDestinationOption(yargs)));
