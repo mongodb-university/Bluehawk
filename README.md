@@ -32,7 +32,7 @@ func someTest() {
 // ... more tests ...
 ```
 
-Running Bluehawk with the --snippets flag on this file will produce a snippet
+Running Bluehawk with the `snip` command on this file will produce a snippet
 file called `SomeTest.codeblock.some-example.swift` that looks something like this:
 
 ```swift
@@ -126,9 +126,15 @@ You can run Bluehawk on an entire directory, and each file in the repo will be
 copied or transformed to the destination. This makes it easy to copy one state
 of the entire tutorial source into another repo that learners can clone.
 
-## How to run Bluehawk
+## Installation
 
-First, install dependencies:
+```sh
+npm install -g bluehawk
+```
+
+## How to Run Bluehawk from Source
+
+To build and run Bluehawk from source, install dependencies:
 
 ```sh
 npm install
@@ -143,28 +149,24 @@ npm run build
 If compilation is successful, you can run bluehawk like so:
 
 ```sh
-node build/cli/index.js -s <folder to source file or directory> -d <destination directory> --snippets
+node . snip -d <destination directory> <folder to source file or directory>
 ```
 
-Which you can alias (until release):
+Which you can alias as:
 
 ```sh
-alias bluehawk="node /path/to/bluehawk/build/cli/index.js"
+alias bluehawk="node /path/to/bluehawk"
 ```
 
-The `-s or --source` parameter is required.
+In order to do anything useful, you can use the following commands:
 
-In order to do anything useful, you can use the following flags:
-
-- `--state <state name>`: Output the given `state name` version of files. When Bluehawk
-  encounters a `state` command (see below), multiple versions of the source file
+- `copy --state <state name>`: Copy the given `state name` version of files to destination.
+  When Bluehawk encounters a `state` command (see below), multiple versions of the source file
   are spawned. Each version removes any code in state commands that are **not**
   marked with the corresponding state name. This flag determines which version
   to eventually write to disk.
 
-  When not combined with `snippets`, this retains the relative structure of the
-  project.
-- `--snippets`: Output snippet files only. Can be combined with `--state`.
+- `snip`: Output snippet files only. Can be combined with `--state`.
 - `-d or --destination` defines the output location.
 
 
@@ -214,10 +216,10 @@ exports.register = (bluehawk) => {
 Usage:
 
 ```shell
-bluehawk --plugin ./myPlugin --source source.txt
+bluehawk --plugin ./myPlugin source.txt
 ```
 
-You can pass the --plugin flag multiple times to load different plugins.
+You can pass the --plugin flag multiple times to load different plugins or create a plugin that is composed of other plugins.
 
 ## Running Tests
 
