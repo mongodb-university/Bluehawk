@@ -4,6 +4,8 @@ import { OnBinaryFileFunction } from "./OnBinaryFileFunction";
 import { OnErrorFunction, logErrorsToConsole } from "./OnErrorFunction";
 import { Project } from "./project";
 import * as path from "path";
+import { System } from "./io/System";
+import { Document } from "./Document";
 
 export async function parseAndProcess(
   project: Project,
@@ -13,11 +15,14 @@ export async function parseAndProcess(
   onErrors: OnErrorFunction = logErrorsToConsole
 ): Promise<void> {
   try {
-    if (isBinary(filePath)) {
+    const blob = await System.fs.readFile(path.resolve(filePath));
+    if (isBinary(filePath, blob)) {
       onBinaryFile && (await onBinaryFile(filePath));
       return;
     }
-    const document = await bluehawk.readFile(filePath);
+    const language = path.extname(filePath);
+    const text = blob.toString("utf8");
+    const document = new Document({ text, language, path: filePath });
     const result = bluehawk.parse(document);
     if (result.errors.length !== 0) {
       return onErrors(path.relative(project.rootPath, filePath), result.errors);

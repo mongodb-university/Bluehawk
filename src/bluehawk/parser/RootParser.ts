@@ -22,6 +22,7 @@ import { ErrorMessageProvider } from "./ErrorMessageProvider";
 import { BluehawkError } from "../BluehawkError";
 import { locationFromToken } from "./locationFromToken";
 import { extractCommandNamesFromTokens } from "./extractCommandNamesFromTokens";
+import { LanguageSpecification } from "./LanguageSpecification";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step2_parsing.html
 
@@ -78,18 +79,9 @@ pushParser
 
 type Rule = (idx?: number) => CstNode;
 
-interface ParserResult {
-  cst?: CstNode;
-  errors: BluehawkError[];
-}
-
-export interface IParser {
-  parse(text: string): ParserResult;
-}
-
 // While the lexer defines the tokens of the language, the parser defines the
 // syntax.
-export class RootParser extends CstParser implements IParser {
+export class RootParser extends CstParser {
   lexer: Lexer;
 
   annotatedText: Rule = UndefinedRule;
@@ -101,13 +93,19 @@ export class RootParser extends CstParser implements IParser {
   lineComment: Rule = UndefinedRule;
   attributeList: Rule = UndefinedRule;
   pushParser: Rule = UndefinedRule;
+  languageSpecification?: LanguageSpecification;
 
-  constructor(languageTokens: TokenType[]) {
+  constructor(
+    languageTokens: TokenType[],
+    languageSpecification?: LanguageSpecification
+  ) {
     super(makeRootMode(languageTokens), {
       nodeLocationTracking: "full",
       errorMessageProvider: new ErrorMessageProvider(),
     });
     this.lexer = makeLexer(languageTokens);
+
+    this.languageSpecification = languageSpecification;
 
     // annotatedText is the root rule and is a series of zero or more chunks
     this.RULE("annotatedText", () => {

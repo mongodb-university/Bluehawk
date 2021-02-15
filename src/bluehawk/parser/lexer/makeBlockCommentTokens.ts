@@ -14,7 +14,7 @@ export function makeBlockCommentTokens(
   const tokens: [TokenType, TokenType] = [
     createToken({
       name: "BlockCommentStart",
-      label: `BlockCommentStart(${startPattern})`,
+      label: `BlockCommentStart(${startPattern.source})`,
       categories: [BlockCommentStart],
       pattern: makePayloadPattern(startPattern, () => ({
         ...(configuration ?? {}),
@@ -24,7 +24,7 @@ export function makeBlockCommentTokens(
     }),
     createToken({
       name: "BlockCommentEnd",
-      label: `BlockCommentEnd(${endPattern})`,
+      label: `BlockCommentEnd(${endPattern.source})`,
       categories: [BlockCommentEnd],
       pattern: endPattern,
       line_breaks: false,

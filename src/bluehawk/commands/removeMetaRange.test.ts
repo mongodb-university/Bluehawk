@@ -18,6 +18,11 @@ describe("removeMetaRange", () => {
       },
     })
   );
+  bluehawk.addLanguage("js", {
+    languageId: "javascript",
+    blockComments: [[/\/\*/, /\*\//]],
+    lineComments: [/\/\/ ?/],
+  });
 
   it("behaves on block commands", async () => {
     // Note that it completely deletes the line on which the -end command is

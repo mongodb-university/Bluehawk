@@ -10,7 +10,11 @@ describe("stateCommand", () => {
   bluehawk.registerCommand(StateCommand);
   bluehawk.registerCommand(RemoveCommand);
   bluehawk.registerCommand(SnippetCommand);
-
+  bluehawk.addLanguage(["js"], {
+    languageId: "javascript",
+    blockComments: [[/\/\*/, /\*\//]],
+    lineComments: [/\/\/ ?/],
+  });
   it("processes nested commands", async (done) => {
     const multipleInput = new Document({
       text: `
