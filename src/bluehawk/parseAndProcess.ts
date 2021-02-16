@@ -1,11 +1,16 @@
 import { isBinary } from "istextorbinary";
 import { Bluehawk } from ".";
 import { OnBinaryFileFunction } from "./OnBinaryFileFunction";
+import { OnErrorFunction, logErrorsToConsole } from "./OnErrorFunction";
+import { Project } from "./project";
+import * as path from "path";
 
 export async function parseAndProcess(
+  project: Project,
   bluehawk: Bluehawk,
   filePath: string,
-  onBinaryFile?: OnBinaryFileFunction
+  onBinaryFile?: OnBinaryFileFunction,
+  onErrors: OnErrorFunction = logErrorsToConsole
 ): Promise<void> {
   try {
     if (isBinary(filePath)) {
@@ -15,15 +20,7 @@ export async function parseAndProcess(
     const document = await bluehawk.readFile(filePath);
     const result = bluehawk.parse(document);
     if (result.errors.length !== 0) {
-      console.error(
-        `Error in ${filePath}:\n${result.errors
-          .map(
-            (error) =>
-              `  at line ${error.location.line} col ${error.location.column}: ${error.message}`
-          )
-          .join("\n")}`
-      );
-      return;
+      return onErrors(path.relative(project.rootPath, filePath), result.errors);
     }
     await bluehawk.process(result);
   } catch (e) {

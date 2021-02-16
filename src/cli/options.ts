@@ -54,3 +54,13 @@ export function withStateOption<T>(
     once: true,
   });
 }
+
+export function withJsonOption<T>(
+  yargs: Argv<T>
+): Argv<T & { json?: boolean }> {
+  return option(yargs, "json", {
+    boolean: true,
+    describe: "output as json",
+    once: true,
+  });
+}

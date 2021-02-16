@@ -41,7 +41,7 @@ export class Bluehawk {
   // Register the given command on the processor and validator. This enables
   // support for the command under the given name.
   registerCommand(command: AnyCommand, alternateName?: string): void {
-    this.processor.registerCommand(command, alternateName);
+    this._processor.registerCommand(command, alternateName);
   }
 
   // Parses the given source file into commands.
@@ -76,7 +76,7 @@ export class Bluehawk {
     const visitorResult = visitor.visit(parseResult.cst, source);
     const validateErrors = validateCommands(
       visitorResult.commandNodes,
-      this.processor.processors
+      this._processor.processors
     );
     return {
       errors: [
@@ -107,12 +107,12 @@ export class Bluehawk {
       listener.forEach((listener) => this.subscribe(listener));
       return;
     }
-    this.processor.subscribe(listener);
+    this._processor.subscribe(listener);
   }
 
   // Executes the commands on the given source. Use subscribe() to get results.
   process = async (parseResult: ParseResult): Promise<BluehawkFiles> => {
-    return this.processor.process(parseResult);
+    return this._processor.process(parseResult);
   };
 
   // Load the given plugin(s). A plugin is a js file or module that exports a
@@ -155,7 +155,11 @@ export class Bluehawk {
     this._loadedPlugins.add(pluginPath);
   };
 
+  get processor(): Processor {
+    return this._processor;
+  }
+
   private parsers = new Map<string, [RootParser, IVisitor]>();
-  private processor = new Processor();
+  private _processor = new Processor();
   private _loadedPlugins = new Set<string>();
 }

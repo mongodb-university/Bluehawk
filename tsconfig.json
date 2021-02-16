@@ -9,7 +9,8 @@
     "strictNullChecks": true,
     "strict": true,
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "resolveJsonModule": true
   },
   "sourceMap": true,
   "include": [
