@@ -10,9 +10,9 @@ export const UncommentCommand = makeBlockCommand<NoAttributes>({
   process(request) {
     const { commandNode, parseResult } = request;
     const { source } = parseResult;
-
+    const { text } = source;
     // Strip tags
-    removeMetaRange(source.text, commandNode);
+    removeMetaRange(text, commandNode);
 
     const { contentRange } = commandNode;
     if (contentRange == undefined) {
@@ -31,10 +31,19 @@ export const UncommentCommand = makeBlockCommand<NoAttributes>({
         (lineComment, i) =>
           i === 0 || lineComments[i - 1].startLine !== lineComment.startLine
       )
+      .filter(({ startColumn, startOffset }) => {
+        // Do not delete line comments if they are not the first thing in the
+        // line (after whitespace)
+        assert(startColumn);
+        return (
+          startColumn === 1 ||
+          text.snip(startOffset - (startColumn - 1), startOffset).isEmpty()
+        );
+      })
       .forEach((lineComment) => {
         assert(lineComment.endOffset !== undefined);
         // Delete the line comment
-        source.text.remove(lineComment.startOffset, lineComment.endOffset + 1);
+        text.remove(lineComment.startOffset, lineComment.endOffset + 1);
       });
   },
 });
