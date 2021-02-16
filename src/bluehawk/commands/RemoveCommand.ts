@@ -5,6 +5,7 @@ import {
 } from "./Command";
 
 export const RemoveCommand = makeBlockOrLineCommand<NoAttributes>({
+  name: "remove",
   attributesSchema: NoAttributesSchema,
   process({ commandNode, parseResult }) {
     const { lineRange } = commandNode;

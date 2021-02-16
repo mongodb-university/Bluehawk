@@ -4,6 +4,10 @@ import { AnySchema, JSONSchemaType } from "ajv";
 import { AnyCommandNode, BlockCommandNode, LineCommandNode } from "../parser";
 
 interface Command {
+  // The command name. For block commands this should not include -start or
+  // -end.
+  name: string;
+
   // A helpful description of what the command is supposed to do
   description?: string;
 
