@@ -5,8 +5,8 @@ import { RemoveCommand } from "./RemoveCommand";
 
 describe("snippet Command", () => {
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand("snippet", SnippetCommand);
-  bluehawk.registerCommand("hide", RemoveCommand);
+  bluehawk.registerCommand(SnippetCommand);
+  bluehawk.registerCommand(RemoveCommand);
 
   it("performs extraction", async (done) => {
     const snippet = `describe("some stuff", () => {
@@ -121,9 +121,9 @@ try! realm.write {
     const source = new Document({
       text: `some text
 // :snippet-start: foo
-// :hide-start:
+// :remove-start:
 hide this
-// :hide-end:
+// :remove-end:
 // :snippet-end:
 `,
       language: "javascript",

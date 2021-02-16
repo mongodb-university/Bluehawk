@@ -10,8 +10,8 @@ import {
 describe("bluehawk", () => {
   const bluehawk = new Bluehawk();
   bluehawk.registerCommand(
-    "code-block",
     makeBlockCommand<IdRequiredAttributes>({
+      name: "code-block",
       attributesSchema: IdRequiredAttributesSchema,
       process(request) {
         return;

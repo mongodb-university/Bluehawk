@@ -12,7 +12,8 @@ export async function parseAndProcess(
       onBinaryFile && (await onBinaryFile(filePath));
       return;
     }
-    const result = await bluehawk.loadFileAndParse(filePath);
+    const document = await bluehawk.readFile(filePath);
+    const result = bluehawk.parse(document);
     if (result.errors.length !== 0) {
       console.error(
         `Error in ${filePath}:\n${result.errors

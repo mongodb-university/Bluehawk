@@ -14,24 +14,13 @@ import {
 
 let bluehawk: Bluehawk | undefined = undefined;
 
-// Returns a standard Bluehawk instance with
+// Returns a standard Bluehawk instance with the given plugins
 export const getBluehawk = async (
   pluginPaths?: string | string[]
 ): Promise<Bluehawk> => {
   if (bluehawk === undefined) {
-    bluehawk = new Bluehawk();
-    bluehawk.registerCommand("code-block", SnippetCommand);
-    bluehawk.registerCommand("replace", ReplaceCommand);
-    bluehawk.registerCommand("snippet", SnippetCommand);
-    bluehawk.registerCommand("remove", RemoveCommand);
-
-    // TODO: "hide" is deprecated and "replace-with" will not work as originally
-    bluehawk.registerCommand("hide", RemoveCommand);
-
-    // hide and replace-with now belong to "state"
-    bluehawk.registerCommand("state", StateCommand);
-
     const StateUncommentCommand = makeBlockCommand<IdRequiredAttributes>({
+      name: "state-uncomment",
       attributesSchema: IdRequiredAttributesSchema,
       process(request) {
         UncommentCommand.process(request);
@@ -39,8 +28,21 @@ export const getBluehawk = async (
       },
     });
 
-    // uncomment the block in the state
-    bluehawk.registerCommand("state-uncomment", StateUncommentCommand);
+    bluehawk = new Bluehawk({
+      commands: [
+        RemoveCommand,
+        ReplaceCommand,
+        SnippetCommand,
+        StateCommand,
+        StateUncommentCommand,
+        UncommentCommand,
+      ],
+      // Aliases for backwards compatibility
+      commandAliases: [
+        ["hide", RemoveCommand],
+        ["code-block", SnippetCommand],
+      ],
+    });
   }
 
   await bluehawk.loadPlugin(pluginPaths);
