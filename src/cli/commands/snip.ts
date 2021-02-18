@@ -23,6 +23,34 @@ interface SnipArgs extends MainArgs {
   format?: string;
 }
 
+export const doRst = async (
+  result: ParseResult
+): Promise<string | undefined> => {
+  const { source } = result;
+  if (
+    source.attributes["snippet"] === undefined ||
+    source.attributes["emphasize"] === undefined
+  ) {
+    return undefined;
+  }
+
+  const rstHeader = ".. code-block::";
+  const rstEmphasizeModifier = "   :emphasize-lines:";
+  const range = source.attributes["emphasize"]["range"];
+
+  const formattedCodeblock = [
+    [rstHeader, "js" /* source.language */].join(" "),
+    [rstEmphasizeModifier, range].join(" "),
+    "",
+    source.text
+      .toString()
+      .split(/\r\n|\r|\n/)
+      .map((line) => (line === "" ? line : `   ${line}`))
+      .join("\n"),
+  ].join("\n");
+  return formattedCodeblock;
+};
+
 export const snip = async (args: SnipArgs): Promise<void> => {
   const { paths, destination, plugin, state, ignore, format } = args;
   const bluehawk = await getBluehawk(plugin);
@@ -72,25 +100,15 @@ export const snip = async (args: SnipArgs): Promise<void> => {
   if (format !== undefined) {
     // Define the handler for generating formatted snippet files.
     bluehawk.subscribe(async (result: ParseResult) => {
-      const { source } = result;
-      if (
-        source.attributes["snippet"] === undefined ||
-        source.attributes["emphasize"] === undefined
-      ) {
+      const formattedCodeblock = await doRst(result);
+      if (formattedCodeblock === undefined) {
         return;
       }
-
-      const targetPath = path.join(destination, "formatted", source.basename);
-
-      const rstHeader = ".. code-block::";
-      const rstEmphasizeModifier = ":emphasize-lines: ";
-      const range = source.attributes["emphasize"]["range"];
-
-      const formattedCodeblock = [
-        [rstHeader, source.language].join(" "),
-        [rstEmphasizeModifier, range].join(" "),
-        source.text.toString(),
-      ].join("\n");
+      const { source } = result;
+      const targetPath = path.join(
+        destination,
+        `${source.basename}.code-block.rst`
+      );
 
       try {
         await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");

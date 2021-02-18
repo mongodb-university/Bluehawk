@@ -19,21 +19,23 @@ describe("snip", () => {
     });
     await System.fs.writeFile(
       Path.join(rootPath, testFileName),
-      `const bar = "foo"
-
-    // :emphasize-start:
-    describe("some stuff", () => {
-      it("foos the bar", () => {
-        expect(true).toBeTruthy();
-      });
-    });
-    // :emphasize-end:
-    console.log(bar);
+      `        // :code-block-start: foo
+        const bar = "foo"
+        // :emphasize-start:
+        describe("some stuff", () => {
+          it("foos the bar", () => {
+            expect(true).toBeTruthy();
+          });
+        });
+        // :emphasize-end:
+        console.log(bar);
+        // :code-block-end:
     `,
       {
         encoding: "utf8",
       }
     );
+
     const errors = await snip({
       paths: [rootPath],
       destination: destinationPath,
@@ -44,23 +46,26 @@ describe("snip", () => {
 
     expect(errors).toStrictEqual(undefined);
     const destinationList = await System.fs.readdir(destinationPath);
-    expect([]).toStrictEqual(destinationList);
+    expect(destinationList).toStrictEqual([
+      "test.codeblock.foo.js",
+      "test.codeblock.foo.js.code-block.rst",
+    ]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(destinationPath, testFileName)
+      Path.join(destinationPath, "test.codeblock.foo.js.code-block.rst"),
+      "utf8"
     );
     expect(fileContents).toStrictEqual(`.. code-block:: js
-      :emphasize-lines: 3-7
+   :emphasize-lines: 3-7
 
-      const bar = "foo"
-
-      describe("some stuff", () => {
-        it("foos the bar", () => {
-          expect(true).toBeTruthy();
-        });
-      });
-      console.log(bar);
-    `);
+   const bar = "foo"
+   describe("some stuff", () => {
+     it("foos the bar", () => {
+       expect(true).toBeTruthy();
+     });
+   });
+   console.log(bar);
+`);
     done();
   });
 });
