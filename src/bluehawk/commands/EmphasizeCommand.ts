@@ -17,6 +17,9 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
 
     // Strip tags
     removeMetaRange(text, commandNode);
-    source.attributes["emphasize"] = commandNode.lineRange;
+    if (source.attributes["emphasize"] === undefined) {
+      source.attributes["emphasize"] = {};
+    }
+    source.attributes["emphasize"]["range"] = commandNode.lineRange;
   },
 });

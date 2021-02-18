@@ -3,8 +3,9 @@ import { Document } from "../Document";
 import { EmphasizeCommand } from "./EmphasizeCommand";
 
 describe("emphasize command", () => {
-  const bluehawk = new Bluehawk();
-  bluehawk.registerCommand("emphasize", EmphasizeCommand);
+  const bluehawk = new Bluehawk({
+    commands: [EmphasizeCommand],
+  });
 
   it("functions as a block", async (done) => {
     const singleInput = `const bar = "foo"
