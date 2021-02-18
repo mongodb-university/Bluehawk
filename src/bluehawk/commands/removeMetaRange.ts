@@ -1,5 +1,6 @@
 import MagicString from "magic-string";
 import { Range } from "../Range";
+import { AnyCommandNode } from "../parser";
 
 // Removes all within the range except the content range.
 // Ideal for stripping command tags and attribute lists.

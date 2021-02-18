@@ -5,6 +5,7 @@ import {
   RemoveCommand,
   StateCommand,
   UncommentCommand,
+  EmphasizeCommand,
 } from ".";
 import {
   makeBlockCommand,
@@ -24,6 +25,7 @@ export const getBluehawk = async (
     bluehawk.registerCommand("replace", ReplaceCommand);
     bluehawk.registerCommand("snippet", SnippetCommand);
     bluehawk.registerCommand("remove", RemoveCommand);
+    bluehawk.registerCommand("emphasize", EmphasizeCommand);
 
     // TODO: "hide" is deprecated and "replace-with" will not work as originally
     bluehawk.registerCommand("hide", RemoveCommand);

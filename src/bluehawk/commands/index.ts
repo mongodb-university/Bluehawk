@@ -5,3 +5,4 @@ export * from "./SnippetCommand";
 export * from "./StateCommand";
 export * from "./UncommentCommand";
 export * from "./removeMetaRange";
+export * from "./EmphasizeCommand";

@@ -1,5 +1,5 @@
 import * as path from "path";
-import { CommandModule, Arguments, Argv } from "yargs";
+import { CommandModule, Arguments, Argv, options } from "yargs";
 import {
   parseAndProcessProject,
   ParseResult,
@@ -11,6 +11,7 @@ import {
   withPluginOption,
   withStateOption,
   withIgnoreOption,
+  withGenerateFormattedCodeSnippetsOption,
 } from "../options";
 import { System } from "../../bluehawk/io/System";
 
@@ -20,15 +21,11 @@ interface SnipArgs {
   plugin?: string | string[];
   state?: string;
   ignore?: string | string[];
+  generateFormattedCodeSnippets?: string;
 }
 
-const handler = async ({
-  paths,
-  destination,
-  plugin,
-  state,
-  ignore,
-}: Arguments<SnipArgs>): Promise<void> => {
+export const snip = async (args: SnipArgs): Promise<void> => {
+  const { paths, destination, plugin, state, ignore } = args;
   const bluehawk = await getBluehawk(plugin);
 
   // If a file contains the state command, the processor will generate multiple
@@ -73,6 +70,42 @@ const handler = async ({
     }
   });
 
+  // Define the handler for generating formatted snippet files.
+  bluehawk.subscribe(async (result: ParseResult) => {
+    const { source } = result;
+    if (
+      source.attributes["snippet"] === undefined ||
+      source.attributes["emphasize"] === undefined
+    ) {
+      return;
+    }
+
+    // TODO: need to make sure that "generate formatted snippets" is turned on here
+    const targetPath = path.join(destination, source.basename);
+
+    const rstHeader = ".. code-block:: ";
+    const rstEmphasizeModifier = ":emphasize-lines: ";
+    const range = source.attributes["emphasize"]["range"];
+
+    const formattedCodeblock =
+      rstHeader +
+      source.language +
+      "\n" +
+      rstEmphasizeModifier +
+      range +
+      source.text.toString();
+
+    console.log(formattedCodeblock);
+
+    try {
+      await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+    } catch (error) {
+      console.error(
+        `Failed to write ${targetPath} (based on ${source.path}): ${error.message}`
+      );
+    }
+  });
+
   // Run through all given source paths and process them.
   const promises = paths.map(async (rootPath) => {
     const project: Project = {
@@ -95,10 +128,14 @@ const commandModule: CommandModule<{ paths: string[] }, SnipArgs> = {
   command: "snip <paths..>",
   builder: (yargs): Argv<SnipArgs> => {
     return withIgnoreOption(
-      withPluginOption(withStateOption(withDestinationOption(yargs)))
+      withPluginOption(
+        withStateOption(
+          withDestinationOption(withGenerateFormattedCodeSnippetsOption(yargs))
+        )
+      )
     );
   },
-  handler,
+  handler: async (args: Arguments<SnipArgs>) => await snip(args),
   aliases: [],
   describe: "extract snippets",
 };
