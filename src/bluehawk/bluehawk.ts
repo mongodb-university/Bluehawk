@@ -10,18 +10,38 @@ import { AnyCommand } from "./commands/Command";
 import { ParseResult } from "./parser/ParseResult";
 import { strict as assert } from "assert";
 import * as path from "path";
-import * as fs from "fs";
 import { isBinary } from "istextorbinary";
+import { System } from "./io/System";
+
+interface BluehawkConfiguration {
+  commands?: AnyCommand[];
+  commandAliases?: [string, AnyCommand][];
+}
 
 // The frontend of Bluehawk
 export class Bluehawk {
+  constructor(configuration?: BluehawkConfiguration) {
+    if (configuration === undefined) {
+      return;
+    }
+
+    const { commands, commandAliases } = configuration;
+
+    if (commands !== undefined) {
+      commands.forEach((command) => this.registerCommand(command));
+    }
+
+    if (commandAliases !== undefined) {
+      commandAliases.forEach((nameCommandPair) =>
+        this.registerCommand(nameCommandPair[1], nameCommandPair[0])
+      );
+    }
+  }
+
   // Register the given command on the processor and validator. This enables
   // support for the command under the given name.
-  registerCommand<Command extends AnyCommand>(
-    name: string,
-    command: Command
-  ): void {
-    this.processor.registerCommand(name, command);
+  registerCommand(command: AnyCommand, alternateName?: string): void {
+    this._processor.registerCommand(command, alternateName);
   }
 
   // Parses the given source file into commands.
@@ -56,7 +76,7 @@ export class Bluehawk {
     const visitorResult = visitor.visit(parseResult.cst, source);
     const validateErrors = validateCommands(
       visitorResult.commandNodes,
-      this.processor.processors
+      this._processor.processors
     );
     return {
       errors: [
@@ -69,30 +89,16 @@ export class Bluehawk {
     };
   };
 
-  // Parse the document at the given path.
-  loadFileAndParse = async (sourcePath: string): Promise<ParseResult> => {
-    return new Promise((resolve, reject) => {
-      if (isBinary(sourcePath)) {
-        return reject(
-          new Error(
-            `Binary file encountered at path '${sourcePath}'. Bluehawk does not parse binary files.`
-          )
-        );
-      }
-
-      const language = path.extname(sourcePath);
-      fs.readFile(path.resolve(sourcePath), "utf8", (error, text) => {
-        if (error) {
-          return reject(error);
-        }
-        const document = new Document({ text, language, path: sourcePath });
-        try {
-          resolve(this.parse(document));
-        } catch (error) {
-          reject(error);
-        }
-      });
-    });
+  // Load the document at the given path.
+  readFile = async (sourcePath: string): Promise<Document> => {
+    if (isBinary(sourcePath)) {
+      throw new Error(
+        `Binary file encountered at path '${sourcePath}'. Bluehawk does not parse binary files.`
+      );
+    }
+    const language = path.extname(sourcePath);
+    const text = await System.fs.readFile(path.resolve(sourcePath), "utf8");
+    return new Document({ text, language, path: sourcePath });
   };
 
   // Subscribe to processed documents as they are processed by Bluehawk.
@@ -101,12 +107,12 @@ export class Bluehawk {
       listener.forEach((listener) => this.subscribe(listener));
       return;
     }
-    this.processor.subscribe(listener);
+    this._processor.subscribe(listener);
   }
 
   // Executes the commands on the given source. Use subscribe() to get results.
   process = async (parseResult: ParseResult): Promise<BluehawkFiles> => {
-    return this.processor.process(parseResult);
+    return this._processor.process(parseResult);
   };
 
   // Load the given plugin(s). A plugin is a js file or module that exports a
@@ -149,7 +155,11 @@ export class Bluehawk {
     this._loadedPlugins.add(pluginPath);
   };
 
+  get processor(): Processor {
+    return this._processor;
+  }
+
   private parsers = new Map<string, [RootParser, IVisitor]>();
-  private processor = new Processor();
+  private _processor = new Processor();
   private _loadedPlugins = new Set<string>();
 }

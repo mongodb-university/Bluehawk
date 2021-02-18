@@ -18,9 +18,9 @@
   "bugs": {
     "url": "https://github.com/mongodb-university/Bluehawk/issues"
   },
-  "main": "./build/bluehawk",
+  "main": "./build/src/cli",
   "bin": {
-    "bluehawk": "./build/cli/index.js"
+    "bluehawk": "./build/src/cli"
   },
   "scripts": {
     "build": "rm -rf build && tsc -b",

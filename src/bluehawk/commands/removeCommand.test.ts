@@ -5,7 +5,7 @@ import MagicString from "magic-string";
 
 describe("remove command", () => {
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand("remove", RemoveCommand);
+  bluehawk.registerCommand(RemoveCommand);
   test("magic string allows double delete", () => {
     // Check assumptions about magic string. At time of writing, magic string
     // docs claim that "removing the same content twice, or making removals that

@@ -8,17 +8,16 @@ import {
 } from "../../bluehawk";
 import {
   withDestinationOption,
-  withPluginOption,
   withStateOption,
   withIgnoreOption,
   withGenerateFormattedCodeSnippetsOption,
 } from "../options";
 import { System } from "../../bluehawk/io/System";
+import { MainArgs } from "../cli";
 
-interface SnipArgs {
+interface SnipArgs extends MainArgs {
   paths: string[];
   destination: string;
-  plugin?: string | string[];
   state?: string;
   ignore?: string | string[];
   generateFormattedCodeSnippets?: string;
@@ -124,14 +123,12 @@ export const snip = async (args: SnipArgs): Promise<void> => {
   }
 };
 
-const commandModule: CommandModule<{ paths: string[] }, SnipArgs> = {
+const commandModule: CommandModule<MainArgs & { paths: string[] }, SnipArgs> = {
   command: "snip <paths..>",
   builder: (yargs): Argv<SnipArgs> => {
     return withIgnoreOption(
-      withPluginOption(
-        withStateOption(
-          withDestinationOption(withGenerateFormattedCodeSnippetsOption(yargs))
-        )
+      withStateOption(
+        withDestinationOption(withGenerateFormattedCodeSnippetsOption(yargs))
       )
     );
   },

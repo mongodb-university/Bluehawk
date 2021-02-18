@@ -7,9 +7,9 @@ import { SnippetCommand } from "./SnippetCommand";
 describe("stateCommand", () => {
   const bluehawk = new Bluehawk();
 
-  bluehawk.registerCommand("state", StateCommand);
-  bluehawk.registerCommand("remove", RemoveCommand);
-  bluehawk.registerCommand("snippet", SnippetCommand);
+  bluehawk.registerCommand(StateCommand);
+  bluehawk.registerCommand(RemoveCommand);
+  bluehawk.registerCommand(SnippetCommand);
 
   it("processes nested commands", async (done) => {
     const multipleInput = new Document({

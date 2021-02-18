@@ -6,9 +6,10 @@ import { SnippetCommand } from "./SnippetCommand";
 
 describe("replace command", () => {
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand("replace", ReplaceCommand);
-  bluehawk.registerCommand("remove", RemoveCommand);
-  bluehawk.registerCommand("code-block", SnippetCommand);
+  bluehawk.registerCommand(ReplaceCommand);
+  bluehawk.registerCommand(RemoveCommand);
+  bluehawk.registerCommand(SnippetCommand);
+  bluehawk.registerCommand(SnippetCommand, "code-block");
 
   it("errors when no attribute list is given", () => {
     const source = new Document({

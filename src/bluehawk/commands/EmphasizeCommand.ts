@@ -7,6 +7,8 @@ import {
 import { removeMetaRange } from "./removeMetaRange";
 
 export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
+  name: "emphasize",
+  description: "highlight line(s) in formatted output",
   attributesSchema: NoAttributesSchema,
 
   process({ commandNode, parseResult }) {
@@ -15,7 +17,6 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
 
     // Strip tags
     removeMetaRange(text, commandNode);
-    commandNode.attributes = {};
-    commandNode.attributes["emphasize"] = commandNode.lineRange;
+    source.attributes["emphasize"] = commandNode.lineRange;
   },
 });
