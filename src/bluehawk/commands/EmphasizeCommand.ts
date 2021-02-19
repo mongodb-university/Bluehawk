@@ -35,9 +35,8 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
       });
     } else {
       source.attributes["emphasize"]["ranges"].push({
-        start: start,
-        end:
-          start + (commandNode.range.end.line - commandNode.range.start.line),
+        start: start - 1,
+        end: commandNode.lineRange.end.line - 4,
       });
     }
   },

@@ -53,7 +53,7 @@ export const doRst = async (
     : "text";
 
   const rstHeader = ".. code-block::";
-  const rstEmphasizeModifier = "   :emphasize-lines:";
+  const rstEmphasizeModifier = ":emphasize-lines:";
   const rstFormattedRanges = source.attributes["emphasize"]["ranges"]
     .map((range: EmphasizeRange) =>
       range.start === range.end

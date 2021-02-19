@@ -40,7 +40,7 @@ console.log(bar);
 
     expect(
       files["test.js"].source.attributes["emphasize"]["ranges"]
-    ).toStrictEqual([{ start: 3, end: 7 }]);
+    ).toStrictEqual([{ start: 2, end: 6 }]);
     done();
   });
 
