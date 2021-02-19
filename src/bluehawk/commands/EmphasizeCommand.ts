@@ -7,8 +7,14 @@ import {
 import { removeMetaRange } from "./removeMetaRange";
 
 export interface EmphasizeRange {
-  start: number;
-  end: number;
+  start: {
+    line: number;
+    column: number;
+  };
+  end: {
+    line: number;
+    column: number;
+  };
 }
 
 export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
@@ -28,29 +34,27 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
       source.attributes["emphasize"] = { ranges: ranges };
     }
 
-    const start = await source.getNewLocationFor({
-      line: commandNode.range.start.line,
-      column: commandNode.range.start.column,
-    });
-    if (start === undefined) {
-      return undefined; // TODO: handle this error?
-    }
     if (commandNode.type === "line") {
       source.attributes["emphasize"]["ranges"].push({
-        start: start.line,
-        end: start.line,
+        start: {
+          line: commandNode.range.start.line,
+          column: commandNode.range.start.column,
+        },
+        end: {
+          line: commandNode.range.start.line,
+          column: commandNode.range.start.column,
+        },
       });
     } else {
-      const end = await source.getNewLocationFor({
-        line: commandNode.contentRange.end.line - 1,
-        column: commandNode.contentRange.end.column,
-      });
-      if (end === undefined) {
-        return undefined; // TODO: handle this error?
-      }
       source.attributes["emphasize"]["ranges"].push({
-        start: start.line,
-        end: end.line,
+        start: {
+          line: commandNode.contentRange.start.line,
+          column: commandNode.contentRange.start.column,
+        },
+        end: {
+          line: commandNode.contentRange.end.line,
+          column: commandNode.contentRange.end.column,
+        },
       });
     }
   },

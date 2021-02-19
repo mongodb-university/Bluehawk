@@ -44,6 +44,12 @@ describe("snip", () => {
       format: "rst",
     });
 
+    function delay(ms: number) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    await delay(3000); // silly i know but we need to wait for the file to write to the read-only filesystem
+
     expect(errors).toStrictEqual(undefined);
     const destinationList = await System.fs.readdir(destinationPath);
     expect(destinationList).toStrictEqual([

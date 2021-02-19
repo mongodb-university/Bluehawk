@@ -147,10 +147,25 @@ line 9`);
 
     expect(
       files["test.js"].source.attributes["emphasize"]["ranges"]
-    ).toStrictEqual([
-      { start: 5, end: 5 },
-      { start: 3, end: 3 },
-      { start: 7, end: 8 },
+    ).toMatchObject([
+      {
+        start: {
+          line: 5,
+        },
+        end: { line: 5 },
+      },
+      {
+        start: {
+          line: 3,
+        },
+        end: { line: 3 },
+      },
+      {
+        start: {
+          line: 7,
+        },
+        end: { line: 8 },
+      },
     ]);
     done();
   });

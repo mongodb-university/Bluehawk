@@ -5,6 +5,7 @@ import {
   ParseResult,
   Project,
   getBluehawk,
+  EmphasizeRange,
 } from "../../bluehawk";
 import {
   withDestinationOption,
@@ -14,7 +15,6 @@ import {
 } from "../options";
 import { System } from "../../bluehawk/io/System";
 import { MainArgs } from "../cli";
-import { EmphasizeRange } from "../../bluehawk/commands/EmphasizeCommand";
 
 interface SnipArgs extends MainArgs {
   paths: string[];
@@ -54,11 +54,21 @@ export const doRst = async (
 
   const rstHeader = ".. code-block::";
   const rstEmphasizeModifier = ":emphasize-lines:";
-  const rstFormattedRanges = source.attributes["emphasize"]["ranges"]
-    .map((range: EmphasizeRange) =>
+
+  const rstEmphasizeRanges = [];
+  for (const range of source.attributes["emphasize"]["ranges"]) {
+    const start = await source.getNewLocationFor(range.start);
+    const end = await source.getNewLocationFor(range.end);
+    if (start !== undefined && end !== undefined) {
+      rstEmphasizeRanges.push({ start: start.line, end: end.line });
+    }
+  }
+
+  const rstFormattedRanges = rstEmphasizeRanges
+    .map((range) =>
       range.start === range.end
-        ? `${range.start}`
-        : `${range.start}-${range.end}`
+        ? ` ${range.start}`
+        : ` ${range.start}-${range.end}`
     )
     .join(" ");
 
