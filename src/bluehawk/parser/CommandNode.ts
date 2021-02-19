@@ -22,6 +22,9 @@ interface CommandNode {
   newlines: IToken[];
   lineComments: IToken[];
 
+  // The comment tokens on the line the command was found in, if any.
+  associatedTokens: IToken[];
+
   // The comment context the command was found in.
   inContext: CommandNodeContext;
 
@@ -93,8 +96,9 @@ export class CommandNodeImpl implements CommandNode {
   contentRange?: Range;
   children?: CommandNodeImpl[];
   attributes?: CommandNodeAttributes;
-  newlines: IToken[];
-  lineComments: IToken[];
+  newlines: IToken[] = [];
+  lineComments: IToken[] = [];
+  associatedTokens: IToken[] = [];
 
   // Imports potentially useful tokens from a visitor context object.
   // Only use this in visitors that do not create the CommandNodeImpl.
@@ -142,6 +146,7 @@ export class CommandNodeImpl implements CommandNode {
     this.children.push(...node.children);
     this.newlines.push(...node.newlines);
     this.lineComments.push(...node.lineComments);
+    this.associatedTokens.push(...node.associatedTokens);
   }
 
   // The root command is the root node of a parsed document and contains all
@@ -163,8 +168,6 @@ export class CommandNodeImpl implements CommandNode {
     }
 
     this.commandName = commandName;
-    this.newlines = [];
-    this.lineComments = [];
     // FIXME: ranges should always be valid, so pass them in the constructor
     this.range = {
       start: {
@@ -199,24 +202,10 @@ export class CommandNodeImpl implements CommandNode {
   }
 
   asBlockCommandNode = (): BlockCommandNode | undefined => {
-    if (
-      this.contentRange === undefined &&
-      this.children === undefined &&
-      this.attributes === undefined
-    ) {
-      return undefined;
-    }
-    return this as BlockCommandNode;
+    return this.type === "block" ? (this as BlockCommandNode) : undefined;
   };
 
   asLineCommandNode = (): LineCommandNode | undefined => {
-    if (
-      this.contentRange === undefined &&
-      this.children === undefined &&
-      this.attributes === undefined
-    ) {
-      return this as LineCommandNode;
-    }
-    return undefined;
+    return this.type === "line" ? (this as LineCommandNode) : undefined;
   };
 }

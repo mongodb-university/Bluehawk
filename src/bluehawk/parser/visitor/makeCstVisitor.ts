@@ -31,6 +31,18 @@ export interface IVisitor {
   visit(node: CstNode, source: Document): VisitorResult;
 }
 
+// Returns true if the given earlier token is "associated" with the given later
+// token. A token is considered associated if it appears immediately before the
+// next token.
+const isAssociated = (earlierToken: IToken, laterToken: IToken) => {
+  const { startColumn } = laterToken;
+  assert(startColumn !== undefined);
+  return (
+    earlierToken.endLine === laterToken.startLine &&
+    earlierToken.endColumn === startColumn - 1
+  );
+};
+
 // While the lexer defines the tokens (words) and the parser defines the syntax,
 // the CstVisitor defines the semantics of the language.
 export function makeCstVisitor(
@@ -109,6 +121,7 @@ export function makeCstVisitor(
     source: Document;
     parent: CommandNodeImpl;
     errors: BluehawkError[];
+    lineComments?: IToken[];
   }
 
   const visitor = new (class CstVisitor extends parser.getBaseCstVisitorConstructor() {
@@ -231,7 +244,7 @@ export function makeCstVisitor(
 
     blockCommand(
       context: BlockCommandContext,
-      { parent, errors, source }: VisitorContext
+      { parent, errors, source, lineComments }: VisitorContext
     ) {
       assert(parent != null);
 
@@ -281,6 +294,16 @@ export function makeCstVisitor(
         end: nextLineAfterToken(CommandEnd, source.text.original),
       };
 
+      if (lineComments !== undefined) {
+        newNode.associatedTokens.push(
+          ...lineComments.filter(
+            (lineComment) =>
+              lineComment.startOffset < CommandStart.startOffset &&
+              isAssociated(lineComment, CommandStart)
+          )
+        );
+      }
+
       assert(context.Newline[0].endLine !== undefined);
       assert(context.Newline[0].endOffset !== undefined);
       assert(context.CommandEnd[0].startColumn !== undefined);
@@ -308,6 +331,13 @@ export function makeCstVisitor(
         source,
       });
       this.visit(context.chunk, { parent: newNode, errors, source });
+
+      // Find any line comment tokens associated with the command end token
+      newNode.associatedTokens.push(
+        ...newNode.lineComments.filter((lineComment) =>
+          isAssociated(lineComment, CommandEnd)
+        )
+      );
     }
 
     blockComment(
@@ -350,7 +380,7 @@ export function makeCstVisitor(
     }
 
     command(context: CommandContext, visitorContext: VisitorContext) {
-      const { parent, source } = visitorContext;
+      const { parent, source, lineComments } = visitorContext;
       assert(parent != null);
       parent.addTokensFromContext(context);
       if (context.blockCommand) {
@@ -391,6 +421,13 @@ export function makeCstVisitor(
           },
           end: nextLineAfterToken(Command, source.text.original),
         };
+        if (lineComments !== undefined) {
+          newNode.associatedTokens.push(
+            ...lineComments.filter((lineComment) =>
+              isAssociated(lineComment, Command)
+            )
+          );
+        }
       });
     }
 
@@ -432,6 +469,7 @@ export function makeCstVisitor(
           parent: erasedBlockCommand,
           errors,
           source,
+          lineComments: context.LineComment,
         });
       });
     }

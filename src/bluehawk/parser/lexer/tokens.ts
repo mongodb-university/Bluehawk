@@ -66,10 +66,13 @@ const Text = createToken({
 });
 
 // Shared patterns with captures for use in CstVisitor. Please ensure they stay
-// aligned (both in the editor for at-a-glance error checking and as regexes)
+// aligned (both in the editor for at-a-glance error checking and as regexes).
+// TODO: Allow any amount of non-newline white space (/[^\S\r\n]*/) to be
+// included before or after the actual command name to make stripping it out
+// much easier.
 const COMMAND_START_PATTERN /**/ = /:([A-z0-9-]+)-start:/;
 const COMMAND_END_PATTERN /*  */ = /:([A-z0-9-]+)-end:/;
-const COMMAND_PATTERN /*      */ = /:([A-z0-9-]+):/;
+const COMMAND_PATTERN /*      */ = /:([A-z0-9-]+):[^\S\r\n]*/;
 
 const CommandStart = createToken({
   name: "CommandStart",
