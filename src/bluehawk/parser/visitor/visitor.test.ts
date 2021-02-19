@@ -499,8 +499,8 @@ and again
       },
       end: {
         line: 1,
-        column: 14,
-        offset: 13,
+        column: 15,
+        offset: 14,
       },
     });
     expect(result.commandNodes[1].commandName).toBe("B-command");
@@ -512,8 +512,8 @@ and again
       },
       end: {
         line: 1,
-        column: 26,
-        offset: 25,
+        column: 27,
+        offset: 26,
       },
     });
     expect(result.commandNodes[2].commandName).toBe("C-command");
