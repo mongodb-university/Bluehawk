@@ -10,8 +10,7 @@ describe("emphasize command", () => {
   it("works as a one line command", async (done) => {
     const source = new Document({
       text: `a
-// :emphasize:
-b
+b // :emphasize:
 c
 `,
       language: "javascript",
@@ -22,13 +21,20 @@ c
     const files = await bluehawk.process(parseResult);
     expect(files["test.js"].source.text.toString()).toBe(
       `a
-b
+b 
 c
 `
     );
     expect(
       files["test.js"].source.attributes["emphasize"]["ranges"]
-    ).toStrictEqual([{ start: 2, end: 2 }]);
+    ).toMatchObject([
+      {
+        start: {
+          line: 2,
+        },
+        end: { line: 2 },
+      },
+    ]);
     done();
   });
 
@@ -65,7 +71,14 @@ console.log(bar);
 
     expect(
       files["test.js"].source.attributes["emphasize"]["ranges"]
-    ).toStrictEqual([{ start: 3, end: 7 }]);
+    ).toMatchObject([
+      {
+        start: {
+          line: 3,
+        },
+        end: { line: 9 },
+      },
+    ]);
     done();
   });
 
@@ -104,9 +117,19 @@ console.log(bar);
 
     expect(
       files["test.js"].source.attributes["emphasize"]["ranges"]
-    ).toStrictEqual([
-      { start: 3, end: 3 },
-      { start: 7, end: 7 },
+    ).toMatchObject([
+      {
+        start: {
+          line: 3,
+        },
+        end: { line: 5 },
+      },
+      {
+        start: {
+          line: 9,
+        },
+        end: { line: 11 },
+      },
     ]);
     done();
   });
@@ -118,8 +141,7 @@ line 2
 line 3
 // :emphasize-end:
 line 4
-// :emphasize:
-line 5
+line 5 // :emphasize:
 line 6
 // :emphasize-start:
 line 7
@@ -139,7 +161,7 @@ line 9`;
 line 2
 line 3
 line 4
-line 5
+line 5 
 line 6
 line 7
 line 8
@@ -150,21 +172,21 @@ line 9`);
     ).toMatchObject([
       {
         start: {
-          line: 5,
+          line: 3,
         },
         end: { line: 5 },
       },
       {
         start: {
-          line: 3,
+          line: 7,
         },
-        end: { line: 3 },
+        end: { line: 7 },
       },
       {
         start: {
-          line: 7,
+          line: 9,
         },
-        end: { line: 8 },
+        end: { line: 12 },
       },
     ]);
     done();
