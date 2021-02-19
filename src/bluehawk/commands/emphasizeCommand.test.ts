@@ -65,7 +65,7 @@ console.log(bar);
 
     expect(
       files["test.js"].source.attributes["emphasize"]["ranges"]
-    ).toStrictEqual([{ start: 2, end: 6 }]);
+    ).toStrictEqual([{ start: 3, end: 7 }]);
     done();
   });
 
@@ -107,6 +107,50 @@ console.log(bar);
     ).toStrictEqual([
       { start: 3, end: 3 },
       { start: 7, end: 7 },
+    ]);
+    done();
+  });
+
+  it("handles block and line usages correctly when combined", async (done) => {
+    const singleInput = `line 1
+line 2
+// :emphasize-start:
+line 3
+// :emphasize-end:
+line 4
+// :emphasize:
+line 5
+line 6
+// :emphasize-start:
+line 7
+line 8
+// :emphasize-end:
+line 9`;
+
+    const source = new Document({
+      text: singleInput,
+      language: "javascript",
+      path: "test.js",
+    });
+
+    const parseResult = bluehawk.parse(source);
+    const files = await bluehawk.process(parseResult);
+    expect(files["test.js"].source.text.toString()).toBe(`line 1
+line 2
+line 3
+line 4
+line 5
+line 6
+line 7
+line 8
+line 9`);
+
+    expect(
+      files["test.js"].source.attributes["emphasize"]["ranges"]
+    ).toStrictEqual([
+      { start: 5, end: 5 },
+      { start: 3, end: 3 },
+      { start: 7, end: 8 },
     ]);
     done();
   });
