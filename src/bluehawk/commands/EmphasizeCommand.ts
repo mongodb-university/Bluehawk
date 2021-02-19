@@ -6,6 +6,11 @@ import {
 
 import { removeMetaRange } from "./removeMetaRange";
 
+export interface EmphasizeRange {
+  start: number;
+  end: number;
+}
+
 export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
   name: "emphasize",
   description: "highlight line(s) in formatted output",
@@ -18,8 +23,22 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
     // Strip tags
     removeMetaRange(text, commandNode);
     if (source.attributes["emphasize"] === undefined) {
-      source.attributes["emphasize"] = {};
+      const ranges: EmphasizeRange[] = [];
+      source.attributes["emphasize"] = { ranges: ranges };
     }
-    source.attributes["emphasize"]["range"] = commandNode.lineRange;
+
+    const start = commandNode.lineRange.start.line;
+    if (commandNode.type === "line") {
+      source.attributes["emphasize"]["ranges"].push({
+        start: start,
+        end: start,
+      });
+    } else {
+      source.attributes["emphasize"]["ranges"].push({
+        start: start,
+        end:
+          start + (commandNode.range.end.line - commandNode.range.start.line),
+      });
+    }
   },
 });

@@ -6,7 +6,7 @@ beforeAll(System.useMemfs);
 afterAll(System.useRealfs);
 
 describe("snip", () => {
-  it("copies", async (done) => {
+  it("generates correct RST snippets", async (done) => {
     const rootPath = Path.resolve("/path/to/project");
     const destinationPath = "/destination";
     const testFileName = "test.js";
@@ -55,8 +55,8 @@ describe("snip", () => {
       Path.join(destinationPath, "test.codeblock.foo.js.code-block.rst"),
       "utf8"
     );
-    expect(fileContents).toStrictEqual(`.. code-block:: js
-   :emphasize-lines: 3-7
+    expect(fileContents).toStrictEqual(`.. code-block:: javascript
+   :emphasize-lines: 2-6
 
    const bar = "foo"
    describe("some stuff", () => {

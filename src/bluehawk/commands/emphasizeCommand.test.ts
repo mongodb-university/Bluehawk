@@ -37,6 +37,10 @@ describe("some stuff", () => {
 });
 console.log(bar);
 `);
+
+    expect(
+      files["test.js"].source.attributes["emphasize"]["ranges"]
+    ).toStrictEqual([{ start: 3, end: 7 }]);
     done();
   });
 
@@ -59,6 +63,9 @@ b
 c
 `
     );
+    expect(
+      files["test.js"].source.attributes["emphasize"]["ranges"]
+    ).toStrictEqual([{ start: 2, end: 2 }]);
     done();
   });
 });

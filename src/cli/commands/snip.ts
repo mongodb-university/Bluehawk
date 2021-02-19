@@ -14,6 +14,7 @@ import {
 } from "../options";
 import { System } from "../../bluehawk/io/System";
 import { MainArgs } from "../cli";
+import { EmphasizeRange } from "../../bluehawk/commands/EmphasizeCommand";
 
 interface SnipArgs extends MainArgs {
   paths: string[];
@@ -34,14 +35,37 @@ export const doRst = async (
     return undefined;
   }
 
+  // nasty hack to cover the suffixes/rst languages we use most often with Realm.
+  // TODO: switch to a better mapping
+  const rstLanguageMap: Map<string, string> = new Map([
+    [".js", "javascript"],
+    [".ts", "typescript"],
+    [".kt", "kotlin"],
+    [".java", "java"],
+    [".gradle", "groovy"],
+    [".objc", "objective-c"],
+    [".swift", "swift"],
+    [".cs", "csharp"],
+    [".json", "json"],
+  ]);
+  const rstLanguage = rstLanguageMap.has(source.language)
+    ? rstLanguageMap.get(source.language)
+    : "text";
+
   const rstHeader = ".. code-block::";
   const rstEmphasizeModifier = "   :emphasize-lines:";
-  const range = source.attributes["emphasize"]["range"];
+  const rstFormattedRanges = source.attributes["emphasize"]["ranges"]
+    .map((range: EmphasizeRange) =>
+      range.start === range.end
+        ? `${range.start}`
+        : `${range.start}-${range.end}`
+    )
+    .join(" ");
 
   const formattedCodeblock = [
-    [rstHeader, "js" /* source.language */].join(" "),
-    [rstEmphasizeModifier, range].join(" "),
-    "",
+    `${rstHeader} ${rstLanguage}`,
+    `   ${rstEmphasizeModifier} ${rstFormattedRanges}`,
+    "", // empty line required between rst codeblock declaration and content
     source.text
       .toString()
       .split(/\r\n|\r|\n/)
