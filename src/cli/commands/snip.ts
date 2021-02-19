@@ -60,6 +60,7 @@ export const doRst = async (
     const start = await source.getNewLocationFor(range.start);
     const end = await source.getNewLocationFor(range.end);
     if (start !== undefined && end !== undefined) {
+      end.line--; // TODO: address this hack, which prevents us from going "one over" with range ends
       rstEmphasizeRanges.push({ start: start.line, end: end.line });
     }
   }
@@ -67,8 +68,8 @@ export const doRst = async (
   const rstFormattedRanges = rstEmphasizeRanges
     .map((range) =>
       range.start === range.end
-        ? ` ${range.start}`
-        : ` ${range.start}-${range.end}`
+        ? `${range.start}`
+        : `${range.start}-${range.end}`
     )
     .join(" ");
 

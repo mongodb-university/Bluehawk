@@ -34,28 +34,28 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
       source.attributes["emphasize"] = { ranges: ranges };
     }
 
-    //if (commandNode.type === "line") {
-    source.attributes["emphasize"]["ranges"].push({
-      start: {
-        line: commandNode.range.start.line,
-        column: commandNode.range.start.column,
-      },
-      end: {
-        line: commandNode.range.end.line,
-        column: commandNode.range.end.column,
-      },
-    });
-    /*} else {
+    if (commandNode.type === "line") {
       source.attributes["emphasize"]["ranges"].push({
         start: {
-          line: commandNode.contentRange.start.line,
-          column: commandNode.contentRange.start.column,
+          line: commandNode.range.start.line,
+          column: commandNode.range.start.column,
         },
         end: {
-          line: commandNode.contentRange.end.line,
-          column: commandNode.contentRange.end.column,
+          line: commandNode.range.start.line,
+          column: commandNode.range.start.column,
         },
       });
-    }*/
+    } else {
+      source.attributes["emphasize"]["ranges"].push({
+        start: {
+          line: commandNode.range.start.line,
+          column: commandNode.range.start.column,
+        },
+        end: {
+          line: commandNode.range.end.line,
+          column: commandNode.range.end.column,
+        },
+      });
+    }
   },
 });
