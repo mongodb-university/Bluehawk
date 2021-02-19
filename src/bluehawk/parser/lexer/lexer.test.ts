@@ -118,7 +118,7 @@ describe("custom comment lexer", () => {
     expect(() => {
       makeLexer([makeLineCommentToken(COMMAND_PATTERN)]);
     }).toThrowError(`Errors detected in definition of Lexer:
-The same RegExp pattern ->/:([A-z0-9-]+):/<-has been used in all of the following Token Types: Command, LineComment <-`);
+The same RegExp pattern ->/:([A-z0-9-]+):[^\\S\\r\\n]*/<-has been used in all of the following Token Types: Command, LineComment <-`);
   });
 });
 
