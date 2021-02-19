@@ -1,5 +1,6 @@
 import MagicString from "magic-string";
 import path, { join } from "path";
+import { SourceMapConsumer } from "source-map";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CommandAttributes = { [forCommandName: string]: any };
@@ -89,4 +90,40 @@ export class Document {
   pathWithInfix = (infix: string): string => {
     return `${this.dirname}/${this.name}.${infix}${this.extension}`;
   };
+
+  // Calculate the new position of the original line and column numbers. Offset
+  // is ignored. This should only be done after all text transformations are
+  // finalized.
+  async getNewLocationFor(oldLocation: {
+    line: number;
+    column: number;
+  }): Promise<{ line: number; column: number } | undefined> {
+    if (oldLocation.column < 1) {
+      throw new Error("columns must be >= 1");
+    }
+    if (oldLocation.line < 1) {
+      throw new Error("line must be >= 1");
+    }
+    const source = this.path; // required by SourceMapConsumer
+    if (this._sourceMapConsumer === undefined) {
+      this._sourceMapConsumer = await new SourceMapConsumer(
+        this.text.generateMap({ source, hires: true })
+      );
+    }
+    const newLocation = this._sourceMapConsumer.generatedPositionFor({
+      source,
+      column: oldLocation.column - 1, // source-map columns start at 0
+      line: oldLocation.line,
+      bias: SourceMapConsumer.LEAST_UPPER_BOUND,
+    });
+    if (newLocation.line === null || newLocation.line === null) {
+      return undefined;
+    }
+    return {
+      column: (newLocation.column ?? -2) + 1, // Bluehawk columns start at 1
+      line: newLocation.line ?? -1,
+    };
+  }
+
+  private _sourceMapConsumer?: SourceMapConsumer;
 }
