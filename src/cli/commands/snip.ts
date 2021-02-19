@@ -5,7 +5,6 @@ import {
   ParseResult,
   Project,
   getBluehawk,
-  EmphasizeRange,
 } from "../../bluehawk";
 import {
   withDestinationOption,
@@ -60,7 +59,9 @@ export const doRst = async (
     const start = await source.getNewLocationFor(range.start);
     const end = await source.getNewLocationFor(range.end);
     if (start !== undefined && end !== undefined) {
-      end.line--; // TODO: address this hack, which prevents us from going "one over" with range ends
+      if (start.line != end.line) {
+        end.line--; // TODO: address this hack, which prevents us from going "one over" with range ends
+      }
       rstEmphasizeRanges.push({ start: start.line, end: end.line });
     }
   }
@@ -71,7 +72,7 @@ export const doRst = async (
         ? `${range.start}`
         : `${range.start}-${range.end}`
     )
-    .join(" ");
+    .join(", ");
 
   const formattedCodeblock = [
     `${rstHeader} ${rstLanguage}`,
