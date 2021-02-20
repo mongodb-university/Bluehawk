@@ -5,6 +5,7 @@ import {
   ParseResult,
   Project,
   getBluehawk,
+  EmphasizeSourceAttributes,
 } from "../../bluehawk";
 import {
   withDestinationOption,
@@ -34,6 +35,10 @@ export const doRst = async (
     return undefined;
   }
 
+  const emphasizeAttributes = source.attributes[
+    "emphasize"
+  ] as EmphasizeSourceAttributes;
+
   // nasty hack to cover the suffixes/rst languages we use most often
   // TODO: switch to a better mapping
   const rstLanguageMap: Map<string, string> = new Map([
@@ -55,7 +60,7 @@ export const doRst = async (
   const rstEmphasizeModifier = ":emphasize-lines:";
 
   const rstEmphasizeRanges: { start: number; end: number }[] = [];
-  for (const range of source.attributes["emphasize"]["ranges"]) {
+  for (const range of emphasizeAttributes.ranges) {
     const start = await source.getNewLocationFor(range.start);
     const end = await source.getNewLocationFor(range.end);
     if (start !== undefined && end !== undefined) {

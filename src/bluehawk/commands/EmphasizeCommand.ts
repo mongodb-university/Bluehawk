@@ -18,9 +18,14 @@ export interface EmphasizeRange {
   };
 }
 
+export interface EmphasizeSourceAttributes {
+  ranges: EmphasizeRange[];
+}
+
 export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
   name: "emphasize",
-  description: "identify line(s) to highlight (see `bluehawk snip --format` command)",
+  description:
+    "identify line(s) to highlight (see `bluehawk snip --format` command)",
   attributesSchema: NoAttributesSchema,
 
   async process({ commandNode, parseResult }) {
