@@ -1,3 +1,4 @@
+import { locationFromToken } from "../parser/locationFromToken";
 import {
   makeBlockOrLineCommand,
   NoAttributes,
@@ -30,32 +31,32 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
     removeMetaRange(text, commandNode);
 
     if (source.attributes["emphasize"] === undefined) {
-      const ranges: EmphasizeRange[] = [];
-      source.attributes["emphasize"] = { ranges: ranges };
+      source.attributes["emphasize"] = { ranges: [] };
     }
 
-    if (commandNode.type === "line") {
-      source.attributes["emphasize"]["ranges"].push({
-        start: {
-          line: commandNode.range.start.line,
-          column: commandNode.range.start.column,
-        },
-        end: {
-          line: commandNode.range.start.line,
-          column: commandNode.range.start.column,
-        },
-      });
-    } else {
-      source.attributes["emphasize"]["ranges"].push({
-        start: {
-          line: commandNode.range.start.line,
-          column: commandNode.range.start.column,
-        },
-        end: {
-          line: commandNode.range.end.line,
-          column: commandNode.range.end.column,
-        },
-      });
+    let range: EmphasizeRange;
+
+    switch (commandNode.type) {
+      case "block": {
+        const lastNewline =
+          commandNode.newlines[commandNode.newlines.length - 1];
+        if (lastNewline === undefined) {
+          throw new Error(`lastNewline unexpectedly undefined!`);
+        }
+        range = {
+          start: commandNode.contentRange.start,
+          end: locationFromToken(lastNewline),
+        };
+        break;
+      }
+      case "line":
+        range = {
+          start: commandNode.lineRange.start,
+          end: commandNode.range.end,
+        };
+        break;
     }
+
+    source.attributes["emphasize"]["ranges"].push(range);
   },
 });

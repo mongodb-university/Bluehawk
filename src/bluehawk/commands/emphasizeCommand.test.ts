@@ -74,9 +74,9 @@ console.log(bar);
     ).toMatchObject([
       {
         start: {
-          line: 3,
+          line: 4,
         },
-        end: { line: 9 },
+        end: { line: 8 },
       },
     ]);
     done();
@@ -120,15 +120,15 @@ console.log(bar);
     ).toMatchObject([
       {
         start: {
-          line: 3,
+          line: 4,
         },
-        end: { line: 5 },
+        end: { line: 4 },
       },
       {
         start: {
-          line: 9,
+          line: 10,
         },
-        end: { line: 11 },
+        end: { line: 10 },
       },
     ]);
     done();
@@ -172,9 +172,9 @@ line 9`);
     ).toMatchObject([
       {
         start: {
-          line: 3,
+          line: 4,
         },
-        end: { line: 5 },
+        end: { line: 4 },
       },
       {
         start: {
@@ -184,9 +184,9 @@ line 9`);
       },
       {
         start: {
-          line: 9,
+          line: 10,
         },
-        end: { line: 12 },
+        end: { line: 11 },
       },
     ]);
     done();

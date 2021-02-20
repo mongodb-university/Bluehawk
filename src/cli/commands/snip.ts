@@ -42,7 +42,7 @@ export const doRst = async (
     [".kt", "kotlin"],
     [".java", "java"],
     [".gradle", "groovy"],
-    [".objc", "objective-c"],
+    [".m", "objectivec"],
     [".swift", "swift"],
     [".cs", "csharp"],
     [".json", "json"],
@@ -54,14 +54,11 @@ export const doRst = async (
   const rstHeader = ".. code-block::";
   const rstEmphasizeModifier = ":emphasize-lines:";
 
-  const rstEmphasizeRanges = [];
+  const rstEmphasizeRanges: { start: number; end: number }[] = [];
   for (const range of source.attributes["emphasize"]["ranges"]) {
     const start = await source.getNewLocationFor(range.start);
     const end = await source.getNewLocationFor(range.end);
     if (start !== undefined && end !== undefined) {
-      if (start.line != end.line) {
-        end.line--; // TODO: address this hack, which prevents us from going "one over" with range ends
-      }
       rstEmphasizeRanges.push({ start: start.line, end: end.line });
     }
   }
