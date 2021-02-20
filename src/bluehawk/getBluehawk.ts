@@ -5,6 +5,7 @@ import {
   RemoveCommand,
   StateCommand,
   UncommentCommand,
+  EmphasizeCommand,
 } from ".";
 import {
   makeBlockCommand,
@@ -37,6 +38,7 @@ export const getBluehawk = async (
         StateCommand,
         StateUncommentCommand,
         UncommentCommand,
+        EmphasizeCommand,
       ],
       // Aliases for backwards compatibility
       commandAliases: [

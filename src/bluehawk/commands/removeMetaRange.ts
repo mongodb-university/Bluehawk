@@ -1,4 +1,5 @@
 import MagicString from "magic-string";
+
 import { AnyCommandNode, BlockCommandNode, LineCommandNode } from "../parser";
 
 function removeMetaRangeForLineCommandNode(

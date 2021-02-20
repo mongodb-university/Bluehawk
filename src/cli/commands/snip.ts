@@ -5,11 +5,13 @@ import {
   ParseResult,
   Project,
   getBluehawk,
+  EmphasizeSourceAttributes,
 } from "../../bluehawk";
 import {
   withDestinationOption,
   withStateOption,
   withIgnoreOption,
+  withGenerateFormattedCodeSnippetsOption,
 } from "../options";
 import { System } from "../../bluehawk/io/System";
 import { MainArgs } from "../cli";
@@ -19,15 +21,76 @@ interface SnipArgs extends MainArgs {
   destination: string;
   state?: string;
   ignore?: string | string[];
+  format?: "sphynx-rst";
 }
 
-const handler = async ({
-  paths,
-  destination,
-  plugin,
-  state,
-  ignore,
-}: Arguments<SnipArgs>): Promise<void> => {
+export const doRst = async (
+  result: ParseResult
+): Promise<string | undefined> => {
+  const { source } = result;
+  if (
+    source.attributes["snippet"] === undefined ||
+    source.attributes["emphasize"] === undefined
+  ) {
+    return undefined;
+  }
+
+  const emphasizeAttributes = source.attributes[
+    "emphasize"
+  ] as EmphasizeSourceAttributes;
+
+  // nasty hack to cover the suffixes/rst languages we use most often
+  // TODO: switch to a better mapping
+  const rstLanguageMap: Map<string, string> = new Map([
+    [".js", "javascript"],
+    [".ts", "typescript"],
+    [".kt", "kotlin"],
+    [".java", "java"],
+    [".gradle", "groovy"],
+    [".m", "objectivec"],
+    [".swift", "swift"],
+    [".cs", "csharp"],
+    [".json", "json"],
+  ]);
+  const rstLanguage = rstLanguageMap.has(source.language)
+    ? rstLanguageMap.get(source.language)
+    : "text";
+
+  const rstHeader = ".. code-block::";
+  const rstEmphasizeModifier = ":emphasize-lines:";
+
+  const rstEmphasizeRanges: { start: number; end: number }[] = [];
+  for (const range of emphasizeAttributes.ranges) {
+    const start = await source.getNewLocationFor(range.start);
+    const end = await source.getNewLocationFor(range.end);
+    if (start !== undefined && end !== undefined) {
+      rstEmphasizeRanges.push({ start: start.line, end: end.line });
+    }
+  }
+
+  const rstFormattedRanges = rstEmphasizeRanges
+    .map((range) =>
+      range.start === range.end
+        ? `${range.start}`
+        : `${range.start}-${range.end}`
+    )
+    .join(", ");
+
+  const formattedCodeblock = [
+    `${rstHeader} ${rstLanguage}`,
+    `   ${rstEmphasizeModifier} ${rstFormattedRanges}`,
+    "", // empty line required between rst codeblock declaration and content
+    source.text
+      .toString()
+      .split(/\r\n|\r|\n/)
+      .map((line) => (line === "" ? line : `   ${line}`)) // indent each line 3 spaces
+      .join("\n"),
+  ].join("\n");
+  return formattedCodeblock;
+};
+
+export const snip = async (args: SnipArgs): Promise<void> => {
+  const { paths, destination, plugin, state, ignore, format } = args;
   const bluehawk = await getBluehawk(plugin);
 
   // If a file contains the state command, the processor will generate multiple
@@ -72,6 +135,29 @@ const handler = async ({
     }
   });
 
+  if (format === "sphynx-rst") {
+    // Define the handler for generating formatted snippet files.
+    bluehawk.subscribe(async (result: ParseResult) => {
+      const formattedCodeblock = await doRst(result);
+      if (formattedCodeblock === undefined) {
+        return;
+      }
+      const { source } = result;
+      const targetPath = path.join(
+        destination,
+        `${source.basename}.code-block.rst`
+      );
+
+      try {
+        await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+      } catch (error) {
+        console.error(
+          `Failed to write ${targetPath} (based on ${source.path}): ${error.message}`
+        );
+      }
+    });
+  }
+
   // Run through all given source paths and process them.
   const promises = paths.map(async (rootPath) => {
     const project: Project = {
@@ -93,9 +179,13 @@ const handler = async ({
 const commandModule: CommandModule<MainArgs & { paths: string[] }, SnipArgs> = {
   command: "snip <paths..>",
   builder: (yargs): Argv<SnipArgs> => {
-    return withIgnoreOption(withStateOption(withDestinationOption(yargs)));
+    return withIgnoreOption(
+      withStateOption(
+        withDestinationOption(withGenerateFormattedCodeSnippetsOption(yargs))
+      )
+    );
   },
-  handler,
+  handler: async (args: Arguments<SnipArgs>) => await snip(args),
   aliases: [],
   describe: "extract snippets",
 };

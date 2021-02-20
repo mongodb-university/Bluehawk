@@ -55,6 +55,17 @@ export function withStateOption<T>(
   });
 }
 
+export function withGenerateFormattedCodeSnippetsOption<T>(
+  yargs: Argv<T>
+): Argv<T & { generateFormattedCodeSnippets?: string }> {
+  return option(yargs, "format", {
+    string: true,
+    describe:
+      "generate code snippets with formatting, e.g. emphasized lines, specified language",
+    once: true,
+  });
+}
+
 export function withJsonOption<T>(
   yargs: Argv<T>
 ): Argv<T & { json?: boolean }> {
