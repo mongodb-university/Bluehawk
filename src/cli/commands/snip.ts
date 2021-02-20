@@ -78,7 +78,7 @@ export const doRst = async (
     source.text
       .toString()
       .split(/\r\n|\r|\n/)
-      .map((line) => (line === "" ? line : `   ${line}`))
+      .map((line) => (line === "" ? line : `   ${line}`)) // indent each line 3 spaces
       .join("\n"),
   ].join("\n");
   return formattedCodeblock;
