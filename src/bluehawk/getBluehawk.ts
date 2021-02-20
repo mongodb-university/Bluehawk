@@ -20,8 +20,6 @@ export const getBluehawk = async (
   pluginPaths?: string | string[]
 ): Promise<Bluehawk> => {
   if (bluehawk === undefined) {
-    bluehawk = new Bluehawk();
-
     const StateUncommentCommand = makeBlockCommand<IdRequiredAttributes>({
       name: "state-uncomment",
       description: "combines 'uncomment' and 'state'",

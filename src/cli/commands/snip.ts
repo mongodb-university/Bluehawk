@@ -20,7 +20,7 @@ interface SnipArgs extends MainArgs {
   destination: string;
   state?: string;
   ignore?: string | string[];
-  format?: string;
+  format?: "sphynx-rst";
 }
 
 export const doRst = async (

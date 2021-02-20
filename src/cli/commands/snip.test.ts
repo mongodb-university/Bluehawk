@@ -41,7 +41,7 @@ describe("snip", () => {
       destination: destinationPath,
       state: undefined,
       ignore: undefined,
-      format: "rst",
+      format: "sphynx-rst",
     });
 
     function delay(ms: number) {
@@ -114,7 +114,7 @@ line 9
       destination: destinationPath,
       state: undefined,
       ignore: undefined,
-      format: "rst",
+      format: "sphynx-rst",
     });
 
     function delay(ms: number) {
