@@ -34,7 +34,7 @@ export const doRst = async (
     return undefined;
   }
 
-  // nasty hack to cover the suffixes/rst languages we use most often with Realm.
+  // nasty hack to cover the suffixes/rst languages we use most often
   // TODO: switch to a better mapping
   const rstLanguageMap: Map<string, string> = new Map([
     [".js", "javascript"],
@@ -78,7 +78,7 @@ export const doRst = async (
     source.text
       .toString()
       .split(/\r\n|\r|\n/)
-      .map((line) => (line === "" ? line : `   ${line}`))
+      .map((line) => (line === "" ? line : `   ${line}`)) // indent each line 3 spaces
       .join("\n"),
   ].join("\n");
   return formattedCodeblock;
@@ -130,7 +130,7 @@ export const snip = async (args: SnipArgs): Promise<void> => {
     }
   });
 
-  if (format !== undefined) {
+  if (format === "sphynx-rst") {
     // Define the handler for generating formatted snippet files.
     bluehawk.subscribe(async (result: ParseResult) => {
       const formattedCodeblock = await doRst(result);

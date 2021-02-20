@@ -20,7 +20,7 @@ export interface EmphasizeRange {
 
 export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
   name: "emphasize",
-  description: "highlight line(s) in formatted output",
+  description: "identify line(s) to highlight (see `bluehawk snip --format` command)",
   attributesSchema: NoAttributesSchema,
 
   async process({ commandNode, parseResult }) {
