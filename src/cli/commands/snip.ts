@@ -130,7 +130,7 @@ export const snip = async (args: SnipArgs): Promise<void> => {
     }
   });
 
-  if (format !== undefined) {
+  if (format === "sphynx-rst") {
     // Define the handler for generating formatted snippet files.
     bluehawk.subscribe(async (result: ParseResult) => {
       const formattedCodeblock = await doRst(result);
