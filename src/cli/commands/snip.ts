@@ -34,7 +34,7 @@ export const doRst = async (
     return undefined;
   }
 
-  // nasty hack to cover the suffixes/rst languages we use most often with Realm.
+  // nasty hack to cover the suffixes/rst languages we use most often
   // TODO: switch to a better mapping
   const rstLanguageMap: Map<string, string> = new Map([
     [".js", "javascript"],
