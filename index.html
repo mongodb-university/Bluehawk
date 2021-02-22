@@ -67,6 +67,34 @@
 					<li>Extract code examples for use in documentation</li>
 					<li>Replace &quot;finished&quot; code with &quot;todo&quot; code for a branch in a tutorial repo</li>
 				</ul>
+				<blockquote>
+					<p>💡 See our <a href="https://mongodb-university.github.io/Bluehawk/">API Documentation</a> or
+					<a href="https://github.com/mongodb-university/Bluehawk/issues/new">open an issue</a></p>
+				</blockquote>
+				<a href="#cli-usage" id="cli-usage" style="color: inherit; text-decoration: none;">
+					<h2>CLI Usage</h2>
+				</a>
+				<p>Install the CLI globally:</p>
+				<pre><code class="language-sh"><span style="color: #000000">npm install -g bluehawk</span>
+</code></pre>
+				<p>Mark up some source files and run the following command to extract snippets:</p>
+				<pre><code class="language-sh"><span style="color: #000000">bluehawk snip \</span>
+<span style="color: #000000">  --destination path/to/snippetOutput/ \</span>
+<span style="color: #000000">  path/to/unitTestedCodeExamples/</span>
+</code></pre>
+				<p>Try out some of the commands and options:</p>
+				<ul>
+					<li><code>help</code>: Display helpful information about available commands. May be more complete and
+					up-to-date than this README.</li>
+					<li><code>copy --state &lt;state name&gt;</code>: Copy the given <code>state name</code> version of files to destination.
+						When Bluehawk encounters a <code>state</code> command (see below), multiple versions of the source file
+						are spawned. Each version removes any code in state commands that are <strong>not</strong>
+						marked with the corresponding state name. This flag determines which version
+					to eventually write to disk.</li>
+					<li><code>snip</code>: Output snippet files only. Can be combined with <code>--state</code>.</li>
+					<li><code>list commands</code>: Display a list of available markup commands.</li>
+					<li><code>-d or --destination</code> defines the output location.</li>
+				</ul>
 				<a href="#use-cases" id="use-cases" style="color: inherit; text-decoration: none;">
 					<h2>Use Cases</h2>
 				</a>
@@ -75,12 +103,12 @@
 				</a>
 				<p>Imagine you want to paste some code from a unit test into your docs. You can
 					mark up the unit test source file like this with Bluehawk commands like
-				<code>:code-block-start:</code>, <code>:code-block-end:</code>, <code>:remove-start:</code>, and <code>:remove-end:</code>:</p>
+				<code>:snippet-start:</code>, <code>:snippet-end:</code>, <code>:remove-start:</code>, and <code>:remove-end:</code>:</p>
 				<pre><code class="language-swift"><span style="color: #008000">// SomeTest.swift</span>
 
 <span style="color: #008000">// ... more tests ...</span>
 <span style="color: #0000FF">func</span><span style="color: #000000"> </span><span style="color: #795E26">someTest</span><span style="color: #000000">() {</span>
-<span style="color: #000000">    </span><span style="color: #008000">// :code-block-start: some-example</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :snippet-start: some-example</span>
 <span style="color: #000000">    </span><span style="color: #0000FF">let</span><span style="color: #000000"> person = </span><span style="color: #795E26">getPerson</span><span style="color: #000000">()</span>
 <span style="color: #000000">    </span><span style="color: #008000">// :remove-start: // hide test boilerplate from the code block</span>
 <span style="color: #000000">    </span><span style="color: #795E26">XCTAssert</span><span style="color: #000000">(person.</span><span style="color: #001080">name</span><span style="color: #000000"> != </span><span style="color: #A31515">&quot;Keith&quot;</span><span style="color: #000000">)</span>
@@ -88,7 +116,7 @@
 <span style="color: #000000">    person.</span><span style="color: #001080">doSomething</span><span style="color: #000000"> {</span>
 <span style="color: #000000">        person.</span><span style="color: #795E26">doSomethingElse</span><span style="color: #000000">()</span>
 <span style="color: #000000">    }</span>
-<span style="color: #000000">    </span><span style="color: #008000">// :code-block-end:</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :snippet-end:</span>
 <span style="color: #000000">}</span>
 <span style="color: #008000">// ... more tests ...</span>
 </code></pre>
@@ -120,7 +148,7 @@
 				<pre><code class="language-swift"><span style="color: #008000">// WelcomeViewController.swift</span>
 
 <span style="color: #008000">// ... more code ...</span>
-<span style="color: #008000">// :code-block-start: sign-up</span>
+<span style="color: #008000">// :snippet-start: sign-up</span>
 <span style="color: #0000FF">@objc</span><span style="color: #000000"> </span><span style="color: #0000FF">func</span><span style="color: #000000"> </span><span style="color: #795E26">signUp</span><span style="color: #000000">() {</span>
 <span style="color: #000000">    </span><span style="color: #008000">// :state-start: final</span>
 <span style="color: #000000">    </span><span style="color: #795E26">setLoading</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
@@ -136,7 +164,7 @@
 <span style="color: #000000">    </span><span style="color: #008000">// When registered, call signIn().</span>
 <span style="color: #000000">    </span><span style="color: #008000">// :state-uncomment-end:</span>
 <span style="color: #000000">}</span>
-<span style="color: #008000">// :code-block-end:</span>
+<span style="color: #008000">// :snippet-end:</span>
 <span style="color: #008000">// ... more code ...</span>
 </code></pre>
 				<p>Running <code>bluehawk copy</code> on this file with <code>--state start</code>  results in a copy of
@@ -172,42 +200,6 @@
 				<p>You can run Bluehawk on an entire directory, and each file in the repo will be
 					copied or transformed to the destination. This makes it easy to copy one state
 				of the entire tutorial source into another repo that learners can clone.</p>
-				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
-					<h2>Installation</h2>
-				</a>
-				<pre><code class="language-sh"><span style="color: #000000">npm install -g bluehawk</span>
-</code></pre>
-				<a href="#how-to-run-bluehawk-from-source" id="how-to-run-bluehawk-from-source" style="color: inherit; text-decoration: none;">
-					<h2>How to Run Bluehawk from Source</h2>
-				</a>
-				<p>To build and run Bluehawk from source, clone this repo and install dependencies:</p>
-				<pre><code class="language-sh"><span style="color: #000000">npm install</span>
-</code></pre>
-				<p>To build, run:</p>
-				<pre><code><span style="color: #001080">npm</span><span style="color: #000000"> </span><span style="color: #001080">run</span><span style="color: #000000"> </span><span style="color: #001080">build</span>
-</code></pre>
-				<p>If compilation is successful, you can run bluehawk like so:</p>
-				<pre><code class="language-sh"><span style="color: #000000">node </span><span style="color: #795E26">.</span><span style="color: #000000"> snip -d &lt;destination directory&gt; &lt;folder to </span><span style="color: #795E26">source</span><span style="color: #000000"> file or directory&gt;</span>
-</code></pre>
-				<p>Which you can alias as:</p>
-				<pre><code class="language-sh"><span style="color: #795E26">alias</span><span style="color: #000000"> bluehawk=</span><span style="color: #A31515">&quot;node /path/to/bluehawkrepoclone&quot;</span>
-</code></pre>
-				<p>In order to do anything useful, you can use the following commands:</p>
-				<ul>
-					<li><p><code>help</code>: Display helpful information about available commands. May be more complete and
-						up-to-date than this README.</p>
-					</li>
-					<li><p><code>copy --state &lt;state name&gt;</code>: Copy the given <code>state name</code> version of files to destination.
-							When Bluehawk encounters a <code>state</code> command (see below), multiple versions of the source file
-							are spawned. Each version removes any code in state commands that are <strong>not</strong>
-							marked with the corresponding state name. This flag determines which version
-						to eventually write to disk.</p>
-					</li>
-					<li><p><code>snip</code>: Output snippet files only. Can be combined with <code>--state</code>.</p>
-					</li>
-					<li><p><code>-d or --destination</code> defines the output location.</p>
-					</li>
-				</ul>
 				<a href="#command-markup" id="command-markup" style="color: inherit; text-decoration: none;">
 					<h2>Command Markup</h2>
 				</a>
@@ -279,6 +271,26 @@
 				<pre><code class="language-shell"><span style="color: #000000">bluehawk --plugin ./myPlugin source.txt</span>
 </code></pre>
 				<p>You can pass the --plugin flag multiple times to load different plugins or create a plugin that is composed of other plugins.</p>
+				<a href="#usage-as-a-module" id="usage-as-a-module" style="color: inherit; text-decoration: none;">
+					<h2>Usage as a Module</h2>
+				</a>
+				<pre><code class="language-sh"><span style="color: #000000">npm install bluehawk</span>
+</code></pre>
+				<a href="#how-to-run-bluehawk-from-source" id="how-to-run-bluehawk-from-source" style="color: inherit; text-decoration: none;">
+					<h2>How to Run Bluehawk from Source</h2>
+				</a>
+				<p>To build and run Bluehawk from source, clone this repo and install dependencies:</p>
+				<pre><code class="language-sh"><span style="color: #000000">npm install</span>
+</code></pre>
+				<p>To build, run:</p>
+				<pre><code><span style="color: #001080">npm</span><span style="color: #000000"> </span><span style="color: #001080">run</span><span style="color: #000000"> </span><span style="color: #001080">build</span>
+</code></pre>
+				<p>If compilation is successful, you can run bluehawk like so:</p>
+				<pre><code class="language-sh"><span style="color: #000000">node </span><span style="color: #795E26">.</span><span style="color: #000000"> snip -d &lt;destination directory&gt; &lt;folder to </span><span style="color: #795E26">source</span><span style="color: #000000"> file or directory&gt;</span>
+</code></pre>
+				<p>Which you can alias as:</p>
+				<pre><code class="language-sh"><span style="color: #795E26">alias</span><span style="color: #000000"> bluehawk=</span><span style="color: #A31515">&quot;node /path/to/bluehawkrepoclone&quot;</span>
+</code></pre>
 				<a href="#running-tests" id="running-tests" style="color: inherit; text-decoration: none;">
 					<h2>Running Tests</h2>
 				</a>
@@ -329,7 +341,7 @@
 				<a href="#command-tokens" id="command-tokens" style="color: inherit; text-decoration: none;">
 					<h3>Command Tokens</h3>
 				</a>
-				<p>&quot;:code-block-start:&quot;, &quot;:remove-start:&quot;, etc. are not keywords. Instead, the
+				<p>&quot;:snippet-start:&quot;, &quot;:remove-start:&quot;, etc. are not keywords. Instead, the
 					lexer and parser detect [command], [command]-start, and [command]-end. It is up
 					to the visitor to determine whether the -start and -end command names match and
 					if the command name is understood by Bluehawk. This keeps the lexer and parser
