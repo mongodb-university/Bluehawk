@@ -6,20 +6,53 @@ In particular, it can:
 - Extract code examples for use in documentation
 - Replace "finished" code with "todo" code for a branch in a tutorial repo
 
+>💡 See our [API Documentation](https://mongodb-university.github.io/Bluehawk/) or
+>[open an issue](https://github.com/mongodb-university/Bluehawk/issues/new)
+
+
+## CLI Usage
+
+Install the CLI globally:
+
+```sh
+npm install -g bluehawk
+```
+
+Mark up some source files and run the following command to extract snippets:
+
+```sh
+bluehawk snip \
+  --destination path/to/snippetOutput/ \
+  path/to/unitTestedCodeExamples/
+```
+
+Try out some of the commands and options:
+
+- `help`: Display helpful information about available commands. May be more complete and 
+  up-to-date than this README.
+- `copy --state <state name>`: Copy the given `state name` version of files to destination.
+  When Bluehawk encounters a `state` command (see below), multiple versions of the source file
+  are spawned. Each version removes any code in state commands that are **not**
+  marked with the corresponding state name. This flag determines which version
+  to eventually write to disk.
+- `snip`: Output snippet files only. Can be combined with `--state`.
+- `list commands`: Display a list of available markup commands.
+- `-d or --destination` defines the output location.
+
 ## Use Cases
 
 ### Tested Code Examples
 
 Imagine you want to paste some code from a unit test into your docs. You can
 mark up the unit test source file like this with Bluehawk commands like
-`:code-block-start:`, `:code-block-end:`, `:remove-start:`, and `:remove-end:`:
+`:snippet-start:`, `:snippet-end:`, `:remove-start:`, and `:remove-end:`:
 
 ```swift
 // SomeTest.swift
 
 // ... more tests ...
 func someTest() {
-    // :code-block-start: some-example
+    // :snippet-start: some-example
     let person = getPerson()
     // :remove-start: // hide test boilerplate from the code block
     XCTAssert(person.name != "Keith")
@@ -27,7 +60,7 @@ func someTest() {
     person.doSomething {
         person.doSomethingElse()
     }
-    // :code-block-end:
+    // :snippet-end:
 }
 // ... more tests ...
 ```
@@ -67,7 +100,7 @@ indicate different states or checkpoints with the `:state-start:` and
 // WelcomeViewController.swift
 
 // ... more code ...
-// :code-block-start: sign-up
+// :snippet-start: sign-up
 @objc func signUp() {
     // :state-start: final
     setLoading(true);
@@ -83,7 +116,7 @@ indicate different states or checkpoints with the `:state-start:` and
     // When registered, call signIn().
     // :state-uncomment-end:
 }
-// :code-block-end:
+// :snippet-end:
 // ... more code ...
 ```
 
@@ -128,52 +161,6 @@ You can run Bluehawk on an entire directory, and each file in the repo will be
 copied or transformed to the destination. This makes it easy to copy one state
 of the entire tutorial source into another repo that learners can clone.
 
-## Installation
-
-```sh
-npm install -g bluehawk
-```
-
-## How to Run Bluehawk from Source
-
-To build and run Bluehawk from source, clone this repo and install dependencies:
-
-```sh
-npm install
-```
-
-To build, run:
-
-```
-npm run build
-```
-
-If compilation is successful, you can run bluehawk like so:
-
-```sh
-node . snip -d <destination directory> <folder to source file or directory>
-```
-
-Which you can alias as:
-
-```sh
-alias bluehawk="node /path/to/bluehawkrepoclone"
-```
-
-In order to do anything useful, you can use the following commands:
-
-- `help`: Display helpful information about available commands. May be more complete and 
-  up-to-date than this README.
-- `copy --state <state name>`: Copy the given `state name` version of files to destination.
-  When Bluehawk encounters a `state` command (see below), multiple versions of the source file
-  are spawned. Each version removes any code in state commands that are **not**
-  marked with the corresponding state name. This flag determines which version
-  to eventually write to disk.
-
-- `snip`: Output snippet files only. Can be combined with `--state`.
-- `-d or --destination` defines the output location.
-
-
 ## Command Markup
 
 When generating code blocks from a code file, use the following markup. Note: you
@@ -195,7 +182,6 @@ start and end commands to delineate blocks of content. Generally, the command
 operates on the content within the block.
 
 Use `bluehawk list commands` to list available commands.
-
 
 ## Plugins
 
@@ -227,6 +213,40 @@ bluehawk --plugin ./myPlugin source.txt
 ```
 
 You can pass the --plugin flag multiple times to load different plugins or create a plugin that is composed of other plugins.
+
+
+## Usage as a Module
+
+```sh
+npm install bluehawk
+```
+
+## How to Run Bluehawk from Source
+
+To build and run Bluehawk from source, clone this repo and install dependencies:
+
+```sh
+npm install
+```
+
+To build, run:
+
+```
+npm run build
+```
+
+If compilation is successful, you can run bluehawk like so:
+
+```sh
+node . snip -d <destination directory> <folder to source file or directory>
+```
+
+Which you can alias as:
+
+```sh
+alias bluehawk="node /path/to/bluehawkrepoclone"
+```
+
 
 ## Running Tests
 
@@ -290,7 +310,7 @@ are halfway in a block comment.
 
 ### Command Tokens
 
-":code-block-start:", ":remove-start:", etc. are not keywords. Instead, the
+":snippet-start:", ":remove-start:", etc. are not keywords. Instead, the
 lexer and parser detect [command], [command]-start, and [command]-end. It is up
 to the visitor to determine whether the -start and -end command names match and
 if the command name is understood by Bluehawk. This keeps the lexer and parser
