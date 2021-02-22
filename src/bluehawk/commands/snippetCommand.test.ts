@@ -142,4 +142,40 @@ hide this
     );
     done();
   });
+
+  it("supports nested snippets", async () => {
+    const source = new Document({
+      text: `some text
+// :snippet-start: a
+hello
+// :snippet-start: b
+world
+// :snippet-end:
+!
+// :snippet-end:
+`,
+      language: "javascript",
+      path: "snippet.test.js",
+    });
+
+    const parseResult = bluehawk.parse(source);
+    const files = await bluehawk.process(parseResult);
+    expect(files["snippet.test.codeblock.a.js"].source.text.toString()).toBe(
+      `hello
+world
+!
+`
+    );
+    expect(files["snippet.test.codeblock.b.js"].source.text.toString()).toBe(
+      `world
+`
+    );
+
+    // Ensure nested snippets don't generate, e.g., snippet.test.codeblock.a.codeblock.b.js
+    expect(Object.keys(files)).toStrictEqual([
+      "snippet.test.js",
+      "snippet.test.codeblock.a.js",
+      "snippet.test.codeblock.b.js",
+    ]);
+  });
 });

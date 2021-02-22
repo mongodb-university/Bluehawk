@@ -77,6 +77,11 @@ export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
     // Strip tags
     removeMetaRange(source.text, commandNode);
 
+    if (source.attributes["snippet"] !== undefined) {
+      // Nested snippet. Its output will be the same as unnested.
+      return;
+    }
+
     // Copy text to new working copy
     const clonedSnippet = source.text.snip(
       contentRange.start.offset,
