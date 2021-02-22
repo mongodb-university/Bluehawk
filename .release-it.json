@@ -3,6 +3,7 @@
     "pushRepo": "upstream"
   },
   "github": {
-    "release": true
+    "release": true,
+    "tokenRef": "RELEASE_IT_GITHUB_TOKEN"
   }
 }
