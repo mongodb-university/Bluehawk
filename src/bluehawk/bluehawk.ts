@@ -1,21 +1,17 @@
-import { makeBlockCommentTokens } from "./parser/lexer/makeBlockCommentTokens";
-import { makeLineCommentToken } from "./parser/lexer/makeLineCommentToken";
-import { makeCstVisitor, IVisitor } from "./parser/visitor/makeCstVisitor";
 import { validateCommands } from "./processor/validator";
-import { RootParser } from "./parser/RootParser";
 import { COMMAND_PATTERN } from "./parser/lexer/tokens";
 import { Document } from "./Document";
 import { Listener, Processor, BluehawkFiles } from "./processor/Processor";
 import { AnyCommand } from "./commands/Command";
 import { ParseResult } from "./parser/ParseResult";
-import { strict as assert } from "assert";
+import { ParserStore } from "./parser/ParserStore";
 import * as path from "path";
-import { isBinary } from "istextorbinary";
-import { System } from "./io/System";
+import { IParser, LanguageSpecification } from "./parser";
 
 interface BluehawkConfiguration {
   commands?: AnyCommand[];
   commandAliases?: [string, AnyCommand][];
+  languageSpecs?: { [extension: string]: LanguageSpecification };
 }
 
 // The frontend of Bluehawk
@@ -25,7 +21,7 @@ export class Bluehawk {
       return;
     }
 
-    const { commands, commandAliases } = configuration;
+    const { commands, commandAliases, languageSpecs } = configuration;
 
     if (commands !== undefined) {
       commands.forEach((command) => this.registerCommand(command));
@@ -36,6 +32,12 @@ export class Bluehawk {
         this.registerCommand(nameCommandPair[1], nameCommandPair[0])
       );
     }
+
+    if (languageSpecs !== undefined) {
+      Object.entries(languageSpecs).forEach(([extension, specification]) =>
+        this.addLanguage(extension, specification)
+      );
+    }
   }
 
   // Register the given command on the processor and validator. This enables
@@ -44,8 +46,19 @@ export class Bluehawk {
     this._processor.registerCommand(command, alternateName);
   }
 
+  // Specify the special patterns for a given language.
+  addLanguage = (
+    forFileExtension: string | string[],
+    languageSpecification: LanguageSpecification
+  ): void => {
+    this._parserStore.addLanguage(forFileExtension, languageSpecification);
+  };
+
   // Parses the given source file into commands.
-  parse = (source: Document): ParseResult => {
+  parse = (
+    source: Document,
+    languageSpecification?: LanguageSpecification
+  ): ParseResult => {
     // First, quickly check to see if this even has any commands.
     if (!COMMAND_PATTERN.test(source.text.original)) {
       return {
@@ -54,51 +67,25 @@ export class Bluehawk {
         source,
       };
     }
-    if (!this.parsers.has(source.language)) {
-      const parser = new RootParser([
-        // TODO: map source.language to block/line comment tokens
-        ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
-        makeLineCommentToken(/\/\/ ?/y),
-      ]);
-      this.parsers.set(source.language, [parser, makeCstVisitor(parser)]);
+
+    let parser: IParser;
+    try {
+      parser = this._parserStore.getParser(languageSpecification ?? source);
+    } catch (error) {
+      console.warn(
+        `falling back to plaintext parser for ${source.path}: ${error.message}`
+      );
+      parser = this._parserStore.getDefaultParser();
     }
-    const parserVisitorTuple = this.parsers.get(source.language);
-    assert(parserVisitorTuple !== undefined);
-    const [parser, visitor] = parserVisitorTuple;
-    const parseResult = parser.parse(source.text.original);
-    if (parseResult.cst === undefined) {
-      return {
-        commandNodes: [],
-        errors: parseResult.errors,
-        source,
-      };
-    }
-    const visitorResult = visitor.visit(parseResult.cst, source);
+    const result = parser.parse(source);
     const validateErrors = validateCommands(
-      visitorResult.commandNodes,
+      result.commandNodes,
       this._processor.processors
     );
     return {
-      errors: [
-        ...parseResult.errors,
-        ...visitorResult.errors,
-        ...validateErrors,
-      ],
-      commandNodes: visitorResult.commandNodes,
-      source,
+      ...result,
+      errors: [...result.errors, ...validateErrors],
     };
-  };
-
-  // Load the document at the given path.
-  readFile = async (sourcePath: string): Promise<Document> => {
-    if (isBinary(sourcePath)) {
-      throw new Error(
-        `Binary file encountered at path '${sourcePath}'. Bluehawk does not parse binary files.`
-      );
-    }
-    const language = path.extname(sourcePath);
-    const text = await System.fs.readFile(path.resolve(sourcePath), "utf8");
-    return new Document({ text, language, path: sourcePath });
   };
 
   // Subscribe to processed documents as they are processed by Bluehawk.
@@ -159,7 +146,7 @@ export class Bluehawk {
     return this._processor;
   }
 
-  private parsers = new Map<string, [RootParser, IVisitor]>();
   private _processor = new Processor();
+  private _parserStore = new ParserStore();
   private _loadedPlugins = new Set<string>();
 }

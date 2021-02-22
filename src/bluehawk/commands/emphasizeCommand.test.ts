@@ -6,6 +6,11 @@ describe("emphasize command", () => {
   const bluehawk = new Bluehawk({
     commands: [EmphasizeCommand],
   });
+  bluehawk.addLanguage("js", {
+    languageId: "javascript",
+    blockComments: [[/\/\*/, /\*\//]],
+    lineComments: [/\/\/ ?/],
+  });
 
   it("works as a one line command", async (done) => {
     const source = new Document({

@@ -19,6 +19,11 @@ describe("bluehawk", () => {
       rules: [idIsUnique],
     })
   );
+  bluehawk.addLanguage([""], {
+    languageId: "javascript",
+    blockComments: [[/\/\*/, /\*\//]],
+    lineComments: [/\/\/ ?/],
+  });
 
   it("handles lexing, parsing, visiting, and validating", () => {
     const input = new Document({

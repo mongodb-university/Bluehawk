@@ -13,6 +13,11 @@ import { ParseResult } from "../parser/ParseResult";
 
 describe("processor", () => {
   const bluehawk = new Bluehawk();
+  bluehawk.addLanguage(["js"], {
+    languageId: "javascript",
+    blockComments: [[/\/\*/, /\*\//]],
+    lineComments: [/\/\/ ?/],
+  });
 
   const AppendMessageAfterDelayCommand = makeBlockCommand<NoAttributes>({
     name: "append-message-after-delay",
@@ -165,6 +170,11 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
 
   it("passes correct command node type to ", async (done) => {
     const bluehawk = new Bluehawk();
+    bluehawk.addLanguage(["js"], {
+      languageId: "javascript",
+      blockComments: [[/\/\*/, /\*\//]],
+      lineComments: [/\/\/ ?/],
+    });
 
     const state = {
       calledLineCommandProcess: false,

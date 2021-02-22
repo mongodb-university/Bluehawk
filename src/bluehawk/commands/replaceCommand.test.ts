@@ -10,6 +10,11 @@ describe("replace command", () => {
   bluehawk.registerCommand(RemoveCommand);
   bluehawk.registerCommand(SnippetCommand);
   bluehawk.registerCommand(SnippetCommand, "code-block");
+  bluehawk.addLanguage("js", {
+    languageId: "javascript",
+    blockComments: [[/\/\*/, /\*\//]],
+    lineComments: [/\/\/ ?/],
+  });
 
   it("errors when no attribute list is given", () => {
     const source = new Document({

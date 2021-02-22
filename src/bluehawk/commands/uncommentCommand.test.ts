@@ -7,6 +7,11 @@ describe("uncomment command", () => {
   const bluehawk = new Bluehawk();
   bluehawk.registerCommand(UncommentCommand);
   bluehawk.registerCommand(RemoveCommand);
+  bluehawk.addLanguage(["js"], {
+    languageId: "javascript",
+    blockComments: [[/\/\*/, /\*\//]],
+    lineComments: [/\/\/ ?/],
+  });
 
   it("uncomments", async (done) => {
     const source = new Document({

@@ -7,6 +7,11 @@ describe("snippet Command", () => {
   const bluehawk = new Bluehawk();
   bluehawk.registerCommand(SnippetCommand);
   bluehawk.registerCommand(RemoveCommand);
+  bluehawk.addLanguage(["js", "swift"], {
+    languageId: "javascript",
+    blockComments: [[/\/\*/, /\*\//]],
+    lineComments: [/\/\/ ?/],
+  });
 
   it("performs extraction", async (done) => {
     const snippet = `describe("some stuff", () => {

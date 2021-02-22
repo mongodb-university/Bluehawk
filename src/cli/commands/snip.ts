@@ -52,8 +52,8 @@ export const doRst = async (
     [".cs", "csharp"],
     [".json", "json"],
   ]);
-  const rstLanguage = rstLanguageMap.has(source.language)
-    ? rstLanguageMap.get(source.language)
+  const rstLanguage = rstLanguageMap.has(source.extension)
+    ? rstLanguageMap.get(source.extension)
     : "text";
 
   const rstHeader = ".. code-block::";
