@@ -60,7 +60,7 @@ blockComment
   : BlockCommentStart (command | LineComment | NewLine | blockComment†)* BlockCommentEnd
 
 chunk
-  : (command | blockComment | lineComment | pushParser | StringLiteral)* Newline
+  : (command | blockComment | lineComment | pushParser | StringLiteral)* (Newline | EOF)††
 
 command
   : blockCommand | Command
@@ -75,6 +75,7 @@ pushParser
   : PushParser_X (pushParser | Newline)* PopParser_X
 
 † = if canNestBlockComments
+†† = newline optional in blockCommand
 */
 
 type Rule = (idx?: number) => CstNode;
@@ -129,8 +130,11 @@ export class RootParser extends CstParser {
       this.OR1([
         { ALT: () => this.CONSUME(Newline) },
         {
-          // Allow for lineComment lines to end without a newline
-          GATE: () => this.LA(1).tokenType.name === CommandEnd.name,
+          // Allow for files and lineComment lines to end without a newline.
+          GATE: () => {
+            const { name } = this.LA(1).tokenType;
+            return name === "EOF" || name === CommandEnd.name;
+          },
           ALT: () => {
             return;
           },

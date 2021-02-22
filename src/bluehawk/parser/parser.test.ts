@@ -526,16 +526,14 @@ not in a code block
       );
     });
 
-    it("requires newline at end of file", () => {
+    it("does not require newline at end of file", () => {
       const result = lexer.tokenize(`:command-start:
 :command-end:`);
       expect(result.errors.length).toBe(0);
       // "input" is a setter which will reset the parser's state
       parser.input = result.tokens;
       parser.annotatedText();
-      expect(parser.errors[0].message).toStrictEqual(
-        "2:1(16) chunk: expecting one of these possible token sequences: Newline |  "
-      );
+      expect(parser.errors).toStrictEqual([]);
     });
   });
 
