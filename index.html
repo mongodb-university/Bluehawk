@@ -1,0 +1,587 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>bluehawk</title>
+	<meta name="description" content="Documentation for bluehawk">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">bluehawk</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>bluehawk</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#bluehawk" id="bluehawk" style="color: inherit; text-decoration: none;">
+					<h1>Bluehawk</h1>
+				</a>
+				<p>Bluehawk is a markup processor for extracting and manipulating arbitrary code.
+				In particular, it can:</p>
+				<ul>
+					<li>Extract code examples for use in documentation</li>
+					<li>Replace &quot;finished&quot; code with &quot;todo&quot; code for a branch in a tutorial repo</li>
+				</ul>
+				<a href="#use-cases" id="use-cases" style="color: inherit; text-decoration: none;">
+					<h2>Use Cases</h2>
+				</a>
+				<a href="#tested-code-examples" id="tested-code-examples" style="color: inherit; text-decoration: none;">
+					<h3>Tested Code Examples</h3>
+				</a>
+				<p>Imagine you want to paste some code from a unit test into your docs. You can
+					mark up the unit test source file like this with Bluehawk commands like
+				<code>:code-block-start:</code>, <code>:code-block-end:</code>, <code>:remove-start:</code>, and <code>:remove-end:</code>:</p>
+				<pre><code class="language-swift"><span style="color: #008000">// SomeTest.swift</span>
+
+<span style="color: #008000">// ... more tests ...</span>
+<span style="color: #0000FF">func</span><span style="color: #000000"> </span><span style="color: #795E26">someTest</span><span style="color: #000000">() {</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :code-block-start: some-example</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">let</span><span style="color: #000000"> person = </span><span style="color: #795E26">getPerson</span><span style="color: #000000">()</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :remove-start: // hide test boilerplate from the code block</span>
+<span style="color: #000000">    </span><span style="color: #795E26">XCTAssert</span><span style="color: #000000">(person.</span><span style="color: #001080">name</span><span style="color: #000000"> != </span><span style="color: #A31515">&quot;Keith&quot;</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :remove-end:</span>
+<span style="color: #000000">    person.</span><span style="color: #001080">doSomething</span><span style="color: #000000"> {</span>
+<span style="color: #000000">        person.</span><span style="color: #795E26">doSomethingElse</span><span style="color: #000000">()</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :code-block-end:</span>
+<span style="color: #000000">}</span>
+<span style="color: #008000">// ... more tests ...</span>
+</code></pre>
+				<p>Running Bluehawk with the <code>snip</code> command on this file will produce a snippet
+				file called <code>SomeTest.codeblock.some-example.swift</code> that looks something like this:</p>
+				<pre><code class="language-swift"><span style="color: #0000FF">let</span><span style="color: #000000"> person = </span><span style="color: #795E26">getPerson</span><span style="color: #000000">()</span>
+<span style="color: #000000">person.</span><span style="color: #001080">doSomething</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    person.</span><span style="color: #795E26">doSomethingElse</span><span style="color: #000000">()</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>You can now import this snippet into your documentation. Now you have the
+				benefit of tested examples that are still easy to read in the docs. </p>
+				<p>Bluehawk markup can go into any source file, so you don&#39;t need to rig every unit
+					test framework you use up to also extract code examples. Just use Bluehawk with
+					the unit test framework that suits your language and your project. Heck, you don&#39;t
+					even need a unit test framework. Use Bluehawk in your app or bash script that you
+				run to make sure everything&#39;s still more or less working.</p>
+				<a href="#checkpointed-tutorials" id="checkpointed-tutorials" style="color: inherit; text-decoration: none;">
+					<h3>Checkpointed Tutorials</h3>
+				</a>
+				<p>Suppose you have a tutorial repo that learners can clone to follow along with
+					your tutorial from a certain starting point, say a &quot;start&quot; branch. You also want
+					learners to be able to check out a &quot;final&quot; branch so they can see the finished
+					project. As the tutorial developer, you would have to maintain these two state
+				branches, which can be tedious and error prone.</p>
+				<p>To manage this process, you can use Bluehawk to mark up your tutorial source and
+					indicate different states or checkpoints with the <code>:state-start:</code> and
+				<code>:state-end:</code> commands:</p>
+				<pre><code class="language-swift"><span style="color: #008000">// WelcomeViewController.swift</span>
+
+<span style="color: #008000">// ... more code ...</span>
+<span style="color: #008000">// :code-block-start: sign-up</span>
+<span style="color: #0000FF">@objc</span><span style="color: #000000"> </span><span style="color: #0000FF">func</span><span style="color: #000000"> </span><span style="color: #795E26">signUp</span><span style="color: #000000">() {</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-start: final</span>
+<span style="color: #000000">    </span><span style="color: #795E26">setLoading</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+<span style="color: #000000">    app.</span><span style="color: #001080">emailPasswordAuth</span><span style="color: #000000">.</span><span style="color: #795E26">registerUser</span><span style="color: #000000">(</span><span style="color: #795E26">email</span><span style="color: #000000">: email!, </span><span style="color: #795E26">password</span><span style="color: #000000">: password!, </span><span style="color: #795E26">completion</span><span style="color: #000000">: { [</span><span style="color: #0000FF">weak</span><span style="color: #000000"> </span><span style="color: #0000FF">self</span><span style="color: #000000">](error) </span><span style="color: #AF00DB">in</span>
+<span style="color: #000000">        DispatchQueue.</span><span style="color: #001080">main</span><span style="color: #000000">.</span><span style="color: #001080">async</span><span style="color: #000000"> {</span>
+<span style="color: #000000">            </span><span style="color: #0000FF">self</span><span style="color: #000000">!.</span><span style="color: #795E26">setLoading</span><span style="color: #000000">(</span><span style="color: #0000FF">false</span><span style="color: #000000">);</span>
+<span style="color: #000000">            ...</span>
+<span style="color: #000000">        }</span>
+<span style="color: #000000">    })</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-end:</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-start: start</span>
+<span style="color: #000000">    </span><span style="color: #008000">// TODO: Use the app&#039;s emailPasswordAuth to registerUser with the email and password.</span>
+<span style="color: #000000">    </span><span style="color: #008000">// When registered, call signIn().</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-uncomment-end:</span>
+<span style="color: #000000">}</span>
+<span style="color: #008000">// :code-block-end:</span>
+<span style="color: #008000">// ... more code ...</span>
+</code></pre>
+				<p>Running <code>bluehawk copy</code> on this file with <code>--state start</code>  results in a copy of
+				<code>WelcomeViewController.swift</code> that looks something like this:</p>
+				<pre><code class="language-swift"><span style="color: #008000">// WelcomeViewController.swift</span>
+
+<span style="color: #008000">// ... more code ...</span>
+<span style="color: #0000FF">@objc</span><span style="color: #000000"> </span><span style="color: #0000FF">func</span><span style="color: #000000"> </span><span style="color: #795E26">signUp</span><span style="color: #000000">() {</span>
+<span style="color: #000000">    </span><span style="color: #008000">// TODO: Use the app&#039;s emailPasswordAuth to registerUser with the email and password.</span>
+<span style="color: #000000">    </span><span style="color: #008000">// When registered, call signIn().</span>
+<span style="color: #000000">}</span>
+<span style="color: #008000">// ... more code ...</span>
+</code></pre>
+				<p>Notice that you still have all of the boilerplate, but no final implementation
+				code. Only the &quot;TODO&quot; is left.</p>
+				<p>Using the <code>--state final</code> flag produces another version of
+					<code>WelcomeViewController.swift</code> that has the boilerplate and the final
+				implementation code, but no &quot;TODO&quot;:</p>
+				<pre><code class="language-swift"><span style="color: #008000">// WelcomeViewController.swift</span>
+
+<span style="color: #008000">// ... more code ...</span>
+<span style="color: #0000FF">@objc</span><span style="color: #000000"> </span><span style="color: #0000FF">func</span><span style="color: #000000"> </span><span style="color: #795E26">signUp</span><span style="color: #000000">() {</span>
+<span style="color: #000000">    </span><span style="color: #795E26">setLoading</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+<span style="color: #000000">    app.</span><span style="color: #001080">emailPasswordAuth</span><span style="color: #000000">.</span><span style="color: #795E26">registerUser</span><span style="color: #000000">(</span><span style="color: #795E26">email</span><span style="color: #000000">: email!, </span><span style="color: #795E26">password</span><span style="color: #000000">: password!, </span><span style="color: #795E26">completion</span><span style="color: #000000">: { [</span><span style="color: #0000FF">weak</span><span style="color: #000000"> </span><span style="color: #0000FF">self</span><span style="color: #000000">](error) </span><span style="color: #AF00DB">in</span>
+<span style="color: #000000">        DispatchQueue.</span><span style="color: #001080">main</span><span style="color: #000000">.</span><span style="color: #001080">async</span><span style="color: #000000"> {</span>
+<span style="color: #000000">            </span><span style="color: #0000FF">self</span><span style="color: #000000">!.</span><span style="color: #795E26">setLoading</span><span style="color: #000000">(</span><span style="color: #0000FF">false</span><span style="color: #000000">);</span>
+<span style="color: #000000">            ...</span>
+<span style="color: #000000">        }</span>
+<span style="color: #000000">    })</span>
+<span style="color: #000000">}</span>
+<span style="color: #008000">// ... more code ...</span>
+</code></pre>
+				<p>You can run Bluehawk on an entire directory, and each file in the repo will be
+					copied or transformed to the destination. This makes it easy to copy one state
+				of the entire tutorial source into another repo that learners can clone.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<pre><code class="language-sh"><span style="color: #000000">npm install -g bluehawk</span>
+</code></pre>
+				<a href="#how-to-run-bluehawk-from-source" id="how-to-run-bluehawk-from-source" style="color: inherit; text-decoration: none;">
+					<h2>How to Run Bluehawk from Source</h2>
+				</a>
+				<p>To build and run Bluehawk from source, clone this repo and install dependencies:</p>
+				<pre><code class="language-sh"><span style="color: #000000">npm install</span>
+</code></pre>
+				<p>To build, run:</p>
+				<pre><code><span style="color: #001080">npm</span><span style="color: #000000"> </span><span style="color: #001080">run</span><span style="color: #000000"> </span><span style="color: #001080">build</span>
+</code></pre>
+				<p>If compilation is successful, you can run bluehawk like so:</p>
+				<pre><code class="language-sh"><span style="color: #000000">node </span><span style="color: #795E26">.</span><span style="color: #000000"> snip -d &lt;destination directory&gt; &lt;folder to </span><span style="color: #795E26">source</span><span style="color: #000000"> file or directory&gt;</span>
+</code></pre>
+				<p>Which you can alias as:</p>
+				<pre><code class="language-sh"><span style="color: #795E26">alias</span><span style="color: #000000"> bluehawk=</span><span style="color: #A31515">&quot;node /path/to/bluehawkrepoclone&quot;</span>
+</code></pre>
+				<p>In order to do anything useful, you can use the following commands:</p>
+				<ul>
+					<li><p><code>help</code>: Display helpful information about available commands. May be more complete and
+						up-to-date than this README.</p>
+					</li>
+					<li><p><code>copy --state &lt;state name&gt;</code>: Copy the given <code>state name</code> version of files to destination.
+							When Bluehawk encounters a <code>state</code> command (see below), multiple versions of the source file
+							are spawned. Each version removes any code in state commands that are <strong>not</strong>
+							marked with the corresponding state name. This flag determines which version
+						to eventually write to disk.</p>
+					</li>
+					<li><p><code>snip</code>: Output snippet files only. Can be combined with <code>--state</code>.</p>
+					</li>
+					<li><p><code>-d or --destination</code> defines the output location.</p>
+					</li>
+				</ul>
+				<a href="#command-markup" id="command-markup" style="color: inherit; text-decoration: none;">
+					<h2>Command Markup</h2>
+				</a>
+				<p>When generating code blocks from a code file, use the following markup. Note: you
+					use either single-line commenting or block commenting for all tags to keep the
+				compiler happy.</p>
+				<table>
+					<thead>
+						<tr>
+							<th>Syntax</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody><tr>
+							<td><strong>:snippet-start:</strong> <em>id</em></td>
+							<td>Creates a new snippet file, which will be output as <code>&lt;sourcefilename&gt;.codeblock.&lt;id&gt;.&lt;source file extension&gt;</code></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td><strong>:remove-start:</strong></td>
+							<td>The inner content will be removed from all output.</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td><strong>:state-start:</strong> <em>state</em></td>
+							<td>Marks this content for removal from any state file except <em>state</em>.</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td><strong>:state-uncomment-start:</strong> <em>state</em></td>
+							<td>Marks this content for removal from any state file except <em>state</em> and also removes up to one layer of comment tokens.</td>
+						</tr>
+				</tbody></table>
+				<p>All commands that end with <code>-start</code> have a corresponding <code>-end</code> command. You use
+					start and end commands to delineate blocks of content. Generally, the command
+				operates on the content within the block.</p>
+				<p>Use <code>bluehawk list commands</code> to list available commands.</p>
+				<a href="#plugins" id="plugins" style="color: inherit; text-decoration: none;">
+					<h2>Plugins</h2>
+				</a>
+				<p>You can add commands and listeners by creating a JS file or node project that
+				implements the register() function:</p>
+				<pre><code class="language-js"><span style="color: #008000">// myPlugin.js</span>
+<span style="color: #267F99">exports</span><span style="color: #000000">.</span><span style="color: #795E26">register</span><span style="color: #000000"> = (</span><span style="color: #001080">bluehawk</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #008000">// Register a new command, :my-command:</span>
+<span style="color: #000000">  </span><span style="color: #001080">bluehawk</span><span style="color: #000000">.</span><span style="color: #795E26">registerCommand</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;my-command&quot;</span><span style="color: #000000">, {</span>
+<span style="color: #000000">    </span><span style="color: #001080">rules:</span><span style="color: #000000"> [],</span>
+<span style="color: #000000">    </span><span style="color: #795E26">process</span><span style="color: #001080">:</span><span style="color: #000000"> (</span><span style="color: #001080">request</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #008000">// Execute command</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  });</span>
+
+<span style="color: #000000">  </span><span style="color: #008000">// Register a document listener</span>
+<span style="color: #000000">  </span><span style="color: #001080">bluehawk</span><span style="color: #000000">.</span><span style="color: #795E26">subscribe</span><span style="color: #000000">((</span><span style="color: #001080">finishedDocument</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #008000">// Do something with finishedDocument</span>
+<span style="color: #000000">  });</span>
+<span style="color: #000000">};</span>
+</code></pre>
+				<p>Usage:</p>
+				<pre><code class="language-shell"><span style="color: #000000">bluehawk --plugin ./myPlugin source.txt</span>
+</code></pre>
+				<p>You can pass the --plugin flag multiple times to load different plugins or create a plugin that is composed of other plugins.</p>
+				<a href="#running-tests" id="running-tests" style="color: inherit; text-decoration: none;">
+					<h2>Running Tests</h2>
+				</a>
+				<p>This project uses Jest to test.</p>
+				<p>To run all tests, use:</p>
+				<pre><code class="language-sh"><span style="color: #000000">npm </span><span style="color: #795E26">test</span>
+</code></pre>
+				<p>To run the tests and get verbose output for all unit tests, use:</p>
+				<pre><code class="language-sh"><span style="color: #000000">npm run verbose</span>
+</code></pre>
+				<p>Additionally, you can get a Jest coverage report with:</p>
+				<pre><code class="language-sh"><span style="color: #000000">npm run coverage</span>
+</code></pre>
+				<p>You can also run tests with breakpoints in VS Code with F5. See .vscode/launch.json.</p>
+				<a href="#background" id="background" style="color: inherit; text-decoration: none;">
+					<h2>Background</h2>
+				</a>
+				<p>A concept originally lifted from another internal project called &quot;peekaboo&quot;, the
+					idea is that you can develop finalized code (say, a complete tutorial
+					application that runs), and then strip out parts that you want the learner to
+					figure out and code themselves. So, one code base (compiles, passes tests, etc.)
+					can be used to generate both a &quot;starter&quot; version for a learner and a &quot;final&quot;
+				version so they can check their work... or just download it and cheat.</p>
+				<p>Additionally, we needed a way to leave our code examples in compileable,
+				testable projects while extracting the relevant part to paste in our docs.</p>
+				<a href="#architecture" id="architecture" style="color: inherit; text-decoration: none;">
+					<h2>Architecture</h2>
+				</a>
+				<p><img src="https://raw.githubusercontent.com/mongodb-university/Bluehawk/main/architecture.png" alt="Graphical overview of the Bluehawk architecture" title="Bluehawk Architecture"></p>
+				<p>Bluehawk has three major components:</p>
+				<ul>
+					<li><strong>Client:</strong> loads files to be parsed and processed. Implements listeners that
+						decide what to do with results (e.g. save to file). Can add custom commands
+						and language specifications (i.e. comment syntax). The main client is the CLI,
+					but you can use Bluehawk as a library and implement your own clients.</li>
+					<li><strong>Parser:</strong> finds commands in a source file and diagnoses markup errors.</li>
+					<li><strong>Processor:</strong> executes commands on a source file to produce transformed documents.</li>
+				</ul>
+				<a href="#file-language-specific-tokens" id="file-language-specific-tokens" style="color: inherit; text-decoration: none;">
+					<h3>File Language-Specific Tokens</h3>
+				</a>
+				<p>The lexer can receive custom tokens for a given language to define comment
+					syntax. For example, plaintext has no comments, bash only has line comments
+					(#)<a href="https://stackoverflow.com/questions/32126653/how-does-end-work-in-bash-to-create-a-multi-line-comment-block">†</a>,
+					and C++ has line (//) and block (<code>/*</code>, <code>*/</code>) comments. Bluehawk is comment aware so
+					that it can correctly strip comments (when needed) and diagnose when commands
+				are halfway in a block comment.</p>
+				<a href="#command-tokens" id="command-tokens" style="color: inherit; text-decoration: none;">
+					<h3>Command Tokens</h3>
+				</a>
+				<p>&quot;:code-block-start:&quot;, &quot;:remove-start:&quot;, etc. are not keywords. Instead, the
+					lexer and parser detect [command], [command]-start, and [command]-end. It is up
+					to the visitor to determine whether the -start and -end command names match and
+					if the command name is understood by Bluehawk. This keeps the lexer and parser
+					simpler and allows for extensibility of Bluehawk as users could eventually
+				provide their own commands.</p>
+				<a href="#attribute-lists" id="attribute-lists" style="color: inherit; text-decoration: none;">
+					<h3>Attribute Lists</h3>
+				</a>
+				<p>The original Bluehawk spec document included the ability to provide a JSON
+					object after a block command to configure the block command&#39;s attributes. The
+					lexer has &quot;modes&quot; so after it encounters a block command, it goes into an
+					attribute mode, which will either accept the command identifier (i.e.
+				:some-command-start: this-is-the-identifier) or the attribute list JSON.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk.html">bluehawk</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_bluehawkerror.html">bluehawk/<wbr>Bluehawk<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_document.html">bluehawk/<wbr>Document</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_location.html">bluehawk/<wbr>Location</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_onbinaryfilefunction.html">bluehawk/<wbr>OnBinary<wbr>File<wbr>Function</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_onerrorfunction.html">bluehawk/<wbr>OnError<wbr>Function</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_range.html">bluehawk/<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_bluehawk.html">bluehawk/bluehawk</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_commands.html">bluehawk/commands</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_commands_command.html">bluehawk/commands/<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_commands_emphasizecommand.html">bluehawk/commands/<wbr>Emphasize<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_commands_removecommand.html">bluehawk/commands/<wbr>Remove<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_commands_replacecommand.html">bluehawk/commands/<wbr>Replace<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_commands_snippetcommand.html">bluehawk/commands/<wbr>Snippet<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_commands_statecommand.html">bluehawk/commands/<wbr>State<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_commands_uncommentcommand.html">bluehawk/commands/<wbr>Uncomment<wbr>Command</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_commands_removemetarange.html">bluehawk/commands/remove<wbr>Meta<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_getbluehawk.html">bluehawk/get<wbr>Bluehawk</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_io_system.html">bluehawk/io/<wbr>System</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_io_messagehandler.html">bluehawk/io/message<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parseandprocess.html">bluehawk/parse<wbr>And<wbr>Process</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser.html">bluehawk/parser</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_commandnode.html">bluehawk/parser/<wbr>Command<wbr>Node</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_errormessageprovider.html">bluehawk/parser/<wbr>Error<wbr>Message<wbr>Provider</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_languagespecification.html">bluehawk/parser/<wbr>Language<wbr>Specification</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_parseresult.html">bluehawk/parser/<wbr>Parse<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_parserstore.html">bluehawk/parser/<wbr>Parser<wbr>Store</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_rootparser.html">bluehawk/parser/<wbr>Root<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_extractcommandnamesfromtokens.html">bluehawk/parser/extract<wbr>Command<wbr>Names<wbr>From<wbr>Tokens</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_flatten.html">bluehawk/parser/flatten</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer.html">bluehawk/parser/lexer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer_makeattributelistmode.html">bluehawk/parser/lexer/make<wbr>Attribute<wbr>List<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer_makeblockcommenttokens.html">bluehawk/parser/lexer/make<wbr>Block<wbr>Comment<wbr>Tokens</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer_makelexer.html">bluehawk/parser/lexer/make<wbr>Lexer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer_makelinecommenttoken.html">bluehawk/parser/lexer/make<wbr>Line<wbr>Comment<wbr>Token</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer_makepayloadpattern.html">bluehawk/parser/lexer/make<wbr>Payload<wbr>Pattern</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer_makepushparsertokens.html">bluehawk/parser/lexer/make<wbr>Push<wbr>Parser<wbr>Tokens</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer_makerootmode.html">bluehawk/parser/lexer/make<wbr>Root<wbr>Mode</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer_makestringliteraltoken.html">bluehawk/parser/lexer/make<wbr>String<wbr>Literal<wbr>Token</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer_tokencategoryfilter.html">bluehawk/parser/lexer/token<wbr>Category<wbr>Filter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_lexer_tokens.html">bluehawk/parser/lexer/tokens</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_locationfromtoken.html">bluehawk/parser/location<wbr>From<wbr>Token</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_makeparser.html">bluehawk/parser/make<wbr>Parser</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_visitor.html">bluehawk/parser/visitor</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_visitor_inneroffsettoouterlocation.html">bluehawk/parser/visitor/inner<wbr>Offset<wbr>ToOuter<wbr>Location</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_visitor_jsonerrortovisitorerror.html">bluehawk/parser/visitor/json<wbr>Error<wbr>ToVisitor<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_parser_visitor_makecstvisitor.html">bluehawk/parser/visitor/make<wbr>Cst<wbr>Visitor</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_processor.html">bluehawk/processor</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_processor_processor.html">bluehawk/processor/<wbr>Processor</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_processor_makeattributesconformtojsonschemarule.html">bluehawk/processor/make<wbr>Attributes<wbr>Conform<wbr>ToJson<wbr>Schema<wbr>Rule</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_processor_validator.html">bluehawk/processor/validator</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_project.html">bluehawk/project</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_project_project.html">bluehawk/project/<wbr>Project</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_project_foreachpathinproject.html">bluehawk/project/for<wbr>Each<wbr>Path<wbr>InProject</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_project_loadprojectpaths.html">bluehawk/project/load<wbr>Project<wbr>Paths</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/bluehawk_project_parseandprocessproject.html">bluehawk/project/parse<wbr>And<wbr>Process<wbr>Project</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli.html">cli</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli_cli.html">cli/cli</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli_commands_check.html">cli/commands/check</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli_commands_copy.html">cli/commands/copy</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli_commands_list.html">cli/commands/list</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli_commands_list_commands.html">cli/commands/list/commands</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli_commands_list_states.html">cli/commands/list/states</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli_commands_snip.html">cli/commands/snip</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli_options.html">cli/options</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli_printjsonresult.html">cli/print<wbr>Json<wbr>Result</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
