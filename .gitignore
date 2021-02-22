@@ -1,4 +1,6 @@
+docs/
 coverage/
+.DS_Store
 
 # Logs
 logs
