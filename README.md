@@ -47,7 +47,9 @@ benefit of tested examples that are still easy to read in the docs.
 
 Bluehawk markup can go into any source file, so you don't need to rig every unit
 test framework you use up to also extract code examples. Just use Bluehawk with
-the unit test framework that suits your language and your project.
+the unit test framework that suits your language and your project. Heck, you don't
+even need a unit test framework. Use Bluehawk in your app or bash script that you
+run to make sure everything's still more or less working.
 
 ### Checkpointed Tutorials
 
@@ -85,7 +87,7 @@ indicate different states or checkpoints with the `:state-start:` and
 // ... more code ...
 ```
 
-Running Bluehawk on this file with `--state start`  results in a copy of
+Running `bluehawk copy` on this file with `--state start`  results in a copy of
 `WelcomeViewController.swift` that looks something like this:
 
 ```swift
@@ -134,7 +136,7 @@ npm install -g bluehawk
 
 ## How to Run Bluehawk from Source
 
-To build and run Bluehawk from source, install dependencies:
+To build and run Bluehawk from source, clone this repo and install dependencies:
 
 ```sh
 npm install
@@ -155,11 +157,13 @@ node . snip -d <destination directory> <folder to source file or directory>
 Which you can alias as:
 
 ```sh
-alias bluehawk="node /path/to/bluehawk"
+alias bluehawk="node /path/to/bluehawkrepoclone"
 ```
 
 In order to do anything useful, you can use the following commands:
 
+- `help`: Display helpful information about available commands. May be more complete and 
+  up-to-date than this README.
 - `copy --state <state name>`: Copy the given `state name` version of files to destination.
   When Bluehawk encounters a `state` command (see below), multiple versions of the source file
   are spawned. Each version removes any code in state commands that are **not**
@@ -189,6 +193,9 @@ compiler happy.
 All commands that end with `-start` have a corresponding `-end` command. You use
 start and end commands to delineate blocks of content. Generally, the command
 operates on the content within the block.
+
+Use `bluehawk list commands` to list available commands.
+
 
 ## Plugins
 
@@ -260,13 +267,14 @@ testable projects while extracting the relevant part to paste in our docs.
 
 ## Architecture
 
-![Graphical overview of the Bluehawk architecture](./architecture.png?raw=true "Bluehawk Architecture")
+![Graphical overview of the Bluehawk architecture](https://raw.githubusercontent.com/mongodb-university/Bluehawk/main/architecture.png "Bluehawk Architecture")
 
 Bluehawk has three major components:
 
 - **Client:** loads files to be parsed and processed. Implements listeners that
   decide what to do with results (e.g. save to file). Can add custom commands
-  and language specifications (i.e. comment syntax).
+  and language specifications (i.e. comment syntax). The main client is the CLI,
+  but you can use Bluehawk as a library and implement your own clients.
 - **Parser:** finds commands in a source file and diagnoses markup errors.
 - **Processor:** executes commands on a source file to produce transformed documents.
 
@@ -276,7 +284,7 @@ Bluehawk has three major components:
 The lexer can receive custom tokens for a given language to define comment
 syntax. For example, plaintext has no comments, bash only has line comments
 (#)[†](https://stackoverflow.com/questions/32126653/how-does-end-work-in-bash-to-create-a-multi-line-comment-block),
-and C++ has line (//) and block (/*, */)comments. Bluehawk is comment aware so
+and C++ has line (//) and block (`/*`, `*/`) comments. Bluehawk is comment aware so
 that it can correctly strip comments (when needed) and diagnose when commands
 are halfway in a block comment.
 
