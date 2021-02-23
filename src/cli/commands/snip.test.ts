@@ -5,6 +5,11 @@ import { snip } from "./snip";
 beforeAll(System.useMemfs);
 afterAll(System.useRealfs);
 
+// silly i know but we need to wait for the file to write to the read-only filesystem
+function delay(ms = 50) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 describe("snip", () => {
   it("generates correct RST snippets", async (done) => {
     const rootPath = Path.resolve("/path/to/project");
@@ -44,11 +49,7 @@ describe("snip", () => {
       format: "sphynx-rst",
     });
 
-    function delay(ms: number) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-
-    await delay(3000); // silly i know but we need to wait for the file to write to the read-only filesystem
+    await delay();
 
     expect(errors).toStrictEqual(undefined);
     const destinationList = await System.fs.readdir(destinationPath);
@@ -121,7 +122,7 @@ line 9
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    await delay(3000); // silly i know but we need to wait for the file to write to the read-only filesystem
+    await delay(10);
 
     expect(errors).toStrictEqual(undefined);
     const destinationList = await System.fs.readdir(destinationPath);
@@ -148,5 +149,60 @@ line 9
    line 9
 `);
     done();
+  });
+
+  it("handles carriage returns", async () => {
+    const text = `            //:code-block-start:foo
+            var harrysStrat = realm.All<Guitar>().FirstOrDefault(\r
+                g => g.Owner == "D. Gilmour"
+                  && g.Make == "Fender"
+                  && g.Model == "Stratocaster");
+
+            realm.Write(() =>
+            {
+                harrysStrat.Price = 322.56;
+            });
+            //:code-block-end:
+
+`;
+    const rootPath = "/path/to/project";
+    const destinationPath = "/carriageReturns";
+    const testFileName = "test.js";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(destinationPath, {
+      recursive: true,
+    });
+    await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
+
+    const errors = await snip({
+      paths: [rootPath],
+      destination: destinationPath,
+    });
+
+    await delay();
+
+    expect(errors).toStrictEqual(undefined);
+    const destinationList = await System.fs.readdir(destinationPath);
+    expect(destinationList).toStrictEqual(["test.codeblock.foo.js"]);
+
+    const fileContents = await System.fs.readFile(
+      Path.join(destinationPath, "test.codeblock.foo.js"),
+      "utf8"
+    );
+    expect(JSON.stringify(fileContents)).toStrictEqual(
+      JSON.stringify(`var harrysStrat = realm.All<Guitar>().FirstOrDefault(\r
+    g => g.Owner == "D. Gilmour"
+      && g.Make == "Fender"
+      && g.Model == "Stratocaster");
+
+realm.Write(() =>
+{
+    harrysStrat.Price = 322.56;
+});
+`)
+    );
   });
 });

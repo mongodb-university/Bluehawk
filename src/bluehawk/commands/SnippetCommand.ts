@@ -18,31 +18,30 @@ function dedentRange(
     return s;
   }
 
-  // Get inner content and split by line break
-  const content = s.original.substring(
-    contentRange.start.offset,
-    contentRange.end.offset
-  );
-  const lines = content.split(/\r\n|\r|\n/);
-  // Remove trailing newline
-  lines.pop();
-
   // Find minimum indentation in the content block
-  const minimumIndentation = lines.reduce((min, line) => {
+  const re = /(.*)(?:\r|\n|\r\n)/y;
+  let minimumIndentation: number | undefined = undefined;
+  re.lastIndex = contentRange.start.offset;
+  for (
+    let match = re.exec(s.original);
+    match && re.lastIndex <= contentRange.end.offset;
+    match = re.exec(s.original)
+  ) {
+    const line = match[1];
     if (line.length === 0) {
-      return min;
+      continue;
     }
-    const match = line.match(/^\s+/);
-    if (!match) {
+    const indentMatch = line.match(/^\s+/);
+    if (!indentMatch) {
       // No indentation
-      return 0;
+      minimumIndentation = 0;
+      break;
     }
-    const indentLength = match[0].length;
-    if (min === undefined) {
-      return indentLength;
+    const indentLength = indentMatch[0].length;
+    if (minimumIndentation === undefined || indentLength < minimumIndentation) {
+      minimumIndentation = indentLength;
     }
-    return indentLength < min ? indentLength : min;
-  }, undefined as number | undefined);
+  }
 
   // In this case ambiguity between 0 and null is ok
   if (!minimumIndentation) {
@@ -50,11 +49,16 @@ function dedentRange(
   }
 
   // Dedent lines
-  let offset = contentRange.start.offset;
-  lines.forEach((line) => {
+  re.lastIndex = contentRange.start.offset;
+  for (
+    let match = re.exec(s.original), offset = contentRange.start.offset;
+    match && re.lastIndex <= contentRange.end.offset;
+    match = re.exec(s.original), offset
+  ) {
+    const line = match[1];
     s.remove(offset, offset + Math.min(line.length, minimumIndentation));
-    offset += line.length + 1;
-  });
+    offset = re.lastIndex;
+  }
 
   return s;
 }
