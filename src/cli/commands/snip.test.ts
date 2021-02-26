@@ -2,8 +2,7 @@ import * as Path from "path";
 import { System } from "../../bluehawk";
 import { snip } from "./snip";
 
-beforeAll(System.useMemfs);
-afterAll(System.useRealfs);
+beforeEach(System.useMemfs);
 
 // silly i know but we need to wait for the file to write to the read-only filesystem
 function delay(ms = 50) {

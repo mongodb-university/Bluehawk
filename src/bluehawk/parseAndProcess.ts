@@ -25,7 +25,7 @@ export async function parseAndProcess(
     const document = new Document({ text, language, path: filePath });
     const result = bluehawk.parse(document);
     if (result.errors.length !== 0) {
-      return onErrors(path.relative(project.rootPath, filePath), result.errors);
+      return onErrors(filePath, result.errors);
     }
     await bluehawk.process(result);
   } catch (e) {

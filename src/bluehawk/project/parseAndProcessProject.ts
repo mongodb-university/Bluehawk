@@ -1,3 +1,4 @@
+import * as Path from "path";
 import { Bluehawk } from "..";
 import { Project } from "./Project";
 import { OnBinaryFileFunction } from "../OnBinaryFileFunction";
@@ -14,6 +15,12 @@ export async function parseAndProcessProject(
   await forEachPathInProject(
     project,
     async (filePath) =>
-      await parseAndProcess(project, bluehawk, filePath, onBinaryFile, onErrors)
+      await parseAndProcess(
+        project,
+        bluehawk,
+        Path.join(project.rootPath, filePath),
+        onBinaryFile,
+        onErrors
+      )
   );
 }
