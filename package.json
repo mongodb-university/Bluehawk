@@ -23,13 +23,14 @@
     "bluehawk": "./build/src/cli/index.js"
   },
   "scripts": {
-    "build": "rm -rf build && tsc -b",
+    "clean": "rm -rf build",
+    "build": "tsc -b",
     "watch": "tsc -b -w",
     "test": "jest",
     "verbose": "jest --verbose",
     "coverage": "jest --coverage",
     "docs": "npx typedoc --exclude '**/*.test.ts' --out docs src",
-    "release": "npm run build && npm run test && release-it"
+    "release": "release-it"
   },
   "author": "MongoDB Developer Education Team",
   "license": "Apache-2.0",
