@@ -34,7 +34,9 @@ const defaultOptions: ParseAndProcessOptions = {
   onErrors: logErrorsToConsole,
 };
 
-// The frontend of Bluehawk
+/**
+  The frontend of Bluehawk.
+ */
 export class Bluehawk {
   constructor(configuration?: BluehawkConfiguration) {
     if (configuration === undefined) {
@@ -60,13 +62,17 @@ export class Bluehawk {
     }
   }
 
-  // Register the given command on the processor and validator. This enables
-  // support for the command under the given name.
+  /**
+    Register the given command on the processor and validator. This enables
+    support for the command under the given name.
+   */
   registerCommand(command: AnyCommand, alternateName?: string): void {
     this._processor.registerCommand(command, alternateName);
   }
 
-  // Specify the special patterns for a given language.
+  /**
+    Specify the special patterns for a given language.
+   */
   addLanguage = (
     forFileExtension: string | string[],
     languageSpecification: LanguageSpecification
@@ -134,7 +140,9 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     await Promise.allSettled(promises);
   };
 
-  // Parses the given source file into commands.
+  /**
+    Parses the given source file into commands.
+   */
   parse = (
     source: Document,
     languageSpecification?: LanguageSpecification
@@ -168,7 +176,9 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     };
   };
 
-  // Subscribe to processed documents as they are processed by Bluehawk.
+  /**
+    Subscribe to processed documents as they are processed by Bluehawk.
+   */
   subscribe(listener: Listener | Listener[]): void {
     if (Array.isArray(listener)) {
       listener.forEach((listener) => this.subscribe(listener));
@@ -177,7 +187,10 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     this._processor.subscribe(listener);
   }
 
-  // Executes the commands on the given source. Use subscribe() to get results.
+  /**
+    Executes the commands on the given source. Use [[Bluehawk.subscribe]] to get
+    results.
+   */
   process = async (
     parseResult: ParseResult,
     processOptions?: ProcessOptions
@@ -185,10 +198,12 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     return this._processor.process(parseResult, processOptions);
   };
 
-  // Load the given plugin(s). A plugin is a js file or module that exports a
-  // `register(bluehawk)` function. `register()` takes this bluehawk instance
-  // and can register commands, add listeners, etc. The plugin at a given path
-  // will only be loaded once.
+  /**
+    Load the given plugin(s). A plugin is a js file or module that exports a
+    `register(bluehawk)` function. `register()` takes this bluehawk instance
+    and can register commands, add listeners, etc. The plugin at a given path
+    will only be loaded once.
+   */
   loadPlugin = async (
     pluginPath: string | string[] | undefined
   ): Promise<void> => {
