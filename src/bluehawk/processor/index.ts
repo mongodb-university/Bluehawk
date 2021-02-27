@@ -1,1 +1,1 @@
-export { Listener, ProcessRequest } from "./Processor";
+export { Listener, ProcessRequest, ProcessOptions } from "./Processor";

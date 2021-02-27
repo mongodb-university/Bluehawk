@@ -5,10 +5,14 @@ import { AnyCommand } from "../commands";
 
 export type BluehawkFiles = { [pathName: string]: ParseResult };
 
+export interface ProcessOptions {
+  waitForListeners?: boolean;
+}
+
 export interface ProcessRequest<CommandNodeType = AnyCommandNode> {
   // Process the given Bluehawk result, optionally under an alternative id, and
   // emit the file.
-  fork: (args: ForkArgs) => Promise<void>;
+  fork: (args: ForkArgs) => void;
 
   // The overall result being processed by the processor
   parseResult: ParseResult;
@@ -28,24 +32,6 @@ export class Processor {
   // Subscribe to processed file events
   subscribe(listener: Listener): void {
     this.listeners.add(listener);
-  }
-
-  // Publish a processed file
-  publish(result: ParseResult): void {
-    // Fire and forget, don't wait for listeners to complete before continuing
-    // to process files.
-    this.listeners.forEach(async (listener) => {
-      try {
-        await listener(result);
-      } catch (error) {
-        // Don't let listener exceptions disrupt the processor or other listeners.
-        console.error(
-          `When processing result '${result.source.path}', a listener failed with the following error: ${error}
-
-This is probably not a bug in the Bluehawk library itself. Please check with the listener implementer.`
-        );
-      }
-    });
   }
 
   // Processes the given Bluehawk result, optionally under an alternative id,
@@ -80,15 +66,24 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
       newResult.commandNodes,
       newResult
     );
-    await Promise.all(promises);
-    this.publish(newResult);
+    await Promise.allSettled(promises);
+    const publishPromise = this._publish(newResult);
+    // Unless specifically configured to wait for listeners, we don't wait to
+    // continue processing files.
+    if (_processorState.waitForListeners) {
+      await publishPromise;
+    }
   }
 
   // Processes the given Bluehawk result. Resulting files are also emitted to
   // listeners, which can be added with subscribe().
-  process = async (parseResult: ParseResult): Promise<BluehawkFiles> => {
-    const _processorState = new ProcessorState();
+  process = async (
+    parseResult: ParseResult,
+    processOptions?: ProcessOptions
+  ): Promise<BluehawkFiles> => {
+    const _processorState = new ProcessorState(processOptions);
     await this.fork({ parseResult, _processorState });
+    await Promise.allSettled(_processorState.promises);
     return _processorState.files;
   };
 
@@ -111,10 +106,13 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
         );
         return command.process({
           fork: (args: ForkArgs) => {
-            return this.fork({
-              ...args,
-              _processorState,
-            });
+            // Commands should not be async, so they can't await fork().
+            _processorState.promises.push(
+              this.fork({
+                ...args,
+                _processorState,
+              })
+            );
           },
           parseResult: result,
           commandNode,
@@ -135,6 +133,25 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
   registerCommand(command: AnyCommand, alternateName?: string): void {
     this.processors[alternateName ?? command.name] = command;
   }
+
+  // Publish a processed file
+  private async _publish(result: ParseResult): Promise<void> {
+    const promises = Array.from(this.listeners.values()).map(
+      async (listener) => {
+        try {
+          await listener(result);
+        } catch (error) {
+          // Don't let listener exceptions disrupt the processor or other listeners.
+          console.error(
+            `When processing result '${result.source.path}', a listener failed with the following error: ${error}
+
+This is probably not a bug in the Bluehawk library itself. Please check with the listener implementer.`
+          );
+        }
+      }
+    );
+    await Promise.allSettled(promises);
+  }
 }
 
 export interface ForkArgs {
@@ -149,5 +166,16 @@ interface ForkArgsWithState extends ForkArgs {
 }
 
 class ProcessorState {
+  constructor(processOptions?: ProcessOptions) {
+    if (processOptions === undefined) {
+      return;
+    }
+    if (processOptions.waitForListeners !== undefined) {
+      this.waitForListeners = processOptions.waitForListeners;
+    }
+  }
+
   files: BluehawkFiles = {};
+  waitForListeners = false;
+  promises: Promise<unknown>[] = [];
 }

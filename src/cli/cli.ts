@@ -3,6 +3,7 @@ import { withPluginOption } from "./options";
 
 export interface MainArgs {
   plugin?: string | string[];
+  waitForListeners?: boolean;
 }
 
 export function commandDir<T>(

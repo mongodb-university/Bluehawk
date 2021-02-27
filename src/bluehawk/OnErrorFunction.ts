@@ -3,7 +3,7 @@ import { BluehawkError } from "./BluehawkError";
 export type OnErrorFunction = (
   filePath: string,
   errors: BluehawkError[]
-) => void;
+) => void | Promise<void>;
 
 // A standard implementation of OnErrorFunction
 export const logErrorsToConsole: OnErrorFunction = (filePath, errors) => {

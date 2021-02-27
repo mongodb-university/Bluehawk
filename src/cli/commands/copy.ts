@@ -1,12 +1,7 @@
 import { Stats } from "fs";
 import * as path from "path";
 import { CommandModule, Arguments, Argv } from "yargs";
-import {
-  parseAndProcessProject,
-  ParseResult,
-  Project,
-  getBluehawk,
-} from "../../bluehawk";
+import { ParseResult, getBluehawk } from "../../bluehawk";
 import { MainArgs } from "../cli";
 import {
   withDestinationOption,
@@ -111,11 +106,10 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     }
   });
 
-  const project: Project = {
-    rootPath,
+  await bluehawk.parseAndProcess(rootPath, {
     ignore,
-  };
-  await parseAndProcessProject(project, bluehawk, onBinaryFile);
+    onBinaryFile,
+  });
 
   if (desiredState && Object.keys(stateVersionWrittenForPath).length === 0) {
     const message = `Warning: state '${desiredState}' never found in ${projectDirectory}`;

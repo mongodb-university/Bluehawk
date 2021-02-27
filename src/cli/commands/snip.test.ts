@@ -4,11 +4,6 @@ import { snip } from "./snip";
 
 beforeEach(System.useMemfs);
 
-// silly i know but we need to wait for the file to write to the read-only filesystem
-function delay(ms = 50) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 describe("snip", () => {
   it("generates correct RST snippets", async (done) => {
     const rootPath = Path.resolve("/path/to/project");
@@ -40,17 +35,15 @@ describe("snip", () => {
       }
     );
 
-    const errors = await snip({
+    await snip({
       paths: [rootPath],
       destination: destinationPath,
       state: undefined,
       ignore: undefined,
       format: "sphynx-rst",
+      waitForListeners: true,
     });
 
-    await delay();
-
-    expect(errors).toStrictEqual(undefined);
     const destinationList = await System.fs.readdir(destinationPath);
     expect(destinationList).toStrictEqual([
       "test.codeblock.foo.js",
@@ -115,13 +108,8 @@ line 9
       state: undefined,
       ignore: undefined,
       format: "sphynx-rst",
+      waitForListeners: true,
     });
-
-    function delay(ms: number) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-
-    await delay(10);
 
     expect(errors).toStrictEqual(undefined);
     const destinationList = await System.fs.readdir(destinationPath);
@@ -179,9 +167,8 @@ line 9
     const errors = await snip({
       paths: [rootPath],
       destination: destinationPath,
+      waitForListeners: true,
     });
-
-    await delay();
 
     expect(errors).toStrictEqual(undefined);
     const destinationList = await System.fs.readdir(destinationPath);

@@ -1,9 +1,5 @@
 import { Arguments, CommandModule } from "yargs";
-import {
-  getBluehawk,
-  Project,
-  parseAndProcessProject,
-} from "../../../bluehawk";
+import { getBluehawk } from "../../../bluehawk";
 import { MainArgs } from "../../cli";
 import { withIgnoreOption, withJsonOption } from "../../options";
 import { printJsonResult } from "../../printJsonResult";
@@ -30,15 +26,9 @@ export const listStates = async (
     statesFound.add(state as string);
   });
 
-  await Promise.all(
-    paths.map(async (rootPath) => {
-      const project: Project = {
-        rootPath,
-        ignore,
-      };
-      await parseAndProcessProject(project, bluehawk);
-    })
-  );
+  await bluehawk.parseAndProcess(paths, {
+    ignore,
+  });
 
   if (json) {
     printJsonResult(args, { states: Array.from(statesFound) });

@@ -1,11 +1,6 @@
 import * as path from "path";
 import { CommandModule, Arguments, Argv } from "yargs";
-import {
-  parseAndProcessProject,
-  ParseResult,
-  Project,
-  getBluehawk,
-} from "../../bluehawk";
+import { ParseResult, Project, getBluehawk } from "../../bluehawk";
 import { withIgnoreOption, withJsonOption } from "../options";
 import { MainArgs } from "../cli";
 import { BluehawkError } from "../../bluehawk/BluehawkError";
@@ -36,15 +31,10 @@ export const check = async (args: Arguments<CheckArgs>): Promise<void> => {
   });
 
   // Run through all given source paths and process them.
-  const promises = paths.map(async (rootPath) => {
-    const project: Project = {
-      rootPath,
-      ignore,
-    };
-    return parseAndProcessProject(project, bluehawk, undefined, addErrors);
+  await bluehawk.parseAndProcess(paths, {
+    ignore,
+    onErrors: addErrors,
   });
-
-  await Promise.all(promises);
 
   if (json) {
     const errorsByPath = Object.fromEntries(Array.from(fileToErrorMap));

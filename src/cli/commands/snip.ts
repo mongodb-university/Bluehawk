@@ -1,9 +1,7 @@
 import * as path from "path";
 import { CommandModule, Arguments, Argv } from "yargs";
 import {
-  parseAndProcessProject,
   ParseResult,
-  Project,
   getBluehawk,
   EmphasizeSourceAttributes,
 } from "../../bluehawk";
@@ -90,7 +88,15 @@ export const doRst = async (
 };
 
 export const snip = async (args: SnipArgs): Promise<void> => {
-  const { paths, destination, plugin, state, ignore, format } = args;
+  const {
+    paths,
+    destination,
+    plugin,
+    state,
+    ignore,
+    format,
+    waitForListeners,
+  } = args;
   const bluehawk = await getBluehawk(plugin);
 
   // If a file contains the state command, the processor will generate multiple
@@ -158,16 +164,7 @@ export const snip = async (args: SnipArgs): Promise<void> => {
     });
   }
 
-  // Run through all given source paths and process them.
-  const promises = paths.map(async (rootPath) => {
-    const project: Project = {
-      rootPath,
-      ignore,
-    };
-    return parseAndProcessProject(project, bluehawk);
-  });
-
-  await Promise.all(promises);
+  await bluehawk.parseAndProcess(paths, { ignore, waitForListeners });
 
   if (state && Object.keys(stateVersionWrittenForPath).length === 0) {
     console.warn(

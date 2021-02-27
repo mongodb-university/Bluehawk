@@ -1,18 +1,38 @@
 import { validateCommands } from "./processor/validator";
 import { COMMAND_PATTERN } from "./parser/lexer/tokens";
 import { Document } from "./Document";
-import { Listener, Processor, BluehawkFiles } from "./processor/Processor";
+import {
+  Listener,
+  Processor,
+  BluehawkFiles,
+  ProcessOptions,
+} from "./processor/Processor";
 import { AnyCommand } from "./commands/Command";
 import { ParseResult } from "./parser/ParseResult";
 import { ParserStore } from "./parser/ParserStore";
-import * as path from "path";
+import * as Path from "path";
 import { IParser, LanguageSpecification } from "./parser";
+import { loadProjectPaths } from "./project";
+import { isBinary } from "istextorbinary";
+import { System } from "./io/System";
+import { OnBinaryFileFunction } from "./OnBinaryFileFunction";
+import { logErrorsToConsole, OnErrorFunction } from "./OnErrorFunction";
 
 interface BluehawkConfiguration {
   commands?: AnyCommand[];
   commandAliases?: [string, AnyCommand][];
   languageSpecs?: { [extension: string]: LanguageSpecification };
 }
+
+type ParseAndProcessOptions = ProcessOptions & {
+  onBinaryFile?: OnBinaryFileFunction;
+  onErrors?: OnErrorFunction;
+  ignore?: string | string[];
+};
+
+const defaultOptions: ParseAndProcessOptions = {
+  onErrors: logErrorsToConsole,
+};
 
 // The frontend of Bluehawk
 export class Bluehawk {
@@ -52,6 +72,66 @@ export class Bluehawk {
     languageSpecification: LanguageSpecification
   ): void => {
     this._parserStore.addLanguage(forFileExtension, languageSpecification);
+  };
+
+  /**
+    Runs through all given source paths to parse and process them.
+
+    @param path - The path or paths to the directory or files to parse and process.
+    @param options - The options for parsing and processing.
+    */
+  parseAndProcess = async (
+    path: string | string[],
+    optionsIn?: ParseAndProcessOptions
+  ): Promise<void> => {
+    if (Array.isArray(path)) {
+      // If an array of paths is given, recurse for each path in the array.
+      await Promise.allSettled(
+        path.map(async (rootPath) => {
+          return this.parseAndProcess(rootPath, optionsIn);
+        })
+      );
+      return;
+    }
+
+    // Ensure default options are set first then override them with incoming
+    // options if any
+    const options = { ...defaultOptions, ...(optionsIn ?? {}) };
+
+    const { onBinaryFile, onErrors, ignore } = options;
+
+    const filePaths = await loadProjectPaths({
+      rootPath: path,
+      ignore,
+    });
+
+    const promises = filePaths
+      .map((filePath) => Path.join(path, filePath))
+      .map(async (filePath) => {
+        try {
+          const blob = await System.fs.readFile(Path.resolve(filePath));
+          if (isBinary(filePath, blob)) {
+            onBinaryFile && (await onBinaryFile(filePath));
+            return;
+          }
+          const language = Path.extname(filePath);
+          const text = blob.toString("utf8");
+          const document = new Document({ text, language, path: filePath });
+          const result = this.parse(document);
+          if (result.errors.length !== 0) {
+            onErrors && onErrors(filePath, result.errors);
+            return;
+          }
+          await this.process(result, options);
+        } catch (e) {
+          console.error(`Encountered the following error while processing ${filePath}:
+${e.stack}
+
+This is probably a bug in Bluehawk. Please send this stack trace (and the contents of ${filePath}, if possible) to the Bluehawk development team at https://github.com/mongodb-university/Bluehawk/issues/new`);
+        }
+      });
+
+    await Promise.allSettled(promises);
   };
 
   // Parses the given source file into commands.
@@ -98,8 +178,11 @@ export class Bluehawk {
   }
 
   // Executes the commands on the given source. Use subscribe() to get results.
-  process = async (parseResult: ParseResult): Promise<BluehawkFiles> => {
-    return this._processor.process(parseResult);
+  process = async (
+    parseResult: ParseResult,
+    processOptions?: ProcessOptions
+  ): Promise<BluehawkFiles> => {
+    return this._processor.process(parseResult, processOptions);
   };
 
   // Load the given plugin(s). A plugin is a js file or module that exports a
@@ -115,7 +198,7 @@ export class Bluehawk {
 
     if (Array.isArray(pluginPath)) {
       const promises = pluginPath.map((path) => this.loadPlugin(path));
-      await Promise.all(promises);
+      await Promise.allSettled(promises);
       return;
     }
 
@@ -134,9 +217,9 @@ export class Bluehawk {
 
     // Convert relative path (from user's cwd) to absolute path -- as import()
     // expects relative paths from Bluehawk bin directory
-    const absolutePath = path.isAbsolute(pluginPath)
+    const absolutePath = Path.isAbsolute(pluginPath)
       ? pluginPath
-      : path.resolve(process.cwd(), pluginPath);
+      : Path.resolve(process.cwd(), pluginPath);
     const plugin = await import(absolutePath);
     await plugin.register(this);
     this._loadedPlugins.add(pluginPath);
