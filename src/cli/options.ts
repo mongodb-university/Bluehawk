@@ -32,7 +32,7 @@ export function withIgnoreOption<T>(
     alias: "i",
     string: true,
     describe:
-      "ignore a certain file pattern (like gitignore) when traversing project files",
+      "ignore a certain file pattern (like gitignore) when traversing project files. Provide paths relative to project root.",
   });
 }
 

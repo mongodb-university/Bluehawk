@@ -2,14 +2,16 @@ import * as Path from "path";
 import { System } from "../../bluehawk";
 import { copy } from "./copy";
 
-beforeAll(System.useMemfs);
-afterAll(System.useRealfs);
+beforeEach(System.useMemfs);
 
 describe("copy", () => {
   it("copies", async (done) => {
-    const rootPath = Path.resolve("/path/to/project");
+    const rootPath = "/path/to/project";
     const destinationPath = "/destination";
     await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(destinationPath, {
       recursive: true,
     });
     await System.fs.writeFile(Path.join(rootPath, "test.txt"), "utf8");
