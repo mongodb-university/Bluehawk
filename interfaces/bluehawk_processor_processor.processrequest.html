@@ -107,25 +107,36 @@
 					<div class="tsd-signature tsd-kind-icon">command<wbr>Node<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">CommandNodeType</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/processor/Processor.ts#L17">src/bluehawk/processor/Processor.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/processor/Processor.ts#L27">src/bluehawk/processor/Processor.ts:27</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The specific command to process</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="fork" class="tsd-anchor"></a>
 					<h3>fork</h3>
-					<div class="tsd-signature tsd-kind-icon">fork<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="bluehawk_processor_processor.forkargs.html" class="tsd-signature-type" data-tsd-kind="Interface">ForkArgs</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">fork<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="bluehawk_processor_processor.forkargs.html" class="tsd-signature-type" data-tsd-kind="Interface">ForkArgs</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/processor/Processor.ts#L11">src/bluehawk/processor/Processor.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/processor/Processor.ts#L17">src/bluehawk/processor/Processor.ts:17</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Process the given Bluehawk result, optionally under an alternative id, and
+							emit the file.</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter-signature">
 								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-interface">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="bluehawk_processor_processor.forkargs.html" class="tsd-signature-type" data-tsd-kind="Interface">ForkArgs</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="bluehawk_processor_processor.forkargs.html" class="tsd-signature-type" data-tsd-kind="Interface">ForkArgs</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 								</ul>
 								<ul class="tsd-descriptions">
 									<li class="tsd-description">
@@ -135,7 +146,7 @@
 												<h5>args: <a href="bluehawk_processor_processor.forkargs.html" class="tsd-signature-type" data-tsd-kind="Interface">ForkArgs</a></h5>
 											</li>
 										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 									</li>
 								</ul>
 							</li>
@@ -148,9 +159,14 @@
 					<div class="tsd-signature tsd-kind-icon">parse<wbr>Result<span class="tsd-signature-symbol">:</span> <a href="bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/processor/Processor.ts#L14">src/bluehawk/processor/Processor.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/processor/Processor.ts#L22">src/bluehawk/processor/Processor.ts:22</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The overall result being processed by the processor</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -172,6 +188,9 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="bluehawk_processor_processor.forkargs.html" class="tsd-kind-icon">Fork<wbr>Args</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="bluehawk_processor_processor.processoptions.html" class="tsd-kind-icon">Process<wbr>Options</a>
 					</li>
 				</ul>
 				<ul class="current">
@@ -210,6 +229,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>

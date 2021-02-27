@@ -81,14 +81,12 @@
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#listener" class="tsd-kind-icon">Listener</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#onbinaryfilefunction" class="tsd-kind-icon">On<wbr>Binary<wbr>File<wbr>Function</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#parseresult" class="tsd-kind-icon">Parse<wbr>Result</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#processoptions" class="tsd-kind-icon">Process<wbr>Options</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#processrequest" class="tsd-kind-icon">Process<wbr>Request</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#project" class="tsd-kind-icon">Project</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#rootparser" class="tsd-kind-icon">Root<wbr>Parser</a></li>
-								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#foreachpathinproject" class="tsd-kind-icon">for<wbr>Each<wbr>Path<wbr>InProject</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#getbluehawk" class="tsd-kind-icon">get<wbr>Bluehawk</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#loadprojectpaths" class="tsd-kind-icon">load<wbr>Project<wbr>Paths</a></li>
-								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#parseandprocess" class="tsd-kind-icon">parse<wbr>And<wbr>Process</a></li>
-								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#parseandprocessproject" class="tsd-kind-icon">parse<wbr>And<wbr>Process<wbr>Project</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="bluehawk.html#tokens" class="tsd-kind-icon">tokens</a></li>
 							</ul>
 						</section>
@@ -195,6 +193,11 @@
 					Re-exports <a href="../interfaces/bluehawk_parser_parseresult.parseresult.html">ParseResult</a>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="processoptions" class="tsd-anchor"></a>
+					<h3>Process<wbr>Options</h3>
+					Re-exports <a href="../interfaces/bluehawk_processor_processor.processoptions.html">ProcessOptions</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
 					<a name="processrequest" class="tsd-anchor"></a>
 					<h3>Process<wbr>Request</h3>
 					Re-exports <a href="../interfaces/bluehawk_processor_processor.processrequest.html">ProcessRequest</a>
@@ -210,29 +213,14 @@
 					Re-exports <a href="../classes/bluehawk_parser_rootparser.rootparser.html">RootParser</a>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
-					<a name="foreachpathinproject" class="tsd-anchor"></a>
-					<h3>for<wbr>Each<wbr>Path<wbr>InProject</h3>
-					Re-exports <a href="bluehawk_project_foreachpathinproject.html#foreachpathinproject">forEachPathInProject</a>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
 					<a name="getbluehawk" class="tsd-anchor"></a>
 					<h3>get<wbr>Bluehawk</h3>
-					Re-exports <a href="bluehawk_getbluehawk.html#getbluehawk">getBluehawk</a>
+					Re-exports <a href="bluehawk_getbluehawk.html#getbluehawk-1">getBluehawk</a>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
 					<a name="loadprojectpaths" class="tsd-anchor"></a>
 					<h3>load<wbr>Project<wbr>Paths</h3>
 					Re-exports <a href="bluehawk_project_loadprojectpaths.html#loadprojectpaths">loadProjectPaths</a>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
-					<a name="parseandprocess" class="tsd-anchor"></a>
-					<h3>parse<wbr>And<wbr>Process</h3>
-					Re-exports <a href="bluehawk_parseandprocess.html#parseandprocess">parseAndProcess</a>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
-					<a name="parseandprocessproject" class="tsd-anchor"></a>
-					<h3>parse<wbr>And<wbr>Process<wbr>Project</h3>
-					Re-exports <a href="bluehawk_project_parseandprocessproject.html#parseandprocessproject">parseAndProcessProject</a>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
 					<a name="tokens" class="tsd-anchor"></a>
@@ -248,7 +236,7 @@
 					<div class="tsd-signature tsd-kind-icon">Id<wbr>Required<wbr>Attributes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/Command.ts#L80">src/bluehawk/commands/Command.ts:80</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/Command.ts#L78">src/bluehawk/commands/Command.ts:78</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -266,7 +254,7 @@
 					<div class="tsd-signature tsd-kind-icon">No<wbr>Attributes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/Command.ts#L89">src/bluehawk/commands/Command.ts:89</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/Command.ts#L87">src/bluehawk/commands/Command.ts:87</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -279,7 +267,7 @@
 					<div class="tsd-signature tsd-kind-icon">Emphasize<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/EmphasizeCommand.ts#L25">src/bluehawk/commands/EmphasizeCommand.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/EmphasizeCommand.ts#L25">src/bluehawk/commands/EmphasizeCommand.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -289,7 +277,7 @@
 					<div class="tsd-signature tsd-kind-icon">Id<wbr>Required<wbr>Attributes<wbr>Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">JSONSchemaType</span><span class="tsd-signature-symbol">&lt;</span><a href="bluehawk_commands_command.html#idrequiredattributes" class="tsd-signature-type" data-tsd-kind="Type alias">IdRequiredAttributes</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/Command.ts#L81">src/bluehawk/commands/Command.ts:81</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/Command.ts#L79">src/bluehawk/commands/Command.ts:79</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -299,7 +287,7 @@
 					<div class="tsd-signature tsd-kind-icon">No<wbr>Attributes<wbr>Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">JSONSchemaType</span><span class="tsd-signature-symbol">&lt;</span><a href="bluehawk_commands_command.html#noattributes" class="tsd-signature-type" data-tsd-kind="Type alias">NoAttributes</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/Command.ts#L90">src/bluehawk/commands/Command.ts:90</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/Command.ts#L88">src/bluehawk/commands/Command.ts:88</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -309,7 +297,7 @@
 					<div class="tsd-signature tsd-kind-icon">Remove<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/RemoveCommand.ts#L7">src/bluehawk/commands/RemoveCommand.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/RemoveCommand.ts#L7">src/bluehawk/commands/RemoveCommand.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -319,7 +307,7 @@
 					<div class="tsd-signature tsd-kind-icon">Replace<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/ReplaceCommand.ts#L11">src/bluehawk/commands/ReplaceCommand.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/ReplaceCommand.ts#L11">src/bluehawk/commands/ReplaceCommand.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -329,7 +317,7 @@
 					<div class="tsd-signature tsd-kind-icon">Snippet<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/SnippetCommand.ts#L66">src/bluehawk/commands/SnippetCommand.ts:66</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/SnippetCommand.ts#L66">src/bluehawk/commands/SnippetCommand.ts:66</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -339,7 +327,7 @@
 					<div class="tsd-signature tsd-kind-icon">State<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/StateCommand.ts#L8">src/bluehawk/commands/StateCommand.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/StateCommand.ts#L8">src/bluehawk/commands/StateCommand.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -349,7 +337,7 @@
 					<div class="tsd-signature tsd-kind-icon">System<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>fs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">promises</span><span class="tsd-signature-symbol">; </span>useJsonFs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>useMemfs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>useRealfs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/io/System.ts#L7">src/bluehawk/io/System.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/io/System.ts#L7">src/bluehawk/io/System.ts:7</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -367,7 +355,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/io/System.ts#L25">src/bluehawk/io/System.ts:25</a></li>
+												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/io/System.ts#L25">src/bluehawk/io/System.ts:25</a></li>
 											</ul>
 										</aside>
 										<h4 class="tsd-parameters-title">Parameters</h4>
@@ -389,7 +377,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/io/System.ts#L14">src/bluehawk/io/System.ts:14</a></li>
+												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/io/System.ts#L14">src/bluehawk/io/System.ts:14</a></li>
 											</ul>
 										</aside>
 										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -405,7 +393,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/io/System.ts#L30">src/bluehawk/io/System.ts:30</a></li>
+												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/io/System.ts#L30">src/bluehawk/io/System.ts:30</a></li>
 											</ul>
 										</aside>
 										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -421,7 +409,7 @@
 					<div class="tsd-signature tsd-kind-icon">Uncomment<wbr>Command<span class="tsd-signature-symbol">:</span> <a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/UncommentCommand.ts#L7">src/bluehawk/commands/UncommentCommand.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/UncommentCommand.ts#L7">src/bluehawk/commands/UncommentCommand.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -438,7 +426,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/parser/flatten.ts#L2">src/bluehawk/parser/flatten.ts:2</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/parser/flatten.ts#L2">src/bluehawk/parser/flatten.ts:2</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -461,13 +449,13 @@
 					<a name="makeblockcommand" class="tsd-anchor"></a>
 					<h3>make<wbr>Block<wbr>Command</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">make<wbr>Block<wbr>Command&lt;AttributesType&gt;<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JSONSchemaType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AttributesType</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/bluehawk_parser_commandnode.blockcommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">BlockCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a></li>
+						<li class="tsd-signature tsd-kind-icon">make<wbr>Block<wbr>Command&lt;AttributesType&gt;<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JSONSchemaType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AttributesType</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/bluehawk_parser_commandnode.blockcommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">BlockCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/Command.ts#L32">src/bluehawk/commands/Command.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/Command.ts#L32">src/bluehawk/commands/Command.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -479,7 +467,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>command: <span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JSONSchemaType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AttributesType</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/bluehawk_parser_commandnode.blockcommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">BlockCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span></h5>
+									<h5>command: <span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JSONSchemaType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AttributesType</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/bluehawk_parser_commandnode.blockcommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">BlockCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> }</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a></h4>
@@ -496,7 +484,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/parser/lexer/makeBlockCommentTokens.ts#L9">src/bluehawk/parser/lexer/makeBlockCommentTokens.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/parser/lexer/makeBlockCommentTokens.ts#L9">src/bluehawk/parser/lexer/makeBlockCommentTokens.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -519,13 +507,13 @@
 					<a name="makeblockorlinecommand" class="tsd-anchor"></a>
 					<h3>make<wbr>Block<wbr>OrLine<wbr>Command</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">make<wbr>Block<wbr>OrLine<wbr>Command&lt;AttributesType&gt;<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JSONSchemaType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AttributesType</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="bluehawk_parser_commandnode.html#anycommandnode" class="tsd-signature-type" data-tsd-kind="Type alias">AnyCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a></li>
+						<li class="tsd-signature tsd-kind-icon">make<wbr>Block<wbr>OrLine<wbr>Command&lt;AttributesType&gt;<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JSONSchemaType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AttributesType</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="bluehawk_parser_commandnode.html#anycommandnode" class="tsd-signature-type" data-tsd-kind="Type alias">AnyCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/Command.ts#L67">src/bluehawk/commands/Command.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/Command.ts#L65">src/bluehawk/commands/Command.ts:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -537,7 +525,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>command: <span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JSONSchemaType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AttributesType</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="bluehawk_parser_commandnode.html#anycommandnode" class="tsd-signature-type" data-tsd-kind="Type alias">AnyCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span></h5>
+									<h5>command: <span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JSONSchemaType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AttributesType</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="bluehawk_parser_commandnode.html#anycommandnode" class="tsd-signature-type" data-tsd-kind="Type alias">AnyCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> }</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a></h4>
@@ -554,7 +542,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/parser/visitor/makeCstVisitor.ts#L48">src/bluehawk/parser/visitor/makeCstVisitor.ts:48</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/parser/visitor/makeCstVisitor.ts#L48">src/bluehawk/parser/visitor/makeCstVisitor.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -592,19 +580,19 @@
 					<a name="makelinecommand" class="tsd-anchor"></a>
 					<h3>make<wbr>Line<wbr>Command</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">make<wbr>Line<wbr>Command<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/bluehawk_parser_commandnode.linecommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">LineCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a></li>
+						<li class="tsd-signature tsd-kind-icon">make<wbr>Line<wbr>Command<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/bluehawk_parser_commandnode.linecommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">LineCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/Command.ts#L51">src/bluehawk/commands/Command.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/Command.ts#L49">src/bluehawk/commands/Command.ts:49</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>command: <span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/bluehawk_parser_commandnode.linecommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">LineCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span></h5>
+									<h5>command: <span class="tsd-signature-type">Command</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>attributesSchema<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>process<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_processor_processor.processrequest.html" class="tsd-signature-type" data-tsd-kind="Interface">ProcessRequest</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/bluehawk_parser_commandnode.linecommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">LineCommandNode</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> }</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a></h4>
@@ -621,7 +609,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/parser/lexer/makeLineCommentToken.ts#L4">src/bluehawk/parser/lexer/makeLineCommentToken.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/parser/lexer/makeLineCommentToken.ts#L4">src/bluehawk/parser/lexer/makeLineCommentToken.ts:4</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -644,7 +632,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/parser/makeParser.ts#L27">src/bluehawk/parser/makeParser.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/parser/makeParser.ts#L27">src/bluehawk/parser/makeParser.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -667,7 +655,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/parser/lexer/makePayloadPattern.ts#L20">src/bluehawk/parser/lexer/makePayloadPattern.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/parser/lexer/makePayloadPattern.ts#L20">src/bluehawk/parser/lexer/makePayloadPattern.ts:20</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -717,7 +705,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/parser/lexer/makePushParserTokens.ts#L19">src/bluehawk/parser/lexer/makePushParserTokens.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/parser/lexer/makePushParserTokens.ts#L19">src/bluehawk/parser/lexer/makePushParserTokens.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -746,7 +734,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/commands/removeMetaRange.ts#L25">src/bluehawk/commands/removeMetaRange.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/e75c15e/src/bluehawk/commands/removeMetaRange.ts#L25">src/bluehawk/commands/removeMetaRange.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -805,6 +793,9 @@
 						<a href="bluehawk.html#parseresult" class="tsd-kind-icon">Parse<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="bluehawk.html#processoptions" class="tsd-kind-icon">Process<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
 						<a href="bluehawk.html#processrequest" class="tsd-kind-icon">Process<wbr>Request</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
@@ -814,19 +805,10 @@
 						<a href="bluehawk.html#rootparser" class="tsd-kind-icon">Root<wbr>Parser</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="bluehawk.html#foreachpathinproject" class="tsd-kind-icon">for<wbr>Each<wbr>Path<wbr>InProject</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
 						<a href="bluehawk.html#getbluehawk" class="tsd-kind-icon">get<wbr>Bluehawk</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
 						<a href="bluehawk.html#loadprojectpaths" class="tsd-kind-icon">load<wbr>Project<wbr>Paths</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="bluehawk.html#parseandprocess" class="tsd-kind-icon">parse<wbr>And<wbr>Process</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="bluehawk.html#parseandprocessproject" class="tsd-kind-icon">parse<wbr>And<wbr>Process<wbr>Project</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
 						<a href="bluehawk.html#tokens" class="tsd-kind-icon">tokens</a>
@@ -937,6 +919,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
