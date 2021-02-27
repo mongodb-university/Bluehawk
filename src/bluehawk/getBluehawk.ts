@@ -104,3 +104,11 @@ export const getBluehawk = async (
   await bluehawk.loadPlugin(pluginPaths);
   return bluehawk;
 };
+
+/**
+  Resets the bluehawk instance (for unit testing).
+ */
+getBluehawk.reset = (): Promise<Bluehawk> => {
+  bluehawk = undefined;
+  return getBluehawk();
+};

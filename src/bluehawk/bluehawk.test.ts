@@ -6,8 +6,12 @@ import {
   IdRequiredAttributesSchema,
   makeBlockCommand,
 } from "./commands";
+import { System } from "./io/System";
+import { getBluehawk } from "./getBluehawk";
 
 describe("bluehawk", () => {
+  beforeEach(System.useMemfs);
+
   const bluehawk = new Bluehawk();
   bluehawk.registerCommand(
     makeBlockCommand<IdRequiredAttributes>({
@@ -128,5 +132,43 @@ describe("bluehawk", () => {
       },
       message: "attribute list for 'code-block' command should be object",
     });
+  });
+
+  it("calls async listeners only once per document", async (done) => {
+    System.useJsonFs({
+      "/path/to/code.js": `
+    this is ignored
+    :code-block-start: foo
+    :emphasize-start:
+    this is in the command
+    :emphasize-end:
+    :code-block-end:
+`,
+    });
+    const calledForPath: string[] = [];
+    const bluehawk = await getBluehawk.reset();
+    bluehawk.subscribe((result) => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          calledForPath.push(result.source.path);
+          resolve();
+        }, 50);
+      });
+    });
+
+    await bluehawk.parseAndProcess("/path/to", {
+      waitForListeners: true,
+    });
+    expect(calledForPath).toStrictEqual([
+      "/path/to/code.codeblock.foo.js",
+      "/path/to/code.js",
+    ]);
+    setTimeout(() => {
+      expect(calledForPath).toStrictEqual([
+        "/path/to/code.codeblock.foo.js",
+        "/path/to/code.js",
+      ]);
+      done();
+    }, 200);
   });
 });

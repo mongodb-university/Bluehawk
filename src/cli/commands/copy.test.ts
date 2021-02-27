@@ -1,10 +1,11 @@
 import * as Path from "path";
-import { System } from "../../bluehawk";
+import { getBluehawk, System } from "../../bluehawk";
 import { copy } from "./copy";
 
-beforeEach(System.useMemfs);
-
 describe("copy", () => {
+  beforeEach(getBluehawk.reset);
+  beforeEach(System.useMemfs);
+
   it("copies", async (done) => {
     const rootPath = "/path/to/project";
     const destinationPath = "/destination";

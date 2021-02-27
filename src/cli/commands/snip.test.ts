@@ -1,10 +1,11 @@
 import * as Path from "path";
-import { System } from "../../bluehawk";
+import { getBluehawk, System } from "../../bluehawk";
 import { snip } from "./snip";
 
-beforeEach(System.useMemfs);
-
 describe("snip", () => {
+  beforeEach(getBluehawk.reset);
+  beforeEach(System.useMemfs);
+
   it("generates correct RST snippets", async (done) => {
     const rootPath = Path.resolve("/path/to/project");
     const destinationPath = "/destination";
@@ -68,7 +69,7 @@ describe("snip", () => {
     done();
   });
 
-  it("correctly logics multiple ranges within RST snippets", async (done) => {
+  it("correctly logics multiple ranges within RST snippets", async () => {
     const rootPath = Path.resolve("/path/to/project");
     const destinationPath = "/destinationB";
     const testFileName = "test.js";
@@ -135,7 +136,6 @@ line 9
    line 8
    line 9
 `);
-    done();
   });
 
   it("handles carriage returns", async () => {

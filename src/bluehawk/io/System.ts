@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 /* eslint @typescript-eslint/explicit-module-boundary-types: 0 */
 import fs from "fs";
-import { createFsFromVolume, DirectoryJSON, fs as memfs, Volume } from "memfs";
+import { createFsFromVolume, DirectoryJSON, Volume } from "memfs";
 
 // Mockable fs implementation. Use this instead of fs directly.
 export const System = {
