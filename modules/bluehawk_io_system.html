@@ -83,10 +83,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
 					<a name="system" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> System</h3>
-					<div class="tsd-signature tsd-kind-icon">System<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>fs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">promises</span><span class="tsd-signature-symbol">; </span>useMemfs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>useRealfs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<div class="tsd-signature tsd-kind-icon">System<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>fs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">promises</span><span class="tsd-signature-symbol">; </span>useJsonFs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>useMemfs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>useRealfs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/04e806f/src/bluehawk/io/System.ts#L7">src/bluehawk/io/System.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/io/System.ts#L7">src/bluehawk/io/System.ts:7</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -94,6 +94,28 @@
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
 								<h5>fs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">promises</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>use<wbr>Json<wbr>Fs<span class="tsd-signature-symbol">: </span>function</h5>
+								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-type-literal">
+									<li class="tsd-signature tsd-kind-icon">use<wbr>Json<wbr>Fs<span class="tsd-signature-symbol">(</span>directoryJson<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DirectoryJSON</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<aside class="tsd-sources">
+											<ul>
+												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/io/System.ts#L25">src/bluehawk/io/System.ts:25</a></li>
+											</ul>
+										</aside>
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>directoryJson: <span class="tsd-signature-type">DirectoryJSON</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+									</li>
+								</ul>
 							</li>
 							<li class="tsd-parameter">
 								<h5>use<wbr>Memfs<span class="tsd-signature-symbol">: </span>function</h5>
@@ -104,7 +126,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/04e806f/src/bluehawk/io/System.ts#L10">src/bluehawk/io/System.ts:10</a></li>
+												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/io/System.ts#L14">src/bluehawk/io/System.ts:14</a></li>
 											</ul>
 										</aside>
 										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -120,7 +142,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/04e806f/src/bluehawk/io/System.ts#L19">src/bluehawk/io/System.ts:19</a></li>
+												<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/834f560/src/bluehawk/io/System.ts#L30">src/bluehawk/io/System.ts:30</a></li>
 											</ul>
 										</aside>
 										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
