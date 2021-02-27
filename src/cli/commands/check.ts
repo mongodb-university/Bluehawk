@@ -1,6 +1,5 @@
-import * as path from "path";
-import { CommandModule, Arguments, Argv } from "yargs";
-import { ParseResult, Project, getBluehawk } from "../../bluehawk";
+import { CommandModule, Arguments } from "yargs";
+import { getBluehawk } from "../../bluehawk";
 import { withIgnoreOption, withJsonOption } from "../options";
 import { MainArgs } from "../cli";
 import { BluehawkError } from "../../bluehawk/BluehawkError";

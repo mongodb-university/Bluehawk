@@ -23,7 +23,7 @@ interface Command {
 export interface AnyCommand extends Command {
   supportsBlockMode: boolean;
   supportsLineMode: boolean;
-  process: (request: ProcessRequest) => void | Promise<void>;
+  process: (request: ProcessRequest) => void;
 }
 
 // Create a block command implementation. AttributesType is a type that
@@ -35,9 +35,7 @@ export function makeBlockCommand<AttributesType>(
     attributesSchema: JSONSchemaType<AttributesType>;
 
     // The implementation of the command
-    process: (
-      request: ProcessRequest<BlockCommandNode>
-    ) => void | Promise<void>;
+    process: (request: ProcessRequest<BlockCommandNode>) => void;
   }
 ): AnyCommand {
   return {
@@ -53,7 +51,7 @@ export function makeLineCommand(
     attributesSchema?: undefined;
 
     // The implementation of the command
-    process: (request: ProcessRequest<LineCommandNode>) => void | Promise<void>;
+    process: (request: ProcessRequest<LineCommandNode>) => void;
   }
 ): AnyCommand {
   return {
@@ -70,7 +68,7 @@ export function makeBlockOrLineCommand<AttributesType>(
     attributesSchema: JSONSchemaType<AttributesType>;
 
     // The implementation of the command
-    process: (request: ProcessRequest<AnyCommandNode>) => void | Promise<void>;
+    process: (request: ProcessRequest<AnyCommandNode>) => void;
   }
 ): AnyCommand {
   return { ...command, supportsLineMode: true, supportsBlockMode: true };

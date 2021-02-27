@@ -58,27 +58,6 @@ describe("processor", () => {
     done();
   });
 
-  it("supports async commands", async (done) => {
-    const source = new Document({
-      text: `// :append-message-after-delay-start:
-a
-b
-c
-// :append-message-after-delay-end:
-`,
-      language: "javascript",
-      path: "test.js",
-    });
-
-    const parseResult = bluehawk.parse(source);
-    const files = await bluehawk.process(parseResult);
-    expect(files["test.js"].source.text.toString()).toBe(`a
-b
-c
-async command executed`);
-    done();
-  });
-
   it("supports async listeners", async (done) => {
     const source = new Document({
       text: `abc\n`,
