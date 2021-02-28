@@ -9,9 +9,8 @@ export const UncommentCommand = makeBlockCommand<NoAttributes>({
     "removes up to one line comment token from every line in its range",
   attributesSchema: NoAttributesSchema,
   process(request) {
-    const { commandNode, parseResult } = request;
-    const { source } = parseResult;
-    const { text } = source;
+    const { commandNode, document } = request;
+    const { text } = document;
 
     // Get all line comments in the hierarchy
     const lineComments = flatten(commandNode as AnyCommandNode)

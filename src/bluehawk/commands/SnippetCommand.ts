@@ -1,5 +1,4 @@
 import MagicString from "magic-string";
-import { Document } from "../Document";
 import { BlockCommandNode } from "../parser/CommandNode";
 import { ProcessRequest } from "../processor/Processor";
 import { idIsUnique } from "../processor/validator";
@@ -68,17 +67,16 @@ export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
   attributesSchema: IdRequiredAttributesSchema,
   rules: [idIsUnique],
   process: (request: ProcessRequest<BlockCommandNode>): void => {
-    const { commandNode, parseResult, fork } = request;
-    const { source } = parseResult;
+    const { commandNode, document, fork } = request;
     const { contentRange } = commandNode;
 
-    if (source.attributes["snippet"] !== undefined) {
+    if (document.attributes["snippet"] !== undefined) {
       // Nested snippet. Its output will be the same as unnested.
       return;
     }
 
     // Copy text to new working copy
-    const clonedSnippet = source.text.snip(
+    const clonedSnippet = document.text.snip(
       contentRange.start.offset,
       contentRange.end.offset
     );
@@ -88,15 +86,10 @@ export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
 
     // Fork subset code block to another file
     fork({
-      parseResult: {
-        commandNodes: commandNode.children ?? [],
-        errors: [],
-        source: new Document({
-          ...source,
-          path: source.pathWithInfix(`codeblock.${commandNode.id}`),
-          text: clonedSnippet,
-        }),
-      },
+      document,
+      commandNodes: commandNode.children ?? [],
+      newPath: document.pathWithInfix(`codeblock.${commandNode.id}`),
+      newText: clonedSnippet,
       newAttributes: {
         snippet: commandNode.id,
       },

@@ -18,8 +18,8 @@ export const listStates = async (
 
   const statesFound = new Set<string>();
   bluehawk.subscribe((result) => {
-    const { source } = result;
-    const { state } = source.attributes;
+    const { document } = result;
+    const { state } = document.attributes;
     if (state === undefined) {
       return;
     }

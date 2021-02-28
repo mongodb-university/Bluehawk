@@ -72,7 +72,7 @@ end
     ]);
 
     expect(
-      files["stateCommand.test.js?state=final"].source.text.toString()
+      files["stateCommand.test.js?state=final"].document.text.toString()
     ).toBe(multipleFinal);
     done();
   });

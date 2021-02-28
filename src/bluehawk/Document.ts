@@ -1,5 +1,5 @@
 import MagicString from "magic-string";
-import path, { join } from "path";
+import * as Path from "path";
 import { SourceMapConsumer } from "source-map";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,28 +73,28 @@ export class Document {
     Returns the name of the file minus the file extension.
    */
   get name(): string {
-    return path.basename(this.path, this.extension);
+    return Path.basename(this.path, this.extension);
   }
 
   /**
     Returns the name of the file with the file extension, if any.
    */
   get basename(): string {
-    return path.basename(this.path);
+    return Path.basename(this.path);
   }
 
   /**
     Returns the file extension, if any, including the dot.
    */
   get extension(): string {
-    return path.extname(this.path);
+    return Path.extname(this.path);
   }
 
   /**
     Returns the path of the directory containing this file based on the path.
    */
   get dirname(): string {
-    return path.dirname(this.path);
+    return Path.dirname(this.path);
   }
 
   constructor({
@@ -113,7 +113,7 @@ export class Document {
         ? new MagicString(text as string)
         : text.clone();
 
-    this.path = join(path);
+    this.path = Path.join(path);
     this.attributes = attributes ?? {};
     this.modifiers = modifiers ?? {};
     this.id = Document.makeId(this.path, this.modifiers);
@@ -124,7 +124,7 @@ export class Document {
     file extension, e.g. some.infix + example.js -> example.some.infix.js
    */
   pathWithInfix = (infix: string): string => {
-    return `${this.dirname}/${this.name}.${infix}${this.extension}`;
+    return Path.join(this.dirname, `${this.name}.${infix}${this.extension}`);
   };
 
   /**

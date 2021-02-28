@@ -36,9 +36,9 @@ console.log(bar);
       "snippet.test.js",
       "snippet.test.codeblock.foo.js",
     ]);
-    expect(files["snippet.test.codeblock.foo.js"].source.text.toString()).toBe(
-      `${snippet}\n`
-    );
+    expect(
+      files["snippet.test.codeblock.foo.js"].document.text.toString()
+    ).toBe(`${snippet}\n`);
     done();
   });
 
@@ -56,7 +56,9 @@ console.log(bar);
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["snippet.test.codeblock.foo.js"].source.text.toString()).toBe(
+    expect(
+      files["snippet.test.codeblock.foo.js"].document.text.toString()
+    ).toBe(
       `  abc
    def
 ghi
@@ -86,7 +88,7 @@ ghi
     expect(
       files[
         "snippet.test.codeblock.delete-collection.swift"
-      ].source.text.toString()
+      ].document.text.toString()
     ).toBe(
       `let realm = try! Realm()
 try! realm.write {
@@ -112,9 +114,9 @@ try! realm.write {
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["snippet.test.codeblock.foo.js"].source.text.toString()).toBe(
-      ""
-    );
+    expect(
+      files["snippet.test.codeblock.foo.js"].document.text.toString()
+    ).toBe("");
     done();
   });
 
@@ -132,9 +134,9 @@ hide this
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["snippet.test.codeblock.foo.js"].source.text.toString()).toBe(
-      ""
-    );
+    expect(
+      files["snippet.test.codeblock.foo.js"].document.text.toString()
+    ).toBe("");
     done();
   });
 
@@ -154,13 +156,13 @@ world
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["snippet.test.codeblock.a.js"].source.text.toString()).toBe(
+    expect(files["snippet.test.codeblock.a.js"].document.text.toString()).toBe(
       `hello
 world
 !
 `
     );
-    expect(files["snippet.test.codeblock.b.js"].source.text.toString()).toBe(
+    expect(files["snippet.test.codeblock.b.js"].document.text.toString()).toBe(
       `world
 `
     );

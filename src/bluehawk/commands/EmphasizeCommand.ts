@@ -26,11 +26,9 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
     "identify line(s) to highlight (see `bluehawk snip --format` command)",
   attributesSchema: NoAttributesSchema,
 
-  process({ commandNode, parseResult }) {
-    const { source } = parseResult;
-
-    if (source.attributes["emphasize"] === undefined) {
-      source.attributes["emphasize"] = { ranges: [] };
+  process({ commandNode, document }) {
+    if (document.attributes["emphasize"] === undefined) {
+      document.attributes["emphasize"] = { ranges: [] };
     }
 
     let range: EmphasizeRange;
@@ -56,6 +54,6 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
         break;
     }
 
-    source.attributes["emphasize"]["ranges"].push(range);
+    document.attributes["emphasize"]["ranges"].push(range);
   },
 });

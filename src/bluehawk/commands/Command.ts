@@ -73,7 +73,7 @@ export function makeBlockOrLineCommand<AttributesType>(
 
     /**
       The implementation of the command
-    */
+     */
     // `void` return type alone is not enough to forbid async Commands.
     process: (request: ProcessRequest<AnyCommandNode>) => NotPromise;
   }

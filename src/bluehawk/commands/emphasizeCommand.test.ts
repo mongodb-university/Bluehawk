@@ -23,14 +23,14 @@ c
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["test.js"].source.text.toString()).toBe(
+    expect(files["test.js"].document.text.toString()).toBe(
       `a
 b 
 c
 `
     );
     expect(
-      files["test.js"].source.attributes["emphasize"]["ranges"]
+      files["test.js"].document.attributes["emphasize"]["ranges"]
     ).toMatchObject([
       {
         start: {
@@ -62,7 +62,7 @@ console.log(bar);
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["test.js"].source.text.toString()).toBe(`const bar = "foo"
+    expect(files["test.js"].document.text.toString()).toBe(`const bar = "foo"
 
 describe("some stuff", () => {
   it("foos the bar", () => {
@@ -73,7 +73,7 @@ console.log(bar);
 `);
 
     expect(
-      files["test.js"].source.attributes["emphasize"]["ranges"]
+      files["test.js"].document.attributes["emphasize"]["ranges"]
     ).toMatchObject([
       {
         start: {
@@ -107,7 +107,7 @@ console.log(bar);
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["test.js"].source.text.toString()).toBe(`const bar = "foo"
+    expect(files["test.js"].document.text.toString()).toBe(`const bar = "foo"
 
 describe("some stuff", () => {
   it("foos the bar", () => {
@@ -118,7 +118,7 @@ console.log(bar);
 `);
 
     expect(
-      files["test.js"].source.attributes["emphasize"]["ranges"]
+      files["test.js"].document.attributes["emphasize"]["ranges"]
     ).toMatchObject([
       {
         start: {
@@ -158,7 +158,7 @@ line 9`;
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["test.js"].source.text.toString()).toBe(`line 1
+    expect(files["test.js"].document.text.toString()).toBe(`line 1
 line 2
 line 3
 line 4
@@ -169,7 +169,7 @@ line 8
 line 9`);
 
     expect(
-      files["test.js"].source.attributes["emphasize"]["ranges"]
+      files["test.js"].document.attributes["emphasize"]["ranges"]
     ).toMatchObject([
       {
         start: {

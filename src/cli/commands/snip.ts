@@ -13,6 +13,7 @@ import {
 } from "../options";
 import { System } from "../../bluehawk/io/System";
 import { MainArgs } from "../cli";
+import { ProcessResult } from "../../bluehawk/processor/Processor";
 
 interface SnipArgs extends MainArgs {
   paths: string[];
@@ -23,17 +24,17 @@ interface SnipArgs extends MainArgs {
 }
 
 export const doRst = async (
-  result: ParseResult
+  result: ProcessResult
 ): Promise<string | undefined> => {
-  const { source } = result;
+  const { document } = result;
   if (
-    source.attributes["snippet"] === undefined ||
-    source.attributes["emphasize"] === undefined
+    document.attributes["snippet"] === undefined ||
+    document.attributes["emphasize"] === undefined
   ) {
     return undefined;
   }
 
-  const emphasizeAttributes = source.attributes[
+  const emphasizeAttributes = document.attributes[
     "emphasize"
   ] as EmphasizeSourceAttributes;
 
@@ -50,8 +51,8 @@ export const doRst = async (
     [".cs", "csharp"],
     [".json", "json"],
   ]);
-  const rstLanguage = rstLanguageMap.has(source.extension)
-    ? rstLanguageMap.get(source.extension)
+  const rstLanguage = rstLanguageMap.has(document.extension)
+    ? rstLanguageMap.get(document.extension)
     : "text";
 
   const rstHeader = ".. code-block::";
@@ -59,8 +60,8 @@ export const doRst = async (
 
   const rstEmphasizeRanges: { start: number; end: number }[] = [];
   for (const range of emphasizeAttributes.ranges) {
-    const start = await source.getNewLocationFor(range.start);
-    const end = await source.getNewLocationFor(range.end);
+    const start = await document.getNewLocationFor(range.start);
+    const end = await document.getNewLocationFor(range.end);
     if (start !== undefined && end !== undefined) {
       rstEmphasizeRanges.push({ start: start.line, end: end.line });
     }
@@ -78,7 +79,7 @@ export const doRst = async (
     `${rstHeader} ${rstLanguage}`,
     `   ${rstEmphasizeModifier} ${rstFormattedRanges}`,
     "", // empty line required between rst codeblock declaration and content
-    source.text
+    document.text
       .toString()
       .split(/\r\n|\r|\n/)
       .map((line) => (line === "" ? line : `   ${line}`)) // indent each line 3 spaces
@@ -108,57 +109,57 @@ export const snip = async (args: SnipArgs): Promise<void> => {
   } = {};
 
   // Define the handler for generating snippet files.
-  bluehawk.subscribe(async (result: ParseResult) => {
-    const { source } = result;
-    if (source.attributes["snippet"] === undefined) {
+  bluehawk.subscribe(async (result) => {
+    const { document, parseResult } = result;
+    if (document.attributes["snippet"] === undefined) {
       return;
     }
-    const targetPath = path.join(destination, source.basename);
+    const targetPath = path.join(destination, document.basename);
 
     // Special handler for snippets in state commands
     if (state !== undefined) {
-      const stateAttribute = source.attributes["state"];
+      const stateAttribute = document.attributes["state"];
       if (stateAttribute && stateAttribute !== state) {
         // Not the requested state
         return;
       }
-      const stateVersionWritten = stateVersionWrittenForPath[source.path];
+      const stateVersionWritten = stateVersionWrittenForPath[document.path];
       if (stateVersionWritten === true) {
         // Already wrote state version, so nothing more to do. This prevents a
         // non-state version from overwriting the desired state version.
         return;
       }
       if (stateAttribute === state) {
-        stateVersionWrittenForPath[source.path] = true;
+        stateVersionWrittenForPath[document.path] = true;
       }
     }
     try {
-      await System.fs.writeFile(targetPath, source.text.toString(), "utf8");
+      await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
     } catch (error) {
       console.error(
-        `Failed to write ${targetPath} (based on ${source.path}): ${error.message}`
+        `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
       );
     }
   });
 
   if (format === "sphynx-rst") {
     // Define the handler for generating formatted snippet files.
-    bluehawk.subscribe(async (result: ParseResult) => {
+    bluehawk.subscribe(async (result) => {
       const formattedCodeblock = await doRst(result);
       if (formattedCodeblock === undefined) {
         return;
       }
-      const { source } = result;
+      const { document, parseResult } = result;
       const targetPath = path.join(
         destination,
-        `${source.basename}.code-block.rst`
+        `${document.basename}.code-block.rst`
       );
 
       try {
         await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
       } catch (error) {
         console.error(
-          `Failed to write ${targetPath} (based on ${source.path}): ${error.message}`
+          `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
         );
       }
     });

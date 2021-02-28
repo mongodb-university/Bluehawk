@@ -26,7 +26,7 @@ no comment
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["uncomment.test.js"].source.text.toString()).toBe(
+    expect(files["uncomment.test.js"].document.text.toString()).toBe(
       `comment
 no comment
 // double comment
@@ -48,7 +48,7 @@ no comment
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["uncomment.test.js"].source.text.toString()).toBe(
+    expect(files["uncomment.test.js"].document.text.toString()).toBe(
       `comment
 no comment
 // double comment
@@ -72,7 +72,7 @@ no comment
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["uncomment.test.js"].source.text.toString()).toBe(
+    expect(files["uncomment.test.js"].document.text.toString()).toBe(
       `comment
 no comment
 // double comment
@@ -98,7 +98,7 @@ leave this alone // // double comment
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["uncomment.test.js"].source.text.toString()).toBe(
+    expect(files["uncomment.test.js"].document.text.toString()).toBe(
       `      a//
 leave me alone // comment
 uncomment this
@@ -129,7 +129,7 @@ no comment
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["uncomment.test.js"].source.text.toString()).toBe(
+    expect(files["uncomment.test.js"].document.text.toString()).toBe(
       `comment
 // double comment
 `

@@ -13,8 +13,8 @@ describe("removeMetaRange", () => {
     makeBlockOrLineCommand<NoAttributes>({
       attributesSchema: NoAttributesSchema,
       name: "strip-this",
-      process({ parseResult, commandNode }) {
-        removeMetaRange(parseResult.source.text, commandNode);
+      process({ document, commandNode }) {
+        removeMetaRange(document.text, commandNode);
       },
     })
   );
@@ -44,7 +44,7 @@ const qux = "baz";
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["strip.test.js"].source.text.toString()).toBe(
+    expect(files["strip.test.js"].document.text.toString()).toBe(
       `const bar = "foo";
 const baz = "bar";
 not this
@@ -65,7 +65,7 @@ const qux = "baz"; // not this :strip-this:
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["strip.test.js"].source.text.toString()).toBe(
+    expect(files["strip.test.js"].document.text.toString()).toBe(
       `const bar = "foo";
 const baz = "bar"; 
 :not-this:
@@ -86,7 +86,7 @@ jkl //// :strip-this: // :strip-this:
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["strip.test.js"].source.text.toString()).toBe(
+    expect(files["strip.test.js"].document.text.toString()).toBe(
       `abc
 def 
 ghi 

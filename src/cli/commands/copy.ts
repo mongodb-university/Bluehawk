@@ -60,21 +60,21 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     [path: string]: boolean;
   } = {};
 
-  bluehawk.subscribe(async (result: ParseResult) => {
-    const { source } = result;
-    if (source.attributes.snippet) {
+  bluehawk.subscribe(async (result) => {
+    const { document, parseResult } = result;
+    if (document.attributes.snippet) {
       // Not a pure state file
       return;
     }
 
-    const { state } = source.attributes;
+    const { state } = document.attributes;
 
     if (state && state !== desiredState) {
       // This is a state file, but not the state we're looking for
       return;
     }
 
-    const stateVersionWritten = stateVersionWrittenForPath[source.path];
+    const stateVersionWritten = stateVersionWrittenForPath[document.path];
     // Already wrote state version, so nothing more to do
     if (stateVersionWritten === true) {
       return;
@@ -86,21 +86,21 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     // will never overwrite a state command processed version with the default
     // version.
     if (state === desiredState) {
-      stateVersionWrittenForPath[source.path] = true;
+      stateVersionWrittenForPath[document.path] = true;
     }
 
     // Use the same relative path
     const directory = path.join(
       destination,
-      path.relative(projectDirectory, path.dirname(source.path))
+      path.relative(projectDirectory, path.dirname(document.path))
     );
-    const targetPath = path.join(directory, source.basename);
+    const targetPath = path.join(directory, document.basename);
 
     try {
       await System.fs.mkdir(directory, { recursive: true });
-      await System.fs.writeFile(targetPath, source.text.toString(), "utf8");
+      await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
     } catch (error) {
-      const message = `Failed to write file ${targetPath} (based on ${source.path}): ${error.message}`;
+      const message = `Failed to write file ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
       console.error(message);
       errors.push(message);
     }

@@ -145,7 +145,7 @@ describe("bluehawk", () => {
     bluehawk.subscribe((result) => {
       return new Promise((resolve) => {
         setTimeout(() => {
-          calledForPath.push(result.source.path);
+          calledForPath.push(result.document.path);
           resolve();
         }, 50);
       });

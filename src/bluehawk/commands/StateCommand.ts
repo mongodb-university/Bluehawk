@@ -12,17 +12,17 @@ export const StateCommand = makeBlockCommand<IdRequiredAttributes>({
     "given a state name as command id, identifies blocks that should only appear in the given state's version of the file",
   attributesSchema: IdRequiredAttributesSchema,
   process(request) {
-    const { commandNode, fork, parseResult } = request;
-    const { source } = parseResult;
+    const { commandNode, fork, document, commandNodes } = request;
 
-    const stateAttribute = source.attributes["state"];
+    const stateAttribute = document.attributes["state"];
 
     assert(commandNode.id !== undefined);
 
     if (stateAttribute === undefined) {
       // We are not processing in a state file, so start one
       fork({
-        parseResult,
+        document,
+        commandNodes,
         newModifiers: {
           state: commandNode.id,
         },

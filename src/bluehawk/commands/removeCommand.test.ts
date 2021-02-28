@@ -60,7 +60,7 @@ console.log(bar);
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["test.js"].source.text.toString()).toBe(`const bar = "foo"
+    expect(files["test.js"].document.text.toString()).toBe(`const bar = "foo"
 
 console.log(bar);
 `);
@@ -84,7 +84,7 @@ e
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["test.js"].source.text.toString()).toBe(
+    expect(files["test.js"].document.text.toString()).toBe(
       `a
 e
 `
@@ -125,7 +125,7 @@ but not this
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["test.js"].source.text.toString()).toBe(
+    expect(files["test.js"].document.text.toString()).toBe(
       `leave this
 and leave this
 but not this

@@ -62,7 +62,7 @@ and see test2
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors).toStrictEqual([]);
     const files = await bluehawk.process(parseResult);
-    expect(files["replace.test.js"].source.text.toString())
+    expect(files["replace.test.js"].document.text.toString())
       .toBe(`leave this alone
 go ahead and It works!
 and see --replaced--
@@ -87,7 +87,7 @@ and see unchanged
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors.length).toBe(0);
     const files = await bluehawk.process(parseResult);
-    expect(files["replace.test.js"].source.text.toString())
+    expect(files["replace.test.js"].document.text.toString())
       .toBe(`leave this alone
 go ahead and notice the case
 and see unchanged
@@ -121,7 +121,7 @@ replaceme
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors.length).toBe(0);
     const files = await bluehawk.process(parseResult);
-    expect(files["replace.test.js"].source.text.toString()).toBe(`replaceme
+    expect(files["replace.test.js"].document.text.toString()).toBe(`replaceme
 replaceme
 ---
 replaced
@@ -152,7 +152,7 @@ replaceme
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors).toStrictEqual([]);
     const files = await bluehawk.process(parseResult);
-    expect(files["replace.test.js"].source.text.toString()).toBe(
+    expect(files["replace.test.js"].document.text.toString()).toBe(
       `hacked hacked :rep\n`
     );
     done();
@@ -179,7 +179,7 @@ andremovethisaswell
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors).toStrictEqual([]);
     const files = await bluehawk.process(parseResult);
-    expect(files["replace.test.js"].source.text.toString())
+    expect(files["replace.test.js"].document.text.toString())
       .toBe(`leave this alone
 1
 4
@@ -272,7 +272,8 @@ class ReadWriteData: XCTestCase {
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors.length).toBe(0);
     const files = await bluehawk.process(parseResult);
-    expect(files["replace.test.js"].source.text.toString()).toBe(`import XCTest
+    expect(files["replace.test.js"].document.text.toString())
+      .toBe(`import XCTest
 import RealmSwift
 
 class Dog: Object {
@@ -323,7 +324,7 @@ class ReadWriteData: XCTestCase {
 }
 
 `);
-    expect(files["replace.test.codeblock.models.js"].source.text.toString())
+    expect(files["replace.test.codeblock.models.js"].document.text.toString())
       .toBe(`class Dog: Object {
     @objc dynamic var name = ""
     @objc dynamic var age = 0
@@ -351,7 +352,7 @@ class DogClub: Object {
     expect(
       files[
         "replace.test.codeblock.create-a-new-object.js"
-      ].source.text.toString()
+      ].document.text.toString()
     ).toBe(`// (1) Create a Dog object and then set its properties
 let myDog = Dog()
 myDog.name = "Rex"

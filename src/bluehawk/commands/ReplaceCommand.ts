@@ -24,10 +24,9 @@ export const ReplaceCommand = makeBlockCommand<ReplaceCommandAttributes>({
     },
   },
 
-  process({ commandNode, parseResult }) {
+  process({ commandNode, document }) {
     const attributes = commandNode.attributes as ReplaceCommandAttributes;
-    const { source } = parseResult;
-    const { text } = source;
+    const { text } = document;
 
     const { contentRange } = commandNode;
     const contentLength = contentRange.end.offset - contentRange.start.offset;

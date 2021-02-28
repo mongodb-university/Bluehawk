@@ -23,7 +23,8 @@ export const check = async (args: Arguments<CheckArgs>): Promise<void> => {
   };
 
   // Define the handler for generating snippet files.
-  bluehawk.subscribe(({ source, errors }) => {
+  bluehawk.subscribe(({ parseResult }) => {
+    const { errors, source } = parseResult;
     if (errors.length !== 0) {
       addErrors(source.path, errors);
     }

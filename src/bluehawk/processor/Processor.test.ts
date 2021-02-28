@@ -4,8 +4,6 @@ import {
   IdRequiredAttributesSchema,
   makeBlockCommand,
   makeLineCommand,
-  NoAttributes,
-  NoAttributesSchema,
 } from "../commands/Command";
 import { Document } from "../Document";
 import { ParseResult } from "../parser/ParseResult";
@@ -30,7 +28,7 @@ describe("processor", () => {
     const parseResult = bluehawk.parse(source);
     expect(parseResult.commandNodes[0].commandName).toBe("unknown-command");
     const files = await bluehawk.process(parseResult);
-    expect(files["test.js"].source.text.toString()).toBe(`:unknown-command:
+    expect(files["test.js"].document.text.toString()).toBe(`:unknown-command:
 `);
     done();
   });
@@ -47,7 +45,7 @@ describe("processor", () => {
     let didCallListener = 0;
     let didWaitForListener = 0;
     for (let i = 0; i < 10; ++i) {
-      const listener = (result: ParseResult) => {
+      const listener = () => {
         didCallListener += 1;
         return new Promise<void>((resolve) => {
           setTimeout(() => {
@@ -83,7 +81,7 @@ describe("processor", () => {
     let didCallListener = 0;
     let didWaitForListener = 0;
     for (let i = 0; i < 10; ++i) {
-      const listener = (result: ParseResult) => {
+      const listener = () => {
         if (i === 5) {
           // Naughty listener!
           throw new Error("I'm misbehavin'!");
