@@ -13,11 +13,6 @@ export const UncommentCommand = makeBlockCommand<NoAttributes>({
     const { source } = parseResult;
     const { text } = source;
 
-    const { contentRange } = commandNode;
-    if (contentRange == undefined) {
-      return;
-    }
-
     // Get all line comments in the hierarchy
     const lineComments = flatten(commandNode as AnyCommandNode)
       .reduce((acc, cur) => [...acc, ...cur.lineComments], [] as IToken[])

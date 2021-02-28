@@ -19,12 +19,12 @@ export interface ProcessRequest<CommandNodeType = AnyCommandNode> {
   fork: (args: ForkArgs) => void;
 
   /**
-    The overall result being processed by the processor
+    The overall result being processed by the processor.
    */
   parseResult: ParseResult;
 
   /**
-    The specific command to process
+    The specific command to process.
    */
   commandNode: CommandNodeType;
 }
@@ -60,13 +60,13 @@ export class Processor {
     parseResult: ParseResult,
     processOptions?: ProcessOptions
   ): Promise<BluehawkFiles> => {
-    const _processorState = new ProcessorState(processOptions);
     this._removeMetaRanges(
       parseResult.source.text,
       parseResult.commandNodes,
       processOptions
     );
-    await this.fork({ parseResult, _processorState });
+    const _processorState = new ProcessorState(processOptions);
+    await this._fork({ parseResult, _processorState });
     await Promise.allSettled(_processorState.promises);
     return _processorState.files;
   };
@@ -94,51 +94,9 @@ export class Processor {
     }
   };
 
-  private _process = (
-    _processorState: ProcessorState,
-    commandNode: AnyCommandNode | AnyCommandNode[],
-    result: ParseResult
-  ): void => {
-    if (Array.isArray(commandNode)) {
-      commandNode.forEach((commandNode) =>
-        this._process(_processorState, commandNode, result)
-      );
-      return;
-    }
-    const command = this.processors[commandNode.commandName];
-    if (command === undefined) {
-      return;
-    }
-    assert(
-      (commandNode.type === "line" && command.supportsLineMode) ||
-        (commandNode.type === "block" && command.supportsBlockMode),
-      `${commandNode.commandName} found as a ${commandNode.type} command, which is an unsupported mode for the corresponding command processor. (This should have been reported as an error by the parser and the nodes should not have been sent to the processor.)`
-    );
-
-    command.process({
-      fork: (args: ForkArgs) => {
-        // Commands cannot be async, so they can't await fork(). Store
-        // promises so that the main entrypoint can await them before
-        // resolving.
-        _processorState.promises.push(
-          this.fork({
-            ...args,
-            _processorState,
-          })
-        );
-      },
-      parseResult: result,
-      commandNode,
-    });
-
-    if (commandNode.children !== undefined) {
-      this._process(_processorState, commandNode.children, result);
-    }
-  };
-
-  // Processes the given Bluehawk result, optionally under an alternative id,
-  // and emits the file.
-  private async fork({
+  // Process the given Bluehawk result, optionally under an alternative id, and
+  // emit the file.
+  private async _fork({
     _processorState,
     parseResult,
     newPath,
@@ -171,6 +129,52 @@ export class Processor {
       await publishPromise;
     }
   }
+
+  // Actually execute the command or commands within the result.
+  private _process = (
+    _processorState: ProcessorState,
+    commandNode: AnyCommandNode | AnyCommandNode[],
+    result: ParseResult
+  ): void => {
+    if (Array.isArray(commandNode)) {
+      commandNode.forEach((commandNode) =>
+        this._process(_processorState, commandNode, result)
+      );
+      return;
+    }
+    const command = this.processors[commandNode.commandName];
+    if (command === undefined) {
+      return;
+    }
+    assert(
+      (commandNode.type === "line" && command.supportsLineMode) ||
+        (commandNode.type === "block" && command.supportsBlockMode),
+      `${commandNode.commandName} found as a ${commandNode.type} command, which is ` +
+        `an unsupported mode for the corresponding command processor. (This should ` +
+        `have been reported as an error by the parser and the nodes should not have ` +
+        `been sent to the processor.)`
+    );
+
+    command.process({
+      fork: (args: ForkArgs) => {
+        // Commands cannot be async, so they can't await fork(). Store
+        // promises so that the main entrypoint can await them before
+        // resolving.
+        _processorState.promises.push(
+          this._fork({
+            ...args,
+            _processorState,
+          })
+        );
+      },
+      parseResult: result,
+      commandNode,
+    });
+
+    if (commandNode.children !== undefined) {
+      this._process(_processorState, commandNode.children, result);
+    }
+  };
 
   // Publish a processed file
   private async _publish(result: ParseResult): Promise<void> {

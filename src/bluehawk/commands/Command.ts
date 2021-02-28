@@ -19,11 +19,13 @@ interface Command {
   rules?: Rule[];
 }
 
+type NotPromise = void | Error;
+
 // The implementation that actually carries out the command.
 export interface AnyCommand extends Command {
   supportsBlockMode: boolean;
   supportsLineMode: boolean;
-  process: (request: ProcessRequest) => void;
+  process: (request: ProcessRequest) => NotPromise;
 }
 
 // Create a block command implementation. AttributesType is a type that
@@ -35,7 +37,7 @@ export function makeBlockCommand<AttributesType>(
     attributesSchema: JSONSchemaType<AttributesType>;
 
     // The implementation of the command
-    process: (request: ProcessRequest<BlockCommandNode>) => void;
+    process: (request: ProcessRequest<BlockCommandNode>) => NotPromise;
   }
 ): AnyCommand {
   return {
@@ -51,7 +53,7 @@ export function makeLineCommand(
     attributesSchema?: undefined;
 
     // The implementation of the command
-    process: (request: ProcessRequest<LineCommandNode>) => void;
+    process: (request: ProcessRequest<LineCommandNode>) => NotPromise;
   }
 ): AnyCommand {
   return {
@@ -64,11 +66,16 @@ export function makeLineCommand(
 // Create a command implementation that can handle either blocks or lines.
 export function makeBlockOrLineCommand<AttributesType>(
   command: Command & {
-    // Attributes schema applies to the block command version.
+    /**
+      Attributes schema applies to the block command version.
+     */
     attributesSchema: JSONSchemaType<AttributesType>;
 
-    // The implementation of the command
-    process: (request: ProcessRequest<AnyCommandNode>) => void;
+    /**
+      The implementation of the command
+    */
+    // `void` return type alone is not enough to forbid async Commands.
+    process: (request: ProcessRequest<AnyCommandNode>) => NotPromise;
   }
 ): AnyCommand {
   return { ...command, supportsLineMode: true, supportsBlockMode: true };

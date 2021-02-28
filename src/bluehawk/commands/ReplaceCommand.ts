@@ -30,10 +30,6 @@ export const ReplaceCommand = makeBlockCommand<ReplaceCommandAttributes>({
     const { text } = source;
 
     const { contentRange } = commandNode;
-    if (contentRange == undefined) {
-      // TODO: error
-      return;
-    }
     const contentLength = contentRange.end.offset - contentRange.start.offset;
     const { terms } = attributes;
     Object.entries(terms).forEach(([searchTerm, replaceTerm]) => {

@@ -14,5 +14,6 @@ export const RemoveCommand = makeBlockOrLineCommand<NoAttributes>({
       lineRange.start.offset,
       lineRange.end.offset
     );
+    return undefined;
   },
 });

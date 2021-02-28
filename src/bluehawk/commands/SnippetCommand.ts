@@ -72,11 +72,6 @@ export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
     const { source } = parseResult;
     const { contentRange } = commandNode;
 
-    if (contentRange === undefined) {
-      // TODO: diagnostics
-      return;
-    }
-
     if (source.attributes["snippet"] !== undefined) {
       // Nested snippet. Its output will be the same as unnested.
       return;

@@ -26,7 +26,7 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
     "identify line(s) to highlight (see `bluehawk snip --format` command)",
   attributesSchema: NoAttributesSchema,
 
-  async process({ commandNode, parseResult }) {
+  process({ commandNode, parseResult }) {
     const { source } = parseResult;
 
     if (source.attributes["emphasize"] === undefined) {
