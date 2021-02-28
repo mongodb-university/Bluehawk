@@ -39,7 +39,6 @@ not this
 :not-this:
 const qux = "baz";
 `,
-      language: "javascript",
       path: "strip.test.js",
     });
 
@@ -61,7 +60,6 @@ const baz = "bar"; // :strip-this:
 :strip-this: :not-this:
 const qux = "baz"; // not this :strip-this:
 `,
-      language: "javascript",
       path: "strip.test.js",
     });
 
@@ -83,7 +81,6 @@ def // :strip-this: :strip-this:
 ghi // :strip-this: // :strip-this:
 jkl //// :strip-this: // :strip-this:
 `,
-      language: "javascript",
       path: "strip.test.js",
     });
 

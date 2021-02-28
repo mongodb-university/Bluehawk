@@ -11,8 +11,7 @@ describe("visitor", () => {
   ]);
   const { lexer } = parser;
   const source = new Document({
-    language: "mock",
-    text: "mock",
+        text: "mock",
     path: "mock",
   });
 

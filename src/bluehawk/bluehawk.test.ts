@@ -37,7 +37,6 @@ describe("bluehawk", () => {
     this is in the command
     :some-command-end:
 `,
-      language: "testlanguage",
       path: "testPath",
     });
     const output = bluehawk.parse(input);
@@ -51,7 +50,6 @@ describe("bluehawk", () => {
     this is ignored
     :some-command-end:
     `,
-      language: "testlanguage",
       path: "testPath",
     });
     const output = bluehawk.parse(input);
@@ -76,7 +74,6 @@ describe("bluehawk", () => {
     this is in the command
     :some-command-start:
 `,
-      language: "testlanguage",
       path: "testPath",
     });
     const output = bluehawk.parse(input);
@@ -102,7 +99,6 @@ describe("bluehawk", () => {
     this is in the command
     :some-command-end:
 `,
-      language: "testlanguage",
       path: "testPath",
     });
     const output = bluehawk.parse(input);
@@ -118,7 +114,6 @@ describe("bluehawk", () => {
     this is in the command
     :code-block-end:
 `,
-      language: "testlanguage",
       path: "testPath",
     });
     const output = bluehawk.parse(input);

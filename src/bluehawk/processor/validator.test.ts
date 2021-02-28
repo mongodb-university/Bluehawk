@@ -30,7 +30,6 @@ describe("validator", () => {
 
   const source = new Document({
     path: "",
-    language: "",
     text: "",
   });
 

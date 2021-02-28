@@ -120,9 +120,8 @@ export class Bluehawk {
             onBinaryFile && (await onBinaryFile(filePath));
             return;
           }
-          const language = Path.extname(filePath);
           const text = blob.toString("utf8");
-          const document = new Document({ text, language, path: filePath });
+          const document = new Document({ text, path: filePath });
           const result = this.parse(document);
           if (result.errors.length !== 0) {
             onErrors && onErrors(filePath, result.errors);

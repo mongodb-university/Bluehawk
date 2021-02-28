@@ -27,7 +27,6 @@ ${snippet}
 // :snippet-end:
 console.log(bar);
 `,
-      language: "javascript",
       path: "snippet.test.js",
     });
 
@@ -52,7 +51,6 @@ console.log(bar);
    ghi
     // :snippet-end:
 `,
-      language: "javascript",
       path: "snippet.test.js",
     });
 
@@ -80,7 +78,6 @@ ghi
         }
         // :snippet-end:
 `,
-      language: "swift",
       path: "snippet.test.swift",
     });
 
@@ -110,7 +107,6 @@ try! realm.write {
     // :snippet-start: foo
     // :snippet-end:
 `,
-      language: "javascript",
       path: "snippet.test.js",
     });
 
@@ -131,7 +127,6 @@ hide this
 // :remove-end:
 // :snippet-end:
 `,
-      language: "javascript",
       path: "snippet.test.js",
     });
 
@@ -154,7 +149,6 @@ world
 !
 // :snippet-end:
 `,
-      language: "javascript",
       path: "snippet.test.js",
     });
 

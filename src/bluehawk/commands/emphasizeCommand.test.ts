@@ -18,7 +18,6 @@ describe("emphasize command", () => {
 b // :emphasize:
 c
 `,
-      language: "javascript",
       path: "test.js",
     });
 
@@ -58,7 +57,6 @@ console.log(bar);
 
     const source = new Document({
       text: singleInput,
-      language: "javascript",
       path: "test.js",
     });
 
@@ -104,7 +102,6 @@ console.log(bar);
 
     const source = new Document({
       text: singleInput,
-      language: "javascript",
       path: "test.js",
     });
 
@@ -156,7 +153,6 @@ line 9`;
 
     const source = new Document({
       text: singleInput,
-      language: "javascript",
       path: "test.js",
     });
 

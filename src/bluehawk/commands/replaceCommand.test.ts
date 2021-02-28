@@ -21,7 +21,6 @@ describe("replace command", () => {
       text: `// :replace-start:
 // :replace-end:
 `,
-      language: "javascript",
       path: "replace.test.js",
     });
 
@@ -36,7 +35,6 @@ describe("replace command", () => {
       text: `// :replace-start: {"terms":{"numbersNotAllowed": 1}}
 // :replace-end:
 `,
-      language: "javascript",
       path: "replace.test.js",
     });
 
@@ -58,7 +56,6 @@ go ahead and Replace Me
 and see test2
 // :replace-end:
 `,
-      language: "javascript",
       path: "replace.test.js",
     });
 
@@ -84,7 +81,6 @@ go ahead and notice the case
 and see unchanged
 // :replace-end:
 `,
-      language: "javascript",
       path: "replace.test.js",
     });
 
@@ -119,7 +115,6 @@ replaceme
 replaceme
 replaceme
 `,
-      language: "javascript",
       path: "replace.test.js",
     });
 
@@ -151,7 +146,6 @@ replaceme
 :replace- :replace- :rep
 :replace-end:
 `,
-      language: "javascript",
       path: "replace.test.js",
     });
 
@@ -179,7 +173,6 @@ removethis4
 andremovethisaswell
 // :replace-end:
 `,
-      language: "javascript",
       path: "replace.test.js",
     });
 
@@ -201,7 +194,6 @@ andaswell
 it's my id
 :replace-end:
 `,
-      language: "javascript",
       path: "replace.test.js",
     });
 
@@ -274,7 +266,6 @@ class ReadWriteData: XCTestCase {
 
 // :replace-end:
 `,
-      language: "javascript",
       path: "replace.test.js",
     });
 

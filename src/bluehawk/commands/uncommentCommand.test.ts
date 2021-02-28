@@ -21,7 +21,6 @@ no comment
 //// double comment
 // :uncomment-end:
 `,
-      language: "javascript",
       path: "uncomment.test.js",
     });
 
@@ -44,7 +43,6 @@ no comment
 // // double comment
 // :uncomment-end:
 `,
-      language: "javascript",
       path: "uncomment.test.js",
     });
 
@@ -69,7 +67,6 @@ no comment
 // // :uncomment-end:
 // :uncomment-end:
 `,
-      language: "javascript",
       path: "uncomment.test.js",
     });
 
@@ -96,7 +93,6 @@ leave this alone // // double comment
 \t\tnot this // though
 // :uncomment-end:
 `,
-      language: "javascript",
       path: "uncomment.test.js",
     });
 
@@ -128,7 +124,6 @@ no comment
 // // double comment
 // :uncomment-end:
 `,
-      language: "javascript",
       path: "uncomment.test.js",
     });
 

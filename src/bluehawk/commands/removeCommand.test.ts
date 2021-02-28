@@ -55,7 +55,6 @@ console.log(bar);
 
     const source = new Document({
       text: singleInput,
-      language: "javascript",
       path: "test.js",
     });
 
@@ -80,7 +79,6 @@ d
 :remove-end:
 e
 `,
-      language: "javascript",
       path: "test.js",
     });
 
@@ -103,7 +101,6 @@ e
 
     const source = new Document({
       text: input,
-      language: "javascript",
       path: "test.js",
     });
 
@@ -123,7 +120,6 @@ but not this
 
     const source = new Document({
       text: input,
-      language: "javascript",
       path: "test.js",
     });
 

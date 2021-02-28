@@ -24,7 +24,6 @@ describe("processor", () => {
     const source = new Document({
       text: `:unknown-command:
 `,
-      language: "javascript",
       path: "test.js",
     });
 
@@ -39,7 +38,6 @@ describe("processor", () => {
   it("supports async listeners", async (done) => {
     const source = new Document({
       text: `abc\n`,
-      language: "javascript",
       path: "test.js",
     });
 
@@ -76,7 +74,6 @@ describe("processor", () => {
   it("does not stop on misbehaving listeners", async (done) => {
     const source = new Document({
       text: `abc\n`,
-      language: "javascript",
       path: "test.js",
     });
 
@@ -173,7 +170,6 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
 :line-command-end:
 :block-command:
 `,
-          language: "javascript",
           path: "test.js",
         })
       );
@@ -191,7 +187,6 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
     const result = bluehawk.parse(
       new Document({
         text: `:line-command:\n`,
-        language: "javascript",
         path: "test.js",
       })
     );

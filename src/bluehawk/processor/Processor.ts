@@ -27,6 +27,12 @@ export interface ProcessRequest<CommandNodeType = AnyCommandNode> {
     The specific command to process.
    */
   commandNode: CommandNodeType;
+
+  /**
+    Call this to stop the processor from continuing into the command node's
+    children.
+   */
+  stopPropagation: () => void;
 }
 
 export type CommandProcessors = Record<string, AnyCommand>;
@@ -100,12 +106,15 @@ export class Processor {
     _processorState,
     parseResult,
     newPath,
-    newModifier,
+    newModifiers,
     newAttributes,
   }: ForkArgsWithState): Promise<void> {
     const { source } = parseResult;
-    const modifier = Document.makeModifier(source.modifier, newModifier);
-    const fileId = Document.makeId(newPath ?? source.path, modifier);
+    const modifiers = {
+      ...source.modifiers,
+      ...newModifiers,
+    };
+    const fileId = Document.makeId(newPath ?? source.path, modifiers);
     if (_processorState.files[fileId] !== undefined) {
       return;
     }
@@ -113,10 +122,10 @@ export class Processor {
       ...parseResult,
       source: new Document({
         ...source,
-        modifier,
+        modifiers,
         attributes: {
           ...source.attributes,
-          ...(newAttributes ?? {}),
+          ...newAttributes,
         },
       }),
     };
@@ -155,6 +164,7 @@ export class Processor {
         `been sent to the processor.)`
     );
 
+    let propagationStopped = false;
     command.process({
       fork: (args: ForkArgs) => {
         // Commands cannot be async, so they can't await fork(). Store
@@ -169,9 +179,12 @@ export class Processor {
       },
       parseResult: result,
       commandNode,
+      stopPropagation() {
+        propagationStopped = true;
+      },
     });
 
-    if (commandNode.children !== undefined) {
+    if (commandNode.children !== undefined && !propagationStopped) {
       this._process(_processorState, commandNode.children, result);
     }
   };
@@ -199,7 +212,7 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
 export interface ForkArgs {
   parseResult: ParseResult;
   newPath?: string;
-  newModifier?: string;
+  newModifiers?: { [key: string]: string };
   newAttributes?: CommandAttributes;
 }
 

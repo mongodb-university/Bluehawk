@@ -5,20 +5,108 @@ import { SourceMapConsumer } from "source-map";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CommandAttributes = { [forCommandName: string]: any };
 
-// Represents a file either before or after processing
+/**
+  Represents a file either before or after processing.
+ */
 export class Document {
+  /**
+    Returns a uniform path + modifier combination to uniquely identify a file
+    instance.
+   */
+  static makeId = (
+    newPath: string,
+    modifiers?: { [key: string]: string }
+  ): string => {
+    if (modifiers === undefined || Object.keys(modifiers).length === 0) {
+      return newPath;
+    }
+    // Make a URL-like query string of the modifiers. No URL encoding is
+    // performed, so this can't reliably be reversed. Use this only to identify
+    // the file.
+    return [
+      newPath,
+      Object.entries(modifiers ?? {})
+        .map((entry) => entry.join("="))
+        .join("&"),
+    ].join("?");
+  };
+
+  /**
+    The path and modifiers of the file form a way to identify this specific
+    instance of a file.
+
+    A file at one path may result in multiple output files after processing
+    (e.g. states).
+   */
+  readonly id: string;
+
+  /**
+    The source text as a conveniently editable magic string. See
+    https://www.npmjs.com/package/magic-string for details.
+   */
+  text: MagicString;
+
+  /**
+    The original path of the document.
+   */
+  path: string;
+
+  /**
+    Read-only attributes that contribute to the document's identity. Do not
+    modify after the document's creation.
+
+    A file at one path may result in multiple output files after processing
+    (e.g. states). Different instances of the same file can be distinguished
+    with modifiers.
+   */
+  readonly modifiers: { [key: string]: string };
+
+  /**
+    Attributes that a command can store information in for later processing by
+    listeners.
+
+    These do not affect the identity of the document.
+   */
+  attributes: CommandAttributes;
+
+  /**
+    Returns the name of the file minus the file extension.
+   */
+  get name(): string {
+    return path.basename(this.path, this.extension);
+  }
+
+  /**
+    Returns the name of the file with the file extension, if any.
+   */
+  get basename(): string {
+    return path.basename(this.path);
+  }
+
+  /**
+    Returns the file extension, if any, including the dot.
+   */
+  get extension(): string {
+    return path.extname(this.path);
+  }
+
+  /**
+    Returns the path of the directory containing this file based on the path.
+   */
+  get dirname(): string {
+    return path.dirname(this.path);
+  }
+
   constructor({
     text,
-    language,
     path,
     attributes,
-    modifier,
+    modifiers,
   }: {
     text: string | MagicString;
-    language: string;
     path: string;
-    attributes?: { [key: string]: string };
-    modifier?: string;
+    modifiers?: { [key: string]: string };
+    attributes?: CommandAttributes;
   }) {
     this.text =
       typeof text === "string" || text instanceof String
@@ -27,73 +115,24 @@ export class Document {
 
     this.path = join(path);
     this.attributes = attributes ?? {};
-    this.language = language;
-    this.modifier = modifier;
+    this.modifiers = modifiers ?? {};
+    this.id = Document.makeId(this.path, this.modifiers);
   }
 
-  // Store the source text as a conveniently editable magic string.
-  // See https://www.npmjs.com/package/magic-string for details.
-  text: MagicString;
-  path: string;
-  // A file at one path may result in multiple output files after processing
-  // (e.g. states). Different instances of the same file can be distinguished
-  // with a modifier.
-  modifier?: string;
-  language: string;
-  attributes: CommandAttributes;
-
-  // Returns a modifier combined with a hypothetical new modifier. This allows
-  // you to uniformly create modifiers, even from files with existing modifiers.
-  static makeModifier = (
-    originalModifier?: string,
-    newModifier?: string
-  ): string | undefined => {
-    const elements: string[] = [];
-    if (originalModifier !== undefined) {
-      elements.push(originalModifier);
-    }
-    if (newModifier !== undefined) {
-      elements.push(newModifier);
-    }
-    return elements.length > 0 ? elements.join("#") : undefined;
-  };
-
-  // Returns a uniform path + modifier combination to uniquely identify a file
-  // instance.
-  static makeId = (newPath: string, modifier?: string): string => {
-    const elements = [newPath];
-    if (modifier !== undefined) {
-      elements.push(modifier);
-    }
-    return elements.join("#");
-  };
-
-  // Returns the name of the file minus the file extension
-  get name(): string {
-    return path.basename(this.path, this.extension);
-  }
-
-  get basename(): string {
-    return path.basename(this.path);
-  }
-
-  get extension(): string {
-    return path.extname(this.path);
-  }
-
-  get dirname(): string {
-    return path.dirname(this.path);
-  }
-
-  // Returns the path with the given infix inserted between the file name and
-  // the file extension, e.g. some.infix + example.js -> example.some.infix.js
+  /*
+    Returns the path with the given infix inserted between the file name and the
+    file extension, e.g. some.infix + example.js -> example.some.infix.js
+   */
   pathWithInfix = (infix: string): string => {
     return `${this.dirname}/${this.name}.${infix}${this.extension}`;
   };
 
-  // Calculate the new position of the original line and column numbers. Offset
-  // is ignored. This should only be done after all text transformations are
-  // finalized.
+  /**
+    Calculates the new position of the original line and column numbers.
+
+    Offset is ignored. This should only be done after all text transformations
+    are finalized.
+   */
   async getNewLocationFor(oldLocation: {
     line: number;
     column: number;
