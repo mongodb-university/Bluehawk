@@ -68,6 +68,13 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The arguments to a fork request.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -83,10 +90,12 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bluehawk_processor_processor.forkargs.html#commandnodes" class="tsd-kind-icon">command<wbr>Nodes</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bluehawk_processor_processor.forkargs.html#document" class="tsd-kind-icon">document</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bluehawk_processor_processor.forkargs.html#newattributes" class="tsd-kind-icon">new<wbr>Attributes</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bluehawk_processor_processor.forkargs.html#newmodifier" class="tsd-kind-icon">new<wbr>Modifier</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bluehawk_processor_processor.forkargs.html#newmodifiers" class="tsd-kind-icon">new<wbr>Modifiers</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bluehawk_processor_processor.forkargs.html#newpath" class="tsd-kind-icon">new<wbr>Path</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bluehawk_processor_processor.forkargs.html#parseresult" class="tsd-kind-icon">parse<wbr>Result</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="bluehawk_processor_processor.forkargs.html#newtext" class="tsd-kind-icon">new<wbr>Text</a></li>
 							</ul>
 						</section>
 					</div>
@@ -95,24 +104,68 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="commandnodes" class="tsd-anchor"></a>
+					<h3>command<wbr>Nodes</h3>
+					<div class="tsd-signature tsd-kind-icon">command<wbr>Nodes<span class="tsd-signature-symbol">:</span> <a href="../modules/bluehawk_parser_commandnode.html#anycommandnode" class="tsd-signature-type" data-tsd-kind="Type alias">AnyCommandNode</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L70">src/bluehawk/processor/Processor.ts:70</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The command nodes in the parse result.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="document" class="tsd-anchor"></a>
+					<h3>document</h3>
+					<div class="tsd-signature tsd-kind-icon">document<span class="tsd-signature-symbol">:</span> <a href="../classes/bluehawk_document.document.html" class="tsd-signature-type" data-tsd-kind="Class">Document</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L65">src/bluehawk/processor/Processor.ts:65</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The document to be forked.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="newattributes" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> new<wbr>Attributes</h3>
 					<div class="tsd-signature tsd-kind-icon">new<wbr>Attributes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><a href="../modules/bluehawk_document.html#commandattributes" class="tsd-signature-type" data-tsd-kind="Type alias">CommandAttributes</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L165">src/bluehawk/processor/Processor.ts:165</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L96">src/bluehawk/processor/Processor.ts:96</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Any additional attributes to add to the forked document in addition to any
+								existing attributes of the original document. If undefined, the original
+							document&#39;s attributes (if any) are used.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="newmodifier" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> new<wbr>Modifier</h3>
-					<div class="tsd-signature tsd-kind-icon">new<wbr>Modifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<a name="newmodifiers" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> new<wbr>Modifiers</h3>
+					<div class="tsd-signature tsd-kind-icon">new<wbr>Modifiers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L164">src/bluehawk/processor/Processor.ts:164</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L89">src/bluehawk/processor/Processor.ts:89</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Any additional modifiers to add to the forked document in addition to any
+								existing modifiers of the original document. If undefined, the original
+							document&#39;s modifiers (if any) are used.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="newpath" class="tsd-anchor"></a>
@@ -120,19 +173,31 @@
 					<div class="tsd-signature tsd-kind-icon">new<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L163">src/bluehawk/processor/Processor.ts:163</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L82">src/bluehawk/processor/Processor.ts:82</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The new path of the forked document. If undefined, the original document
+							path is used.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="parseresult" class="tsd-anchor"></a>
-					<h3>parse<wbr>Result</h3>
-					<div class="tsd-signature tsd-kind-icon">parse<wbr>Result<span class="tsd-signature-symbol">:</span> <a href="bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a></div>
+					<a name="newtext" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> new<wbr>Text</h3>
+					<div class="tsd-signature tsd-kind-icon">new<wbr>Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">default</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L162">src/bluehawk/processor/Processor.ts:162</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L76">src/bluehawk/processor/Processor.ts:76</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The new text (derived from the document.text) of the forked document. If
+							undefined, the original document&#39;s text is used.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -158,16 +223,22 @@
 						<a href="bluehawk_processor_processor.forkargs.html" class="tsd-kind-icon">Fork<wbr>Args</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="bluehawk_processor_processor.forkargs.html#commandnodes" class="tsd-kind-icon">command<wbr>Nodes</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="bluehawk_processor_processor.forkargs.html#document" class="tsd-kind-icon">document</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="bluehawk_processor_processor.forkargs.html#newattributes" class="tsd-kind-icon">new<wbr>Attributes</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="bluehawk_processor_processor.forkargs.html#newmodifier" class="tsd-kind-icon">new<wbr>Modifier</a>
+								<a href="bluehawk_processor_processor.forkargs.html#newmodifiers" class="tsd-kind-icon">new<wbr>Modifiers</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="bluehawk_processor_processor.forkargs.html#newpath" class="tsd-kind-icon">new<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="bluehawk_processor_processor.forkargs.html#parseresult" class="tsd-kind-icon">parse<wbr>Result</a>
+								<a href="bluehawk_processor_processor.forkargs.html#newtext" class="tsd-kind-icon">new<wbr>Text</a>
 							</li>
 						</ul>
 					</li>
@@ -187,6 +258,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="../modules/bluehawk_processor_processor.html#listener" class="tsd-kind-icon">Listener</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/bluehawk_processor_processor.html#processresult" class="tsd-kind-icon">Process<wbr>Result</a>
 					</li>
 				</ul>
 			</nav>

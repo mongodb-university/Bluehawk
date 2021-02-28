@@ -89,16 +89,12 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="bluehawk_processor_processor.processor.html#listeners" class="tsd-kind-icon">listeners</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="bluehawk_processor_processor.processor.html#processors" class="tsd-kind-icon">processors</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="bluehawk_processor_processor.processor.html#_process" class="tsd-kind-icon">_process</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="bluehawk_processor_processor.processor.html#_publish" class="tsd-kind-icon">_publish</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="bluehawk_processor_processor.processor.html#fork" class="tsd-kind-icon">fork</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bluehawk_processor_processor.processor.html#process" class="tsd-kind-icon">process</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bluehawk_processor_processor.processor.html#registercommand" class="tsd-kind-icon">register<wbr>Command</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bluehawk_processor_processor.processor.html#subscribe" class="tsd-kind-icon">subscribe</a></li>
@@ -127,103 +123,18 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="listeners" class="tsd-anchor"></a>
-					<h3>listeners</h3>
-					<div class="tsd-signature tsd-kind-icon">listeners<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/bluehawk_processor_processor.html#listener" class="tsd-signature-type" data-tsd-kind="Type alias">Listener</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L36">src/bluehawk/processor/Processor.ts:36</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="processors" class="tsd-anchor"></a>
-					<h3>processors</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> processors</h3>
 					<div class="tsd-signature tsd-kind-icon">processors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L35">src/bluehawk/processor/Processor.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L104">src/bluehawk/processor/Processor.ts:104</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="_process" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _process</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_process<span class="tsd-signature-symbol">(</span>_processorState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ProcessorState</span>, commandNode<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_parser_commandnode.blockcommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">BlockCommandNode</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/bluehawk_parser_commandnode.linecommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">LineCommandNode</a><span class="tsd-signature-symbol"> | </span><a href="../modules/bluehawk_parser_commandnode.html#anycommandnode" class="tsd-signature-type" data-tsd-kind="Type alias">AnyCommandNode</a><span class="tsd-signature-symbol">[]</span>, result<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L63">src/bluehawk/processor/Processor.ts:63</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>_processorState: <span class="tsd-signature-type">ProcessorState</span></h5>
-								</li>
-								<li>
-									<h5>commandNode: <a href="../interfaces/bluehawk_parser_commandnode.blockcommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">BlockCommandNode</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/bluehawk_parser_commandnode.linecommandnode.html" class="tsd-signature-type" data-tsd-kind="Interface">LineCommandNode</a><span class="tsd-signature-symbol"> | </span><a href="../modules/bluehawk_parser_commandnode.html#anycommandnode" class="tsd-signature-type" data-tsd-kind="Type alias">AnyCommandNode</a><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-								<li>
-									<h5>result: <a href="../interfaces/bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="_publish" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _publish</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_publish<span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L142">src/bluehawk/processor/Processor.ts:142</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>result: <a href="../interfaces/bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="fork" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> fork</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">fork<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ForkArgsWithState</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L107">src/bluehawk/processor/Processor.ts:107</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>__namedParameters: <span class="tsd-signature-type">ForkArgsWithState</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="process" class="tsd-anchor"></a>
 					<h3>process</h3>
@@ -234,7 +145,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L53">src/bluehawk/processor/Processor.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L126">src/bluehawk/processor/Processor.ts:126</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -266,9 +177,15 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L38">src/bluehawk/processor/Processor.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L111">src/bluehawk/processor/Processor.ts:111</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Adds a command definition to the processor. This command becomes available
+									to use when processing command nodes.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -292,12 +209,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L45">src/bluehawk/processor/Processor.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L118">src/bluehawk/processor/Processor.ts:118</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Subscribe to processed file events</p>
+									<p>Subscribe to processed file events.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -334,19 +251,7 @@
 								<a href="bluehawk_processor_processor.processor.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="bluehawk_processor_processor.processor.html#listeners" class="tsd-kind-icon">listeners</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="bluehawk_processor_processor.processor.html#processors" class="tsd-kind-icon">processors</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="bluehawk_processor_processor.processor.html#_process" class="tsd-kind-icon">_process</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="bluehawk_processor_processor.processor.html#_publish" class="tsd-kind-icon">_publish</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="bluehawk_processor_processor.processor.html#fork" class="tsd-kind-icon">fork</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="bluehawk_processor_processor.processor.html#process" class="tsd-kind-icon">process</a>
@@ -379,6 +284,9 @@
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="../modules/bluehawk_processor_processor.html#listener" class="tsd-kind-icon">Listener</a>
 					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/bluehawk_processor_processor.html#processresult" class="tsd-kind-icon">Process<wbr>Result</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -404,9 +312,6 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
 			</ul>
 		</div>
 	</div>

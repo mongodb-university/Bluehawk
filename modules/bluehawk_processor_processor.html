@@ -89,6 +89,7 @@
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="bluehawk_processor_processor.html#bluehawkfiles" class="tsd-kind-icon">Bluehawk<wbr>Files</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="bluehawk_processor_processor.html#commandprocessors" class="tsd-kind-icon">Command<wbr>Processors</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="bluehawk_processor_processor.html#listener" class="tsd-kind-icon">Listener</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="bluehawk_processor_processor.html#processresult" class="tsd-kind-icon">Process<wbr>Result</a></li>
 							</ul>
 						</section>
 					</div>
@@ -102,14 +103,14 @@
 					<div class="tsd-signature tsd-kind-icon">Bluehawk<wbr>Files<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L6">src/bluehawk/processor/Processor.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L7">src/bluehawk/processor/Processor.ts:7</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter-index-signature">
-								<h5><span class="tsd-signature-symbol">[</span>pathName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="../interfaces/bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a></h5>
+								<h5><span class="tsd-signature-symbol">[</span>pathName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="bluehawk_processor_processor.html#processresult" class="tsd-signature-type" data-tsd-kind="Type alias">ProcessResult</a></h5>
 							</li>
 						</ul>
 					</div>
@@ -120,17 +121,17 @@
 					<div class="tsd-signature tsd-kind-icon">Command<wbr>Processors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/bluehawk_commands_command.anycommand.html" class="tsd-signature-type" data-tsd-kind="Interface">AnyCommand</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L30">src/bluehawk/processor/Processor.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L99">src/bluehawk/processor/Processor.ts:99</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
 					<a name="listener" class="tsd-anchor"></a>
 					<h3>Listener</h3>
-					<div class="tsd-signature tsd-kind-icon">Listener<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">Listener<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><a href="bluehawk_processor_processor.html#processresult" class="tsd-signature-type" data-tsd-kind="Type alias">ProcessResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/c1ada4f/src/bluehawk/processor/Processor.ts#L32">src/bluehawk/processor/Processor.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L101">src/bluehawk/processor/Processor.ts:101</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -138,19 +139,40 @@
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter-signature">
 								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><a href="bluehawk_processor_processor.html#processresult" class="tsd-signature-type" data-tsd-kind="Type alias">ProcessResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 								</ul>
 								<ul class="tsd-descriptions">
 									<li class="tsd-description">
 										<h4 class="tsd-parameters-title">Parameters</h4>
 										<ul class="tsd-parameters">
 											<li>
-												<h5>result: <a href="../interfaces/bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a></h5>
+												<h5>result: <a href="bluehawk_processor_processor.html#processresult" class="tsd-signature-type" data-tsd-kind="Type alias">ProcessResult</a></h5>
 											</li>
 										</ul>
 										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 									</li>
 								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="processresult" class="tsd-anchor"></a>
+					<h3>Process<wbr>Result</h3>
+					<div class="tsd-signature tsd-kind-icon">Process<wbr>Result<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>document<span class="tsd-signature-symbol">: </span><a href="../classes/bluehawk_document.document.html" class="tsd-signature-type" data-tsd-kind="Class">Document</a><span class="tsd-signature-symbol">; </span>parseResult<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/5fc56d4/src/bluehawk/processor/Processor.ts#L14">src/bluehawk/processor/Processor.ts:14</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>document<span class="tsd-signature-symbol">: </span><a href="../classes/bluehawk_document.document.html" class="tsd-signature-type" data-tsd-kind="Class">Document</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>parse<wbr>Result<span class="tsd-signature-symbol">: </span><a href="../interfaces/bluehawk_parser_parseresult.parseresult.html" class="tsd-signature-type" data-tsd-kind="Interface">ParseResult</a></h5>
 							</li>
 						</ul>
 					</div>
@@ -190,6 +212,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="bluehawk_processor_processor.html#listener" class="tsd-kind-icon">Listener</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="bluehawk_processor_processor.html#processresult" class="tsd-kind-icon">Process<wbr>Result</a>
 					</li>
 				</ul>
 			</nav>
