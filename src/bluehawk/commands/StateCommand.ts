@@ -3,7 +3,6 @@ import {
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
 } from "./Command";
-import { removeMetaRange } from "./removeMetaRange";
 
 export const StateCommand = makeBlockCommand<IdRequiredAttributes>({
   name: "state",
@@ -13,9 +12,6 @@ export const StateCommand = makeBlockCommand<IdRequiredAttributes>({
   process(request) {
     const { commandNode, fork, parseResult } = request;
     const { source } = parseResult;
-
-    // Strip tags
-    removeMetaRange(source.text, commandNode);
 
     const stateAttribute = source.attributes["state"];
 

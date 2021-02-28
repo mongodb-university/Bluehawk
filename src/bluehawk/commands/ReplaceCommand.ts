@@ -1,5 +1,4 @@
 import { makeBlockCommand } from "./Command";
-import { removeMetaRange } from "./removeMetaRange";
 
 type ReplaceCommandAttributes = {
   terms: {
@@ -29,9 +28,6 @@ export const ReplaceCommand = makeBlockCommand<ReplaceCommandAttributes>({
     const attributes = commandNode.attributes as ReplaceCommandAttributes;
     const { source } = parseResult;
     const { text } = source;
-
-    // Strip tags
-    removeMetaRange(text, commandNode);
 
     const { contentRange } = commandNode;
     if (contentRange == undefined) {

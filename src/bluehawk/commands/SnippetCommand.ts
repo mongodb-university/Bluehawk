@@ -8,7 +8,6 @@ import {
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
 } from "./Command";
-import { removeMetaRange } from "./removeMetaRange";
 
 function dedentRange(
   s: MagicString,
@@ -77,9 +76,6 @@ export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
       // TODO: diagnostics
       return;
     }
-
-    // Strip tags
-    removeMetaRange(source.text, commandNode);
 
     if (source.attributes["snippet"] !== undefined) {
       // Nested snippet. Its output will be the same as unnested.

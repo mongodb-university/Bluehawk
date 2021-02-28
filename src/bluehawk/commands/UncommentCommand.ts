@@ -2,7 +2,6 @@ import { strict as assert } from "assert";
 import { IToken } from "chevrotain";
 import { AnyCommandNode, flatten } from "../parser";
 import { makeBlockCommand, NoAttributes, NoAttributesSchema } from "./Command";
-import { removeMetaRange } from "./removeMetaRange";
 
 export const UncommentCommand = makeBlockCommand<NoAttributes>({
   name: "uncomment",
@@ -13,8 +12,6 @@ export const UncommentCommand = makeBlockCommand<NoAttributes>({
     const { commandNode, parseResult } = request;
     const { source } = parseResult;
     const { text } = source;
-    // Strip tags
-    removeMetaRange(text, commandNode);
 
     const { contentRange } = commandNode;
     if (contentRange == undefined) {

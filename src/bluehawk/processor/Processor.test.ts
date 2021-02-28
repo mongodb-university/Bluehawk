@@ -7,7 +7,6 @@ import {
   NoAttributes,
   NoAttributesSchema,
 } from "../commands/Command";
-import { removeMetaRange } from "../commands/removeMetaRange";
 import { Document } from "../Document";
 import { ParseResult } from "../parser/ParseResult";
 
@@ -18,27 +17,6 @@ describe("processor", () => {
     blockComments: [[/\/\*/, /\*\//]],
     lineComments: [/\/\/ ?/],
   });
-
-  const AppendMessageAfterDelayCommand = makeBlockCommand<NoAttributes>({
-    name: "append-message-after-delay",
-    attributesSchema: NoAttributesSchema,
-    process: (request): Promise<void> => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const { commandNode, parseResult } = request;
-          const { source } = parseResult;
-          removeMetaRange(source.text, commandNode);
-          source.text.appendLeft(
-            commandNode.range.end.offset,
-            "async command executed"
-          );
-          resolve();
-        }, 10);
-      });
-    },
-  });
-
-  bluehawk.registerCommand(AppendMessageAfterDelayCommand);
 
   it("ignores unknown commands", async (done) => {
     // NOTE: This is not necessarily the desired behavior, but it is the current

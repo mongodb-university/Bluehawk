@@ -5,8 +5,6 @@ import {
   NoAttributesSchema,
 } from "./Command";
 
-import { removeMetaRange } from "./removeMetaRange";
-
 export interface EmphasizeRange {
   start: {
     line: number;
@@ -30,10 +28,6 @@ export const EmphasizeCommand = makeBlockOrLineCommand<NoAttributes>({
 
   async process({ commandNode, parseResult }) {
     const { source } = parseResult;
-    const { text } = source;
-
-    // Strip tags
-    removeMetaRange(text, commandNode);
 
     if (source.attributes["emphasize"] === undefined) {
       source.attributes["emphasize"] = { ranges: [] };

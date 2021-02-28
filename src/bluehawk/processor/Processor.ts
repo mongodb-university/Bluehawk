@@ -1,12 +1,14 @@
 import { strict as assert } from "assert";
 import { AnyCommandNode, ParseResult } from "../parser";
 import { Document, CommandAttributes } from "../Document";
-import { AnyCommand } from "../commands";
+import { AnyCommand, removeMetaRange } from "../commands";
+import MagicString from "magic-string";
 
 export type BluehawkFiles = { [pathName: string]: ParseResult };
 
 export interface ProcessOptions {
   waitForListeners?: boolean;
+  stripUnknownCommands?: boolean;
 }
 
 export interface ProcessRequest<CommandNodeType = AnyCommandNode> {
@@ -32,18 +34,22 @@ export type CommandProcessors = Record<string, AnyCommand>;
 export type Listener = (result: ParseResult) => void | Promise<void>;
 
 export class Processor {
-  processors: CommandProcessors = {};
-  listeners = new Set<Listener>();
+  readonly processors: CommandProcessors = {};
+  private _listeners = new Set<Listener>();
 
+  /**
+    Adds a command definition to the processor. This command becomes available
+    to use when processing command nodes.
+   */
   registerCommand(command: AnyCommand, alternateName?: string): void {
     this.processors[alternateName ?? command.name] = command;
   }
 
   /**
-    Subscribe to processed file events
+    Subscribe to processed file events.
    */
   subscribe(listener: Listener): void {
-    this.listeners.add(listener);
+    this._listeners.add(listener);
   }
 
   /**
@@ -55,9 +61,37 @@ export class Processor {
     processOptions?: ProcessOptions
   ): Promise<BluehawkFiles> => {
     const _processorState = new ProcessorState(processOptions);
+    this._removeMetaRanges(
+      parseResult.source.text,
+      parseResult.commandNodes,
+      processOptions
+    );
     await this.fork({ parseResult, _processorState });
     await Promise.allSettled(_processorState.promises);
     return _processorState.files;
+  };
+
+  private _removeMetaRanges = (
+    text: MagicString,
+    commandNode: AnyCommandNode | AnyCommandNode[],
+    options?: ProcessOptions
+  ) => {
+    if (Array.isArray(commandNode)) {
+      commandNode.forEach((commandNode) =>
+        this._removeMetaRanges(text, commandNode, options)
+      );
+      return;
+    }
+    if (
+      !options?.stripUnknownCommands &&
+      this.processors[commandNode.commandName] === undefined
+    ) {
+      return;
+    }
+    removeMetaRange(text, commandNode);
+    if (commandNode.children !== undefined) {
+      this._removeMetaRanges(text, commandNode.children, options);
+    }
   };
 
   private _process = (
@@ -140,7 +174,7 @@ export class Processor {
 
   // Publish a processed file
   private async _publish(result: ParseResult): Promise<void> {
-    const promises = Array.from(this.listeners.values()).map(
+    const promises = Array.from(this._listeners.values()).map(
       async (listener) => {
         try {
           await listener(result);

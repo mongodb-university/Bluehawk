@@ -29,7 +29,7 @@
     "test": "jest",
     "verbose": "jest --verbose",
     "coverage": "jest --coverage",
-    "docs": "npx typedoc --exclude '**/*.test.ts' --out docs src",
+    "docs": "npx typedoc --excludePrivate --exclude '**/*.test.ts' --out docs src",
     "release": "release-it"
   },
   "author": "MongoDB Developer Education Team",
