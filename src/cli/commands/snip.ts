@@ -1,10 +1,6 @@
 import * as path from "path";
 import { CommandModule, Arguments, Argv } from "yargs";
-import {
-  ParseResult,
-  getBluehawk,
-  EmphasizeSourceAttributes,
-} from "../../bluehawk";
+import { getBluehawk, EmphasizeSourceAttributes } from "../../bluehawk";
 import {
   withDestinationOption,
   withStateOption,
