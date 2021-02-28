@@ -55,20 +55,10 @@ end
     expect(Object.keys(files)).toStrictEqual([
       "stateCommand.test.js",
       "stateCommand.test.js?state=begin",
-      "stateCommand.test.js?state=begin&remove=69-114",
-      "stateCommand.test.js?state=begin&remove=129-181",
       "stateCommand.test.codeblock.foo.js?state=begin",
-      "stateCommand.test.js?state=begin&remove=248-329",
-      "stateCommand.test.js?remove=1-129",
-      "stateCommand.test.js?remove=69-114",
-      "stateCommand.test.js?remove=129-181",
       "stateCommand.test.codeblock.foo.js",
       "stateCommand.test.js?state=final",
-      "stateCommand.test.js?state=final&remove=1-129",
-      "stateCommand.test.js?state=final&remove=69-114",
-      "stateCommand.test.js?state=final&remove=129-181",
       "stateCommand.test.codeblock.foo.js?state=final",
-      "stateCommand.test.js?remove=248-329",
     ]);
 
     expect(
