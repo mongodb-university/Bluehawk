@@ -57,7 +57,7 @@ blockCommand
   : (LineComment)? CommandStart (commandAttribute)? Newline (chunk)* (LineComment)* CommandEnd
 
 blockComment
-  : BlockCommentStart (command | LineComment | NewLine | blockComment†)* BlockCommentEnd
+  : BlockCommentStart (command | LineComment | NewLine | BlockCommentStart†)* BlockCommentEnd
 
 chunk
   : (command | blockComment | lineComment | pushParser | StringLiteral)* (Newline | EOF)††
@@ -192,9 +192,8 @@ export class RootParser extends CstParser {
           { ALT: () => this.CONSUME(LineComment) },
           { ALT: () => this.CONSUME(Newline) },
           {
-            // Only if explicitly set to `false` does this forbid nesting
             GATE: () => startToken.payload?.canNest !== false,
-            ALT: () => this.SUBRULE(this.blockComment),
+            ALT: () => this.CONSUME1(BlockCommentStart),
           },
         ])
       );
