@@ -12,8 +12,8 @@ interface CheckArgs extends MainArgs {
 }
 
 export const check = async (args: Arguments<CheckArgs>): Promise<void> => {
-  const { ignore, json, paths, plugin } = args;
-  const bluehawk = await getBluehawk(plugin);
+  const { ignore, json, paths } = args;
+  const bluehawk = await getBluehawk();
   const fileToErrorMap = new Map<string, BluehawkError[]>();
 
   const addErrors = (filePath: string, errors: BluehawkError[]) => {

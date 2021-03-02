@@ -16,10 +16,10 @@ import {
 
 let bluehawk: Bluehawk | undefined = undefined;
 
-// Returns a standard Bluehawk instance with the given plugins
-export const getBluehawk = async (
-  pluginPaths?: string | string[]
-): Promise<Bluehawk> => {
+/**
+  Returns a standard, shared Bluehawk instance.
+ */
+export const getBluehawk = async (): Promise<Bluehawk> => {
   if (bluehawk === undefined) {
     const StateUncommentCommand = makeBlockCommand<IdRequiredAttributes>({
       name: "state-uncomment",
@@ -101,7 +101,6 @@ export const getBluehawk = async (
     });
   }
 
-  await bluehawk.loadPlugin(pluginPaths);
   return bluehawk;
 };
 
