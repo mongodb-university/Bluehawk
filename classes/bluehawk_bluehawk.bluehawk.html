@@ -103,7 +103,6 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bluehawk_bluehawk.bluehawk.html#addlanguage" class="tsd-kind-icon">add<wbr>Language</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bluehawk_bluehawk.bluehawk.html#loadplugin" class="tsd-kind-icon">load<wbr>Plugin</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bluehawk_bluehawk.bluehawk.html#parse" class="tsd-kind-icon">parse</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bluehawk_bluehawk.bluehawk.html#parseandprocess" class="tsd-kind-icon">parse<wbr>And<wbr>Process</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bluehawk_bluehawk.bluehawk.html#process" class="tsd-kind-icon">process</a></li>
@@ -126,7 +125,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/2d3fc43/src/bluehawk/bluehawk.ts#L40">src/bluehawk/bluehawk.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/a13d93c/src/bluehawk/bluehawk.ts#L40">src/bluehawk/bluehawk.ts:40</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -152,7 +151,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/2d3fc43/src/bluehawk/bluehawk.ts#L242">src/bluehawk/bluehawk.ts:242</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/a13d93c/src/bluehawk/bluehawk.ts#L200">src/bluehawk/bluehawk.ts:200</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="bluehawk_processor_processor.processor.html" class="tsd-signature-type" data-tsd-kind="Class">Processor</a></h4>
@@ -172,7 +171,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/2d3fc43/src/bluehawk/bluehawk.ts#L76">src/bluehawk/bluehawk.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/a13d93c/src/bluehawk/bluehawk.ts#L76">src/bluehawk/bluehawk.ts:76</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -194,37 +193,6 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="loadplugin" class="tsd-anchor"></a>
-					<h3>load<wbr>Plugin</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">load<wbr>Plugin<span class="tsd-signature-symbol">(</span>pluginPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/2d3fc43/src/bluehawk/bluehawk.ts#L206">src/bluehawk/bluehawk.ts:206</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Load the given plugin(s). A plugin is a js file or module that exports a
-										<code>register(bluehawk)</code> function. <code>register()</code> takes this bluehawk instance
-										and can register commands, add listeners, etc. The plugin at a given path
-									will only be loaded once.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>pluginPath: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="parse" class="tsd-anchor"></a>
 					<h3>parse</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -234,7 +202,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/2d3fc43/src/bluehawk/bluehawk.ts#L145">src/bluehawk/bluehawk.ts:145</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/a13d93c/src/bluehawk/bluehawk.ts#L145">src/bluehawk/bluehawk.ts:145</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -265,7 +233,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/2d3fc43/src/bluehawk/bluehawk.ts#L89">src/bluehawk/bluehawk.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/a13d93c/src/bluehawk/bluehawk.ts#L89">src/bluehawk/bluehawk.ts:89</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -299,7 +267,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/2d3fc43/src/bluehawk/bluehawk.ts#L193">src/bluehawk/bluehawk.ts:193</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/a13d93c/src/bluehawk/bluehawk.ts#L193">src/bluehawk/bluehawk.ts:193</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -331,7 +299,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/2d3fc43/src/bluehawk/bluehawk.ts#L69">src/bluehawk/bluehawk.ts:69</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/a13d93c/src/bluehawk/bluehawk.ts#L69">src/bluehawk/bluehawk.ts:69</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -363,7 +331,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/2d3fc43/src/bluehawk/bluehawk.ts#L181">src/bluehawk/bluehawk.ts:181</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/a13d93c/src/bluehawk/bluehawk.ts#L181">src/bluehawk/bluehawk.ts:181</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -409,9 +377,6 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="bluehawk_bluehawk.bluehawk.html#addlanguage" class="tsd-kind-icon">add<wbr>Language</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="bluehawk_bluehawk.bluehawk.html#loadplugin" class="tsd-kind-icon">load<wbr>Plugin</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="bluehawk_bluehawk.bluehawk.html#parse" class="tsd-kind-icon">parse</a>
