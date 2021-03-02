@@ -1,7 +1,7 @@
 import { Stats } from "fs";
 import * as path from "path";
 import { CommandModule, Arguments, Argv } from "yargs";
-import { ParseResult, getBluehawk } from "../../bluehawk";
+import { getBluehawk } from "../../bluehawk";
 import { MainArgs } from "../cli";
 import {
   withDestinationOption,
@@ -18,10 +18,10 @@ export interface CopyArgs extends MainArgs {
 }
 
 export const copy = async (args: CopyArgs): Promise<string[]> => {
-  const { destination, ignore, plugin, rootPath } = args;
+  const { destination, ignore, rootPath } = args;
   const desiredState = args.state;
   const errors: string[] = [];
-  const bluehawk = await getBluehawk(plugin);
+  const bluehawk = await getBluehawk();
   let stats: Stats;
   try {
     stats = await System.fs.lstat(rootPath);

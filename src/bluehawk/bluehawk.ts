@@ -197,53 +197,10 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     return this._processor.process(parseResult, processOptions);
   };
 
-  /**
-    Load the given plugin(s). A plugin is a js file or module that exports a
-    `register(bluehawk)` function. `register()` takes this bluehawk instance
-    and can register commands, add listeners, etc. The plugin at a given path
-    will only be loaded once.
-   */
-  loadPlugin = async (
-    pluginPath: string | string[] | undefined
-  ): Promise<void> => {
-    if (pluginPath === undefined) {
-      return;
-    }
-
-    if (Array.isArray(pluginPath)) {
-      const promises = pluginPath.map((path) => this.loadPlugin(path));
-      await Promise.allSettled(promises);
-      return;
-    }
-
-    if (typeof pluginPath !== "string") {
-      console.warn(
-        `Invalid argument to loadPlugin: ${pluginPath} (typeof == ${typeof pluginPath}`
-      );
-      return;
-    }
-
-    // Check if the plugin has already been loaded
-    if (this._loadedPlugins.has(pluginPath)) {
-      console.warn(`Skipping already loaded plugin: ${pluginPath}`);
-      return;
-    }
-
-    // Convert relative path (from user's cwd) to absolute path -- as import()
-    // expects relative paths from Bluehawk bin directory
-    const absolutePath = Path.isAbsolute(pluginPath)
-      ? pluginPath
-      : Path.resolve(process.cwd(), pluginPath);
-    const plugin = await import(absolutePath);
-    await plugin.register(this);
-    this._loadedPlugins.add(pluginPath);
-  };
-
   get processor(): Processor {
     return this._processor;
   }
 
   private _processor = new Processor();
   private _parserStore = new ParserStore();
-  private _loadedPlugins = new Set<string>();
 }

@@ -85,16 +85,8 @@ export const doRst = async (
 };
 
 export const snip = async (args: SnipArgs): Promise<void> => {
-  const {
-    paths,
-    destination,
-    plugin,
-    state,
-    ignore,
-    format,
-    waitForListeners,
-  } = args;
-  const bluehawk = await getBluehawk(plugin);
+  const { paths, destination, state, ignore, format, waitForListeners } = args;
+  const bluehawk = await getBluehawk();
 
   // If a file contains the state command, the processor will generate multiple
   // versions of the same file. Keep track of whether a state file was written

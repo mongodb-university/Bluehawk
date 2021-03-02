@@ -36,15 +36,6 @@ export function withIgnoreOption<T>(
   });
 }
 
-export function withPluginOption<T>(
-  yargs: Argv<T>
-): Argv<T & { plugin?: string | string[] }> {
-  return option(yargs, "plugin", {
-    string: true,
-    describe: "add a plugin",
-  });
-}
-
 export function withStateOption<T>(
   yargs: Argv<T>
 ): Argv<T & { state?: string }> {

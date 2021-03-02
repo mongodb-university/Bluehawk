@@ -7,8 +7,8 @@ import { printJsonResult } from "../../printJsonResult";
 const handler = async (
   args: Arguments<MainArgs & { json?: boolean }>
 ): Promise<void> => {
-  const { plugin, json } = args;
-  const bluehawk = await getBluehawk(plugin);
+  const { json } = args;
+  const bluehawk = await getBluehawk();
 
   const { processor } = bluehawk;
   const { processors } = processor;
