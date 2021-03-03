@@ -5,9 +5,10 @@ import { Bluehawk } from "../bluehawk";
 /**
   A plugin is a Node module that exports a register() function.
 
-  A plugin can be a simple JS file or a transpiled Node module,
-  as long as it exports the register() function:
+  A plugin can be a simple JS file or a transpiled Node module, as long as it
+  exports the register() function:
 
+  ```js
     // MyPlugin.js
     exports.register = (args) => {
       // Add a new CLI option
@@ -18,6 +19,7 @@ import { Bluehawk } from "../bluehawk";
         console.log("Plugin called for file", result.document.path);
       });
     };
+  ```
 
   You can then call `bluehawk --plugin /path/to/MyPlugin.js` to use the plugin.
  */
