@@ -286,10 +286,10 @@
 				<pre><code><span style="color: #001080">npm</span><span style="color: #000000"> </span><span style="color: #001080">run</span><span style="color: #000000"> </span><span style="color: #001080">build</span>
 </code></pre>
 				<p>If compilation is successful, you can run bluehawk like so:</p>
-				<pre><code class="language-sh"><span style="color: #000000">node </span><span style="color: #795E26">.</span><span style="color: #000000"> snip -d &lt;destination directory&gt; &lt;folder to </span><span style="color: #795E26">source</span><span style="color: #000000"> file or directory&gt;</span>
+				<pre><code class="language-sh"><span style="color: #000000">node build/src/cli/main.js snip -d &lt;destination directory&gt; &lt;folder to </span><span style="color: #795E26">source</span><span style="color: #000000"> file or directory&gt;</span>
 </code></pre>
 				<p>Which you can alias as:</p>
-				<pre><code class="language-sh"><span style="color: #795E26">alias</span><span style="color: #000000"> bluehawk=</span><span style="color: #A31515">&quot;node /path/to/bluehawkrepoclone&quot;</span>
+				<pre><code class="language-sh"><span style="color: #795E26">alias</span><span style="color: #000000"> bluehawk-dev=</span><span style="color: #A31515">&quot;node /path/to/bluehawk/build/src/cli/main.js&quot;</span>
 </code></pre>
 				<a href="#running-tests" id="running-tests" style="color: inherit; text-decoration: none;">
 					<h2>Running Tests</h2>
@@ -554,6 +554,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/cli_commands_snip.html">cli/commands/snip</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/cli_main.html">cli/main</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/cli_options.html">cli/options</a>
