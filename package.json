@@ -20,7 +20,7 @@
   },
   "main": "./build/src",
   "bin": {
-    "bluehawk": "./build/src/cli/index.js"
+    "bluehawk": "./build/src/cli/main.js"
   },
   "scripts": {
     "clean": "rm -rf build",

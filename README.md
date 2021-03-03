@@ -238,13 +238,13 @@ npm run build
 If compilation is successful, you can run bluehawk like so:
 
 ```sh
-node . snip -d <destination directory> <folder to source file or directory>
+node build/src/cli/main.js snip -d <destination directory> <folder to source file or directory>
 ```
 
 Which you can alias as:
 
 ```sh
-alias bluehawk="node /path/to/bluehawkrepoclone"
+alias bluehawk-dev="node /path/to/bluehawk/build/src/cli/main.js"
 ```
 
 

@@ -5,7 +5,6 @@ import { version as yargsVersion } from "yargs/package.json";
 import { version as bluehawkVersion } from "../../package.json";
 
 export interface MainArgs {
-  plugin?: string | string[];
   waitForListeners?: boolean;
 }
 
