@@ -7,7 +7,7 @@ import MagicString from "magic-string";
 export type BluehawkFiles = { [pathName: string]: ProcessResult };
 
 export interface ProcessOptions {
-  waitForListeners?: boolean;
+  waitForListeners: boolean;
   stripUnknownCommands?: boolean;
 }
 

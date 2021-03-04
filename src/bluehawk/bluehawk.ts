@@ -31,6 +31,7 @@ type ParseAndProcessOptions = ProcessOptions & {
 };
 
 const defaultOptions: ParseAndProcessOptions = {
+  waitForListeners: false,
   onErrors: logErrorsToConsole,
 };
 

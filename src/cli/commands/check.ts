@@ -12,7 +12,7 @@ interface CheckArgs extends MainArgs {
 }
 
 export const check = async (args: Arguments<CheckArgs>): Promise<void> => {
-  const { ignore, json, paths } = args;
+  const { ignore, json, paths, waitForListeners } = args;
   const bluehawk = await getBluehawk();
   const fileToErrorMap = new Map<string, BluehawkError[]>();
 
@@ -34,6 +34,7 @@ export const check = async (args: Arguments<CheckArgs>): Promise<void> => {
   await bluehawk.parseAndProcess(paths, {
     ignore,
     onErrors: addErrors,
+    waitForListeners: waitForListeners ?? false,
   });
 
   if (json) {

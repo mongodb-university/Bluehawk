@@ -18,7 +18,7 @@ export interface CopyArgs extends MainArgs {
 }
 
 export const copy = async (args: CopyArgs): Promise<string[]> => {
-  const { destination, ignore, rootPath } = args;
+  const { destination, ignore, rootPath, waitForListeners } = args;
   const desiredState = args.state;
   const errors: string[] = [];
   const bluehawk = await getBluehawk();
@@ -109,6 +109,7 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
   await bluehawk.parseAndProcess(rootPath, {
     ignore,
     onBinaryFile,
+    waitForListeners: waitForListeners ?? false,
   });
 
   if (desiredState && Object.keys(stateVersionWrittenForPath).length === 0) {
