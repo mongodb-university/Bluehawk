@@ -153,7 +153,10 @@ export const snip = async (args: SnipArgs): Promise<void> => {
     });
   }
 
-  await bluehawk.parseAndProcess(paths, { ignore, waitForListeners });
+  await bluehawk.parseAndProcess(paths, {
+    ignore,
+    waitForListeners: waitForListeners ?? false,
+  });
 
   if (state && Object.keys(stateVersionWrittenForPath).length === 0) {
     console.warn(

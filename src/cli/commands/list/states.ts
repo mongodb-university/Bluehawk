@@ -13,7 +13,7 @@ interface ListStatesArgs extends MainArgs {
 export const listStates = async (
   args: Arguments<ListStatesArgs>
 ): Promise<void> => {
-  const { ignore, json, paths } = args;
+  const { ignore, json, paths, waitForListeners } = args;
   const bluehawk = await getBluehawk();
 
   const statesFound = new Set<string>();
@@ -28,6 +28,7 @@ export const listStates = async (
 
   await bluehawk.parseAndProcess(paths, {
     ignore,
+    waitForListeners: waitForListeners ?? false,
   });
 
   if (json) {
