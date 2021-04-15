@@ -154,14 +154,14 @@ Consider the following file:
 public class Main {
 	public static void main(String[] args){
 		// :snippet-start: example
-    int example = 1;
-    // :state-start: hello-world
+		int example = 1;
+		// :state-start: hello-world
 		System.out.println("Hello world!");
-    // :state-end:
-    // :state-start: hello-user
-    System.out.println("Hello user!");
-    // :state-end:
-    example++;
+		// :state-end:
+		// :state-start: hello-user
+		System.out.println("Hello user!");
+		// :state-end:
+		example++;
 		// :snippet-end:
 	}
 }
@@ -215,14 +215,14 @@ Consider the following file:
 public class Main {
 	public static void main(String[] args){
 		// :snippet-start: add-or-subtract
-    int example = 1;
-    // :state-start: add-one
+		int example = 1;
+		// :state-start: add-one
 		example++;
-    // :state-end:
-    // :state-uncomment-start: subtract-one
-    //example--;
-    // :state--uncomment-end:
-    System.out.println("Example: " + example);
+		// :state-end:
+		// :state-uncomment-start: subtract-one
+		//example--;
+		// :state--uncomment-end:
+		System.out.println("Example: " + example);
 		// :snippet-end:
 	}
 }
@@ -239,9 +239,9 @@ Produces the following output:
 `Main.codeblock.add-or-subtract.java`:
 
 ```java
-    int example = 1;
-    example--;
-    System.out.println("Example: " + example);
+		int example = 1;
+		example--;
+		System.out.println("Example: " + example);
 ```
 
 > 💡 Note that Bluehawk has trimmed one layer of comments from the `hello-user`
@@ -264,12 +264,12 @@ Consider the following file:
 ```java
 public class Main {
 	public static void main(String[] args){
-    int example = 1;
-    // :uncomment-start:
-    //example--;
-    // :uncomment-end:
-    example++;
-    System.out.println("Example: " + example);
+		int example = 1;
+		// :uncomment-start:
+		//example--;
+		// :uncomment-end:
+		example++;
+		System.out.println("Example: " + example);
 	}
 }
 ```
@@ -287,10 +287,10 @@ Produces the following output:
 ```java
 public class Main {
 	public static void main(String[] args){
-    int example = 1;
-    example--;
-    example++;
-    System.out.println("Example: " + example);
+		int example = 1;
+		example--;
+		example++;
+		System.out.println("Example: " + example);
 	}
 }
 ```
@@ -310,10 +310,10 @@ Consider the following file:
 
 ```java
 // :replace-start: {
-//    "terms": {
-//       "MyMainExample": "Main",
-//       "www.example.com/rest/v1": "YOUR_REST_ENDPOINT_HERE"
-//    }
+//		"terms": {
+//		   "MyMainExample": "Main",
+//		   "www.example.com/rest/v1": "YOUR_REST_ENDPOINT_HERE"
+//		}
 // }
 
 /*
@@ -323,10 +323,10 @@ Consider the following file:
 public class MyMainExample {
   String rest_endpoint;
 
-	public static void main(String[] args){
-    System.out.println("Hello world!");
-    rest_endpoint = "www.example.com/rest/v1"
-	}
+  public static void main(String[] args){
+		System.out.println("Hello world!");
+		rest_endpoint = "www.example.com/rest/v1"
+  }
 }
 // :replace-end:
 ```
@@ -349,8 +349,8 @@ public class Main {
   String rest_endpoint;
 
 	public static void main(String[] args){
-    System.out.println("Hello world!");
-    rest_endpoint = "YOUR_REST_ENDPOINT_HERE"
+		System.out.println("Hello world!");
+		rest_endpoint = "YOUR_REST_ENDPOINT_HERE"
 	}
 }
 ```
@@ -373,12 +373,12 @@ Consider the following file:
 ```java
 public class Main {
 	public static void main(String[] args){
-    // :code-block-start: modulo
-    int dividend = 11;
-    int divisor = 3;
-    int modulus = dividend % divisor; // :emphasize:
-    System.out.println(dividend + " % " + divisor + " = " + modulus);
-    // :code-block-end:
+		// :code-block-start: modulo
+		int dividend = 11;
+		int divisor = 3;
+		int modulus = dividend % divisor; // :emphasize:
+		System.out.println(dividend + " % " + divisor + " = " + modulus);
+		// :code-block-end:
 	}
 }
 // :replace-end:
@@ -420,13 +420,13 @@ Consider the following file:
 public class Main {
 
 	public static void main(String[] args){
-    // :code-block-start: division
-    int dividend = 11;
-    int divisor = 3;
-    int quotient = dividend / divisor;
-    assert(quotient == 3) // :remove:
-    System.out.println(dividend + " / " + divisor + " = " + quotient);
-    // :code-block-end:
+		// :code-block-start: division
+		int dividend = 11;
+		int divisor = 3;
+		int quotient = dividend / divisor;
+		assert(quotient == 3) // :remove:
+		System.out.println(dividend + " / " + divisor + " = " + quotient);
+		// :code-block-end:
 	}
 }
 // :replace-end:
@@ -462,15 +462,15 @@ mark up the unit test source file like this with Bluehawk commands like
 
 // ... more tests ...
 func someTest() {
-    // :snippet-start: some-example
-    let person = getPerson()
-    // :remove-start: // hide test boilerplate from the code block
-    XCTAssert(person.name != "Keith")
-    // :remove-end:
-    person.doSomething {
-        person.doSomethingElse()
-    }
-    // :snippet-end:
+		// :snippet-start: some-example
+		let person = getPerson()
+		// :remove-start: // hide test boilerplate from the code block
+		XCTAssert(person.name != "Keith")
+		// :remove-end:
+		person.doSomething {
+				person.doSomethingElse()
+		}
+		// :snippet-end:
 }
 // ... more tests ...
 ```
@@ -481,7 +481,7 @@ file called `SomeTest.codeblock.some-example.swift` that looks something like th
 ```swift
 let person = getPerson()
 person.doSomething {
-    person.doSomethingElse()
+		person.doSomethingElse()
 }
 ```
 
@@ -512,19 +512,19 @@ indicate different states or checkpoints with the `:state-start:` and
 // ... more code ...
 // :snippet-start: sign-up
 @objc func signUp() {
-    // :state-start: final
-    setLoading(true);
-    app.emailPasswordAuth.registerUser(email: email!, password: password!, completion: { [weak self](error) in
-        DispatchQueue.main.async {
-            self!.setLoading(false);
-            ...
-        }
-    })
-    // :state-end:
-    // :state-start: start
-    // TODO: Use the app's emailPasswordAuth to registerUser with the email and password.
-    // When registered, call signIn().
-    // :state-uncomment-end:
+		// :state-start: final
+		setLoading(true);
+		app.emailPasswordAuth.registerUser(email: email!, password: password!, completion: { [weak self](error) in
+				DispatchQueue.main.async {
+						self!.setLoading(false);
+						...
+				}
+		})
+		// :state-end:
+		// :state-start: start
+		// TODO: Use the app's emailPasswordAuth to registerUser with the email and password.
+		// When registered, call signIn().
+		// :state-uncomment-end:
 }
 // :snippet-end:
 // ... more code ...
@@ -538,8 +538,8 @@ Running `bluehawk copy` on this file with `--state start` results in a copy of
 
 // ... more code ...
 @objc func signUp() {
-    // TODO: Use the app's emailPasswordAuth to registerUser with the email and password.
-    // When registered, call signIn().
+		// TODO: Use the app's emailPasswordAuth to registerUser with the email and password.
+		// When registered, call signIn().
 }
 // ... more code ...
 ```
@@ -556,13 +556,13 @@ implementation code, but no "TODO":
 
 // ... more code ...
 @objc func signUp() {
-    setLoading(true);
-    app.emailPasswordAuth.registerUser(email: email!, password: password!, completion: { [weak self](error) in
-        DispatchQueue.main.async {
-            self!.setLoading(false);
-            ...
-        }
-    })
+		setLoading(true);
+		app.emailPasswordAuth.registerUser(email: email!, password: password!, completion: { [weak self](error) in
+				DispatchQueue.main.async {
+						self!.setLoading(false);
+						...
+				}
+		})
 }
 // ... more code ...
 ```
