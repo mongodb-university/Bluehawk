@@ -103,20 +103,11 @@ The `snippet` command, also aliased as `code-block`, marks a range of content in
 as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
 these snippets.
 
-<table>
-<tr>
-<th>
-Input
-</th>
-<th>
-Output from <pre>bluehawk snip input.java -d destination <pre>
-</th>
-</tr>
+Consider the following file:
 
-<tr>
+`Main.java`:
 
-<td>
-<pre>
+```java
 public class Main {
 	public static void main(String[] args){
 		// :snippet-start: test-block
@@ -124,18 +115,21 @@ public class Main {
 		// :snippet-end:
 	}
 }
-</pre>
-</td>
+```
 
-<td>
-input.codeblock.test-block.java
-<pre>
+Running the following command:
+
+```
+bluehawk snip Main.java -d .
+```
+
+Produces the following output:
+
+`Main.codeblock.test-block.java`:
+
+```java
 System.out.println("Hello world!");
-</pre>
-</td>
-
-</tr>
-</table>
+```
 
 Use `bluehawk list commands` to list available commands.
 
