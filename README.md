@@ -75,7 +75,8 @@ You can use flags to tweak the output of Bluehawk.
 
 Pass a pattern to the `--ignore` flag to omit any file that matches that
 pattern from Bluehawk's input files. Bluehawk will not process or generate
-output for any ignored file.
+output for any ignored file. You can use the `ignore` flag multiple times
+in a single Bluehawk execution to ignore multiple patterns.
 
 #### State
 
@@ -95,13 +96,19 @@ the identifier `sphynx-rst`.
 Bluehawk **commands** come in two forms: _single-line_ and _block_. Single-line comments
 operate upon the next line, while block comments operate upon the span of lines between
 the start of the command and the end of the command, specified with `-start` and `-end`
-suffixes. You use either single-line commenting or block commenting for all tags.
+suffixes. You use either single-line commenting or block commenting for all tags. To avoid
+name clashing with various languages and markup frameworks, all Bluehawk commands begin
+and end with colons (`:`).
 
-# Snippet
+> 💡 For a summary of all of the commands available in your local installation
+> of Bluehawk, run `bluehawk list commands`.
+
+## Snippet
 
 The `snippet` command, also aliased as `code-block`, marks a range of content in a file
 as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
-these snippets.
+these snippets. Because `snippet` operates on ranges of content, it is only available as
+a block command. You must pass `snippet` an identifier.
 
 Consider the following file:
 
@@ -131,65 +138,320 @@ Produces the following output:
 System.out.println("Hello world!");
 ```
 
-Use `bluehawk list commands` to list available commands.
+## State
 
-snippet
-identifies snippets for extraction into standalone files
-block mode supported: yes
-line mode supported: no
-attributes schema: {"type":"object","required":["id"],"properties":{"id":{"type":"string"}}}
+The `state` command marks a range of content in a file as part of a particular state.
+You can use the [snip](#snip) or [copy](#copy) CLI commands with the [state](#state)
+flag to generate output files that contain only content from a specific named state.
+Because `state` operates on ranges of content, it is only available as
+a block command. You must pass `state` an identifier.
 
-code-block (alias of snippet)
-identifies snippets for extraction into standalone files
-block mode supported: yes
-line mode supported: no
-attributes schema: {"type":"object","required":["id"],"properties":{"id":{"type":"string"}}}
+Consider the following file:
 
-state
-given a state name as command id, identifies blocks that should only appear in the given state's version of the file
-block mode supported: yes
-line mode supported: no
-attributes schema: {"type":"object","required":["id"],"properties":{"id":{"type":"string"}}}
+`Main.java`:
 
-state-uncomment
-combines 'uncomment' and 'state'
-block mode supported: yes
-line mode supported: no
-attributes schema: {"type":"object","required":["id"],"properties":{"id":{"type":"string"}}}
+```java
+public class Main {
+	public static void main(String[] args){
+		// :snippet-start: example
+    int example = 1;
+    // :state-start: hello-world
+		System.out.println("Hello world!");
+    // :state-end:
+    // :state-start: hello-user
+    System.out.println("Hello user!");
+    // :state-end:
+    example++;
+		// :snippet-end:
+	}
+}
+```
 
-uncomment
-removes up to one line comment token from every line in its range
-block mode supported: yes
-line mode supported: no
-attributes schema: {"type":"null","nullable":true}
+Running the following command:
 
-replace
-given 'terms' object in the attribute list, replaces term keys with corresponding values within the block
-block mode supported: yes
-line mode supported: no
-attributes schema: {"type":"object","required":["terms"],"properties":{"terms":{"type":"object","minProperties":1,"additionalProperties":{"type":"string"},"required":[]}}}
+```
+bluehawk snip Main.java -d . --state hello-user
+```
 
-emphasize
-identify line(s) to highlight (see `bluehawk snip --format` command)
-block mode supported: yes
-line mode supported: yes
-attributes schema: {"type":"null","nullable":true}
+Produces the following output:
 
-hide (alias of remove)
-deletes line(s) from the result
-block mode supported: yes
-line mode supported: yes
-attributes schema: {"type":"null","nullable":true}
+`Main.codeblock.example.java`:
 
-remove
-deletes line(s) from the result
-block mode supported: yes
-line mode supported: yes
-attributes schema: {"type":"null","nullable":true}
+```java
+int example = 1;
+System.out.println("Hello user!");
+example++;
+```
 
-## Use Cases
+Alternatively, Running the following command:
 
-### Tested Code Examples
+```
+bluehawk snip Main.java -d . --state hello-world
+```
+
+Produces the following output:
+
+`Main.codeblock.example.java`:
+
+```java
+int example = 1;
+System.out.println("Hello world!");
+example++;
+```
+
+### State-Uncomment
+
+The `state-uncomment` command combines the [state](#state) and [uncomment](#uncomment)
+commands. In terms of syntax, `state-uncomment` works exactly the same as `state`,
+except one layer of commenting is removed from the entire state in produced output.
+Use `state-uncomment` to prevent executable code in a state from actually executing
+in the source code you use to produce output.
+
+Consider the following file:
+
+`Main.java`:
+
+```java
+public class Main {
+	public static void main(String[] args){
+		// :snippet-start: add-or-subtract
+    int example = 1;
+    // :state-start: add-one
+		example++;
+    // :state-end:
+    // :state-uncomment-start: subtract-one
+    //example--;
+    // :state--uncomment-end:
+    System.out.println("Example: " + example);
+		// :snippet-end:
+	}
+}
+```
+
+Running the following command:
+
+```
+bluehawk snip Main.java -d . --state subtract-one
+```
+
+Produces the following output:
+
+`Main.codeblock.add-or-subtract.java`:
+
+```java
+    int example = 1;
+    example--;
+    System.out.println("Example: " + example);
+```
+
+> 💡 Note that Bluehawk has trimmed one layer of comments from the `hello-user`
+> state in the produced code block.
+
+With `state-uncomment`, you can create multiple valid end states but only run
+one of those states when executing your source code.
+
+## Uncomment
+
+The `uncomment` command removes a single comment from the beginning of
+each line of the spanned range in all output.
+Because `uncomment` operates on ranges of content, it is only available as
+a block command.
+
+Consider the following file:
+
+`Main.java`:
+
+```java
+public class Main {
+	public static void main(String[] args){
+    int example = 1;
+    // :uncomment-start:
+    //example--;
+    // :uncomment-end:
+    example++;
+    System.out.println("Example: " + example);
+	}
+}
+```
+
+Running the following command:
+
+```
+bluehawk copy Main.java -d .
+```
+
+Produces the following output:
+
+`Main.java`:
+
+```java
+public class Main {
+	public static void main(String[] args){
+    int example = 1;
+    example--;
+    example++;
+    System.out.println("Example: " + example);
+	}
+}
+```
+
+## Replace
+
+The `replace` command accepts a JSON dictionary called "terms" as input,
+and replaces occurrences string keys in the map within the
+spanned range with their map values in all output. You can use
+`replace` to hide implementation details like complicated class names
+or API endpoint URLs in generated output. Because `replace` operates
+on ranges of content, it is only available as a block command.
+
+Consider the following file:
+
+`Main.java`:
+
+```java
+// :replace-start: {
+//    "terms": {
+//       "MyMainExample": "Main",
+//       "www.example.com/rest/v1": "YOUR_REST_ENDPOINT_HERE"
+//    }
+// }
+
+/*
+ * MyMainExample -- a class that contains only a hello world main method
+ * that defines a rest endpoint.
+ */
+public class MyMainExample {
+  String rest_endpoint;
+
+	public static void main(String[] args){
+    System.out.println("Hello world!");
+    rest_endpoint = "www.example.com/rest/v1"
+	}
+}
+// :replace-end:
+```
+
+Running the following command:
+
+```
+bluehawk copy Main.java -d .
+```
+
+Produces the following output:
+
+`Main.java`:
+
+```java
+/*
+ * Main -- a class that contains only a hello world main method.
+ */
+public class Main {
+  String rest_endpoint;
+
+	public static void main(String[] args){
+    System.out.println("Hello world!");
+    rest_endpoint = "YOUR_REST_ENDPOINT_HERE"
+	}
+}
+```
+
+## Emphasize
+
+The `emphasize` command only applies to [formatted](#format)
+output. When the `--format` flag is not used to generate formatted
+output, `emphasize` is discarded completely. When the `--format` flag
+is specified, Bluehawk highlights all lines marked with `emphasize`
+command in the specified markup language output. `emphasize` makes it
+easier to keep the correct lines highlighted when you update code
+samples. You can use `replace` as either a block command or a
+line command.
+
+Consider the following file:
+
+`Main.java`:
+
+```java
+public class Main {
+	public static void main(String[] args){
+    // :code-block-start: modulo
+    int dividend = 11;
+    int divisor = 3;
+    int modulus = dividend % divisor; // :emphasize:
+    System.out.println(dividend + " % " + divisor + " = " + modulus);
+    // :code-block-end:
+	}
+}
+// :replace-end:
+```
+
+Running the following command:
+
+```
+bluehawk snip Main.java -d . --format=sphynx-rst
+```
+
+Produces the following output:
+
+`Main.codeblock.modulo.java.code-block.rst`:
+
+```rst
+.. code-block:: java
+   :emphasize-lines: 3
+
+   int dividend = 11;
+   int divisor = 3;
+   int modulus = dividend % divisor; // :emphasize:
+   System.out.println(dividend + " % " + divisor + " = " + modulus);
+```
+
+## Remove
+
+The `remove` command, also aliased as `hide`, removes the spanned
+range from Bluehawk output. `remove` can be helpful for hiding
+assertions and state setup from user-facing code samples.
+You can use `remove` as either a block command or a
+line command.
+
+Consider the following file:
+
+`Main.java`:
+
+```java
+public class Main {
+
+	public static void main(String[] args){
+    // :code-block-start: division
+    int dividend = 11;
+    int divisor = 3;
+    int quotient = dividend / divisor;
+    assert(quotient == 3) // :remove:
+    System.out.println(dividend + " / " + divisor + " = " + quotient);
+    // :code-block-end:
+	}
+}
+// :replace-end:
+```
+
+Running the following command:
+
+```
+bluehawk snip Main.java -d .
+```
+
+Produces the following output:
+
+`Main.codeblock.division.java`:
+
+```rst
+int dividend = 11;
+int divisor = 3;
+int quotient = dividend / divisor;
+System.out.println(dividend + " / " + divisor + " = " + quotient);
+```
+
+# Use Cases
+
+## Tested Code Examples
 
 Imagine you want to paste some code from a unit test into your docs. You can
 mark up the unit test source file like this with Bluehawk commands like
@@ -232,7 +494,7 @@ the unit test framework that suits your language and your project. Heck, you don
 even need a unit test framework. Use Bluehawk in your app or bash script that you
 run to make sure everything's still more or less working.
 
-### Checkpointed Tutorials
+## Checkpointed Tutorials
 
 Suppose you have a tutorial repo that learners can clone to follow along with
 your tutorial from a certain starting point, say a "start" branch. You also want
@@ -309,7 +571,7 @@ You can run Bluehawk on an entire directory, and each file in the repo will be
 copied or transformed to the destination. This makes it easy to copy one state
 of the entire tutorial source into another repo that learners can clone.
 
-## Plugins
+# Plugins
 
 You can add commands and listeners by creating a JS file or node project that
 implements the register() function:
@@ -340,63 +602,13 @@ bluehawk --plugin ./myPlugin source.txt
 
 You can pass the --plugin flag multiple times to load different plugins or create a plugin that is composed of other plugins.
 
-## Usage as a Module
+# Usage as a Module
 
 ```sh
 npm install bluehawk
 ```
 
-## How to Run Bluehawk from Source
-
-To build and run Bluehawk from source, clone this repo and install dependencies:
-
-```sh
-npm install
-```
-
-To build, run:
-
-```
-npm run build
-```
-
-If compilation is successful, you can run bluehawk like so:
-
-```sh
-node build/src/cli/main.js snip -d <destination directory> <folder to source file or directory>
-```
-
-Which you can alias as:
-
-```sh
-alias bluehawk-dev="node /path/to/bluehawk/build/src/cli/main.js"
-```
-
-## Running Tests
-
-This project uses Jest to test.
-
-To run all tests, use:
-
-```sh
-npm test
-```
-
-To run the tests and get verbose output for all unit tests, use:
-
-```sh
-npm run verbose
-```
-
-Additionally, you can get a Jest coverage report with:
-
-```sh
-npm run coverage
-```
-
-You can also run tests with breakpoints in VS Code with F5. See .vscode/launch.json.
-
-## Background
+# Background
 
 A concept originally lifted from another internal project called "peekaboo", the
 idea is that you can develop finalized code (say, a complete tutorial
@@ -407,42 +619,3 @@ version so they can check their work... or just download it and cheat.
 
 Additionally, we needed a way to leave our code examples in compileable,
 testable projects while extracting the relevant part to paste in our docs.
-
-## Architecture
-
-![Graphical overview of the Bluehawk architecture](https://raw.githubusercontent.com/mongodb-university/Bluehawk/main/architecture.png "Bluehawk Architecture")
-
-Bluehawk has three major components:
-
-- **Client:** loads files to be parsed and processed. Implements listeners that
-  decide what to do with results (e.g. save to file). Can add custom commands
-  and language specifications (i.e. comment syntax). The main client is the CLI,
-  but you can use Bluehawk as a library and implement your own clients.
-- **Parser:** finds commands in a source file and diagnoses markup errors.
-- **Processor:** executes commands on a source file to produce transformed documents.
-
-### File Language-Specific Tokens
-
-The lexer can receive custom tokens for a given language to define comment
-syntax. For example, plaintext has no comments, bash only has line comments
-(#)[†](https://stackoverflow.com/questions/32126653/how-does-end-work-in-bash-to-create-a-multi-line-comment-block),
-and C++ has line (//) and block (`/*`, `*/`) comments. Bluehawk is comment aware so
-that it can correctly strip comments (when needed) and diagnose when commands
-are halfway in a block comment.
-
-### Command Tokens
-
-":snippet-start:", ":remove-start:", etc. are not keywords. Instead, the
-lexer and parser detect [command], [command]-start, and [command]-end. It is up
-to the visitor to determine whether the -start and -end command names match and
-if the command name is understood by Bluehawk. This keeps the lexer and parser
-simpler and allows for extensibility of Bluehawk as users could eventually
-provide their own commands.
-
-### Attribute Lists
-
-The original Bluehawk spec document included the ability to provide a JSON
-object after a block command to configure the block command's attributes. The
-lexer has "modes" so after it encounters a block command, it goes into an
-attribute mode, which will either accept the command identifier (i.e.
-:some-command-start: this-is-the-identifier) or the attribute list JSON.
