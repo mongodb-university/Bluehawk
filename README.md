@@ -10,7 +10,21 @@ With Bluehawk, you can:
 > 💡 See our [API Documentation](https://mongodb-university.github.io/Bluehawk/) or
 > [open an issue](https://github.com/mongodb-university/Bluehawk/issues/new)
 
-# Install
+## Example
+
+Say you're documenting a library. To provide code examples for library functionality,
+you're forced to copy & paste snippets of code from test cases you've written into
+your documentation. Every time an API changes, or you want to improve an example, or
+you want to fix a bug, you have to copy & paste those snippets again. Sooner or later
+you'll miss a line, or forget to copy and paste a change from your tests to the
+documentation, or forget to update a line highlight... because you're trying to
+maintain equivalent code snippets in two places at once.
+
+What if there was a better way? What if you could write your examples in one place,
+and let a tool take care of removing your assertions and setup and copying the
+examples into your documentation? Bluehawk does exactly that.
+
+## Install
 
 Install the CLI globally:
 
@@ -18,7 +32,7 @@ Install the CLI globally:
 npm install -g bluehawk
 ```
 
-# Bluehawk Commands
+## Bluehawk Commands
 
 Bluehawk **commands** come in two forms: _single-line_ and _block_. Single-line comments
 operate upon the next line, while block comments operate upon the span of lines between
@@ -30,7 +44,7 @@ and end with colons (`:`).
 > 💡 For a summary of all of the commands available in your local installation
 > of Bluehawk, run `bluehawk list commands`.
 
-## Snippet
+### Snippet
 
 The `snippet` command, also aliased as `code-block`, marks a range of content in a file
 as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
@@ -65,7 +79,7 @@ Produces the following output:
 System.out.println("Hello world!");
 ```
 
-## State
+### State
 
 The `state` command marks a range of content in a file as part of a particular state.
 You can use the [snip](#snip) or [copy](#copy) CLI commands with the [state](#state)
@@ -177,7 +191,7 @@ Produces the following output:
 With `state-uncomment`, you can create multiple valid end states but only run
 one of those states when executing your source code.
 
-## Uncomment
+### Uncomment
 
 The `uncomment` command removes a single comment from the beginning of
 each line of the spanned range in all output.
@@ -222,7 +236,7 @@ public class Main {
 }
 ```
 
-## Replace
+### Replace
 
 The `replace` command accepts a JSON dictionary called "terms" as input,
 and replaces occurrences string keys in the map within the
@@ -282,7 +296,7 @@ public class Main {
 }
 ```
 
-## Emphasize
+### Emphasize
 
 The `emphasize` command only applies to [formatted](#format)
 output. When the `--format` flag is not used to generate formatted
@@ -332,7 +346,7 @@ Produces the following output:
    System.out.println(dividend + " % " + divisor + " = " + modulus);
 ```
 
-## Remove
+### Remove
 
 The `remove` command, also aliased as `hide`, removes the spanned
 range from Bluehawk output. `remove` can be helpful for hiding
@@ -377,9 +391,9 @@ int quotient = dividend / divisor;
 System.out.println(dividend + " / " + divisor + " = " + quotient);
 ```
 
-# CLI
+## CLI
 
-## Commands
+### Commands
 
 Use commands to generate different kinds of output with Bluehawk, including
 code blocks, full files of code, and even error checks.
@@ -388,7 +402,7 @@ code blocks, full files of code, and even error checks.
 > [Bluehawk Commands](#bluehawk-commands), the syntax
 > interpreted by Bluehawk to process input files.
 
-### Snip
+#### Snip
 
 ```
 bluehawk snip --destination <output-directory> <input-directory-or-file>
@@ -403,7 +417,7 @@ state listed for each group of `state` Bluehawk commands. However,
 you can use the `--state` flag to generate snippet files that include
 content from a single state that you specify.
 
-### Copy
+#### Copy
 
 ```
 bluehawk copy --destination <output-directory> <input-directory-or-file>
@@ -414,7 +428,7 @@ By default, this command generates output files that omit all `state`.
 However, you can use `--state` flag to generate output files that
 include content from a single state that you specify.
 
-### Check
+#### Check
 
 ```
 bluehawk check <input-directory-or-file>
@@ -424,23 +438,23 @@ Generates non-zero output if processing any input files generates a Bluehawk
 error, zero output otherwise. Does not generate any files: instead, `check`
 outputs directly to command line.
 
-## Flags
+### Flags
 
 You can use flags to tweak the output of Bluehawk.
 
-### Ignore
+#### Ignore
 
 Pass a pattern to the `--ignore` flag to omit any file that matches that
 pattern from Bluehawk's input files. Bluehawk will not process or generate
 output for any ignored file. You can use the `ignore` flag multiple times
 in a single Bluehawk execution to ignore multiple patterns.
 
-### State
+#### State
 
 Pass a state's id to the `--state` flag to include only the contents of that
 state, and no other states, in the generated output.
 
-### Format
+#### Format
 
 Pass the name of a markup syntax to the `--format` flag when generating snippets
 to generate a formatted version of that snippet in the specified markup syntax.
@@ -448,9 +462,9 @@ This command currently only supports
 [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) syntax using
 the identifier `sphynx-rst`.
 
-# Use Cases
+## Use Cases
 
-## Tested Code Examples
+### Tested Code Examples
 
 Imagine you want to paste some code from a unit test into your docs. You can
 mark up the unit test source file like this with Bluehawk commands like
@@ -493,7 +507,7 @@ the unit test framework that suits your language and your project. Heck, you don
 even need a unit test framework. Use Bluehawk in your app or bash script that you
 run to make sure everything's still more or less working.
 
-## Checkpointed Tutorials
+### Checkpointed Tutorials
 
 Suppose you have a tutorial repo that learners can clone to follow along with
 your tutorial from a certain starting point, say a "start" branch. You also want
@@ -570,7 +584,7 @@ You can run Bluehawk on an entire directory, and each file in the repo will be
 copied or transformed to the destination. This makes it easy to copy one state
 of the entire tutorial source into another repo that learners can clone.
 
-# Plugins
+## Plugins
 
 You can add commands and listeners by creating a JS file or node project that
 implements the register() function:
@@ -601,20 +615,8 @@ bluehawk --plugin ./myPlugin source.txt
 
 You can pass the --plugin flag multiple times to load different plugins or create a plugin that is composed of other plugins.
 
-# Usage as a Module
+## Usage as a Module
 
 ```sh
 npm install bluehawk
 ```
-
-# Background
-
-A concept originally lifted from another internal project called "peekaboo", the
-idea is that you can develop finalized code (say, a complete tutorial
-application that runs), and then strip out parts that you want the learner to
-figure out and code themselves. So, one code base (compiles, passes tests, etc.)
-can be used to generate both a "starter" version for a learner and a "final"
-version so they can check their work... or just download it and cheat.
-
-Additionally, we needed a way to leave our code examples in compileable,
-testable projects while extracting the relevant part to paste in our docs.
