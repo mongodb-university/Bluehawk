@@ -1,16 +1,18 @@
 # Bluehawk
 
 Bluehawk is a markup processor for extracting and manipulating arbitrary code.
-In particular, it can:
+With Bluehawk, you can:
 
 - Extract code examples for use in documentation
+- Generate formatted code examples for use in documentation
 - Replace "finished" code with "todo" code for a branch in a tutorial repo
 
->💡 See our [API Documentation](https://mongodb-university.github.io/Bluehawk/) or
->[open an issue](https://github.com/mongodb-university/Bluehawk/issues/new)
+> 💡 See our [API Documentation](https://mongodb-university.github.io/Bluehawk/) or
+> [open an issue](https://github.com/mongodb-university/Bluehawk/issues/new)
 
+# CLI
 
-## CLI Usage
+## Install
 
 Install the CLI globally:
 
@@ -18,26 +20,178 @@ Install the CLI globally:
 npm install -g bluehawk
 ```
 
-Mark up some source files and run the following command to extract snippets:
+## Usage
 
-```sh
-bluehawk snip \
-  --destination path/to/snippetOutput/ \
-  path/to/unitTestedCodeExamples/
+### Commands
+
+Use commands to generate different kinds of output with Bluehawk, including
+code blocks, full files of code, and even error checks.
+
+> 💡 Commands for the Bluehawk CLI are not the same as
+> [Bluehawk Commands](#bluehawk-commands), the syntax
+> interpreted by Bluehawk to process input files.
+
+#### Snip
+
+```
+bluehawk snip --destination <output-directory> <input-directory-or-file>
 ```
 
-Try out some of the commands and options:
+Output "snippet files" that contain only the content of `code-block` or
+`snippet` Bluehawk commands, named in the format
+`<source-file-name>.codeblock.<codeblock-name>.<source-file-extension>`.
+By default, this command generates snippets
+that include only the _last_ (chronologically ordered in your file)
+state listed for each group of `state` Bluehawk commands. However,
+you can use the `--state` flag to generate snippet files that include
+content from a single state that you specify.
 
-- `help`: Display helpful information about available commands. May be more complete and 
-  up-to-date than this README.
-- `copy --state <state name>`: Copy the given `state name` version of files to destination.
-  When Bluehawk encounters a `state` command (see below), multiple versions of the source file
-  are spawned. Each version removes any code in state commands that are **not**
-  marked with the corresponding state name. This flag determines which version
-  to eventually write to disk.
-- `snip`: Output snippet files only. Can be combined with `--state`.
-- `list commands`: Display a list of available markup commands.
-- `-d or --destination` defines the output location.
+#### Copy
+
+```
+bluehawk copy --destination <output-directory> <input-directory-or-file>
+```
+
+Output full bluehawk-processed input files to destination directory.
+By default, this command generates output files that omit all `state`.
+However, you can use `--state` flag to generate output files that
+include content from a single state that you specify.
+
+#### Check
+
+```
+bluehawk check <input-directory-or-file>
+```
+
+Generates non-zero output if processing any input files generates a Bluehawk
+error, zero output otherwise. Does not generate any files: instead, `check`
+outputs directly to command line.
+
+### Flags
+
+You can use flags to tweak the output of Bluehawk.
+
+#### Ignore
+
+Pass a pattern to the `--ignore` flag to omit any file that matches that
+pattern from Bluehawk's input files. Bluehawk will not process or generate
+output for any ignored file.
+
+#### State
+
+Pass a state's id to the `--state` flag to include only the contents of that
+state, and no other states, in the generated output.
+
+#### Format
+
+Pass the name of a markup syntax to the `--format` flag when generating snippets
+to generate a formatted version of that snippet in the specified markup syntax.
+This command currently only supports
+[reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) syntax using
+the identifier `sphynx-rst`.
+
+# Bluehawk Commands
+
+Bluehawk **commands** come in two forms: _single-line_ and _block_. Single-line comments
+operate upon the next line, while block comments operate upon the span of lines between
+the start of the command and the end of the command, specified with `-start` and `-end`
+suffixes. You use either single-line commenting or block commenting for all tags.
+
+# Snippet
+
+The `snippet` command, also aliased as `code-block`, marks a range of content in a file
+as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
+these snippets.
+
+<table>
+<tr>
+<th>
+Input
+</th>
+<th>
+Output from <pre>bluehawk snip input.java -d destination <pre>
+</th>
+</tr>
+
+<tr>
+
+<td>
+<pre>
+public class Main {
+	public static void main(String[] args){
+		// :snippet-start: test-block
+		System.out.println("Hello world!");
+		// :snippet-end:
+	}
+}
+</pre>
+</td>
+
+<td>
+input.codeblock.test-block.java
+<pre>
+System.out.println("Hello world!");
+</pre>
+</td>
+
+</tr>
+</table>
+
+Use `bluehawk list commands` to list available commands.
+
+snippet
+identifies snippets for extraction into standalone files
+block mode supported: yes
+line mode supported: no
+attributes schema: {"type":"object","required":["id"],"properties":{"id":{"type":"string"}}}
+
+code-block (alias of snippet)
+identifies snippets for extraction into standalone files
+block mode supported: yes
+line mode supported: no
+attributes schema: {"type":"object","required":["id"],"properties":{"id":{"type":"string"}}}
+
+state
+given a state name as command id, identifies blocks that should only appear in the given state's version of the file
+block mode supported: yes
+line mode supported: no
+attributes schema: {"type":"object","required":["id"],"properties":{"id":{"type":"string"}}}
+
+state-uncomment
+combines 'uncomment' and 'state'
+block mode supported: yes
+line mode supported: no
+attributes schema: {"type":"object","required":["id"],"properties":{"id":{"type":"string"}}}
+
+uncomment
+removes up to one line comment token from every line in its range
+block mode supported: yes
+line mode supported: no
+attributes schema: {"type":"null","nullable":true}
+
+replace
+given 'terms' object in the attribute list, replaces term keys with corresponding values within the block
+block mode supported: yes
+line mode supported: no
+attributes schema: {"type":"object","required":["terms"],"properties":{"terms":{"type":"object","minProperties":1,"additionalProperties":{"type":"string"},"required":[]}}}
+
+emphasize
+identify line(s) to highlight (see `bluehawk snip --format` command)
+block mode supported: yes
+line mode supported: yes
+attributes schema: {"type":"null","nullable":true}
+
+hide (alias of remove)
+deletes line(s) from the result
+block mode supported: yes
+line mode supported: yes
+attributes schema: {"type":"null","nullable":true}
+
+remove
+deletes line(s) from the result
+block mode supported: yes
+line mode supported: yes
+attributes schema: {"type":"null","nullable":true}
 
 ## Use Cases
 
@@ -76,7 +230,7 @@ person.doSomething {
 ```
 
 You can now import this snippet into your documentation. Now you have the
-benefit of tested examples that are still easy to read in the docs. 
+benefit of tested examples that are still easy to read in the docs.
 
 Bluehawk markup can go into any source file, so you don't need to rig every unit
 test framework you use up to also extract code examples. Just use Bluehawk with
@@ -120,7 +274,7 @@ indicate different states or checkpoints with the `:state-start:` and
 // ... more code ...
 ```
 
-Running `bluehawk copy` on this file with `--state start`  results in a copy of
+Running `bluehawk copy` on this file with `--state start` results in a copy of
 `WelcomeViewController.swift` that looks something like this:
 
 ```swift
@@ -161,28 +315,6 @@ You can run Bluehawk on an entire directory, and each file in the repo will be
 copied or transformed to the destination. This makes it easy to copy one state
 of the entire tutorial source into another repo that learners can clone.
 
-## Command Markup
-
-When generating code blocks from a code file, use the following markup. Note: you
-use either single-line commenting or block commenting for all tags to keep the
-compiler happy.
-
-| Syntax                      | Description                                                                                              |
-| --------------------------- | -------------------------------------------------------------------------------------------------------- |
-| **:snippet-start:** _id_    | Creates a new snippet file, which will be output as `<sourcefilename>.codeblock.<id>.<source file extension>` |
-|                             |                                                                             |
-| **:remove-start:**          | The inner content will be removed from all output.                          |
-|                             |                                                                             |
-| **:state-start:** _state_   | Marks this content for removal from any state file except _state_.          |
-|                             |                                                                             |
-| **:state-uncomment-start:** _state_  | Marks this content for removal from any state file except _state_ and also removes up to one layer of comment tokens. |
-
-All commands that end with `-start` have a corresponding `-end` command. You use
-start and end commands to delineate blocks of content. Generally, the command
-operates on the content within the block.
-
-Use `bluehawk list commands` to list available commands.
-
 ## Plugins
 
 You can add commands and listeners by creating a JS file or node project that
@@ -196,7 +328,7 @@ exports.register = (bluehawk) => {
     rules: [],
     process: (request) => {
       // Execute command
-    }
+    },
   });
 
   // Register a document listener
@@ -213,7 +345,6 @@ bluehawk --plugin ./myPlugin source.txt
 ```
 
 You can pass the --plugin flag multiple times to load different plugins or create a plugin that is composed of other plugins.
-
 
 ## Usage as a Module
 
@@ -247,7 +378,6 @@ Which you can alias as:
 alias bluehawk-dev="node /path/to/bluehawk/build/src/cli/main.js"
 ```
 
-
 ## Running Tests
 
 This project uses Jest to test.
@@ -271,7 +401,6 @@ npm run coverage
 ```
 
 You can also run tests with breakpoints in VS Code with F5. See .vscode/launch.json.
-
 
 ## Background
 
@@ -298,7 +427,6 @@ Bluehawk has three major components:
 - **Parser:** finds commands in a source file and diagnoses markup errors.
 - **Processor:** executes commands on a source file to produce transformed documents.
 
-
 ### File Language-Specific Tokens
 
 The lexer can receive custom tokens for a given language to define comment
@@ -324,4 +452,3 @@ object after a block command to configure the block command's attributes. The
 lexer has "modes" so after it encounters a block command, it goes into an
 attribute mode, which will either accept the command identifier (i.e.
 :some-command-start: this-is-the-identifier) or the attribute list JSON.
-
