@@ -10,86 +10,13 @@ With Bluehawk, you can:
 > 💡 See our [API Documentation](https://mongodb-university.github.io/Bluehawk/) or
 > [open an issue](https://github.com/mongodb-university/Bluehawk/issues/new)
 
-# CLI
-
-## Install
+# Install
 
 Install the CLI globally:
 
 ```sh
 npm install -g bluehawk
 ```
-
-## Usage
-
-### Commands
-
-Use commands to generate different kinds of output with Bluehawk, including
-code blocks, full files of code, and even error checks.
-
-> 💡 Commands for the Bluehawk CLI are not the same as
-> [Bluehawk Commands](#bluehawk-commands), the syntax
-> interpreted by Bluehawk to process input files.
-
-#### Snip
-
-```
-bluehawk snip --destination <output-directory> <input-directory-or-file>
-```
-
-Output "snippet files" that contain only the content of `code-block` or
-`snippet` Bluehawk commands, named in the format
-`<source-file-name>.codeblock.<codeblock-name>.<source-file-extension>`.
-By default, this command generates snippets
-that include only the _last_ (chronologically ordered in your file)
-state listed for each group of `state` Bluehawk commands. However,
-you can use the `--state` flag to generate snippet files that include
-content from a single state that you specify.
-
-#### Copy
-
-```
-bluehawk copy --destination <output-directory> <input-directory-or-file>
-```
-
-Output full bluehawk-processed input files to destination directory.
-By default, this command generates output files that omit all `state`.
-However, you can use `--state` flag to generate output files that
-include content from a single state that you specify.
-
-#### Check
-
-```
-bluehawk check <input-directory-or-file>
-```
-
-Generates non-zero output if processing any input files generates a Bluehawk
-error, zero output otherwise. Does not generate any files: instead, `check`
-outputs directly to command line.
-
-### Flags
-
-You can use flags to tweak the output of Bluehawk.
-
-#### Ignore
-
-Pass a pattern to the `--ignore` flag to omit any file that matches that
-pattern from Bluehawk's input files. Bluehawk will not process or generate
-output for any ignored file. You can use the `ignore` flag multiple times
-in a single Bluehawk execution to ignore multiple patterns.
-
-#### State
-
-Pass a state's id to the `--state` flag to include only the contents of that
-state, and no other states, in the generated output.
-
-#### Format
-
-Pass the name of a markup syntax to the `--format` flag when generating snippets
-to generate a formatted version of that snippet in the specified markup syntax.
-This command currently only supports
-[reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) syntax using
-the identifier `sphynx-rst`.
 
 # Bluehawk Commands
 
@@ -116,11 +43,11 @@ Consider the following file:
 
 ```java
 public class Main {
-	public static void main(String[] args){
-		// :snippet-start: test-block
-		System.out.println("Hello world!");
-		// :snippet-end:
-	}
+  public static void main(String[] args){
+    // :snippet-start: test-block
+    System.out.println("Hello world!");
+    // :snippet-end:
+  }
 }
 ```
 
@@ -152,18 +79,18 @@ Consider the following file:
 
 ```java
 public class Main {
-	public static void main(String[] args){
-		// :snippet-start: example
-		int example = 1;
-		// :state-start: hello-world
-		System.out.println("Hello world!");
-		// :state-end:
-		// :state-start: hello-user
-		System.out.println("Hello user!");
-		// :state-end:
-		example++;
-		// :snippet-end:
-	}
+  public static void main(String[] args){
+    // :snippet-start: example
+    int example = 1;
+    // :state-start: hello-world
+    System.out.println("Hello world!");
+    // :state-end:
+    // :state-start: hello-user
+    System.out.println("Hello user!");
+    // :state-end:
+    example++;
+    // :snippet-end:
+  }
 }
 ```
 
@@ -213,18 +140,18 @@ Consider the following file:
 
 ```java
 public class Main {
-	public static void main(String[] args){
-		// :snippet-start: add-or-subtract
-		int example = 1;
-		// :state-start: add-one
-		example++;
-		// :state-end:
-		// :state-uncomment-start: subtract-one
-		//example--;
-		// :state--uncomment-end:
-		System.out.println("Example: " + example);
-		// :snippet-end:
-	}
+  public static void main(String[] args){
+    // :snippet-start: add-or-subtract
+    int example = 1;
+    // :state-start: add-one
+    example++;
+    // :state-end:
+    // :state-uncomment-start: subtract-one
+    //example--;
+    // :state--uncomment-end:
+    System.out.println("Example: " + example);
+    // :snippet-end:
+  }
 }
 ```
 
@@ -239,9 +166,9 @@ Produces the following output:
 `Main.codeblock.add-or-subtract.java`:
 
 ```java
-		int example = 1;
-		example--;
-		System.out.println("Example: " + example);
+    int example = 1;
+    example--;
+    System.out.println("Example: " + example);
 ```
 
 > 💡 Note that Bluehawk has trimmed one layer of comments from the `hello-user`
@@ -263,14 +190,14 @@ Consider the following file:
 
 ```java
 public class Main {
-	public static void main(String[] args){
-		int example = 1;
-		// :uncomment-start:
-		//example--;
-		// :uncomment-end:
-		example++;
-		System.out.println("Example: " + example);
-	}
+  public static void main(String[] args){
+    int example = 1;
+    // :uncomment-start:
+    //example--;
+    // :uncomment-end:
+    example++;
+    System.out.println("Example: " + example);
+  }
 }
 ```
 
@@ -286,12 +213,12 @@ Produces the following output:
 
 ```java
 public class Main {
-	public static void main(String[] args){
-		int example = 1;
-		example--;
-		example++;
-		System.out.println("Example: " + example);
-	}
+  public static void main(String[] args){
+    int example = 1;
+    example--;
+    example++;
+    System.out.println("Example: " + example);
+  }
 }
 ```
 
@@ -310,10 +237,10 @@ Consider the following file:
 
 ```java
 // :replace-start: {
-//		"terms": {
-//		   "MyMainExample": "Main",
-//		   "www.example.com/rest/v1": "YOUR_REST_ENDPOINT_HERE"
-//		}
+//    "terms": {
+//       "MyMainExample": "Main",
+//       "www.example.com/rest/v1": "YOUR_REST_ENDPOINT_HERE"
+//    }
 // }
 
 /*
@@ -324,8 +251,8 @@ public class MyMainExample {
   String rest_endpoint;
 
   public static void main(String[] args){
-		System.out.println("Hello world!");
-		rest_endpoint = "www.example.com/rest/v1"
+    System.out.println("Hello world!");
+    rest_endpoint = "www.example.com/rest/v1"
   }
 }
 // :replace-end:
@@ -348,10 +275,10 @@ Produces the following output:
 public class Main {
   String rest_endpoint;
 
-	public static void main(String[] args){
-		System.out.println("Hello world!");
-		rest_endpoint = "YOUR_REST_ENDPOINT_HERE"
-	}
+  public static void main(String[] args){
+    System.out.println("Hello world!");
+    rest_endpoint = "YOUR_REST_ENDPOINT_HERE"
+  }
 }
 ```
 
@@ -363,7 +290,8 @@ output, `emphasize` is discarded completely. When the `--format` flag
 is specified, Bluehawk highlights all lines marked with `emphasize`
 command in the specified markup language output. `emphasize` makes it
 easier to keep the correct lines highlighted when you update code
-samples. You can use `replace` as either a block command or a
+samples, because it calculates the highlighted line numbers for you.
+You can use `replace` as either a block command or a
 line command.
 
 Consider the following file:
@@ -372,14 +300,14 @@ Consider the following file:
 
 ```java
 public class Main {
-	public static void main(String[] args){
-		// :code-block-start: modulo
-		int dividend = 11;
-		int divisor = 3;
-		int modulus = dividend % divisor; // :emphasize:
-		System.out.println(dividend + " % " + divisor + " = " + modulus);
-		// :code-block-end:
-	}
+  public static void main(String[] args){
+    // :code-block-start: modulo
+    int dividend = 11;
+    int divisor = 3;
+    int modulus = dividend % divisor; // :emphasize:
+    System.out.println(dividend + " % " + divisor + " = " + modulus);
+    // :code-block-end:
+  }
 }
 // :replace-end:
 ```
@@ -400,7 +328,7 @@ Produces the following output:
 
    int dividend = 11;
    int divisor = 3;
-   int modulus = dividend % divisor; // :emphasize:
+   int modulus = dividend % divisor;
    System.out.println(dividend + " % " + divisor + " = " + modulus);
 ```
 
@@ -419,15 +347,15 @@ Consider the following file:
 ```java
 public class Main {
 
-	public static void main(String[] args){
-		// :code-block-start: division
-		int dividend = 11;
-		int divisor = 3;
-		int quotient = dividend / divisor;
-		assert(quotient == 3) // :remove:
-		System.out.println(dividend + " / " + divisor + " = " + quotient);
-		// :code-block-end:
-	}
+  public static void main(String[] args){
+    // :code-block-start: division
+    int dividend = 11;
+    int divisor = 3;
+    int quotient = dividend / divisor;
+    assert(quotient == 3) // :remove:
+    System.out.println(dividend + " / " + divisor + " = " + quotient);
+    // :code-block-end:
+  }
 }
 // :replace-end:
 ```
@@ -449,6 +377,77 @@ int quotient = dividend / divisor;
 System.out.println(dividend + " / " + divisor + " = " + quotient);
 ```
 
+# CLI
+
+## Commands
+
+Use commands to generate different kinds of output with Bluehawk, including
+code blocks, full files of code, and even error checks.
+
+> 💡 Commands for the Bluehawk CLI are not the same as
+> [Bluehawk Commands](#bluehawk-commands), the syntax
+> interpreted by Bluehawk to process input files.
+
+### Snip
+
+```
+bluehawk snip --destination <output-directory> <input-directory-or-file>
+```
+
+Output "snippet files" that contain only the content of `code-block` or
+`snippet` Bluehawk commands, named in the format
+`<source-file-name>.codeblock.<codeblock-name>.<source-file-extension>`.
+By default, this command generates snippets
+that include only the _last_ (chronologically ordered in your file)
+state listed for each group of `state` Bluehawk commands. However,
+you can use the `--state` flag to generate snippet files that include
+content from a single state that you specify.
+
+### Copy
+
+```
+bluehawk copy --destination <output-directory> <input-directory-or-file>
+```
+
+Output full bluehawk-processed input files to destination directory.
+By default, this command generates output files that omit all `state`.
+However, you can use `--state` flag to generate output files that
+include content from a single state that you specify.
+
+### Check
+
+```
+bluehawk check <input-directory-or-file>
+```
+
+Generates non-zero output if processing any input files generates a Bluehawk
+error, zero output otherwise. Does not generate any files: instead, `check`
+outputs directly to command line.
+
+## Flags
+
+You can use flags to tweak the output of Bluehawk.
+
+### Ignore
+
+Pass a pattern to the `--ignore` flag to omit any file that matches that
+pattern from Bluehawk's input files. Bluehawk will not process or generate
+output for any ignored file. You can use the `ignore` flag multiple times
+in a single Bluehawk execution to ignore multiple patterns.
+
+### State
+
+Pass a state's id to the `--state` flag to include only the contents of that
+state, and no other states, in the generated output.
+
+### Format
+
+Pass the name of a markup syntax to the `--format` flag when generating snippets
+to generate a formatted version of that snippet in the specified markup syntax.
+This command currently only supports
+[reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) syntax using
+the identifier `sphynx-rst`.
+
 # Use Cases
 
 ## Tested Code Examples
@@ -462,15 +461,15 @@ mark up the unit test source file like this with Bluehawk commands like
 
 // ... more tests ...
 func someTest() {
-		// :snippet-start: some-example
-		let person = getPerson()
-		// :remove-start: // hide test boilerplate from the code block
-		XCTAssert(person.name != "Keith")
-		// :remove-end:
-		person.doSomething {
-				person.doSomethingElse()
-		}
-		// :snippet-end:
+    // :snippet-start: some-example
+    let person = getPerson()
+    // :remove-start: // hide test boilerplate from the code block
+    XCTAssert(person.name != "Keith")
+    // :remove-end:
+    person.doSomething {
+        person.doSomethingElse()
+    }
+    // :snippet-end:
 }
 // ... more tests ...
 ```
@@ -481,7 +480,7 @@ file called `SomeTest.codeblock.some-example.swift` that looks something like th
 ```swift
 let person = getPerson()
 person.doSomething {
-		person.doSomethingElse()
+    person.doSomethingElse()
 }
 ```
 
@@ -512,19 +511,19 @@ indicate different states or checkpoints with the `:state-start:` and
 // ... more code ...
 // :snippet-start: sign-up
 @objc func signUp() {
-		// :state-start: final
-		setLoading(true);
-		app.emailPasswordAuth.registerUser(email: email!, password: password!, completion: { [weak self](error) in
-				DispatchQueue.main.async {
-						self!.setLoading(false);
-						...
-				}
-		})
-		// :state-end:
-		// :state-start: start
-		// TODO: Use the app's emailPasswordAuth to registerUser with the email and password.
-		// When registered, call signIn().
-		// :state-uncomment-end:
+    // :state-start: final
+    setLoading(true);
+    app.emailPasswordAuth.registerUser(email: email!, password: password!, completion: { [weak self](error) in
+        DispatchQueue.main.async {
+            self!.setLoading(false);
+            ...
+        }
+    })
+    // :state-end:
+    // :state-start: start
+    // TODO: Use the app's emailPasswordAuth to registerUser with the email and password.
+    // When registered, call signIn().
+    // :state-uncomment-end:
 }
 // :snippet-end:
 // ... more code ...
@@ -538,8 +537,8 @@ Running `bluehawk copy` on this file with `--state start` results in a copy of
 
 // ... more code ...
 @objc func signUp() {
-		// TODO: Use the app's emailPasswordAuth to registerUser with the email and password.
-		// When registered, call signIn().
+    // TODO: Use the app's emailPasswordAuth to registerUser with the email and password.
+    // When registered, call signIn().
 }
 // ... more code ...
 ```
@@ -556,13 +555,13 @@ implementation code, but no "TODO":
 
 // ... more code ...
 @objc func signUp() {
-		setLoading(true);
-		app.emailPasswordAuth.registerUser(email: email!, password: password!, completion: { [weak self](error) in
-				DispatchQueue.main.async {
-						self!.setLoading(false);
-						...
-				}
-		})
+    setLoading(true);
+    app.emailPasswordAuth.registerUser(email: email!, password: password!, completion: { [weak self](error) in
+        DispatchQueue.main.async {
+            self!.setLoading(false);
+            ...
+        }
+    })
 }
 // ... more code ...
 ```
