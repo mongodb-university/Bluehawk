@@ -62,39 +62,437 @@
 					<h1>Bluehawk</h1>
 				</a>
 				<p>Bluehawk is a markup processor for extracting and manipulating arbitrary code.
-				In particular, it can:</p>
+				With Bluehawk, you can:</p>
 				<ul>
 					<li>Extract code examples for use in documentation</li>
+					<li>Generate formatted code examples for use in documentation</li>
 					<li>Replace &quot;finished&quot; code with &quot;todo&quot; code for a branch in a tutorial repo</li>
 				</ul>
 				<blockquote>
 					<p>💡 See our <a href="https://mongodb-university.github.io/Bluehawk/">API Documentation</a> or
 					<a href="https://github.com/mongodb-university/Bluehawk/issues/new">open an issue</a></p>
 				</blockquote>
-				<a href="#cli-usage" id="cli-usage" style="color: inherit; text-decoration: none;">
-					<h2>CLI Usage</h2>
+				<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+					<h2>Example</h2>
+				</a>
+				<p>Say you&#39;re documenting a library. To provide code examples for library functionality,
+					you&#39;re forced to copy &amp; paste snippets of code from test cases you&#39;ve written into
+					your documentation. Every time an API changes, or you want to improve an example, or
+					you want to fix a bug, you have to copy &amp; paste those snippets again. Sooner or later
+					you&#39;ll miss a line, or forget to copy and paste a change from your tests to the
+					documentation, or forget to update a line highlight... because you&#39;re trying to
+				maintain equivalent code snippets in two places at once.</p>
+				<p>What if there was a better way? What if you could write your examples in one place,
+					and let a tool take care of removing your assertions and setup and copying the
+				examples into your documentation? Bluehawk does exactly that.</p>
+				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
+					<h2>Install</h2>
 				</a>
 				<p>Install the CLI globally:</p>
 				<pre><code class="language-sh"><span style="color: #000000">npm install -g bluehawk</span>
 </code></pre>
-				<p>Mark up some source files and run the following command to extract snippets:</p>
-				<pre><code class="language-sh"><span style="color: #000000">bluehawk snip \</span>
-<span style="color: #000000">  --destination path/to/snippetOutput/ \</span>
-<span style="color: #000000">  path/to/unitTestedCodeExamples/</span>
+				<a href="#bluehawk-commands" id="bluehawk-commands" style="color: inherit; text-decoration: none;">
+					<h2>Bluehawk Commands</h2>
+				</a>
+				<p>Bluehawk <strong>commands</strong> come in two forms: <em>single-line</em> and <em>block</em>. Single-line commands
+					operate upon the current line, while block commands operate upon the span of lines between
+					the start of the command and the end of the command. Since commands aren&#39;t valid syntax in
+					most languages, you should place them in comments -- Bluehawk will still process them.
+					To avoid name clashes with various languages and markup frameworks, all Bluehawk commands
+					begin and end with colons (<code>:</code>). The following examples demonstrate the <a href="#remove">remove</a>
+				command in single-line and block forms:</p>
+				<p>Single-line commands use <code>:&lt;command&gt;:</code> to markup a single line:</p>
+				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">a</span><span style="color: #000000"> = </span><span style="color: #098658">2</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">b</span><span style="color: #000000"> = </span><span style="color: #098658">3</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000"> = a * b;</span>
+<span style="color: #000000">    </span><span style="color: #795E26">assert</span><span style="color: #000000">(c == </span><span style="color: #098658">6</span><span style="color: #000000">); </span><span style="color: #008000">// :remove:</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello world!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
 </code></pre>
-				<p>Try out some of the commands and options:</p>
-				<ul>
-					<li><code>help</code>: Display helpful information about available commands. May be more complete and
-					up-to-date than this README.</li>
-					<li><code>copy --state &lt;state name&gt;</code>: Copy the given <code>state name</code> version of files to destination.
-						When Bluehawk encounters a <code>state</code> command (see below), multiple versions of the source file
-						are spawned. Each version removes any code in state commands that are <strong>not</strong>
-						marked with the corresponding state name. This flag determines which version
-					to eventually write to disk.</li>
-					<li><code>snip</code>: Output snippet files only. Can be combined with <code>--state</code>.</li>
-					<li><code>list commands</code>: Display a list of available markup commands.</li>
-					<li><code>-d or --destination</code> defines the output location.</li>
-				</ul>
+				<p>Block commands use <code>:&lt;command&gt;-start:</code> and <code>:&lt;command&gt;-end:</code> to mark the beginning and end
+				of a spanned range of lines:</p>
+				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">a</span><span style="color: #000000"> = </span><span style="color: #098658">2</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">b</span><span style="color: #000000"> = </span><span style="color: #098658">3</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000"> = a * b;</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :remove-start:</span>
+<span style="color: #000000">    </span><span style="color: #795E26">assert</span><span style="color: #000000">(c == </span><span style="color: #098658">6</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :remove-end:</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello world!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>Some commands, like <code>remove</code> in the examples above, don&#39;t require any arguments at all.
+					Other commands, such as <code>snippet</code>, require a unique (to that file) identifier. Yet other
+					commands, such as <code>replace</code>, require an attribute list of JSON objects. Pass arguments to
+				commands by listing them after the command itself:</p>
+				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :snippet-start: multiply-abc</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">a</span><span style="color: #000000"> = </span><span style="color: #098658">2</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">b</span><span style="color: #000000"> = </span><span style="color: #098658">3</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000"> = a * b;</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :remove-start:</span>
+<span style="color: #000000">    </span><span style="color: #795E26">assert</span><span style="color: #000000">(c == </span><span style="color: #098658">6</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :remove-end:</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello world!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :snippet-end:</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<blockquote>
+					<p>💡 For a summary of all of the commands available in your local installation
+					of Bluehawk, run <code>bluehawk list commands</code>.</p>
+				</blockquote>
+				<a href="#snippet" id="snippet" style="color: inherit; text-decoration: none;">
+					<h3>Snippet</h3>
+				</a>
+				<p>The <code>snippet</code> command, also aliased as <code>code-block</code>, marks a range of content in a file
+					as a snippet. You can use the <a href="#snip">snip</a> CLI command to generate snippet files from
+				these snippets.</p>
+				<p>Because <code>snippet</code> operates on ranges of content, it is only available as
+				a block command. You must pass <code>snippet</code> an identifier.</p>
+				<p>Consider the following file:</p>
+				<p><code>Main.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :snippet-start: test-block</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello world!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :snippet-end:</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>Running the following command:</p>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">snip</span><span style="color: #000000"> </span><span style="color: #001080">Main</span><span style="color: #000000">.</span><span style="color: #001080">java</span><span style="color: #000000"> -</span><span style="color: #001080">d</span><span style="color: #000000"> .</span>
+</code></pre>
+				<p>Produces the following output:</p>
+				<p><code>Main.codeblock.test-block.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello world!&quot;</span><span style="color: #000000">);</span>
+</code></pre>
+				<a href="#state" id="state" style="color: inherit; text-decoration: none;">
+					<h3>State</h3>
+				</a>
+				<p>The <code>state</code> command marks a range of content in a file as part of a particular state.
+					You can use the <a href="#snip">snip</a> or <a href="#copy">copy</a> CLI commands with the <a href="#state">state</a>
+					flag to generate output files that contain only content from a specific named state.
+					When you use the <code>--state</code> flag to specify a state, all state blocks other than the
+					specified state are removed from the output. All content not in a state block is
+					unaffected and outputs normally. <code>state</code> can be helpful for managing tutorial code
+					with multiple steps, such as a &quot;start&quot; state that only contains <code>// TODO</code> and a
+				&quot;final&quot; state that contains completed implementation code.</p>
+				<p>Because <code>state</code> operates on ranges of content, it is only available as
+				a block command. You must pass <code>state</code> an identifier.</p>
+				<p>Consider the following file:</p>
+				<p><code>Main.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :snippet-start: example</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">example</span><span style="color: #000000"> = </span><span style="color: #098658">1</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-start: hello-world</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello world!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-end:</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-start: hello-user</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello user!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-end:</span>
+<span style="color: #000000">    example++;</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :snippet-end:</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>Running the following command:</p>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">snip</span><span style="color: #000000"> </span><span style="color: #001080">Main</span><span style="color: #000000">.</span><span style="color: #001080">java</span><span style="color: #000000"> -</span><span style="color: #001080">d</span><span style="color: #000000"> . --</span><span style="color: #001080">state</span><span style="color: #000000"> </span><span style="color: #001080">hello</span><span style="color: #000000">-</span><span style="color: #001080">user</span>
+</code></pre>
+				<p>Produces the following output:</p>
+				<p><code>Main.codeblock.example.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">example</span><span style="color: #000000"> = </span><span style="color: #098658">1</span><span style="color: #000000">;</span>
+<span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello user!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">example++;</span>
+</code></pre>
+				<p>Alternatively, running the following command:</p>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">snip</span><span style="color: #000000"> </span><span style="color: #001080">Main</span><span style="color: #000000">.</span><span style="color: #001080">java</span><span style="color: #000000"> -</span><span style="color: #001080">d</span><span style="color: #000000"> . --</span><span style="color: #001080">state</span><span style="color: #000000"> </span><span style="color: #001080">hello</span><span style="color: #000000">-</span><span style="color: #001080">world</span>
+</code></pre>
+				<p>Produces the following output:</p>
+				<p><code>Main.codeblock.example.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">example</span><span style="color: #000000"> = </span><span style="color: #098658">1</span><span style="color: #000000">;</span>
+<span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello world!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">example++;</span>
+</code></pre>
+				<a href="#state-uncomment" id="state-uncomment" style="color: inherit; text-decoration: none;">
+					<h3>State-Uncomment</h3>
+				</a>
+				<p>The <code>state-uncomment</code> command combines the <a href="#state">state</a> and <a href="#uncomment">uncomment</a>
+					commands. In terms of syntax, <code>state-uncomment</code> works exactly the same as <code>state</code>,
+					except one layer of commenting is removed from the entire state in produced output.
+					Use <code>state-uncomment</code> to prevent executable code in a state from actually executing
+				in the source code you use to produce output.</p>
+				<p>Because <code>state-uncomment</code> operates on ranges of content, it is only available as
+				a block command.</p>
+				<p>Consider the following file:</p>
+				<p><code>Main.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :snippet-start: add-or-subtract</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">example</span><span style="color: #000000"> = </span><span style="color: #098658">1</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-start: add-one</span>
+<span style="color: #000000">    example++;</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-end:</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state-uncomment-start: subtract-one</span>
+<span style="color: #000000">    </span><span style="color: #008000">//example--;</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :state--uncomment-end:</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Example: &quot;</span><span style="color: #000000"> + example);</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :snippet-end:</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>Running the following command:</p>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">snip</span><span style="color: #000000"> </span><span style="color: #001080">Main</span><span style="color: #000000">.</span><span style="color: #001080">java</span><span style="color: #000000"> -</span><span style="color: #001080">d</span><span style="color: #000000"> . --</span><span style="color: #001080">state</span><span style="color: #000000"> </span><span style="color: #001080">subtract</span><span style="color: #000000">-</span><span style="color: #001080">one</span>
+</code></pre>
+				<p>Produces the following output:</p>
+				<p><code>Main.codeblock.add-or-subtract.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">example</span><span style="color: #000000"> = </span><span style="color: #098658">1</span><span style="color: #000000">;</span>
+<span style="color: #000000">    example--;</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Example: &quot;</span><span style="color: #000000"> + example);</span>
+</code></pre>
+				<blockquote>
+					<p>💡 Note that Bluehawk has trimmed one layer of comments from the <code>hello-user</code>
+					state in the produced code block.</p>
+				</blockquote>
+				<p>With <code>state-uncomment</code>, you can create multiple valid end states but only run
+				one of those states when executing your source code.</p>
+				<a href="#uncomment" id="uncomment" style="color: inherit; text-decoration: none;">
+					<h3>Uncomment</h3>
+				</a>
+				<p>The <code>uncomment</code> command removes a single comment from the beginning of
+				each line of the spanned range in all output.</p>
+				<p>Because <code>uncomment</code> operates on ranges of content, it is only available as
+				a block command.</p>
+				<blockquote>
+					<p>💡 Comments are only specified in certain language types. For example, plaintext
+					does not have a comment syntax, so this command does nothing in plaintext.</p>
+				</blockquote>
+				<p>Consider the following file:</p>
+				<p><code>Main.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">example</span><span style="color: #000000"> = </span><span style="color: #098658">1</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :uncomment-start:</span>
+<span style="color: #000000">    </span><span style="color: #008000">//example--;</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :uncomment-end:</span>
+<span style="color: #000000">    example++;</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Example: &quot;</span><span style="color: #000000"> + example);</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>Running the following command:</p>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">copy</span><span style="color: #000000"> </span><span style="color: #001080">Main</span><span style="color: #000000">.</span><span style="color: #001080">java</span><span style="color: #000000"> -</span><span style="color: #001080">d</span><span style="color: #000000"> .</span>
+</code></pre>
+				<p>Produces the following output:</p>
+				<p><code>Main.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">example</span><span style="color: #000000"> = </span><span style="color: #098658">1</span><span style="color: #000000">;</span>
+<span style="color: #000000">    example--;</span>
+<span style="color: #000000">    example++;</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Example: &quot;</span><span style="color: #000000"> + example);</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#replace" id="replace" style="color: inherit; text-decoration: none;">
+					<h3>Replace</h3>
+				</a>
+				<p>The <code>replace</code> command accepts a JSON dictionary called &quot;terms&quot; as input
+					via an attribute list, and replaces occurrences string keys in the map within
+					the spanned range with their map values in all output. You can use
+					<code>replace</code> to hide implementation details like complicated class names
+				or API endpoint URLs in generated output.</p>
+				<p>Because <code>replace</code> operates on ranges of content, it is only available
+					as a block command. You must pass an attribute list containing &quot;terms&quot;,
+				a dictionary of strings to strings.</p>
+				<p>Consider the following file:</p>
+				<p><code>Main.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #008000">// :replace-start: {</span>
+<span style="color: #008000">//    &quot;terms&quot;: {</span>
+<span style="color: #008000">//       &quot;MyMainExample&quot;: &quot;Main&quot;,</span>
+<span style="color: #008000">//       &quot;www.example.com/rest/v1&quot;: &quot;YOUR_REST_ENDPOINT_HERE&quot;</span>
+<span style="color: #008000">//    }</span>
+<span style="color: #008000">// }</span>
+
+<span style="color: #008000">/*</span>
+<span style="color: #008000"> * MyMainExample -- a class that contains only a hello world main method</span>
+<span style="color: #008000"> * that defines a rest endpoint.</span>
+<span style="color: #008000"> */</span>
+<span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">MyMainExample</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #267F99">String</span><span style="color: #000000"> </span><span style="color: #001080">rest_endpoint</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello world!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    rest_endpoint = </span><span style="color: #A31515">&quot;www.example.com/rest/v1&quot;</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+<span style="color: #008000">// :replace-end:</span>
+</code></pre>
+				<p>Running the following command:</p>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">copy</span><span style="color: #000000"> </span><span style="color: #001080">Main</span><span style="color: #000000">.</span><span style="color: #001080">java</span><span style="color: #000000"> -</span><span style="color: #001080">d</span><span style="color: #000000"> .</span>
+</code></pre>
+				<p>Produces the following output:</p>
+				<p><code>Main.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #008000">/*</span>
+<span style="color: #008000"> * Main -- a class that contains only a hello world main method.</span>
+<span style="color: #008000"> */</span>
+<span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #267F99">String</span><span style="color: #000000"> </span><span style="color: #001080">rest_endpoint</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Hello world!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">    rest_endpoint = </span><span style="color: #A31515">&quot;YOUR_REST_ENDPOINT_HERE&quot;</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#emphasize" id="emphasize" style="color: inherit; text-decoration: none;">
+					<h3>Emphasize</h3>
+				</a>
+				<p>The <code>emphasize</code> command highlights marked lines in formatted output.
+					<code>emphasize</code> makes it easier to keep the correct lines highlighted
+					when you update code samples, because it calculates the highlighted
+				line numbers for you.</p>
+				<p>You can use <code>emphasize</code> as either a block command or a line command.</p>
+				<blockquote>
+					<p>💡 The emphasize command only applies to <a href="#format">formatted output</a>.
+					Use the <code>--format</code> flag with Bluehawk CLI to get formatted output.</p>
+				</blockquote>
+				<p>Consider the following file:</p>
+				<p><code>Main.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :code-block-start: modulo</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">dividend</span><span style="color: #000000"> = </span><span style="color: #098658">11</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">divisor</span><span style="color: #000000"> = </span><span style="color: #098658">3</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">modulus</span><span style="color: #000000"> = dividend % divisor; </span><span style="color: #008000">// :emphasize:</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(dividend + </span><span style="color: #A31515">&quot; % &quot;</span><span style="color: #000000"> + divisor + </span><span style="color: #A31515">&quot; = &quot;</span><span style="color: #000000"> + modulus);</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :code-block-end:</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>Running the following command:</p>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">snip</span><span style="color: #000000"> </span><span style="color: #001080">Main</span><span style="color: #000000">.</span><span style="color: #001080">java</span><span style="color: #000000"> -</span><span style="color: #001080">d</span><span style="color: #000000"> . --</span><span style="color: #001080">format</span><span style="color: #000000">=</span><span style="color: #001080">sphynx</span><span style="color: #000000">-</span><span style="color: #001080">rst</span>
+</code></pre>
+				<p>Produces the following output:</p>
+				<p><code>Main.codeblock.modulo.java.code-block.rst</code>:</p>
+				<pre><code class="language-rst">.. code-block:: java
+   :emphasize-lines: 3
+
+   int dividend = 11;
+   int divisor = 3;
+   int modulus = dividend % divisor;
+   System.out.println(dividend + &quot; % &quot; + divisor + &quot; = &quot; + modulus);
+</code></pre>
+				<a href="#remove" id="remove" style="color: inherit; text-decoration: none;">
+					<h3>Remove</h3>
+				</a>
+				<p>The <code>remove</code> command, also aliased as <code>hide</code>, removes the spanned
+					range from Bluehawk output. <code>remove</code> can be helpful for hiding
+				assertions and state setup from user-facing code samples.</p>
+				<p>You can use <code>remove</code> as either a block command or a
+				line command.</p>
+				<p>Consider the following file:</p>
+				<p><code>Main.java</code>:</p>
+				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :code-block-start: division</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">dividend</span><span style="color: #000000"> = </span><span style="color: #098658">11</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">divisor</span><span style="color: #000000"> = </span><span style="color: #098658">3</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #267F99">int</span><span style="color: #000000"> </span><span style="color: #001080">quotient</span><span style="color: #000000"> = dividend / divisor;</span>
+<span style="color: #000000">    </span><span style="color: #795E26">assert</span><span style="color: #000000">(quotient == </span><span style="color: #098658">3</span><span style="color: #000000">) </span><span style="color: #008000">// :remove:</span>
+<span style="color: #000000">    </span><span style="color: #001080">System</span><span style="color: #000000">.</span><span style="color: #001080">out</span><span style="color: #000000">.</span><span style="color: #795E26">println</span><span style="color: #000000">(dividend + </span><span style="color: #A31515">&quot; / &quot;</span><span style="color: #000000"> + divisor + </span><span style="color: #A31515">&quot; = &quot;</span><span style="color: #000000"> + quotient);</span>
+<span style="color: #000000">    </span><span style="color: #008000">// :code-block-end:</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>Running the following command:</p>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">snip</span><span style="color: #000000"> </span><span style="color: #001080">Main</span><span style="color: #000000">.</span><span style="color: #001080">java</span><span style="color: #000000"> -</span><span style="color: #001080">d</span><span style="color: #000000"> .</span>
+</code></pre>
+				<p>Produces the following output:</p>
+				<p><code>Main.codeblock.division.java</code>:</p>
+				<pre><code class="language-rst">int dividend = 11;
+int divisor = 3;
+int quotient = dividend / divisor;
+System.out.println(dividend + &quot; / &quot; + divisor + &quot; = &quot; + quotient);
+</code></pre>
+				<a href="#cli" id="cli" style="color: inherit; text-decoration: none;">
+					<h2>CLI</h2>
+				</a>
+				<a href="#commands" id="commands" style="color: inherit; text-decoration: none;">
+					<h3>Commands</h3>
+				</a>
+				<p>Use commands to generate different kinds of output with Bluehawk, including
+				code blocks, full files of code, and even error checks.</p>
+				<blockquote>
+					<p>💡 Commands for the Bluehawk CLI are not the same as
+						<a href="#bluehawk-commands">Bluehawk Commands</a>, the syntax
+					interpreted by Bluehawk to process input files.</p>
+				</blockquote>
+				<a href="#snip" id="snip" style="color: inherit; text-decoration: none;">
+					<h4>Snip</h4>
+				</a>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">snip</span><span style="color: #000000"> --</span><span style="color: #001080">destination</span><span style="color: #000000"> &lt;</span><span style="color: #001080">output</span><span style="color: #000000">-</span><span style="color: #001080">directory</span><span style="color: #000000">&gt; &lt;</span><span style="color: #267F99">input</span><span style="color: #000000">-</span><span style="color: #267F99">directory</span><span style="color: #000000">-</span><span style="color: #267F99">or</span><span style="color: #000000">-</span><span style="color: #267F99">file</span><span style="color: #000000">&gt;</span>
+</code></pre>
+				<p>Output &quot;snippet files&quot; that contain only the content of <code>code-block</code> or
+					<code>snippet</code> Bluehawk commands, named in the format
+					<code>&lt;source-file-name&gt;.codeblock.&lt;codeblock-name&gt;.&lt;source-file-extension&gt;</code>.
+					By default, this command generates snippets
+					that omit all <code>state</code> command contents. However,
+					you can use the <code>--state</code> flag to generate snippet files that include
+				content from a single state that you specify.</p>
+				<a href="#copy" id="copy" style="color: inherit; text-decoration: none;">
+					<h4>Copy</h4>
+				</a>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">copy</span><span style="color: #000000"> --</span><span style="color: #001080">destination</span><span style="color: #000000"> &lt;</span><span style="color: #001080">output</span><span style="color: #000000">-</span><span style="color: #001080">directory</span><span style="color: #000000">&gt; &lt;</span><span style="color: #267F99">input</span><span style="color: #000000">-</span><span style="color: #267F99">directory</span><span style="color: #000000">-</span><span style="color: #267F99">or</span><span style="color: #000000">-</span><span style="color: #267F99">file</span><span style="color: #000000">&gt;</span>
+</code></pre>
+				<p>Output full bluehawk-processed input files, in their original directory
+					structure, to destination directory. Binary files are copied without
+					Bluehawk processing. You can use the <code>--ignore</code> flag to add gitignore-style
+					ignore patterns that omit matched files from output.
+					By default, this command generates output files that omit all <code>state</code>.
+					However, you can use the <code>--state</code> flag to generate output files that
+				include content from a single state that you specify.</p>
+				<a href="#check" id="check" style="color: inherit; text-decoration: none;">
+					<h4>Check</h4>
+				</a>
+				<pre><code><span style="color: #001080">bluehawk</span><span style="color: #000000"> </span><span style="color: #001080">check</span><span style="color: #000000"> &lt;</span><span style="color: #001080">input</span><span style="color: #000000">-</span><span style="color: #001080">directory</span><span style="color: #000000">-</span><span style="color: #001080">or</span><span style="color: #000000">-</span><span style="color: #001080">file</span><span style="color: #000000">&gt;</span>
+</code></pre>
+				<p>Generates non-zero output if processing any input files generates a Bluehawk
+					error, zero output otherwise. Does not generate any files: instead, <code>check</code>
+				outputs directly to command line.</p>
+				<a href="#flags" id="flags" style="color: inherit; text-decoration: none;">
+					<h3>Flags</h3>
+				</a>
+				<p>You can use flags to tweak the output of Bluehawk.</p>
+				<a href="#ignore" id="ignore" style="color: inherit; text-decoration: none;">
+					<h4>Ignore</h4>
+				</a>
+				<p>Pass a pattern to the <code>--ignore</code> flag to omit any file that matches that
+					pattern from Bluehawk&#39;s input files. Bluehawk will not process or generate
+					output for any ignored file. You can use the <code>ignore</code> flag multiple times
+					in a single Bluehawk execution to ignore multiple patterns. <code>.gitignore</code> files
+				in the input directory tree are automatically used as ignore patterns.</p>
+				<a href="#state-1" id="state-1" style="color: inherit; text-decoration: none;">
+					<h4>State</h4>
+				</a>
+				<p>Pass a state&#39;s id to the <code>--state</code> flag to include only the contents of that
+				state, and no other states, in the generated output.</p>
+				<a href="#format" id="format" style="color: inherit; text-decoration: none;">
+					<h4>Format</h4>
+				</a>
+				<p>Pass the name of a markup syntax to the <code>--format</code> flag when generating snippets
+					to generate a formatted version of that snippet in the specified markup syntax.
+					This command currently only supports
+					<a href="https://en.wikipedia.org/wiki/ReStructuredText">reStructuredText</a> syntax using
+				the identifier <code>sphynx-rst</code>.</p>
 				<a href="#use-cases" id="use-cases" style="color: inherit; text-decoration: none;">
 					<h2>Use Cases</h2>
 				</a>
@@ -128,7 +526,7 @@
 <span style="color: #000000">}</span>
 </code></pre>
 				<p>You can now import this snippet into your documentation. Now you have the
-				benefit of tested examples that are still easy to read in the docs. </p>
+				benefit of tested examples that are still easy to read in the docs.</p>
 				<p>Bluehawk markup can go into any source file, so you don&#39;t need to rig every unit
 					test framework you use up to also extract code examples. Just use Bluehawk with
 					the unit test framework that suits your language and your project. Heck, you don&#39;t
@@ -167,7 +565,7 @@
 <span style="color: #008000">// :snippet-end:</span>
 <span style="color: #008000">// ... more code ...</span>
 </code></pre>
-				<p>Running <code>bluehawk copy</code> on this file with <code>--state start</code>  results in a copy of
+				<p>Running <code>bluehawk copy</code> on this file with <code>--state start</code> results in a copy of
 				<code>WelcomeViewController.swift</code> that looks something like this:</p>
 				<pre><code class="language-swift"><span style="color: #008000">// WelcomeViewController.swift</span>
 
@@ -200,52 +598,6 @@
 				<p>You can run Bluehawk on an entire directory, and each file in the repo will be
 					copied or transformed to the destination. This makes it easy to copy one state
 				of the entire tutorial source into another repo that learners can clone.</p>
-				<a href="#command-markup" id="command-markup" style="color: inherit; text-decoration: none;">
-					<h2>Command Markup</h2>
-				</a>
-				<p>When generating code blocks from a code file, use the following markup. Note: you
-					use either single-line commenting or block commenting for all tags to keep the
-				compiler happy.</p>
-				<table>
-					<thead>
-						<tr>
-							<th>Syntax</th>
-							<th>Description</th>
-						</tr>
-					</thead>
-					<tbody><tr>
-							<td><strong>:snippet-start:</strong> <em>id</em></td>
-							<td>Creates a new snippet file, which will be output as <code>&lt;sourcefilename&gt;.codeblock.&lt;id&gt;.&lt;source file extension&gt;</code></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><strong>:remove-start:</strong></td>
-							<td>The inner content will be removed from all output.</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><strong>:state-start:</strong> <em>state</em></td>
-							<td>Marks this content for removal from any state file except <em>state</em>.</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><strong>:state-uncomment-start:</strong> <em>state</em></td>
-							<td>Marks this content for removal from any state file except <em>state</em> and also removes up to one layer of comment tokens.</td>
-						</tr>
-				</tbody></table>
-				<p>All commands that end with <code>-start</code> have a corresponding <code>-end</code> command. You use
-					start and end commands to delineate blocks of content. Generally, the command
-				operates on the content within the block.</p>
-				<p>Use <code>bluehawk list commands</code> to list available commands.</p>
 				<a href="#plugins" id="plugins" style="color: inherit; text-decoration: none;">
 					<h2>Plugins</h2>
 				</a>
@@ -258,7 +610,7 @@
 <span style="color: #000000">    </span><span style="color: #001080">rules:</span><span style="color: #000000"> [],</span>
 <span style="color: #000000">    </span><span style="color: #795E26">process</span><span style="color: #001080">:</span><span style="color: #000000"> (</span><span style="color: #001080">request</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
 <span style="color: #000000">      </span><span style="color: #008000">// Execute command</span>
-<span style="color: #000000">    }</span>
+<span style="color: #000000">    },</span>
 <span style="color: #000000">  });</span>
 
 <span style="color: #000000">  </span><span style="color: #008000">// Register a document listener</span>
@@ -276,85 +628,10 @@
 				</a>
 				<pre><code class="language-sh"><span style="color: #000000">npm install bluehawk</span>
 </code></pre>
-				<a href="#how-to-run-bluehawk-from-source" id="how-to-run-bluehawk-from-source" style="color: inherit; text-decoration: none;">
-					<h2>How to Run Bluehawk from Source</h2>
+				<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
+					<h2>Contributing</h2>
 				</a>
-				<p>To build and run Bluehawk from source, clone this repo and install dependencies:</p>
-				<pre><code class="language-sh"><span style="color: #000000">npm install</span>
-</code></pre>
-				<p>To build, run:</p>
-				<pre><code><span style="color: #001080">npm</span><span style="color: #000000"> </span><span style="color: #001080">run</span><span style="color: #000000"> </span><span style="color: #001080">build</span>
-</code></pre>
-				<p>If compilation is successful, you can run bluehawk like so:</p>
-				<pre><code class="language-sh"><span style="color: #000000">node build/src/cli/main.js snip -d &lt;destination directory&gt; &lt;folder to </span><span style="color: #795E26">source</span><span style="color: #000000"> file or directory&gt;</span>
-</code></pre>
-				<p>Which you can alias as:</p>
-				<pre><code class="language-sh"><span style="color: #795E26">alias</span><span style="color: #000000"> bluehawk-dev=</span><span style="color: #A31515">&quot;node /path/to/bluehawk/build/src/cli/main.js&quot;</span>
-</code></pre>
-				<a href="#running-tests" id="running-tests" style="color: inherit; text-decoration: none;">
-					<h2>Running Tests</h2>
-				</a>
-				<p>This project uses Jest to test.</p>
-				<p>To run all tests, use:</p>
-				<pre><code class="language-sh"><span style="color: #000000">npm </span><span style="color: #795E26">test</span>
-</code></pre>
-				<p>To run the tests and get verbose output for all unit tests, use:</p>
-				<pre><code class="language-sh"><span style="color: #000000">npm run verbose</span>
-</code></pre>
-				<p>Additionally, you can get a Jest coverage report with:</p>
-				<pre><code class="language-sh"><span style="color: #000000">npm run coverage</span>
-</code></pre>
-				<p>You can also run tests with breakpoints in VS Code with F5. See .vscode/launch.json.</p>
-				<a href="#background" id="background" style="color: inherit; text-decoration: none;">
-					<h2>Background</h2>
-				</a>
-				<p>A concept originally lifted from another internal project called &quot;peekaboo&quot;, the
-					idea is that you can develop finalized code (say, a complete tutorial
-					application that runs), and then strip out parts that you want the learner to
-					figure out and code themselves. So, one code base (compiles, passes tests, etc.)
-					can be used to generate both a &quot;starter&quot; version for a learner and a &quot;final&quot;
-				version so they can check their work... or just download it and cheat.</p>
-				<p>Additionally, we needed a way to leave our code examples in compileable,
-				testable projects while extracting the relevant part to paste in our docs.</p>
-				<a href="#architecture" id="architecture" style="color: inherit; text-decoration: none;">
-					<h2>Architecture</h2>
-				</a>
-				<p><img src="https://raw.githubusercontent.com/mongodb-university/Bluehawk/main/architecture.png" alt="Graphical overview of the Bluehawk architecture" title="Bluehawk Architecture"></p>
-				<p>Bluehawk has three major components:</p>
-				<ul>
-					<li><strong>Client:</strong> loads files to be parsed and processed. Implements listeners that
-						decide what to do with results (e.g. save to file). Can add custom commands
-						and language specifications (i.e. comment syntax). The main client is the CLI,
-					but you can use Bluehawk as a library and implement your own clients.</li>
-					<li><strong>Parser:</strong> finds commands in a source file and diagnoses markup errors.</li>
-					<li><strong>Processor:</strong> executes commands on a source file to produce transformed documents.</li>
-				</ul>
-				<a href="#file-language-specific-tokens" id="file-language-specific-tokens" style="color: inherit; text-decoration: none;">
-					<h3>File Language-Specific Tokens</h3>
-				</a>
-				<p>The lexer can receive custom tokens for a given language to define comment
-					syntax. For example, plaintext has no comments, bash only has line comments
-					(#)<a href="https://stackoverflow.com/questions/32126653/how-does-end-work-in-bash-to-create-a-multi-line-comment-block">†</a>,
-					and C++ has line (//) and block (<code>/*</code>, <code>*/</code>) comments. Bluehawk is comment aware so
-					that it can correctly strip comments (when needed) and diagnose when commands
-				are halfway in a block comment.</p>
-				<a href="#command-tokens" id="command-tokens" style="color: inherit; text-decoration: none;">
-					<h3>Command Tokens</h3>
-				</a>
-				<p>&quot;:snippet-start:&quot;, &quot;:remove-start:&quot;, etc. are not keywords. Instead, the
-					lexer and parser detect [command], [command]-start, and [command]-end. It is up
-					to the visitor to determine whether the -start and -end command names match and
-					if the command name is understood by Bluehawk. This keeps the lexer and parser
-					simpler and allows for extensibility of Bluehawk as users could eventually
-				provide their own commands.</p>
-				<a href="#attribute-lists" id="attribute-lists" style="color: inherit; text-decoration: none;">
-					<h3>Attribute Lists</h3>
-				</a>
-				<p>The original Bluehawk spec document included the ability to provide a JSON
-					object after a block command to configure the block command&#39;s attributes. The
-					lexer has &quot;modes&quot; so after it encounters a block command, it goes into an
-					attribute mode, which will either accept the command identifier (i.e.
-				:some-command-start: this-is-the-identifier) or the attribute list JSON.</p>
+				<p>For more information about how to run, build, or test Bluehawk yourself, see <a href="CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
