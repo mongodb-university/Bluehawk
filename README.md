@@ -620,3 +620,7 @@ You can pass the --plugin flag multiple times to load different plugins or creat
 ```sh
 npm install bluehawk
 ```
+
+## Contributing
+
+For more information about how to run, build, or test Bluehawk yourself, see [CONTRIBUTING.md](CONTRIBUTING.md).
