@@ -400,7 +400,7 @@ public class Main {
 Running the following command:
 
 ```
-bluehawk snip Main.java -d . --format=sphynx-rst
+bluehawk snip Main.java -d . --format=rst
 ```
 
 Produces the following output:
@@ -534,7 +534,7 @@ Pass the name of a markup syntax to the `--format` flag when generating snippets
 to generate a formatted version of that snippet in the specified markup syntax.
 This command currently only supports
 [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) syntax using
-the identifier `sphynx-rst`.
+the identifier `rst`.
 
 ## Use Cases
 

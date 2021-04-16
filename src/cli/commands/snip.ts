@@ -16,7 +16,7 @@ interface SnipArgs extends MainArgs {
   destination: string;
   state?: string;
   ignore?: string | string[];
-  format?: "sphynx-rst";
+  format?: "rst";
 }
 
 export const doRst = async (
@@ -130,7 +130,7 @@ export const snip = async (args: SnipArgs): Promise<void> => {
     }
   });
 
-  if (format === "sphynx-rst") {
+  if (format === "rst") {
     // Define the handler for generating formatted snippet files.
     bluehawk.subscribe(async (result) => {
       const formattedCodeblock = await doRst(result);

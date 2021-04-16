@@ -41,7 +41,7 @@ describe("snip", () => {
       destination: destinationPath,
       state: undefined,
       ignore: undefined,
-      format: "sphynx-rst",
+      format: "rst",
       waitForListeners: true,
     });
 
@@ -108,7 +108,7 @@ line 9
       destination: destinationPath,
       state: undefined,
       ignore: undefined,
-      format: "sphynx-rst",
+      format: "rst",
       waitForListeners: true,
     });
 

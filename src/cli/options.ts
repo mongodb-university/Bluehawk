@@ -50,9 +50,12 @@ export function withGenerateFormattedCodeSnippetsOption<T>(
   yargs: Argv<T>
 ): Argv<T & { generateFormattedCodeSnippets?: string }> {
   return option(yargs, "format", {
+    requiresArg: true,
+    choices: ["rst"],
+    alias: "f",
     string: true,
     describe:
-      "generate code snippets with formatting, e.g. emphasized lines, specified language",
+      "generate code snippets with markup formatting, e.g. emphasized lines, specified language",
     once: true,
   });
 }
