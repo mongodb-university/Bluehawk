@@ -483,8 +483,7 @@ Output "snippet files" that contain only the content of `code-block` or
 `snippet` Bluehawk commands, named in the format
 `<source-file-name>.codeblock.<codeblock-name>.<source-file-extension>`.
 By default, this command generates snippets
-that include only the _last_ (chronologically ordered in your file)
-state listed for each group of `state` Bluehawk commands. However,
+that omit all `state` command contents. However,
 you can use the `--state` flag to generate snippet files that include
 content from a single state that you specify.
 
