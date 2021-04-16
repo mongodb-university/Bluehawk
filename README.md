@@ -101,7 +101,9 @@ public class Main {
 
 The `snippet` command, also aliased as `code-block`, marks a range of content in a file
 as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
-these snippets. Because `snippet` operates on ranges of content, it is only available as
+these snippets.
+
+Because `snippet` operates on ranges of content, it is only available as
 a block command. You must pass `snippet` an identifier.
 
 Consider the following file:
@@ -142,6 +144,7 @@ specified state are removed from the output. All content not in a state block is
 unaffected and outputs normally. `state` can be helpful for managing tutorial code
 with multiple steps, such as a "start" state that only contains `// TODO` and a
 "final" state that contains completed implementation code.
+
 Because `state` operates on ranges of content, it is only available as
 a block command. You must pass `state` an identifier.
 
@@ -206,6 +209,9 @@ except one layer of commenting is removed from the entire state in produced outp
 Use `state-uncomment` to prevent executable code in a state from actually executing
 in the source code you use to produce output.
 
+Because `state-uncomment` operates on ranges of content, it is only available as
+a block command.
+
 Consider the following file:
 
 `Main.java`:
@@ -253,6 +259,7 @@ one of those states when executing your source code.
 
 The `uncomment` command removes a single comment from the beginning of
 each line of the spanned range in all output.
+
 Because `uncomment` operates on ranges of content, it is only available as
 a block command.
 
@@ -303,8 +310,10 @@ The `replace` command accepts a JSON dictionary called "terms" as input
 via an attribute list, and replaces occurrences string keys in the map within
 the spanned range with their map values in all output. You can use
 `replace` to hide implementation details like complicated class names
-or API endpoint URLs in generated output. Because `replace` operates
-on ranges of content, it is only available as a block command.
+or API endpoint URLs in generated output.
+
+Because `replace` operates on ranges of content, it is only available
+as a block command.
 
 Consider the following file:
 
@@ -362,8 +371,9 @@ public class Main {
 The `emphasize` highlights marked lines in formatted output.
 `emphasize` makes it easier to keep the correct lines highlighted
 when you update code samples, because it calculates the highlighted
-line numbers for you. You can use `replace` as either a block command or a
-line command.
+line numbers for you.
+
+You can use `replace` as either a block command or a line command.
 
 > 💡 The emphasize command only applies to [formatted output](#format).
 > Use the `--format` flag with Bluehawk CLI to get formatted output.
@@ -411,6 +421,7 @@ Produces the following output:
 The `remove` command, also aliased as `hide`, removes the spanned
 range from Bluehawk output. `remove` can be helpful for hiding
 assertions and state setup from user-facing code samples.
+
 You can use `remove` as either a block command or a
 line command.
 
