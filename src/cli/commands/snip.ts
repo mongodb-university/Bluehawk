@@ -24,7 +24,7 @@ export const createFormattedCodeBlock = async (
   destination: string,
   format: string
 ): Promise<void> => {
-  if (format == "rst") {
+  if (format === "rst") {
     const formattedCodeblock = await formatInRst(result);
 
     const { document, parseResult } = result;
