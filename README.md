@@ -394,7 +394,6 @@ public class Main {
     // :code-block-end:
   }
 }
-// :replace-end:
 ```
 
 Running the following command:
