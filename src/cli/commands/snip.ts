@@ -19,7 +19,34 @@ interface SnipArgs extends MainArgs {
   format?: "rst";
 }
 
-export const doRst = async (
+export const createFormattedCodeBlock = async (
+  result: ProcessResult,
+  destination: string,
+  format: string
+): Promise<void> => {
+  let formattedCodeblock = undefined;
+  if (format == "rst") {
+    formattedCodeblock = await formatInRst(result);
+  }
+  if (formattedCodeblock === undefined) {
+    return; // format didn't match any formattings we know; cannot generate snippet
+  }
+  const { document, parseResult } = result;
+  const targetPath = path.join(
+    destination,
+    `${document.basename}.code-block.rst`
+  );
+
+  try {
+    await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+  } catch (error) {
+    console.error(
+      `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
+    );
+  }
+};
+
+export const formatInRst = async (
   result: ProcessResult
 ): Promise<string | undefined> => {
   const { document } = result;
@@ -127,26 +154,7 @@ export const snip = async (args: SnipArgs): Promise<void> => {
 
       // Create formatted snippet block
       if (format !== undefined) {
-        if (format === "rst") {
-          // eventually this should turn into a switch statement of supported markups
-          const formattedCodeblock = await doRst(result);
-          if (formattedCodeblock === undefined) {
-            return;
-          }
-          const { document, parseResult } = result;
-          const targetPath = path.join(
-            destination,
-            `${document.basename}.code-block.rst`
-          );
-
-          try {
-            await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
-          } catch (error) {
-            console.error(
-              `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
-            );
-          }
-        }
+        createFormattedCodeBlock(result, destination, format);
       }
     } catch (error) {
       console.error(
