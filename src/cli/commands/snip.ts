@@ -24,26 +24,23 @@ export const createFormattedCodeBlock = async (
   destination: string,
   format: string
 ): Promise<void> => {
-  let formattedCodeblock = undefined;
   if (format == "rst") {
-    formattedCodeblock = await formatInRst(result);
-  }
-  if (formattedCodeblock === undefined) {
-    return; // format didn't match any formattings we know; cannot generate snippet
-  }
-  const { document, parseResult } = result;
-  const targetPath = path.join(
-    destination,
-    `${document.basename}.code-block.rst`
-  );
+    const formattedCodeblock = await formatInRst(result);
 
-  try {
-    await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
-  } catch (error) {
-    console.error(
-      `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
+    const { document, parseResult } = result;
+    const targetPath = path.join(
+      destination,
+      `${document.basename}.code-block.rst`
     );
-  }
+
+    try {
+      await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+    } catch (error) {
+      console.error(
+        `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
+      );
+    }
+  } // add additional elses + "formatInLanguage" methods to handle other markup languages
 };
 
 export const formatInRst = async (
