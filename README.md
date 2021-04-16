@@ -313,7 +313,8 @@ the spanned range with their map values in all output. You can use
 or API endpoint URLs in generated output.
 
 Because `replace` operates on ranges of content, it is only available
-as a block command.
+as a block command. You must pass an attribute list containing "terms",
+a dictionary of strings to strings.
 
 Consider the following file:
 
