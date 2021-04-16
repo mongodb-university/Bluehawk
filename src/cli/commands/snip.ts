@@ -151,7 +151,7 @@ export const snip = async (args: SnipArgs): Promise<void> => {
 
       // Create formatted snippet block
       if (format !== undefined) {
-        createFormattedCodeBlock(result, destination, format);
+        await createFormattedCodeBlock(result, destination, format);
       }
     } catch (error) {
       console.error(
