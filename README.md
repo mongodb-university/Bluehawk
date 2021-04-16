@@ -355,7 +355,8 @@ Produces the following output:
 
 ```java
 /*
- * Main -- a class that contains only a hello world main method.
+ * Main -- a class that contains only a hello world main method
+ * that defines a rest endpoint.
  */
 public class Main {
   String rest_endpoint;
