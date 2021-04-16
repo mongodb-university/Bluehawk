@@ -191,4 +191,138 @@ realm.Write(() =>
 `)
     );
   });
+
+  it("handles state interplay", async () => {
+    const text = `// :code-block-start: content-view
+/// The main screen that determines whether to present the SyncContentView or the LocalOnlyContentView.
+// :state-start: local
+/// For now, it always displays the LocalOnlyContentView.
+// :state-end:
+@main
+struct ContentView: SwiftUI.App {
+  var body: some Scene {
+      WindowGroup {
+          // :state-start: sync
+          // :emphasize-start:
+          // Using Sync?
+          if let app = app {
+              SyncContentView(app: app)
+          // :emphasize-end:
+          } else {
+              LocalOnlyContentView()
+          }
+          // :state-end:
+          // :state-uncomment-start: local
+          // LocalOnlyContentView()
+          // :state-uncomment-end:
+      }
+  }
+}
+// :code-block-end:
+`;
+    const rootPath = "/path/to/project";
+    const destinationPathSync = "/stateAndEmphasize/sync";
+    const destinationPathLocal = "/stateAndEmphasize/local";
+    const testFileName = "test.swift";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(destinationPathSync, {
+      recursive: true,
+    });
+    await System.fs.mkdir(destinationPathLocal, {
+      recursive: true,
+    });
+    await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
+
+    await snip({
+      paths: [rootPath],
+      destination: destinationPathSync,
+      format: "rst",
+      state: "sync",
+    });
+    await snip({
+      paths: [rootPath],
+      destination: destinationPathLocal,
+      format: "rst",
+      state: "local",
+    });
+
+    let fileContentsSync = await System.fs.readFile(
+      Path.join(destinationPathSync, "test.codeblock.content-view.swift"),
+      "utf8"
+    );
+    // Verify states are working in non-rst version
+    expect(fileContentsSync).toStrictEqual(
+      `/// The main screen that determines whether to present the SyncContentView or the LocalOnlyContentView.
+@main
+struct ContentView: SwiftUI.App {
+  var body: some Scene {
+      WindowGroup {
+          // Using Sync?
+          if let app = app {
+              SyncContentView(app: app)
+          } else {
+              LocalOnlyContentView()
+          }
+      }
+  }
+}
+`
+    );
+    // Now check states for rst version
+    fileContentsSync = await System.fs.readFile(
+      Path.join(
+        destinationPathSync,
+        "test.codeblock.content-view.swift.code-block.rst"
+      ),
+      "utf8"
+    );
+    expect(fileContentsSync).toStrictEqual(
+      `.. code-block:: swift
+   :emphasize-lines: 6-8
+
+   /// The main screen that determines whether to present the SyncContentView or the LocalOnlyContentView.
+   @main
+   struct ContentView: SwiftUI.App {
+     var body: some Scene {
+         WindowGroup {
+             // Using Sync?
+             if let app = app {
+                 SyncContentView(app: app)
+             } else {
+                 LocalOnlyContentView()
+             }
+         }
+     }
+   }
+`
+    );
+
+    const fileContentsLocal = await System.fs.readFile(
+      Path.join(
+        destinationPathLocal,
+        "test.codeblock.content-view.swift.code-block.rst"
+      ),
+      "utf8"
+    );
+    // TODO: Expect this not to emphasize lines, since the :emphasize: command was
+    // completely in the other state
+    /*
+  expect(fileContentsLocal).toStrictEqual(
+    `.. code-block:: swift
+ /// The main screen that determines whether to present the SyncContentView or the LocalOnlyContentView.
+ /// For now, it always displays the LocalOnlyContentView.
+ @main
+ struct ContentView: SwiftUI.App {
+     var body: some Scene {
+         WindowGroup {
+             LocalOnlyContentView()
+         }
+     }
+ }
+ `);
+ */
+  });
 });

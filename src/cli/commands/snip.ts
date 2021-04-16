@@ -23,10 +23,7 @@ export const doRst = async (
   result: ProcessResult
 ): Promise<string | undefined> => {
   const { document } = result;
-  if (
-    document.attributes["snippet"] === undefined ||
-    document.attributes["emphasize"] === undefined
-  ) {
+  if (document.attributes["snippet"] === undefined) {
     return undefined;
   }
 
@@ -55,26 +52,30 @@ export const doRst = async (
   const rstEmphasizeModifier = ":emphasize-lines:";
 
   const rstEmphasizeRanges: { start: number; end: number }[] = [];
-  for (const range of emphasizeAttributes.ranges) {
-    const start = await document.getNewLocationFor(range.start);
-    const end = await document.getNewLocationFor(range.end);
-    if (start !== undefined && end !== undefined) {
-      rstEmphasizeRanges.push({ start: start.line, end: end.line });
+  let rstFormattedRanges = undefined;
+  if (emphasizeAttributes !== undefined) {
+    for (const range of emphasizeAttributes.ranges) {
+      const start = await document.getNewLocationFor(range.start);
+      const end = await document.getNewLocationFor(range.end);
+      if (start !== undefined && end !== undefined) {
+        rstEmphasizeRanges.push({ start: start.line, end: end.line });
+      }
     }
-  }
 
-  const rstFormattedRanges = rstEmphasizeRanges
-    .map((range) =>
-      range.start === range.end
-        ? `${range.start}`
-        : `${range.start}-${range.end}`
-    )
-    .join(", ");
+    rstFormattedRanges = rstEmphasizeRanges
+      .map((range) =>
+        range.start === range.end
+          ? `${range.start}`
+          : `${range.start}-${range.end}`
+      )
+      .join(", ");
+  }
 
   const formattedCodeblock = [
     `${rstHeader} ${rstLanguage}`,
-    `   ${rstEmphasizeModifier} ${rstFormattedRanges}`,
-    "", // empty line required between rst codeblock declaration and content
+    rstFormattedRanges === undefined
+      ? ``
+      : `   ${rstEmphasizeModifier} ${rstFormattedRanges}\n`,
     document.text
       .toString()
       .split(/\r\n|\r|\n/)
@@ -123,35 +124,36 @@ export const snip = async (args: SnipArgs): Promise<void> => {
     }
     try {
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
+
+      // Create formatted snippet block
+      if (format !== undefined) {
+        if (format === "rst") {
+          // eventually this should turn into a switch statement of supported markups
+          const formattedCodeblock = await doRst(result);
+          if (formattedCodeblock === undefined) {
+            return;
+          }
+          const { document, parseResult } = result;
+          const targetPath = path.join(
+            destination,
+            `${document.basename}.code-block.rst`
+          );
+
+          try {
+            await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+          } catch (error) {
+            console.error(
+              `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
+            );
+          }
+        }
+      }
     } catch (error) {
       console.error(
         `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
       );
     }
   });
-
-  if (format === "rst") {
-    // Define the handler for generating formatted snippet files.
-    bluehawk.subscribe(async (result) => {
-      const formattedCodeblock = await doRst(result);
-      if (formattedCodeblock === undefined) {
-        return;
-      }
-      const { document, parseResult } = result;
-      const targetPath = path.join(
-        destination,
-        `${document.basename}.code-block.rst`
-      );
-
-      try {
-        await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
-      } catch (error) {
-        console.error(
-          `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
-        );
-      }
-    });
-  }
 
   await bluehawk.parseAndProcess(paths, {
     ignore,
