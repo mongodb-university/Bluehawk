@@ -34,12 +34,65 @@ npm install -g bluehawk
 
 ## Bluehawk Commands
 
-Bluehawk **commands** come in two forms: _single-line_ and _block_. Single-line comments
-operate upon the next line, while block comments operate upon the span of lines between
-the start of the command and the end of the command, specified with `-start` and `-end`
-suffixes. You use either single-line commenting or block commenting for all tags. To avoid
-name clashing with various languages and markup frameworks, all Bluehawk commands begin
-and end with colons (`:`).
+Bluehawk **commands** come in two forms: _single-line_ and _block_. Single-line commands
+operate upon the current line, while block commands operate upon the span of lines between
+the start of the command and the end of the command. Since commands aren't valid syntax in
+most languages, you should place them in comments -- Bluehawk will still process them.
+To avoid name clashes with various languages and markup frameworks, all Bluehawk commands
+begin and end with colons (`:`). The following examples demonstrate the [remove](#remove)
+command in single-line and block forms:
+
+Single-line commands use `:<command>:` to markup a single line:
+
+```java
+public class Main {
+  public static void main(String[] args){
+    int a = 2;
+    int b = 3;
+    int c = a * b;
+    assert(c == 6); // :remove:
+    System.out.println("Hello world!");
+  }
+}
+```
+
+Block commands use `:<command>-start:` and `:<command>-end:` to mark the beginning and end
+of a spanned range of lines:
+
+```java
+public class Main {
+  public static void main(String[] args){
+    int a = 2;
+    int b = 3;
+    int c = a * b;
+    // :remove-start:
+    assert(c == 6);
+    // :remove-end:
+    System.out.println("Hello world!");
+  }
+}
+```
+
+Some commands, like `remove` in the examples above, don't require any arguments at all.
+Other commands, such as `snippet`, require a unique (to that file) identifier. Yet other
+commands, such as `replace`, require an attribute list of JSON objects. Pass arguments to
+commands by listing them after the command itself:
+
+```java
+public class Main {
+  public static void main(String[] args){
+    // :snippet-start: multiply-abc
+    int a = 2;
+    int b = 3;
+    int c = a * b;
+    // :remove-start:
+    assert(c == 6);
+    // :remove-end:
+    System.out.println("Hello world!");
+    // :snippet-end:
+  }
+}
+```
 
 > 💡 For a summary of all of the commands available in your local installation
 > of Bluehawk, run `bluehawk list commands`.
@@ -84,6 +137,11 @@ System.out.println("Hello world!");
 The `state` command marks a range of content in a file as part of a particular state.
 You can use the [snip](#snip) or [copy](#copy) CLI commands with the [state](#state)
 flag to generate output files that contain only content from a specific named state.
+When you use the `--state` flag to specify a state, all state blocks other than the
+specified state are removed from the output. All content not in a state block is
+unaffected and outputs normally. `state` can be helpful for managing tutorial code
+with multiple steps, such as a "start" state that only contains `// TODO` and a
+"final" state that contains completed implementation code.
 Because `state` operates on ranges of content, it is only available as
 a block command. You must pass `state` an identifier.
 
@@ -124,7 +182,7 @@ System.out.println("Hello user!");
 example++;
 ```
 
-Alternatively, Running the following command:
+Alternatively, running the following command:
 
 ```
 bluehawk snip Main.java -d . --state hello-world
@@ -198,6 +256,9 @@ each line of the spanned range in all output.
 Because `uncomment` operates on ranges of content, it is only available as
 a block command.
 
+> 💡 Comments are only specified in certain language types. For example, plaintext
+> does not have a comment syntax, so this command does nothing in plaintext.
+
 Consider the following file:
 
 `Main.java`:
@@ -238,9 +299,9 @@ public class Main {
 
 ### Replace
 
-The `replace` command accepts a JSON dictionary called "terms" as input,
-and replaces occurrences string keys in the map within the
-spanned range with their map values in all output. You can use
+The `replace` command accepts a JSON dictionary called "terms" as input
+via an attribute list, and replaces occurrences string keys in the map within
+the spanned range with their map values in all output. You can use
 `replace` to hide implementation details like complicated class names
 or API endpoint URLs in generated output. Because `replace` operates
 on ranges of content, it is only available as a block command.
@@ -298,15 +359,14 @@ public class Main {
 
 ### Emphasize
 
-The `emphasize` command only applies to [formatted](#format)
-output. When the `--format` flag is not used to generate formatted
-output, `emphasize` is discarded completely. When the `--format` flag
-is specified, Bluehawk highlights all lines marked with `emphasize`
-command in the specified markup language output. `emphasize` makes it
-easier to keep the correct lines highlighted when you update code
-samples, because it calculates the highlighted line numbers for you.
-You can use `replace` as either a block command or a
+The `emphasize` highlights marked lines in formatted output.
+`emphasize` makes it easier to keep the correct lines highlighted
+when you update code samples, because it calculates the highlighted
+line numbers for you. You can use `replace` as either a block command or a
 line command.
+
+> 💡 The emphasize command only applies to [formatted output](#format).
+> Use the `--format` flag with Bluehawk CLI to get formatted output.
 
 Consider the following file:
 
@@ -423,9 +483,12 @@ content from a single state that you specify.
 bluehawk copy --destination <output-directory> <input-directory-or-file>
 ```
 
-Output full bluehawk-processed input files to destination directory.
+Output full bluehawk-processed input files, in their original directory
+structure, to destination directory. Binary files are copied without
+Bluehawk processing. You can use the `--ignore` flag to add gitignore-style
+ignore patterns that omit matched files from output.
 By default, this command generates output files that omit all `state`.
-However, you can use `--state` flag to generate output files that
+However, you can use the `--state` flag to generate output files that
 include content from a single state that you specify.
 
 #### Check
@@ -447,7 +510,8 @@ You can use flags to tweak the output of Bluehawk.
 Pass a pattern to the `--ignore` flag to omit any file that matches that
 pattern from Bluehawk's input files. Bluehawk will not process or generate
 output for any ignored file. You can use the `ignore` flag multiple times
-in a single Bluehawk execution to ignore multiple patterns.
+in a single Bluehawk execution to ignore multiple patterns. `.gitignore` files
+in the input directory tree are automatically used as ignore patterns.
 
 #### State
 
