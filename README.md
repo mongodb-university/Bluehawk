@@ -369,12 +369,12 @@ public class Main {
 
 ### Emphasize
 
-The `emphasize` highlights marked lines in formatted output.
+The `emphasize` command highlights marked lines in formatted output.
 `emphasize` makes it easier to keep the correct lines highlighted
 when you update code samples, because it calculates the highlighted
 line numbers for you.
 
-You can use `replace` as either a block command or a line command.
+You can use `emphasize` as either a block command or a line command.
 
 > 💡 The emphasize command only applies to [formatted output](#format).
 > Use the `--format` flag with Bluehawk CLI to get formatted output.
