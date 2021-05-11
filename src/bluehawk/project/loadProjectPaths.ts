@@ -12,7 +12,8 @@ async function traverse(
   ig.add(ignores);
   const stats = await System.fs.lstat(absolutePath);
   const relativePath = path.relative(projectRoot, absolutePath);
-  if (stats.isFile() && !ig.ignores(relativePath)) {
+  // special handling for empty relativePath when a file is explicitly passed in
+  if (stats.isFile() && (relativePath ? !ig.ignores(relativePath) : true)) {
     return [relativePath];
   }
   if (!stats.isDirectory()) {
