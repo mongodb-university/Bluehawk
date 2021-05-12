@@ -18,11 +18,11 @@ async function traverse(
       if (ig.ignores(relativePath)) {
         return [];
       } else {
-        return [relativePath];
+        return [absolutePath];
       }
     }
     // special handling -- when run on individual files, bluehawk path already contains file name
-    return [""];
+    return [absolutePath];
   }
   if (!stats.isDirectory()) {
     return [];

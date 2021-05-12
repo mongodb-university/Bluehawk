@@ -112,30 +112,28 @@ export class Bluehawk {
       ignore,
     });
 
-    const promises = filePaths
-      .map((filePath) => Path.join(path, filePath))
-      .map(async (filePath) => {
-        try {
-          const blob = await System.fs.readFile(Path.resolve(filePath));
-          if (isBinary(filePath, blob)) {
-            onBinaryFile && (await onBinaryFile(filePath));
-            return;
-          }
-          const text = blob.toString("utf8");
-          const document = new Document({ text, path: filePath });
-          const result = this.parse(document);
-          if (result.errors.length !== 0) {
-            onErrors && onErrors(filePath, result.errors);
-            return;
-          }
-          await this.process(result, options);
-        } catch (e) {
-          console.error(`Encountered the following error while processing ${filePath}:
+    const promises = filePaths.map(async (filePath) => {
+      try {
+        const blob = await System.fs.readFile(Path.resolve(filePath));
+        if (isBinary(filePath, blob)) {
+          onBinaryFile && (await onBinaryFile(filePath));
+          return;
+        }
+        const text = blob.toString("utf8");
+        const document = new Document({ text, path: filePath });
+        const result = this.parse(document);
+        if (result.errors.length !== 0) {
+          onErrors && onErrors(filePath, result.errors);
+          return;
+        }
+        await this.process(result, options);
+      } catch (e) {
+        console.error(`Encountered the following error while processing ${filePath}:
 ${e.stack}
 
 This is probably a bug in Bluehawk. Please send this stack trace (and the contents of ${filePath}, if possible) to the Bluehawk development team at https://github.com/mongodb-university/Bluehawk/issues/new`);
-        }
-      });
+      }
+    });
 
     await Promise.allSettled(promises);
   };
