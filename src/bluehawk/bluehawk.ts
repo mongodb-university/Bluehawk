@@ -10,7 +10,6 @@ import {
 import { AnyCommand } from "./commands/Command";
 import { ParseResult } from "./parser/ParseResult";
 import { ParserStore } from "./parser/ParserStore";
-import * as Path from "path";
 import { IParser, LanguageSpecification } from "./parser";
 import { loadProjectPaths } from "./project";
 import { isBinaryFile } from "isbinaryfile";
