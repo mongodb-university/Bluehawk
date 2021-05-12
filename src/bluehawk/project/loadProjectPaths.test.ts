@@ -20,6 +20,21 @@ describe("loadProjectPaths", () => {
     expect(paths).toStrictEqual(["test/foo.txt"]);
   });
 
+  it("loads files", async () => {
+    System.fs.mkdir(Path.resolve("virtual/testProject/test/"), {
+      recursive: true,
+    });
+    System.fs.writeFile(
+      Path.resolve("virtual/testProject/test/foo.txt"),
+      "hello, world!"
+    );
+    const paths = await loadProjectPaths({
+      rootPath: "virtual/testProject/test/foo.txt",
+    });
+
+    expect(paths).toStrictEqual([""]);
+  });
+
   it("ignores specified paths", async () => {
     System.useJsonFs({
       "/path/to/project/a.txt": "",

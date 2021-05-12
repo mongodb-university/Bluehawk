@@ -12,9 +12,17 @@ async function traverse(
   ig.add(ignores);
   const stats = await System.fs.lstat(absolutePath);
   const relativePath = path.relative(projectRoot, absolutePath);
-  // special handling for empty relativePath when a file is explicitly passed in
-  if (stats.isFile() && (relativePath ? !ig.ignores(relativePath) : true)) {
-    return [relativePath];
+  if (stats.isFile()) {
+    // files nested at least one level within a project directory
+    if (relativePath !== "") {
+      if (ig.ignores(relativePath)) {
+        return [];
+      } else {
+        return [relativePath];
+      }
+    }
+    // special handling -- when run on individual files, bluehawk path already contains file name
+    return [""];
   }
   if (!stats.isDirectory()) {
     return [];
