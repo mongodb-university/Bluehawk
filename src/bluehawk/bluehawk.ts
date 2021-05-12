@@ -13,7 +13,7 @@ import { ParserStore } from "./parser/ParserStore";
 import * as Path from "path";
 import { IParser, LanguageSpecification } from "./parser";
 import { loadProjectPaths } from "./project";
-import { isBinary } from "istextorbinary";
+import { isBinaryFile } from "isbinaryfile";
 import { System } from "./io/System";
 import { OnBinaryFileFunction } from "./OnBinaryFileFunction";
 import { logErrorsToConsole, OnErrorFunction } from "./OnErrorFunction";
@@ -115,7 +115,8 @@ export class Bluehawk {
     const promises = filePaths.map(async (filePath) => {
       try {
         const blob = await System.fs.readFile(filePath);
-        if (isBinary(filePath, blob)) {
+        const stat = await System.fs.lstat(filePath);
+        if (await isBinaryFile(blob, stat.size)) {
           onBinaryFile && (await onBinaryFile(filePath));
           return;
         }
