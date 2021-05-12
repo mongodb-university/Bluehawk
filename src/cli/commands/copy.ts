@@ -15,6 +15,11 @@ export interface CopyArgs extends MainArgs {
   destination: string;
   state?: string;
   ignore?: string | string[];
+
+  /**
+    Hook for additional work after a binary file is processed.
+   */
+  onBinaryFile?(path: string): Promise<void> | void;
 }
 
 export const copy = async (args: CopyArgs): Promise<string[]> => {
@@ -49,6 +54,9 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
       const message = `Failed to copy file ${filePath} to ${targetPath}: ${error.message}`;
       console.error(message);
       errors.push(message);
+    } finally {
+      const { onBinaryFile } = args;
+      onBinaryFile && (await onBinaryFile(filePath));
     }
   };
 
@@ -121,18 +129,16 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
   return errors;
 };
 
-const commandModule: CommandModule<
-  MainArgs & { rootPath: string },
-  CopyArgs
-> = {
-  command: "copy <rootPath>",
-  builder: (yargs): Argv<CopyArgs> => {
-    return withIgnoreOption(withStateOption(withDestinationOption(yargs)));
-  },
-  handler: async (args: Arguments<CopyArgs>) => await copy(args),
-  aliases: [],
-  describe:
-    "clone source project to destination with Bluehawk commands processed",
-};
+const commandModule: CommandModule<MainArgs & { rootPath: string }, CopyArgs> =
+  {
+    command: "copy <rootPath>",
+    builder: (yargs): Argv<CopyArgs> => {
+      return withIgnoreOption(withStateOption(withDestinationOption(yargs)));
+    },
+    handler: async (args: Arguments<CopyArgs>) => await copy(args),
+    aliases: [],
+    describe:
+      "clone source project to destination with Bluehawk commands processed",
+  };
 
 export default commandModule;
