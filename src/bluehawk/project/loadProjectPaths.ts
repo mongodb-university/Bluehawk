@@ -19,10 +19,10 @@ async function traverse(
     }
     if (ig.ignores(relativePath)) {
       return [];
-    } else {
-      return [absolutePath];
     }
-  } else if (!stats.isDirectory()) {
+    return [absolutePath];
+  }
+  if (!stats.isDirectory()) {
     return [];
   }
 
