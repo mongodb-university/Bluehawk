@@ -114,7 +114,7 @@ export class Bluehawk {
 
     const promises = filePaths.map(async (filePath) => {
       try {
-        const blob = await System.fs.readFile(Path.resolve(filePath));
+        const blob = await System.fs.readFile(filePath);
         if (isBinary(filePath, blob)) {
           onBinaryFile && (await onBinaryFile(filePath));
           return;

@@ -8,16 +8,20 @@ async function traverse(
   projectRoot: string,
   ignores: string[]
 ): Promise<string[]> {
-  if (absolutePath === projectRoot) {
-    // special handling -- when run on individual files, bluehawk path already contains file name
-    return [absolutePath];
-  }
   const ig = ignore();
   ig.add(ignores);
   const stats = await System.fs.lstat(absolutePath);
   const relativePath = path.relative(projectRoot, absolutePath);
-  if (stats.isFile() && !ig.ignores(relativePath)) {
-    return [absolutePath];
+  if (stats.isFile()) {
+    if (absolutePath === projectRoot) {
+      // special handling -- when run on individual files, bluehawk path already contains file name
+      return [absolutePath];
+    }
+    if (ig.ignores(relativePath)) {
+      return [];
+    } else {
+      return [absolutePath];
+    }
   } else if (!stats.isDirectory()) {
     return [];
   }
