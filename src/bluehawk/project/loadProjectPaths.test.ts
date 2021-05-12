@@ -17,7 +17,27 @@ describe("loadProjectPaths", () => {
       rootPath: "virtual/testProject",
     });
 
-    expect(paths).toStrictEqual(["test/foo.txt"]);
+    // paths actually contain full filesystem path, so just checking the suffix
+    expect(paths[0].endsWith("test/foo.txt")).toBeTruthy();
+  });
+
+  it("loads files", async () => {
+    System.fs.mkdir(Path.resolve("/path/to/project/test/"), {
+      recursive: true,
+    });
+    System.fs.writeFile(
+      Path.resolve("/path/to/project/test/foo.txt"),
+      "hello, world!"
+    );
+    const paths = await loadProjectPaths({
+      rootPath: "/path/to/project/test/foo.txt",
+    });
+
+    expect(
+      await loadProjectPaths({
+        rootPath: "/path/to/project",
+      })
+    ).toStrictEqual(["/path/to/project/test/foo.txt"]);
   });
 
   it("ignores specified paths", async () => {
@@ -36,13 +56,13 @@ describe("loadProjectPaths", () => {
         rootPath: "/path/to/project",
       })
     ).toStrictEqual([
-      "a.txt",
-      "b.txt",
-      "c.json",
-      "d.json",
-      "foo/d.json",
-      "foo/d.txt",
-      "foo/e.txt",
+      "/path/to/project/a.txt",
+      "/path/to/project/b.txt",
+      "/path/to/project/c.json",
+      "/path/to/project/d.json",
+      "/path/to/project/foo/d.json",
+      "/path/to/project/foo/d.txt",
+      "/path/to/project/foo/e.txt",
     ]);
 
     expect(
@@ -50,28 +70,48 @@ describe("loadProjectPaths", () => {
         rootPath: "/path/to/project",
         ignore: "*.txt",
       })
-    ).toStrictEqual(["c.json", "d.json", "foo/d.json"]);
+    ).toStrictEqual([
+      "/path/to/project/c.json",
+      "/path/to/project/d.json",
+      "/path/to/project/foo/d.json",
+    ]);
 
     expect(
       await loadProjectPaths({
         rootPath: "/path/to/project",
         ignore: "**/*.json",
       })
-    ).toStrictEqual(["a.txt", "b.txt", "foo/d.txt", "foo/e.txt"]);
+    ).toStrictEqual([
+      "/path/to/project/a.txt",
+      "/path/to/project/b.txt",
+      "/path/to/project/foo/d.txt",
+      "/path/to/project/foo/e.txt",
+    ]);
 
     expect(
       await loadProjectPaths({
         rootPath: "/path/to/project",
         ignore: ["d.*"],
       })
-    ).toStrictEqual(["a.txt", "b.txt", "c.json", "foo/e.txt"]);
+    ).toStrictEqual([
+      "/path/to/project/a.txt",
+      "/path/to/project/b.txt",
+      "/path/to/project/c.json",
+      "/path/to/project/foo/e.txt",
+    ]);
 
     expect(
       await loadProjectPaths({
         rootPath: "/path/to/project",
         ignore: "foo/*.txt",
       })
-    ).toStrictEqual(["a.txt", "b.txt", "c.json", "d.json", "foo/d.json"]);
+    ).toStrictEqual([
+      "/path/to/project/a.txt",
+      "/path/to/project/b.txt",
+      "/path/to/project/c.json",
+      "/path/to/project/d.json",
+      "/path/to/project/foo/d.json",
+    ]);
   });
 
   it("ignores gitignored paths", async () => {
@@ -101,11 +141,11 @@ foo/
         rootPath: "/path/to/project",
       })
     ).toStrictEqual([
-      ".gitignore",
+      "/path/to/project/.gitignore",
       // "a.txt", // ignored
-      "b.txt",
-      "bar/.gitignore",
-      "bar/bar.txt",
+      "/path/to/project/b.txt",
+      "/path/to/project/bar/.gitignore",
+      "/path/to/project/bar/bar.txt",
       // "bar/a.gif",
       // "c.json", // ignored
       // "d.json", // ignored
