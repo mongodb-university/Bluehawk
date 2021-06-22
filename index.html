@@ -128,7 +128,7 @@
 </code></pre>
 				<p>Some commands, like <code>remove</code> in the examples above, don&#39;t require any arguments at all.
 					Other commands, such as <code>snippet</code>, require a unique (to that file) identifier. Yet other
-					commands, such as <code>replace</code>, require an attribute list of JSON objects. Pass arguments to
+					commands, such as <code>replace</code>, require an <a href="#attribute-lists">attribute list</a> of JSON objects. Pass arguments to
 				commands by listing them after the command itself:</p>
 				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
 <span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">static</span><span style="color: #000000"> </span><span style="color: #267F99">void</span><span style="color: #000000"> </span><span style="color: #795E26">main</span><span style="color: #000000">(</span><span style="color: #267F99">String</span><span style="color: #000000">[] </span><span style="color: #001080">args</span><span style="color: #000000">){</span>
@@ -148,6 +148,17 @@
 					<p>💡 For a summary of all of the commands available in your local installation
 					of Bluehawk, run <code>bluehawk list commands</code>.</p>
 				</blockquote>
+				<a href="#attribute-lists" id="attribute-lists" style="color: inherit; text-decoration: none;">
+					<h3>Attribute Lists</h3>
+				</a>
+				<p>Attribute lists are JSON objects that contain additional information about a command.
+					They must use double quotes for fields, and the opening line of an attribute list
+				must appear on the same line as the command itself.</p>
+				<pre><code class="language-java"><span style="color: #008000">// :command: {</span>
+<span style="color: #008000">//    &quot;field&quot;: &quot;value&quot;</span>
+<span style="color: #008000">// }</span>
+<span style="color: #008000">// :replace-end:</span>
+</code></pre>
 				<a href="#snippet" id="snippet" style="color: inherit; text-decoration: none;">
 					<h3>Snippet</h3>
 				</a>
@@ -185,7 +196,10 @@
 					with multiple steps, such as a &quot;start&quot; state that only contains <code>// TODO</code> and a
 				&quot;final&quot; state that contains completed implementation code.</p>
 				<p>Because <code>state</code> operates on ranges of content, it is only available as
-				a block command. You must pass <code>state</code> an identifier.</p>
+					a block command. You must pass <code>state</code> at <em>least one</em> identifier, which determines
+					the name of the state or states that the block belongs to. You can pass
+					in a list of identifiers either through a space-separated list directly after
+				the command itself, or through the <code>id</code> field of an <a href="#attribute-lists">attribute list</a>.</p>
 				<p>Consider the following file:</p>
 				<p><code>Main.java</code>:</p>
 				<pre><code class="language-java"><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">Main</span><span style="color: #000000"> {</span>
