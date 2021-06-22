@@ -1,7 +1,8 @@
 import { createToken, Lexer } from "chevrotain";
 import { PayloadQuery, makePayloadPattern } from "./makePayloadPattern";
 
-export const JSON_STRING_LITERAL_PATTERN = /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/;
+export const JSON_STRING_LITERAL_PATTERN =
+  /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/;
 
 const LineComment = createToken({
   name: "LineComment",

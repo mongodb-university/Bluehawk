@@ -11,7 +11,7 @@ describe("JSON attribute lists", () => {
   ]);
   const { lexer } = parser;
   const source = new Document({
-        text: "mock",
+    text: "mock",
     path: "mock",
   });
 

@@ -79,8 +79,7 @@ export class ParserStore {
 // Remove a leading dot from the extension and make it lowercase for case
 // insensitivity
 function normalize(extension: string): string {
-  return (/^\./.test(extension)
-    ? extension.substring(1)
-    : extension
+  return (
+    /^\./.test(extension) ? extension.substring(1) : extension
   ).toLowerCase();
 }

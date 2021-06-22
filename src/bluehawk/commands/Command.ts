@@ -83,13 +83,14 @@ export function makeBlockOrLineCommand<AttributesType>(
 
 // Helper for commands that require IDs in the attributes only
 export type IdRequiredAttributes = { id: string };
-export const IdRequiredAttributesSchema: JSONSchemaType<IdRequiredAttributes> = {
-  type: "object",
-  required: ["id"],
-  properties: {
-    id: { type: "string" },
-  },
-};
+export const IdRequiredAttributesSchema: JSONSchemaType<IdRequiredAttributes> =
+  {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "string" },
+    },
+  };
 
 export type NoAttributes = null;
 export const NoAttributesSchema: JSONSchemaType<NoAttributes> = {
