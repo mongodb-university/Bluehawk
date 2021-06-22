@@ -27,12 +27,8 @@ const makeSticky = (re: RegExp): RegExp => {
 export function makeParser(
   languageSpecification: LanguageSpecification
 ): IParser {
-  const {
-    lineComments,
-    blockComments,
-    stringLiterals,
-    parserPushers,
-  } = languageSpecification;
+  const { lineComments, blockComments, stringLiterals, parserPushers } =
+    languageSpecification;
   const languageTokens = [
     ...(lineComments ?? []).map(makeSticky).map(makeLineCommentToken),
     ...(blockComments ?? [])

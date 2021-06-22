@@ -40,16 +40,14 @@ async function traverse(
     // no gitignore -- oh well
   }
   const files = await System.fs.readdir(absolutePath);
-  const promises = files.map(
-    async (file): Promise<string[]> => {
-      const absoluteSubpath = path.join(absolutePath, file);
-      const relativeSubpath = path.relative(projectRoot, absoluteSubpath);
-      if (ig.ignores(relativeSubpath)) {
-        return [];
-      }
-      return await traverse(absoluteSubpath, projectRoot, [...ignores]);
+  const promises = files.map(async (file): Promise<string[]> => {
+    const absoluteSubpath = path.join(absolutePath, file);
+    const relativeSubpath = path.relative(projectRoot, absoluteSubpath);
+    if (ig.ignores(relativeSubpath)) {
+      return [];
     }
-  );
+    return await traverse(absoluteSubpath, projectRoot, [...ignores]);
+  });
   return (await Promise.all(promises)).flat();
 }
 

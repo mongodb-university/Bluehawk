@@ -3,7 +3,7 @@ import { Document } from "./Document";
 describe("Document", () => {
   it("maps original locations to new", async (done) => {
     const document = new Document({
-            path: "",
+      path: "",
       text: `line1
 line2
 line3
