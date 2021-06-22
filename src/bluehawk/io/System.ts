@@ -24,7 +24,7 @@ export const System = {
   */
   useJsonFs(directoryJson: DirectoryJSON) {
     const fsFromVolume = createFsFromVolume(Volume.fromJSON(directoryJson));
-    System.fs = (fsFromVolume.promises as unknown) as typeof fs.promises;
+    System.fs = fsFromVolume.promises as unknown as typeof fs.promises;
   },
 
   useRealfs() {

@@ -42,7 +42,7 @@ CC
 
 describe("multilang", () => {
   const someSource = new Document({
-        path: "mock",
+    path: "mock",
     text: "mock",
   });
   const parser = new RootParser([

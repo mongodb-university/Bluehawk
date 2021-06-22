@@ -139,10 +139,10 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
 
   it("throws on malformed schema", () => {
     expect(() => {
-      makeAttributesConformToJsonSchemaRule(({
+      makeAttributesConformToJsonSchemaRule({
         type: "badType",
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any) as JSONSchemaType<MyType>);
+      } as any as JSONSchemaType<MyType>);
     }).toThrow(
       "schema is invalid: data/type should be equal to one of the allowed values, data/type should be array, data/type should match some schema in anyOf"
     );
