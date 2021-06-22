@@ -217,7 +217,7 @@ the quick brown fox jumped
 
   test("does not throw an error when attributes list contains an id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start: { "id": "uniqueid" }
+// :code-block-start: { "id": ["uniqueid"] }
 the quick brown fox jumped
 // :code-block-end:
 
@@ -237,7 +237,7 @@ the quick brown fox jumped
 
   test("throws an error when attributes list contains an id that duplicates another block's id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start: { "id": "totallyuniqueid" }
+// :code-block-start: { "id": ["totallyuniqueid"] }
 the quick brown fox jumped
 // :code-block-end:
 
@@ -259,8 +259,31 @@ the quick brown fox jumped
     expect(errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 102,
+      offset: 104,
     });
+  });
+
+  test("throws an error a command that should only accept one id accepts more than one id", () => {
+    const tokens = lexer.tokenize(`
+// :code-block-start: id1 id2
+the quick brown fox jumped
+// :code-block-end:
+
+// :code-block-start: totallyuniqueid
+the quick brown fox jumped
+// :code-block-end:
+`);
+    expect(tokens.errors.length).toBe(0);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst, source);
+    const errors = validateCommands(result.commandNodes, commandProcessors);
+    expect(errors.length).toBe(1);
+    expect(errors[0].message).toStrictEqual(
+      "attribute list for 'code-block' command/id should NOT have more than 1 items"
+    );
   });
 
   it("validates block or line mode support on commands", () => {

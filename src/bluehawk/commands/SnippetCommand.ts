@@ -2,6 +2,7 @@ import MagicString from "magic-string";
 import { BlockCommandNode } from "../parser/CommandNode";
 import { ProcessRequest } from "../processor/Processor";
 import { idIsUnique } from "../processor/validator";
+import { strict as assert } from "assert";
 import {
   makeBlockCommand,
   IdRequiredAttributes,
@@ -84,14 +85,17 @@ export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
     // Dedent
     dedentRange(clonedSnippet, commandNode);
 
+    // ID is required, so it should exist
+    assert(commandNode.id !== undefined && commandNode.id.length > 0);
+
     // Fork subset code block to another file
     fork({
       document,
       commandNodes: commandNode.children ?? [],
-      newPath: document.pathWithInfix(`codeblock.${commandNode.id}`),
+      newPath: document.pathWithInfix(`codeblock.${commandNode.id[0]}`),
       newText: clonedSnippet,
       newAttributes: {
-        snippet: commandNode.id,
+        snippet: commandNode.id[0],
       },
     });
   },

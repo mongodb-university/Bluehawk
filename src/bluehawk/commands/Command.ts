@@ -81,15 +81,32 @@ export function makeBlockOrLineCommand<AttributesType>(
   return { ...command, supportsLineMode: true, supportsBlockMode: true };
 }
 
-// Helper for commands that require IDs in the attributes only
-export type IdRequiredAttributes = { id: string };
-export const IdRequiredAttributesSchema: JSONSchemaType<IdRequiredAttributes> = {
-  type: "object",
-  required: ["id"],
-  properties: {
-    id: { type: "string" },
-  },
-};
+// Helper for commands that require one and only one id
+export type IdRequiredAttributes = { id: string[] };
+export const IdRequiredAttributesSchema: JSONSchemaType<IdRequiredAttributes> =
+  {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: {
+        type: "array",
+        items: { type: "string" },
+        minItems: 1,
+        maxItems: 1,
+      },
+    },
+  };
+
+// Helper for commands that require at least one id
+export type IdsRequiredAttributes = { id: string[] };
+export const IdsRequiredAttributesSchema: JSONSchemaType<IdsRequiredAttributes> =
+  {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "array", items: { type: "string" }, minItems: 1 },
+    },
+  };
 
 export type NoAttributes = null;
 export const NoAttributesSchema: JSONSchemaType<NoAttributes> = {

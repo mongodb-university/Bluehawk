@@ -66,7 +66,7 @@ command
   : blockCommand | Command
 
 commandAttribute
-  : Identifier | attributeList
+  : (Identifier)+ | attributeList
 
 lineComment
   : LineComment (Command | LineComment | BlockCommentStart | BlockCommentEnd)*
@@ -179,7 +179,7 @@ export class RootParser extends CstParser {
 
     this.RULE("commandAttribute", () => {
       this.OR([
-        { ALT: () => this.CONSUME(Identifier) },
+        { ALT: () => this.AT_LEAST_ONE(() => this.CONSUME(Identifier)) },
         { ALT: () => this.SUBRULE(this.attributeList) },
       ]);
     });
@@ -279,25 +279,23 @@ export class RootParser extends CstParser {
       errors: [
         ...tokenErrors,
         ...this._bluehawkErrors,
-        ...this.errors.map(
-          (error): BluehawkError => {
-            // Retrieve the error location from the message because I can't seem
-            // to find it on the actual error object.
-            const lineColumnOffset = /^([0-9]+):([0-9]+)\(([0-9]+)\)/
-              .exec(error?.message)
-              ?.map((result) => parseInt(result)) ?? [-1, -1, -1, -1];
-            const [, line, column, offset] = lineColumnOffset;
-            return {
-              component: "parser",
-              location: {
-                line,
-                column,
-                offset,
-              },
-              message: error.message,
-            };
-          }
-        ),
+        ...this.errors.map((error): BluehawkError => {
+          // Retrieve the error location from the message because I can't seem
+          // to find it on the actual error object.
+          const lineColumnOffset = /^([0-9]+):([0-9]+)\(([0-9]+)\)/
+            .exec(error?.message)
+            ?.map((result) => parseInt(result)) ?? [-1, -1, -1, -1];
+          const [, line, column, offset] = lineColumnOffset;
+          return {
+            component: "parser",
+            location: {
+              line,
+              column,
+              offset,
+            },
+            message: error.message,
+          };
+        }),
       ],
     };
   }
