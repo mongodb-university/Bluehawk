@@ -66,7 +66,7 @@ command
   : blockCommand | Command
 
 commandAttribute
-  : Identifier | attributeList
+  : (Identifier)+ | attributeList
 
 lineComment
   : LineComment (Command | LineComment | BlockCommentStart | BlockCommentEnd)*
@@ -179,7 +179,7 @@ export class RootParser extends CstParser {
 
     this.RULE("commandAttribute", () => {
       this.OR([
-        { ALT: () => this.CONSUME(Identifier) },
+        { ALT: () => this.AT_LEAST_ONE(() => this.CONSUME(Identifier)) },
         { ALT: () => this.SUBRULE(this.attributeList) },
       ]);
     });

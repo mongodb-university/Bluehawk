@@ -130,7 +130,11 @@ annotated text
     expect(result.errors).toStrictEqual([]);
     expect(result.commandNodes[0].commandName).toBe("A");
     expect((result.commandNodes[0].children ?? []).length).toBe(0);
-    expect(result.commandNodes[0].id).toBe("label");
+    expect(
+      result.commandNodes[0].id !== undefined &&
+        result.commandNodes[0].id.length == 1 &&
+        result.commandNodes[0].id[0]
+    ).toBe("label");
   });
 
   it("detects comment context on line commands", () => {

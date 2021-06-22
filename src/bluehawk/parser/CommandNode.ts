@@ -30,7 +30,7 @@ interface CommandNode {
 
   // Returns the id found in the attributes list or directly after the block
   // command.
-  id?: string;
+  id?: string[];
 
   // Block commands have an inner range that includes the lines between the
   // attribute list and the end command token.
@@ -90,7 +90,7 @@ export class CommandNodeImpl implements CommandNode {
   lineRange: Range;
 
   // Only available in block commands
-  get id(): string | undefined {
+  get id(): string[] | undefined {
     return this.attributes?.id;
   }
   contentRange?: Range;

@@ -74,7 +74,15 @@ export const idIsUnique: Rule = (
 ) => {
   if (commandNode.id !== undefined) {
     // if the command id already exists in the set of command ids, create a duplicate error
-    if (result.commandsById.has(commandNode.id)) {
+    const union = [
+      ...new Set([
+        ...Array.from(result.commandsById.keys()),
+        ...commandNode.id,
+      ]),
+    ];
+    // if the union of the seen ids and the current node's ids has fewer elements than the length of those in total... duplicate
+    if (union.length != result.commandsById.size + commandNode.id.length) {
+      // (result.commandsById.has(commandNode.id)) {
       result.errors.push({
         component: "validator",
         location: commandNode.range.start,
@@ -82,7 +90,9 @@ export const idIsUnique: Rule = (
       });
     } else {
       // otherwise, add the command id to the set
-      result.commandsById.set(commandNode.id, commandNode);
+      commandNode.id.forEach((id) => {
+        result.commandsById.set(id, commandNode);
+      });
     }
   }
 };

@@ -75,7 +75,7 @@ public class Main {
 
 Some commands, like `remove` in the examples above, don't require any arguments at all.
 Other commands, such as `snippet`, require a unique (to that file) identifier. Yet other
-commands, such as `replace`, require an attribute list of JSON objects. Pass arguments to
+commands, such as `replace`, require an [attribute list](#attribute-lists) of JSON objects. Pass arguments to
 commands by listing them after the command itself:
 
 ```java
@@ -96,6 +96,19 @@ public class Main {
 
 > 💡 For a summary of all of the commands available in your local installation
 > of Bluehawk, run `bluehawk list commands`.
+
+### Attribute Lists
+
+Attribute lists are JSON objects that contain additional information about a command.
+They must use double quotes for fields, and the opening line of an attribute list
+must appear on the same line as the command itself.
+
+```java
+// :command: {
+//    "field": "value"
+// }
+// :replace-end:
+```
 
 ### Snippet
 
@@ -146,7 +159,10 @@ with multiple steps, such as a "start" state that only contains `// TODO` and a
 "final" state that contains completed implementation code.
 
 Because `state` operates on ranges of content, it is only available as
-a block command. You must pass `state` an identifier.
+a block command. You must pass `state` at _least one_ identifier, which determines
+the name of the state or states that the block belongs to. You can pass
+in a list of identifiers either through a space-separated list directly after
+the command itself, or through the `id` field of an [attribute list](#attribute-lists).
 
 Consider the following file:
 
