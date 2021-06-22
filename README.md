@@ -75,7 +75,7 @@ public class Main {
 
 Some commands, like `remove` in the examples above, don't require any arguments at all.
 Other commands, such as `snippet`, require a unique (to that file) identifier. Yet other
-commands, such as `replace`, require an [attribute list](#attribute lists) of JSON objects. Pass arguments to
+commands, such as `replace`, require an [attribute list](#attribute-lists) of JSON objects. Pass arguments to
 commands by listing them after the command itself:
 
 ```java
