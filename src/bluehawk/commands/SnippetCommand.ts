@@ -85,7 +85,7 @@ export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
     // Dedent
     dedentRange(clonedSnippet, commandNode);
 
-    // ID is required, so it should exist
+    // ID is required and enforced by the validator, so it should exist
     assert(commandNode.id !== undefined && commandNode.id.length > 0);
 
     // Fork subset code block to another file

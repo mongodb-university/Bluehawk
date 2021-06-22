@@ -183,6 +183,13 @@ end
     expect(
       files["stateCommand.test.js?state=final"].document.text.toString()
     ).toBe(multipleFinal);
+    expect(
+      files["stateCommand.test.js?state=bar"].document.text.toString()
+    ).toBe(multipleFinal);
+    expect(
+      files["stateCommand.test.js?state=baz"].document.text.toString()
+    ).toBe(multipleFinal);
+    done();
     done();
   });
 });
