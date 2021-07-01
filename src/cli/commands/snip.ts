@@ -4,6 +4,7 @@ import { getBluehawk, EmphasizeSourceAttributes } from "../../bluehawk";
 import {
   withDestinationOption,
   withStateOption,
+  withIdOption,
   withIgnoreOption,
   withGenerateFormattedCodeSnippetsOption,
 } from "../options";
@@ -15,6 +16,7 @@ interface SnipArgs extends MainArgs {
   paths: string[];
   destination: string;
   state?: string;
+  id?: string;
   ignore?: string | string[];
   format?: "rst";
 }
@@ -110,7 +112,7 @@ export const formatInRst = async (
 };
 
 export const snip = async (args: SnipArgs): Promise<void> => {
-  const { paths, destination, state, ignore, format, waitForListeners } = args;
+  const { paths, destination, state, id, ignore, format, waitForListeners } = args;
   const bluehawk = await getBluehawk();
 
   // If a file contains the state command, the processor will generate multiple
@@ -146,6 +148,15 @@ export const snip = async (args: SnipArgs): Promise<void> => {
         stateVersionWrittenForPath[document.path] = true;
       }
     }
+
+    if (id !== undefined) {
+      const idAttribute = document.attributes["snippet"];
+      if (idAttribute && idAttribute !== id) {
+        // Not the requested id
+        return;
+      }  
+    }
+
     try {
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
 
@@ -177,7 +188,9 @@ const commandModule: CommandModule<MainArgs & { paths: string[] }, SnipArgs> = {
   builder: (yargs): Argv<SnipArgs> => {
     return withIgnoreOption(
       withStateOption(
-        withDestinationOption(withGenerateFormattedCodeSnippetsOption(yargs))
+        withIdOption(
+          withDestinationOption(withGenerateFormattedCodeSnippetsOption(yargs))
+        )
       )
     );
   },

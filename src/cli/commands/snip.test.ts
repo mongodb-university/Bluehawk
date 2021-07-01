@@ -325,4 +325,51 @@ struct ContentView: SwiftUI.App {
  `);
  */
   });
+  it("handles the --id option", async () => {
+    const text = `
+public class Main {
+  public static void main(String[] args){
+    // :snippet-start: test-block
+    System.out.println("1");
+    // :snippet-end:
+    // :snippet-start: test-block-2
+    System.out.println("2");
+    // :snippet-end:
+  }
+}
+`;
+    const rootPath = "/path/to/project";
+    const snippetName = "test.codeblock.test-block.java";
+    const destinationPathLocal = "/stateAndEmphasize/local";
+    const testFileName = "test.java";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(destinationPathLocal, {
+      recursive: true,
+    });
+    await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
+
+    await snip({
+      paths: [rootPath],
+      destination: destinationPathLocal,
+      id: "test-block",
+    });
+
+    let fileContentsSync = await System.fs.readFile(
+      Path.join(destinationPathLocal, snippetName),
+      "utf8"
+    );
+
+    let allFilesInDest = await System.fs.readdir(destinationPathLocal);
+
+    // Verify that only the snippet with the requested ID was produced
+    expect(allFilesInDest).toStrictEqual(
+      [snippetName]
+    );
+    // Verify that the contents of the requested snippet is correct
+    expect(fileContentsSync).toStrictEqual('System.out.println("1");\n');
+
+  });
 });
