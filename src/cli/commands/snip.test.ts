@@ -357,7 +357,7 @@ public class Main {
       id: "test-block",
     });
 
-    let fileContentsSync = await System.fs.readFile(
+    const fileContentsSync = await System.fs.readFile(
       Path.join(destinationPathLocal, snippetName),
       "utf8"
     );
