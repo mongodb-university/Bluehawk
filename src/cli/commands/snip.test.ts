@@ -112,7 +112,7 @@ line 9
       waitForListeners: true,
     });
 
-    expect(errors).toStrictEqual(undefined);
+    expect(errors).toStrictEqual([]);
     const destinationList = await System.fs.readdir(destinationPath);
     expect(destinationList).toStrictEqual([
       "test.codeblock.foo.js",
@@ -170,7 +170,7 @@ line 9
       waitForListeners: true,
     });
 
-    expect(errors).toStrictEqual(undefined);
+    expect(errors).toStrictEqual([]);
     const destinationList = await System.fs.readdir(destinationPath);
     expect(destinationList).toStrictEqual(["test.codeblock.foo.js"]);
 

@@ -10,6 +10,7 @@ import {
 import { System } from "../../bluehawk/io/System";
 import { MainArgs } from "../cli";
 import { ProcessResult } from "../../bluehawk/processor/Processor";
+import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
 interface SnipArgs extends MainArgs {
   paths: string[];
@@ -27,19 +28,12 @@ export const createFormattedCodeBlock = async (
   if (format === "rst") {
     const formattedCodeblock = await formatInRst(result);
 
-    const { document, parseResult } = result;
+    const { document } = result;
     const targetPath = path.join(
       destination,
       `${document.basename}.code-block.rst`
     );
-
-    try {
-      await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
-    } catch (error) {
-      console.error(
-        `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
-      );
-    }
+    await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
   } // add additional elses + "formatInLanguage" methods to handle other markup languages
 };
 
@@ -109,8 +103,9 @@ export const formatInRst = async (
   return formattedCodeblock;
 };
 
-export const snip = async (args: SnipArgs): Promise<void> => {
+export const snip = async (args: SnipArgs): Promise<string[]> => {
   const { paths, destination, state, ignore, format, waitForListeners } = args;
+  const errors: string[] = [];
   const bluehawk = await getBluehawk();
 
   // If a file contains the state command, the processor will generate multiple
@@ -154,22 +149,30 @@ export const snip = async (args: SnipArgs): Promise<void> => {
         await createFormattedCodeBlock(result, destination, format);
       }
     } catch (error) {
-      console.error(
-        `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`
-      );
+      const message = `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
+      console.error(message);
+      errors.push(message);
     }
   });
 
   await bluehawk.parseAndProcess(paths, {
     ignore,
     waitForListeners: waitForListeners ?? false,
+    onErrors(filepath, newErrors) {
+      logErrorsToConsole(filepath, newErrors);
+      errors.push(...newErrors.map((e) => e.message));
+    },
   });
 
   if (state && Object.keys(stateVersionWrittenForPath).length === 0) {
-    console.warn(
-      `Warning: state '${state}' never found in ${paths.join(", ")}`
-    );
+    const message = `Warning: state '${state}' never found in ${paths.join(
+      ", "
+    )}`;
+    console.warn(message);
+    errors.push(message);
   }
+
+  return errors;
 };
 
 const commandModule: CommandModule<MainArgs & { paths: string[] }, SnipArgs> = {
@@ -181,7 +184,15 @@ const commandModule: CommandModule<MainArgs & { paths: string[] }, SnipArgs> = {
       )
     );
   },
-  handler: async (args: Arguments<SnipArgs>) => await snip(args),
+  handler: async (args: Arguments<SnipArgs>) => {
+    const errors = await snip(args);
+    if (errors.length !== 0) {
+      console.error(
+        `Exiting with ${errors.length} error${errors.length === 1 ? "" : "s"}.`
+      );
+      process.exit(1);
+    }
+  },
   aliases: [],
   describe: "extract snippets",
 };
