@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/mongodb-university/Bluehawk"
   },
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A markup language and tool for extracting code examples, checkpointing tutorials, and dynamically transforming text",
   "keywords": [
     "docs",
