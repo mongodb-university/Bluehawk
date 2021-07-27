@@ -85,6 +85,7 @@
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="cli_commands_copy.html#copy" class="tsd-kind-icon">copy</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="cli_commands_copy.html#copypermissions" class="tsd-kind-icon">copy<wbr>Permissions</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,7 +99,7 @@
 					<div class="tsd-signature tsd-kind-icon">default<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">CommandModule</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/cli_cli.mainargs.html" class="tsd-signature-type" data-tsd-kind="Interface">MainArgs</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>rootPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/cli_commands_copy.copyargs.html" class="tsd-signature-type" data-tsd-kind="Interface">CopyArgs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/a95de38/src/cli/commands/copy.ts#L137">src/cli/commands/copy.ts:137</a></li>
+							<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/ca65432/src/cli/commands/copy.ts#L142">src/cli/commands/copy.ts:142</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -115,7 +116,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/a95de38/src/cli/commands/copy.ts#L26">src/cli/commands/copy.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/ca65432/src/cli/commands/copy.ts#L26">src/cli/commands/copy.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -125,6 +126,43 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="copypermissions" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> copy<wbr>Permissions</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">copy<wbr>Permissions<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>from<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>to<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/mongodb-university/Bluehawk/blob/ca65432/src/cli/commands/copy.ts#L170">src/cli/commands/copy.ts:170</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Copy permissions (using stat/chmod) to the given path from the file at the
+									given path.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>from<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>to<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>from<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>to<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -151,6 +189,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="cli_commands_copy.html#copy" class="tsd-kind-icon">copy</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="cli_commands_copy.html#copypermissions" class="tsd-kind-icon">copy<wbr>Permissions</a>
 					</li>
 				</ul>
 			</nav>
