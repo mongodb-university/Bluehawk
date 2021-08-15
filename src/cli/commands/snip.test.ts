@@ -357,12 +357,12 @@ public class Main {
       id: "test-block",
     });
 
-    let fileContentsSync = await System.fs.readFile(
+    const fileContentsSync = await System.fs.readFile(
       Path.join(destinationPathLocal, snippetName),
       "utf8"
     );
 
-    let allFilesInDest = await System.fs.readdir(destinationPathLocal);
+    const allFilesInDest = await System.fs.readdir(destinationPathLocal);
 
     // Verify that only the snippet with the requested ID was produced
     expect(allFilesInDest).toStrictEqual(
