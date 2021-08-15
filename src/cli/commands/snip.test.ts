@@ -325,56 +325,10 @@ struct ContentView: SwiftUI.App {
  `);
  */
   });
-  it("handles the --id option", async () => {
-    const text = `
-public class Main {
-  public static void main(String[] args){
-    // :snippet-start: test-block
-    System.out.println("1");
-    // :snippet-end:
-    // :snippet-start: test-block-2
-    System.out.println("2");
-    // :snippet-end:
-  }
-}
-`;
-    const rootPath = "/path/to/project";
-    const snippetName = "test.codeblock.test-block.java";
-    const destinationPathLocal = "/stateAndEmphasize/local";
-    const testFileName = "test.java";
-
-    await System.fs.mkdir(rootPath, {
-      recursive: true,
-    });
-    await System.fs.mkdir(destinationPathLocal, {
-      recursive: true,
-    });
-    await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
-
-    await snip({
-      paths: [rootPath],
-      destination: destinationPathLocal,
-      id: "test-block",
-    });
-
-    const fileContentsSync = await System.fs.readFile(
-      Path.join(destinationPathLocal, snippetName),
-      "utf8"
-    );
-
-    const allFilesInDest = await System.fs.readdir(destinationPathLocal);
-
-    // Verify that only the snippet with the requested ID was produced
-    expect(allFilesInDest).toStrictEqual(
-      [snippetName]
-    );
-    // Verify that the contents of the requested snippet is correct
-    expect(fileContentsSync).toStrictEqual('System.out.println("1");\n');
-
-  });
   it("handles the --id option with multiple args", async () => {
     const snippet_1 = "id-1"
     const snippet_2 = "id-2"
+    const snippet_3 = "id-3-should-not-snip"
     const text = `
     // :snippet-start: ${snippet_1}
     hi
@@ -382,12 +336,15 @@ public class Main {
     // :snippet-start: ${snippet_2}
     bye
     // :snippet-end:
+    // :snippet-start: ${snippet_3}
+    should not snip
+    // :snippet-end:
 `;
     const rootPath = "/path/to/project";
-    const snippetName1 = `test.codeblock.${snippet_1}.java`;
-    const snippetName2 = `test.codeblock.${snippet_2}.java`;
+    const snippetName1 = `test.codeblock.${snippet_1}.txt`;
+    const snippetName2 = `test.codeblock.${snippet_2}.txt`;
     const destinationPathLocal = "/stateAndEmphasize/local";
-    const testFileName = "test.java";
+    const testFileName = "test.txt";
 
     await System.fs.mkdir(rootPath, {
       recursive: true,
