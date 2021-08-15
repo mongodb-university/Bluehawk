@@ -112,7 +112,8 @@ export const formatInRst = async (
 };
 
 export const snip = async (args: SnipArgs): Promise<void> => {
-  const { paths, destination, state, id, ignore, format, waitForListeners } = args;
+  const { paths, destination, state, id, ignore, format, waitForListeners } =
+    args;
   const bluehawk = await getBluehawk();
 
   // If a file contains the state command, the processor will generate multiple
@@ -148,14 +149,13 @@ export const snip = async (args: SnipArgs): Promise<void> => {
         stateVersionWrittenForPath[document.path] = true;
       }
     }
-    
+
     if (id !== undefined) {
-      const idAttribute : string = document.attributes["snippet"];
-      console.log('start',id, idAttribute, 'end')
+      const idAttribute: string = document.attributes["snippet"];
       if (idAttribute && !id.includes(idAttribute)) {
         // Not the requested id
         return;
-      }  
+      }
     }
 
     try {
