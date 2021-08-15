@@ -372,4 +372,54 @@ public class Main {
     expect(fileContentsSync).toStrictEqual('System.out.println("1");\n');
 
   });
+  it("handles the --id option with multiple args", async () => {
+    const snippet_1 = "id-1"
+    const snippet_2 = "id-2"
+    const text = `
+    // :snippet-start: ${snippet_1}
+    hi
+    // :snippet-end:
+    // :snippet-start: ${snippet_2}
+    bye
+    // :snippet-end:
+`;
+    const rootPath = "/path/to/project";
+    const snippetName1 = `test.codeblock.${snippet_1}.java`;
+    const snippetName2 = `test.codeblock.${snippet_2}.java`;
+    const destinationPathLocal = "/stateAndEmphasize/local";
+    const testFileName = "test.java";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(destinationPathLocal, {
+      recursive: true,
+    });
+    await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
+
+    await snip({
+      paths: [rootPath],
+      destination: destinationPathLocal,
+      id: [snippet_1,snippet_2],
+    });
+
+    let fileContents1Sync = await System.fs.readFile(
+      Path.join(destinationPathLocal, snippetName1),
+      "utf8"
+    );
+    let fileContents2Sync = await System.fs.readFile(
+      Path.join(destinationPathLocal, snippetName2),
+      "utf8"
+    );
+
+    let allFilesInDest = await System.fs.readdir(destinationPathLocal);
+    // Verify that only the snippet with the requested ID was produced
+    expect(allFilesInDest).toStrictEqual(
+      [snippetName1, snippetName2]
+    );
+    // Verify that the contents of the requested snippet is correct
+    expect(fileContents1Sync).toStrictEqual('hi\n');
+    expect(fileContents2Sync).toStrictEqual('bye\n');
+
+  });
 });

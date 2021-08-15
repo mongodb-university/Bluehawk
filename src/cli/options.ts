@@ -48,11 +48,11 @@ export function withStateOption<T>(
 
 export function withIdOption<T>(
   yargs: Argv<T>
-): Argv<T & { id?: string }> {
+): Argv<T & { id?: string[] }> {
   return option(yargs, "id", {
     string: true,
+    type: 'array',
     describe: "select snippets with a specific id",
-    once: true,
   });
 }
 

@@ -16,7 +16,7 @@ interface SnipArgs extends MainArgs {
   paths: string[];
   destination: string;
   state?: string;
-  id?: string;
+  id?: string[];
   ignore?: string | string[];
   format?: "rst";
 }
@@ -148,10 +148,11 @@ export const snip = async (args: SnipArgs): Promise<void> => {
         stateVersionWrittenForPath[document.path] = true;
       }
     }
-
+    
     if (id !== undefined) {
-      const idAttribute = document.attributes["snippet"];
-      if (idAttribute && idAttribute !== id) {
+      const idAttribute : string = document.attributes["snippet"];
+      console.log('start',id, idAttribute, 'end')
+      if (idAttribute && !id.includes(idAttribute)) {
         // Not the requested id
         return;
       }  
