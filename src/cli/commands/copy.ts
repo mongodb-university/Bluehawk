@@ -9,6 +9,7 @@ import {
   withIgnoreOption,
 } from "../options";
 import { System } from "../../bluehawk/io/System";
+import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
 export interface CopyArgs extends MainArgs {
   rootPath: string;
@@ -50,6 +51,7 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     try {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.copyFile(filePath, targetPath);
+      await copyPermissions({ to: targetPath, from: filePath });
     } catch (error) {
       const message = `Failed to copy file ${filePath} to ${targetPath}: ${error.message}`;
       console.error(message);
@@ -107,6 +109,10 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     try {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
+      await copyPermissions({
+        to: targetPath,
+        from: document.path,
+      });
     } catch (error) {
       const message = `Failed to write file ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
       console.error(message);
@@ -118,6 +124,10 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     ignore,
     onBinaryFile,
     waitForListeners: waitForListeners ?? false,
+    onErrors(filepath, newErrors) {
+      logErrorsToConsole(filepath, newErrors);
+      errors.push(...newErrors.map((e) => e.message));
+    },
   });
 
   if (desiredState && Object.keys(stateVersionWrittenForPath).length === 0) {
@@ -135,10 +145,35 @@ const commandModule: CommandModule<MainArgs & { rootPath: string }, CopyArgs> =
     builder: (yargs): Argv<CopyArgs> => {
       return withIgnoreOption(withStateOption(withDestinationOption(yargs)));
     },
-    handler: async (args: Arguments<CopyArgs>) => await copy(args),
+    handler: async (args: Arguments<CopyArgs>) => {
+      const errors = await copy(args);
+      if (errors.length !== 0) {
+        console.error(
+          `Exiting with ${errors.length} error${
+            errors.length === 1 ? "" : "s"
+          }.`
+        );
+        process.exit(1);
+      }
+    },
     aliases: [],
     describe:
       "clone source project to destination with Bluehawk commands processed",
   };
 
 export default commandModule;
+
+/**
+  Copy permissions (using stat/chmod) to the given path from the file at the
+  given path.
+ */
+export const copyPermissions = async ({
+  to,
+  from,
+}: {
+  to: string;
+  from: string;
+}): Promise<void> => {
+  const { mode } = await System.fs.stat(from);
+  await System.fs.chmod(to, mode);
+};
