@@ -119,6 +119,9 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
     [path: string]: boolean;
   } = {};
 
+  // Used to make sure all ids passed through the CLI appear in files.
+  const idsUsed: Set<string> = new Set();
+
   // Define the handler for generating snippet files.
   bluehawk.subscribe(async (result) => {
     const { document, parseResult } = result;
@@ -147,18 +150,18 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
 
     if (id !== undefined) {
       const idAttribute: string = document.attributes["snippet"];
-      if (typeof id === "string"){
-        if (idAttribute && idAttribute === id) {
+      if (typeof id === "string") {
+        if (idAttribute && idAttribute !== id) {
+          // Not the requested id
+          return;
+        }
+      } else {
+        if (idAttribute && !id.includes(idAttribute)) {
           // Not the requested id
           return;
         }
       }
-      else {
-         if (idAttribute && !id.includes(idAttribute)) {
-           // Not the requested id
-           return;
-         }
-      }
+      idsUsed.add(idAttribute);
     }
 
     try {
@@ -190,6 +193,18 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
     )}`;
     console.warn(message);
     errors.push(message);
+  }
+
+  // if an id was not used, print a warning
+  {
+    const idSet = typeof id === "string" ? new Set([id]) : new Set(id);
+    if (id && idsUsed.size !== idSet.size) {
+      const unused = Array.from(idSet).filter((x) => !idsUsed.has(x));
+      const message = `Warning: the ids "${[...unused].join(
+        " "
+      )}" were not used. Is something misspelled?`;
+      console.warn(message);
+    }
   }
 
   return errors;
