@@ -106,7 +106,8 @@ export const formatInRst = async (
 };
 
 export const snip = async (args: SnipArgs): Promise<string[]> => {
-  const { paths, destination, state, id, ignore, format, waitForListeners } = args;
+  const { paths, destination, state, id, ignore, format, waitForListeners } =
+    args;
   const errors: string[] = [];
   const bluehawk = await getBluehawk();
 
