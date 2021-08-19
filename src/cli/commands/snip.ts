@@ -150,17 +150,12 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
 
     if (id !== undefined) {
       const idAttribute: string = document.attributes["snippet"];
-      if (typeof id === "string") {
-        if (idAttribute && idAttribute !== id) {
-          // Not the requested id
-          return;
-        }
-      } else {
-        if (idAttribute && !id.includes(idAttribute)) {
-          // Not the requested id
-          return;
-        }
+
+      if (![id].flat(1).includes(idAttribute)) {
+        // Not the requested id
+        return;
       }
+      
       idsUsed.add(idAttribute);
     }
 
