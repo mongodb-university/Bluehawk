@@ -192,9 +192,10 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
 
   // if an id was not used, print a warning
   {
-    const idSet = typeof id === "string" ? new Set([id]) : new Set(id);
-    if (id && idsUsed.size !== idSet.size) {
-      const unused = Array.from(idSet).filter((x) => !idsUsed.has(x));
+    // use a set to remove duplicate ids and to narrow type of id
+    const dedupIds = typeof id === "string" ? new Set([id]) : new Set(id);
+    if (id && idsUsed.size !== dedupIds.size) {
+      const unused = Array.from(dedupIds).filter((x) => !idsUsed.has(x));
       const message = `Warning: the ids "${[...unused].join(
         " "
       )}" were not used. Is something misspelled?`;
