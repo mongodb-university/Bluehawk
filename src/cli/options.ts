@@ -46,6 +46,13 @@ export function withStateOption<T>(
   });
 }
 
+export function withIdOption<T>(yargs: Argv<T>): Argv<T & { id?: string | string[] }> {
+  return option(yargs, "id", {
+    string: true,
+    describe: "select snippets with a specific id",
+  });
+}
+
 export function withGenerateFormattedCodeSnippetsOption<T>(
   yargs: Argv<T>
 ): Argv<T & { generateFormattedCodeSnippets?: string }> {

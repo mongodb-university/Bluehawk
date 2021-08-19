@@ -4,6 +4,7 @@ import { getBluehawk, EmphasizeSourceAttributes } from "../../bluehawk";
 import {
   withDestinationOption,
   withStateOption,
+  withIdOption,
   withIgnoreOption,
   withGenerateFormattedCodeSnippetsOption,
 } from "../options";
@@ -16,6 +17,7 @@ interface SnipArgs extends MainArgs {
   paths: string[];
   destination: string;
   state?: string;
+  id?: string | string[];
   ignore?: string | string[];
   format?: "rst";
 }
@@ -104,7 +106,8 @@ export const formatInRst = async (
 };
 
 export const snip = async (args: SnipArgs): Promise<string[]> => {
-  const { paths, destination, state, ignore, format, waitForListeners } = args;
+  const { paths, destination, state, id, ignore, format, waitForListeners } =
+    args;
   const errors: string[] = [];
   const bluehawk = await getBluehawk();
 
@@ -115,6 +118,9 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
   const stateVersionWrittenForPath: {
     [path: string]: boolean;
   } = {};
+
+  // Used to make sure all ids passed through the CLI appear in files.
+  const idsUsed: Set<string> = new Set();
 
   // Define the handler for generating snippet files.
   bluehawk.subscribe(async (result) => {
@@ -141,6 +147,18 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
         stateVersionWrittenForPath[document.path] = true;
       }
     }
+
+    if (id !== undefined) {
+      const idAttribute: string = document.attributes["snippet"];
+
+      if (![id].flat(1).includes(idAttribute)) {
+        // Not the requested id
+        return;
+      }
+      
+      idsUsed.add(idAttribute);
+    }
+
     try {
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
 
@@ -172,6 +190,19 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
     errors.push(message);
   }
 
+  // if an id was not used, print a warning
+  {
+    // use a set to remove duplicate ids and to narrow type of id
+    const dedupIds = typeof id === "string" ? new Set([id]) : new Set(id);
+    if (id && idsUsed.size !== dedupIds.size) {
+      const unused = Array.from(dedupIds).filter((x) => !idsUsed.has(x));
+      const message = `Warning: the ids "${[...unused].join(
+        " "
+      )}" were not used. Is something misspelled?`;
+      console.warn(message);
+    }
+  }
+
   return errors;
 };
 
@@ -180,7 +211,9 @@ const commandModule: CommandModule<MainArgs & { paths: string[] }, SnipArgs> = {
   builder: (yargs): Argv<SnipArgs> => {
     return withIgnoreOption(
       withStateOption(
-        withDestinationOption(withGenerateFormattedCodeSnippetsOption(yargs))
+        withIdOption(
+          withDestinationOption(withGenerateFormattedCodeSnippetsOption(yargs))
+        )
       )
     );
   },
