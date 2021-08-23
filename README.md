@@ -1,5 +1,7 @@
 # Bluehawk
 
+[Bluehawk](bluehawk.png)
+
 Bluehawk is a markup processor for extracting and manipulating arbitrary code.
 With Bluehawk, you can:
 
