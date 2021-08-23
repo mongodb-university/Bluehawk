@@ -426,7 +426,21 @@ this is not bluehawk markup
       expect(parser.errors.length).toBe(0);
     });
 
-    it("rejects block commands that straddle comment blocks", () => {
+    it("accepts block commands that straddle inside of comment blocks", () => {
+      const test_string = `:block-command-start: 
+*/
+chunky chunky
+/* :block-command-end:`
+      console.log(test_string)
+      const result = lexer.tokenize(test_string);
+      console.log(result, result.errors)
+      //expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.blockCommand();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("rejects block commands that straddle outside of comment blocks", () => {
       const result = lexer.tokenize(`
 :command-start:
 /* start comment block

@@ -53,8 +53,11 @@ annotatedText
 attributeList
   : AttributeListStart (attributeList | JsonStringLiteral | Newline | LineComment)* AttributeListEnd
 
+blockCommandUncommentedContents
+  : BlockCommentEnd (chunk)* BlockCommentStart 
+
 blockCommand
-  : (LineComment)? CommandStart (commandAttribute)? Newline (chunk)* (LineComment)* CommandEnd
+  : (LineComment)? CommandStart (commandAttribute)? (Newline)? ((chunk)* | blockCommandUncommentedContents) CommandEnd
 
 blockComment
   : BlockCommentStart (command | LineComment | NewLine | BlockCommentStart†)* BlockCommentEnd
@@ -88,6 +91,7 @@ export class RootParser extends CstParser {
   annotatedText: Rule = UndefinedRule;
   chunk: Rule = UndefinedRule;
   blockCommand: Rule = UndefinedRule;
+  blockCommandUncommentedContents: Rule = UndefinedRule;
   command: Rule = UndefinedRule;
   commandAttribute: Rule = UndefinedRule;
   blockComment: Rule = UndefinedRule;
@@ -149,12 +153,21 @@ export class RootParser extends CstParser {
       ]);
     });
 
-    this.RULE("blockCommand", () => {
-      const startToken = this.CONSUME(CommandStart);
-      this.OPTION1(() => this.SUBRULE(this.commandAttribute));
-      this.CONSUME(Newline);
+    this.RULE("blockCommandUncommentedContents", () => {
+      this.CONSUME1(BlockCommentEnd)
       this.MANY(() => this.SUBRULE(this.chunk));
-      const endToken = this.CONSUME(startToken.payload?.endToken ?? CommandEnd);
+      this.CONSUME2(BlockCommentStart)
+    })
+
+    this.RULE("blockCommand", () => {
+      const startToken = this.CONSUME1(CommandStart);
+      this.OPTION1(() => this.SUBRULE(this.commandAttribute));
+      this.CONSUME2(Newline);
+      this.OR([
+        { ALT: () => this.SUBRULE(this.blockCommandUncommentedContents) },
+        { ALT: () => this.MANY2(() => this.SUBRULE(this.chunk)) },
+      ])
+      const endToken = this.CONSUME3(startToken.payload?.endToken ?? CommandEnd);
 
       if (this.RECORDING_PHASE) {
         return;
