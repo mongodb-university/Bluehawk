@@ -1,6 +1,6 @@
-# Bluehawk
+<img src="bluehawk.png" width="10%" title="Bluehawk">
 
-[Bluehawk](bluehawk.png)
+# Bluehawk
 
 Bluehawk is a markup processor for extracting and manipulating arbitrary code.
 With Bluehawk, you can:
