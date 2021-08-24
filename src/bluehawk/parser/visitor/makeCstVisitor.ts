@@ -67,11 +67,16 @@ export function makeCstVisitor(
     LineComment?: IToken[];
   }
 
+  interface BlockCommandUncommentedContentsContext {
+    chunk: CstNode[];
+  }
+
   interface BlockCommandContext {
     CommandStart: IToken[];
     commandAttribute?: CstNode[];
     Newline: IToken[];
-    chunk: CstNode[];
+    chunk?: CstNode[];
+    blockCommandUncommentedContents?: CstNode[]; 
     CommandEnd: IToken[];
   }
 
@@ -332,14 +337,30 @@ export function makeCstVisitor(
           errors,
           source,
         });
-        this.visit(context.chunk, { parent: newNode, errors, source });
 
+        if (context.blockCommandUncommentedContents != undefined) {
+          this.visit(context.blockCommandUncommentedContents, {
+            parent: newNode,
+            errors,
+            source,
+          })
+        }
+        else{
+          this.visit(context.chunk, { parent: newNode, errors, source });
+        }
         // Find any line comment tokens associated with the command end token
         newNode.associatedTokens.push(
           ...newNode.lineComments.filter((lineComment) =>
             isAssociated(lineComment, CommandEnd)
           )
         );
+      }
+
+      blockCommandUncommentedContents(
+        context:BlockCommandUncommentedContentsContext,
+        { parent, errors, source}: VisitorContext
+      ) {
+         this.visit(context.chunk, { parent: parent, errors, source });
       }
 
       blockComment(
