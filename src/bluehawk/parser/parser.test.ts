@@ -431,9 +431,7 @@ this is not bluehawk markup
 */
 chunky chunky
 /* :block-command-end:`
-      console.log(test_string)
       const result = lexer.tokenize(test_string);
-      console.log(result, result.errors)
       //expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
       parser.blockCommand();
