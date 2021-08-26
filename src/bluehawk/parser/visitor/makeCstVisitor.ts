@@ -315,7 +315,7 @@ export function makeCstVisitor(
         assert(context.Newline[0].endOffset !== undefined);
         assert(context.CommandEnd[0].startColumn !== undefined);
         assert(context.CommandEnd[0].startLine !== undefined);
-        if (context.chunk != undefined) {
+        if (context.chunk != undefined || context.blockCommandUncommentedContents != undefined) {
           newNode.contentRange = {
             start: {
               line: context.Newline[0].endLine + 1,
