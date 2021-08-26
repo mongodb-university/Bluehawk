@@ -162,8 +162,11 @@ export class RootParser extends CstParser {
     this.RULE("blockCommand", () => {
       const startToken = this.CONSUME1(CommandStart);
       this.OPTION1(() => this.SUBRULE(this.commandAttribute));
-      this.CONSUME2(Newline);
-      this.OR([
+      this.OR1([
+        { ALT: () => this.CONSUME2(Newline) },
+        { ALT: () => this.BACKTRACK(() => this.CONSUME(BlockCommentEnd))},
+      ])
+      this.OR2([
         { ALT: () => this.SUBRULE(this.blockCommandUncommentedContents) },
         { ALT: () => this.MANY2(() => this.SUBRULE(this.chunk)) },
       ])

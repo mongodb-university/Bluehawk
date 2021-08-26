@@ -74,7 +74,7 @@ export function makeCstVisitor(
   interface BlockCommandContext {
     CommandStart: IToken[];
     commandAttribute?: CstNode[];
-    Newline: IToken[];
+    Newline?: IToken[];
     chunk?: CstNode[];
     blockCommandUncommentedContents?: CstNode[]; 
     CommandEnd: IToken[];
@@ -310,17 +310,31 @@ export function makeCstVisitor(
             )
           );
         }
-
-        assert(context.Newline[0].endLine !== undefined);
-        assert(context.Newline[0].endOffset !== undefined);
+        assert(context.CommandStart[0].endOffset !== undefined);
+        assert(context.CommandStart[0].endLine !== undefined);        
         assert(context.CommandEnd[0].startColumn !== undefined);
         assert(context.CommandEnd[0].startLine !== undefined);
+
+        let lineStart : number;
+        let offsetStart : number;
+        if (context.Newline !== undefined 
+            && context.Newline[0] !== undefined 
+            && context.Newline[0].endLine !== undefined
+            && context.Newline[0].endOffset !== undefined){
+          lineStart = context.Newline[0].endLine + 1;
+          offsetStart = context.Newline[0].endOffset + 1;
+        }
+        else {
+          lineStart = context.CommandStart[0].endLine + 1;
+          offsetStart = context.CommandStart[0].endOffset + 1;
+        }
+
         if (context.chunk != undefined || context.blockCommandUncommentedContents != undefined) {
           newNode.contentRange = {
             start: {
-              line: context.Newline[0].endLine + 1,
+              line: lineStart,
               column: 1,
-              offset: context.Newline[0].endOffset + 1,
+              offset: offsetStart,
             },
             end: {
               line: context.CommandEnd[0].startLine,

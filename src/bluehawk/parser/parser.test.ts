@@ -427,8 +427,7 @@ this is not bluehawk markup
     });
 
     it("accepts block commands that straddle inside of comment blocks", () => {
-      const test_string = `:block-command-start: 
-*/
+      const test_string = `:block-command-start: */
 chunky chunky
 /* :block-command-end:`
       const result = lexer.tokenize(test_string);

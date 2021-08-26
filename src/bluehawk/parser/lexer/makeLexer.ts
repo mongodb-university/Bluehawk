@@ -8,23 +8,25 @@ import {
   Text,
   AttributeListStart,
   Identifier,
+  BlockCommentEnd,
 } from "./tokens";
 import { tokenCategoryFilter } from "./tokenCategoryFilter";
 
-// After a command start tag, there may be an attributes list or ID until the
-// end of line.
-const CommandAttributesMode = [
-  AttributeListStart,
-  Identifier,
-  Space,
-  { ...Newline, POP_MODE: true },
-];
 
 // Generates a Lexer for the given language comment patterns.
 export function makeLexer(languageTokens: TokenType[]): Lexer {
   const modes = {
     RootMode: makeRootMode(languageTokens),
-    CommandAttributesMode,
+    // After a command start tag, there may be an attributes list or ID until the
+   // end of line or a block comment end.
+    CommandAttributesMode: [
+      AttributeListStart,
+      Identifier,
+      ...tokenCategoryFilter(languageTokens, [BlockCommentEnd]),
+      Space,
+      { ...Newline, 
+        POP_MODE: true },
+    ],
     AttributeListMode: makeAttributeListMode(languageTokens),
     AltParserMode: [
       ...tokenCategoryFilter(languageTokens, [PopParser]),
