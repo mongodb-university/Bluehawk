@@ -54,10 +54,10 @@ attributeList
   : AttributeListStart (attributeList | JsonStringLiteral | Newline | LineComment)* AttributeListEnd
 
 blockCommandUncommentedContents
-  : BlockCommentEnd (chunk)* BlockCommentStart 
+  : BlockCommentEnd Newline (chunk)* BlockCommentStart 
 
 blockCommand
-  : (LineComment)? CommandStart (commandAttribute)? (Newline)? ((chunk)* | blockCommandUncommentedContents) CommandEnd
+  : (LineComment)? CommandStart (commandAttribute)? (BlockCommentEnd*backtrack* | (Newline)?) ((chunk)* | blockCommandUncommentedContents) CommandEnd
 
 blockComment
   : BlockCommentStart (command | LineComment | NewLine | BlockCommentStart†)* BlockCommentEnd
