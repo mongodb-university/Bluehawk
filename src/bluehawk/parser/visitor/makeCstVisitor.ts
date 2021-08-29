@@ -68,6 +68,7 @@ export function makeCstVisitor(
   }
 
   interface BlockCommandUncommentedContentsContext {
+    Newline: IToken[];
     chunk: CstNode[];
   }
 
@@ -325,8 +326,11 @@ export function makeCstVisitor(
           offsetStart = context.Newline[0].endOffset + 1;
         }
         else {
+          // start and end offsets for block commands with uncommented contents
+          assert(context.blockCommandUncommentedContents !== undefined)
+          let NewLineTokenArr = context.blockCommandUncommentedContents[0].children.Newline as IToken[]
           lineStart = context.CommandStart[0].endLine + 1;
-          offsetStart = context.CommandStart[0].endOffset + 1;
+          offsetStart = NewLineTokenArr[0].startOffset + 1;             
         }
 
         if (context.chunk != undefined || context.blockCommandUncommentedContents != undefined) {

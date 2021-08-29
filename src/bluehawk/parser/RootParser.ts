@@ -155,6 +155,7 @@ export class RootParser extends CstParser {
 
     this.RULE("blockCommandUncommentedContents", () => {
       this.CONSUME1(BlockCommentEnd)
+      this.CONSUME1(Newline)
       this.MANY(() => this.SUBRULE(this.chunk));
       this.CONSUME2(BlockCommentStart)
     })

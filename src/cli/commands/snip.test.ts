@@ -333,18 +333,18 @@ struct ContentView: SwiftUI.App {
     // :snippet-start: ${snippet_1}
     hi
     // :snippet-end:
-    // :snippet-start: ${snippet_2}
+    /* :snippet-start: ${snippet_2} */
     bye
-    // :snippet-end:
+    /* :snippet-end: */
     // :snippet-start: ${snippet_3}
     should not snip
     // :snippet-end:
 `;
     const rootPath = "/path/to/project";
-    const snippetName1 = `test.codeblock.${snippet_1}.txt`;
-    const snippetName2 = `test.codeblock.${snippet_2}.txt`;
+    const snippetName1 = `test.codeblock.${snippet_1}.js`;
+    const snippetName2 = `test.codeblock.${snippet_2}.js`;
     const destinationPathLocal = "/stateAndEmphasize/local";
-    const testFileName = "test.txt";
+    const testFileName = "test.js";
 
     await System.fs.mkdir(rootPath, {
       recursive: true,
