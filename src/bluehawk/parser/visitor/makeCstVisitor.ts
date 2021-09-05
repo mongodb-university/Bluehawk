@@ -77,7 +77,7 @@ export function makeCstVisitor(
     commandAttribute?: CstNode[];
     Newline?: IToken[];
     chunk?: CstNode[];
-    blockCommandUncommentedContents?: CstNode[]; 
+    blockCommandUncommentedContents?: CstNode[];
     CommandEnd: IToken[];
   }
 
@@ -312,28 +312,33 @@ export function makeCstVisitor(
           );
         }
         assert(context.CommandStart[0].endOffset !== undefined);
-        assert(context.CommandStart[0].endLine !== undefined);        
+        assert(context.CommandStart[0].endLine !== undefined);
         assert(context.CommandEnd[0].startColumn !== undefined);
         assert(context.CommandEnd[0].startLine !== undefined);
 
-        let lineStart : number;
-        let offsetStart : number;
-        if (context.Newline !== undefined 
-            && context.Newline[0] !== undefined 
-            && context.Newline[0].endLine !== undefined
-            && context.Newline[0].endOffset !== undefined){
+        let lineStart: number;
+        let offsetStart: number;
+        if (
+          context.Newline !== undefined &&
+          context.Newline[0] !== undefined &&
+          context.Newline[0].endLine !== undefined &&
+          context.Newline[0].endOffset !== undefined
+        ) {
           lineStart = context.Newline[0].endLine + 1;
           offsetStart = context.Newline[0].endOffset + 1;
-        }
-        else {
+        } else {
           // start and end offsets for block commands with uncommented contents
-          assert(context.blockCommandUncommentedContents !== undefined)
-          let NewLineTokenArr = context.blockCommandUncommentedContents[0].children.Newline as IToken[]
+          assert(context.blockCommandUncommentedContents !== undefined);
+          let NewLineTokenArr = context.blockCommandUncommentedContents[0]
+            .children.Newline as IToken[];
           lineStart = context.CommandStart[0].endLine + 1;
-          offsetStart = NewLineTokenArr[0].startOffset + 1;             
+          offsetStart = NewLineTokenArr[0].startOffset + 1;
         }
 
-        if (context.chunk != undefined || context.blockCommandUncommentedContents != undefined) {
+        if (
+          context.chunk != undefined ||
+          context.blockCommandUncommentedContents != undefined
+        ) {
           newNode.contentRange = {
             start: {
               line: lineStart,
@@ -371,10 +376,10 @@ export function makeCstVisitor(
       }
 
       blockCommandUncommentedContents(
-        context:BlockCommandUncommentedContentsContext,
-        { parent, errors, source}: VisitorContext
+        context: BlockCommandUncommentedContentsContext,
+        { parent, errors, source }: VisitorContext
       ) {
-         this.visit(context.chunk, { parent: parent, errors, source });
+        this.visit(context.chunk, { parent: parent, errors, source });
       }
 
       blockComment(
