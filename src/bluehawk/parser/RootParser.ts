@@ -154,24 +154,26 @@ export class RootParser extends CstParser {
     });
 
     this.RULE("blockCommandUncommentedContents", () => {
-      this.CONSUME1(BlockCommentEnd)
-      this.CONSUME1(Newline)
+      this.CONSUME1(BlockCommentEnd);
+      this.CONSUME1(Newline);
       this.MANY(() => this.SUBRULE(this.chunk));
-      this.CONSUME2(BlockCommentStart)
-    })
+      this.CONSUME2(BlockCommentStart);
+    });
 
     this.RULE("blockCommand", () => {
       const startToken = this.CONSUME1(CommandStart);
       this.OPTION1(() => this.SUBRULE(this.commandAttribute));
       this.OR1([
         { ALT: () => this.CONSUME2(Newline) },
-        { ALT: () => this.BACKTRACK(() => this.CONSUME(BlockCommentEnd))},
-      ])
+        { ALT: () => this.BACKTRACK(() => this.CONSUME(BlockCommentEnd)) },
+      ]);
       this.OR2([
         { ALT: () => this.SUBRULE(this.blockCommandUncommentedContents) },
         { ALT: () => this.MANY2(() => this.SUBRULE(this.chunk)) },
-      ])
-      const endToken = this.CONSUME3(startToken.payload?.endToken ?? CommandEnd);
+      ]);
+      const endToken = this.CONSUME3(
+        startToken.payload?.endToken ?? CommandEnd
+      );
 
       if (this.RECORDING_PHASE) {
         return;
