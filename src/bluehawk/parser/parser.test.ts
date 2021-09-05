@@ -429,9 +429,9 @@ this is not bluehawk markup
     it("accepts block commands that straddle inside of comment blocks", () => {
       const test_string = `:block-command-start: */
 chunky chunky
-/* :block-command-end:`
+/* :block-command-end:`;
       const result = lexer.tokenize(test_string);
-      //expect(result.errors.length).toBe(0);
+      expect(result.errors.length).toBe(0);
       parser.input = result.tokens;
       parser.blockCommand();
       expect(parser.errors).toStrictEqual([]);
@@ -449,6 +449,32 @@ chunky chunky
       parser.annotatedText();
       expect(parser.errors[0].message).toBe(
         "3:23(39) blockComment: After Newline, expected BlockCommentEnd but found CommandEnd"
+      );
+    });
+
+    it("rejects extra block comment end that straddles inside of comment", () => {
+      const test_string = `:block-command-start: */ */
+chunky chunky
+/* :block-command-end:`;
+      const result = lexer.tokenize(test_string);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors[0].message).toBe(
+        "1:23(22) blockCommandUncommentedContents: After BlockCommentEnd, expected Newline but found BlockCommentEnd"
+      );
+    });
+
+    it("rejects extra block comment start that straddles inside of comment", () => {
+      const test_string = `:block-command-start: */
+chunky chunky
+/* /* :block-command-end:`;
+      const result = lexer.tokenize(test_string);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors[0].message).toBe(
+        "3:4(42) blockComment: After BlockCommentStart, expected BlockCommentEnd but found CommandEnd"
       );
     });
 
