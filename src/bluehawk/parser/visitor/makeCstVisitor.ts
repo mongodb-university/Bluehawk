@@ -356,16 +356,12 @@ export function makeCstVisitor(
           source,
         });
 
-        if (context.blockCommandUncommentedContents != undefined) {
-          this.visit(context.blockCommandUncommentedContents, {
-            parent: newNode,
-            errors,
-            source,
-          })
-        }
-        else{
-          this.visit(context.chunk, { parent: newNode, errors, source });
-        }
+        this.visit(context.blockCommandUncommentedContents ?? context.chunk, {
+          parent: newNode,
+          errors,
+          source,
+        });
+
         // Find any line comment tokens associated with the command end token
         newNode.associatedTokens.push(
           ...newNode.lineComments.filter((lineComment) =>
