@@ -57,7 +57,7 @@ blockCommandUncommentedContents
   : BlockCommentEnd Newline (chunk)* BlockCommentStart 
 
 blockCommand
-  : (LineComment)? CommandStart (commandAttribute)? (BlockCommentEnd*backtrack* | (Newline)?) ((chunk)* | blockCommandUncommentedContents) CommandEnd
+  : CommandStart (commandAttribute)? (BlockCommentEnd*backtrack* | (Newline)?) ((chunk)* | blockCommandUncommentedContents) CommandEnd
 
 blockComment
   : BlockCommentStart (command | LineComment | NewLine | BlockCommentStart†)* BlockCommentEnd
