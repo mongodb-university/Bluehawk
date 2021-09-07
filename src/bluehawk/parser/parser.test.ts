@@ -437,6 +437,20 @@ chunky chunky
       expect(parser.errors).toStrictEqual([]);
     });
 
+    it("accepts straddle block comments with comment on different line", () => {
+      const test_string = `:block-command-start: 
+      */
+chunk contents
+are on multiple lines
+//and contain line comments
+/* :block-command-end:`;
+      const result = lexer.tokenize(test_string);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.blockCommand();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
     it("rejects block commands that straddle outside of comment blocks", () => {
       const result = lexer.tokenize(`
 :command-start:
