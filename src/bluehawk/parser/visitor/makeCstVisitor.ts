@@ -379,7 +379,7 @@ export function makeCstVisitor(
         context: BlockCommandUncommentedContentsContext,
         { parent, errors, source }: VisitorContext
       ) {
-        this.visit(context.chunk, { parent: parent, errors, source });
+        this.visit(context.chunk, { parent, errors, source });
       }
 
       blockComment(
