@@ -478,6 +478,19 @@ chunky chunky
       );
     });
 
+    it("rejects block comment in attribute list", () => {
+      const test_string = `:block-command-start: { att1, att2, */, att3}
+chunky chunky
+/* :block-command-end:`;
+      const result = lexer.tokenize(test_string);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors[0].message).toBe(
+        "1:23(22) attributeList: After AttributeListStart, expected AttributeListEnd but found BlockCommentEnd"
+      );
+    });
+
     it("accepts any number of comment tokens", () => {
       const result = lexer.tokenize(`
 /////////////////
