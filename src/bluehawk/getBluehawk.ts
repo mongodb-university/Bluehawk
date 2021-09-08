@@ -70,6 +70,7 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
         ".gvy",
         ".gy",
         ".gsh",
+        ".uxml"
       ],
       {
         languageId: "C-like",
@@ -95,7 +96,7 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
       ],
     });
 
-    bluehawk.addLanguage([".xml", ".svg", ".html", ".htm"], {
+    bluehawk.addLanguage([".xml", ".svg", ".html", ".htm", ".uxml"], {
       languageId: "xml",
       blockComments: [[/<!--/, /-->/]],
     });
