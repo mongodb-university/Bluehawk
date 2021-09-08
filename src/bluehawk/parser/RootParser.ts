@@ -53,8 +53,11 @@ annotatedText
 attributeList
   : AttributeListStart (attributeList | JsonStringLiteral | Newline | LineComment)* AttributeListEnd
 
+blockCommandUncommentedContents
+  : BlockCommentEnd Newline (chunk)* BlockCommentStart 
+
 blockCommand
-  : (LineComment)? CommandStart (commandAttribute)? Newline (chunk)* (LineComment)* CommandEnd
+  : CommandStart (commandAttribute)? (BlockCommentEnd*backtrack* | (Newline)?) ((chunk)* | blockCommandUncommentedContents) CommandEnd
 
 blockComment
   : BlockCommentStart (command | LineComment | NewLine | BlockCommentStart†)* BlockCommentEnd
@@ -88,6 +91,7 @@ export class RootParser extends CstParser {
   annotatedText: Rule = UndefinedRule;
   chunk: Rule = UndefinedRule;
   blockCommand: Rule = UndefinedRule;
+  blockCommandUncommentedContents: Rule = UndefinedRule;
   command: Rule = UndefinedRule;
   commandAttribute: Rule = UndefinedRule;
   blockComment: Rule = UndefinedRule;
@@ -149,12 +153,30 @@ export class RootParser extends CstParser {
       ]);
     });
 
-    this.RULE("blockCommand", () => {
-      const startToken = this.CONSUME(CommandStart);
-      this.OPTION1(() => this.SUBRULE(this.commandAttribute));
-      this.CONSUME(Newline);
+    // Rule for block comments that behave like line comments in block commands.
+    // Define a block command as two block comments with an uncommented body.
+    // This is necessary for languages like html that do not have a line comment.
+    this.RULE("blockCommandUncommentedContents", () => {
+      this.CONSUME1(BlockCommentEnd);
+      this.CONSUME1(Newline);
       this.MANY(() => this.SUBRULE(this.chunk));
-      const endToken = this.CONSUME(startToken.payload?.endToken ?? CommandEnd);
+      this.CONSUME2(BlockCommentStart);
+    });
+
+    this.RULE("blockCommand", () => {
+      const startToken = this.CONSUME1(CommandStart);
+      this.OPTION1(() => this.SUBRULE(this.commandAttribute));
+      this.OR1([
+        { ALT: () => this.CONSUME2(Newline) },
+        { ALT: () => this.BACKTRACK(() => this.CONSUME(BlockCommentEnd)) },
+      ]);
+      this.OR2([
+        { ALT: () => this.SUBRULE(this.blockCommandUncommentedContents) },
+        { ALT: () => this.MANY2(() => this.SUBRULE(this.chunk)) },
+      ]);
+      const endToken = this.CONSUME3(
+        startToken.payload?.endToken ?? CommandEnd
+      );
 
       if (this.RECORDING_PHASE) {
         return;

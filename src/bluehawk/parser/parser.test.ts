@@ -426,7 +426,32 @@ this is not bluehawk markup
       expect(parser.errors.length).toBe(0);
     });
 
-    it("rejects block commands that straddle comment blocks", () => {
+    it("accepts block commands that straddle inside of comment blocks", () => {
+      const test_string = `:block-command-start: */
+chunky chunky
+/* :block-command-end:`;
+      const result = lexer.tokenize(test_string);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.blockCommand();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("accepts straddle block comments with comment on different line", () => {
+      const test_string = `:block-command-start: 
+      */
+chunk contents
+are on multiple lines
+//and contain line comments
+/* :block-command-end:`;
+      const result = lexer.tokenize(test_string);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.blockCommand();
+      expect(parser.errors).toStrictEqual([]);
+    });
+
+    it("rejects block commands that straddle outside of comment blocks", () => {
       const result = lexer.tokenize(`
 :command-start:
 /* start comment block
@@ -438,6 +463,45 @@ this is not bluehawk markup
       parser.annotatedText();
       expect(parser.errors[0].message).toBe(
         "3:23(39) blockComment: After Newline, expected BlockCommentEnd but found CommandEnd"
+      );
+    });
+
+    it("rejects extra block comment end that straddles inside of comment", () => {
+      const test_string = `:block-command-start: */ */
+chunky chunky
+/* :block-command-end:`;
+      const result = lexer.tokenize(test_string);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors[0].message).toBe(
+        "1:23(22) blockCommandUncommentedContents: After BlockCommentEnd, expected Newline but found BlockCommentEnd"
+      );
+    });
+
+    it("rejects extra block comment start that straddles inside of comment", () => {
+      const test_string = `:block-command-start: */
+chunky chunky
+/* /* :block-command-end:`;
+      const result = lexer.tokenize(test_string);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors[0].message).toBe(
+        "3:4(42) blockComment: After BlockCommentStart, expected BlockCommentEnd but found CommandEnd"
+      );
+    });
+
+    it("rejects block comment in attribute list", () => {
+      const test_string = `:block-command-start: { att1, att2, */, att3}
+chunky chunky
+/* :block-command-end:`;
+      const result = lexer.tokenize(test_string);
+      expect(result.errors.length).toBe(0);
+      parser.input = result.tokens;
+      parser.annotatedText();
+      expect(parser.errors[0].message).toBe(
+        "1:23(22) attributeList: After AttributeListStart, expected AttributeListEnd but found BlockCommentEnd"
       );
     });
 

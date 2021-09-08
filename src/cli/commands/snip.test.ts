@@ -326,25 +326,25 @@ struct ContentView: SwiftUI.App {
  */
   });
   it("handles the --id option with multiple args", async () => {
-    const snippet_1 = "id-1"
-    const snippet_2 = "id-2"
-    const snippet_3 = "id-3-should-not-snip"
+    const snippet_1 = "id-1";
+    const snippet_2 = "id-2";
+    const snippet_3 = "id-3-should-not-snip";
     const text = `
     // :snippet-start: ${snippet_1}
     hi
     // :snippet-end:
-    // :snippet-start: ${snippet_2}
+    /* :snippet-start: ${snippet_2} */
     bye
-    // :snippet-end:
+    /* :snippet-end: */
     // :snippet-start: ${snippet_3}
     should not snip
     // :snippet-end:
 `;
     const rootPath = "/path/to/project";
-    const snippetName1 = `test.codeblock.${snippet_1}.txt`;
-    const snippetName2 = `test.codeblock.${snippet_2}.txt`;
+    const snippetName1 = `test.codeblock.${snippet_1}.js`;
+    const snippetName2 = `test.codeblock.${snippet_2}.js`;
     const destinationPathLocal = "/stateAndEmphasize/local";
-    const testFileName = "test.txt";
+    const testFileName = "test.js";
 
     await System.fs.mkdir(rootPath, {
       recursive: true,
@@ -357,7 +357,7 @@ struct ContentView: SwiftUI.App {
     await snip({
       paths: [rootPath],
       destination: destinationPathLocal,
-      id: [snippet_1,snippet_2],
+      id: [snippet_1, snippet_2],
     });
 
     let fileContents1Sync = await System.fs.readFile(
@@ -371,12 +371,9 @@ struct ContentView: SwiftUI.App {
 
     let allFilesInDest = await System.fs.readdir(destinationPathLocal);
     // Verify that only the snippet with the requested ID was produced
-    expect(allFilesInDest).toStrictEqual(
-      [snippetName1, snippetName2]
-    );
+    expect(allFilesInDest).toStrictEqual([snippetName1, snippetName2]);
     // Verify that the contents of the requested snippet is correct
-    expect(fileContents1Sync).toStrictEqual('hi\n');
-    expect(fileContents2Sync).toStrictEqual('bye\n');
-
+    expect(fileContents1Sync).toStrictEqual("hi\n");
+    expect(fileContents2Sync).toStrictEqual("bye\n");
   });
 });

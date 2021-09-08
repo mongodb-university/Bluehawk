@@ -67,11 +67,17 @@ export function makeCstVisitor(
     LineComment?: IToken[];
   }
 
+  interface BlockCommandUncommentedContentsContext {
+    Newline: IToken[];
+    chunk: CstNode[];
+  }
+
   interface BlockCommandContext {
     CommandStart: IToken[];
     commandAttribute?: CstNode[];
-    Newline: IToken[];
-    chunk: CstNode[];
+    Newline?: IToken[];
+    chunk?: CstNode[];
+    blockCommandUncommentedContents?: CstNode[];
     CommandEnd: IToken[];
   }
 
@@ -305,17 +311,39 @@ export function makeCstVisitor(
             )
           );
         }
-
-        assert(context.Newline[0].endLine !== undefined);
-        assert(context.Newline[0].endOffset !== undefined);
+        assert(context.CommandStart[0].endOffset !== undefined);
+        assert(context.CommandStart[0].endLine !== undefined);
         assert(context.CommandEnd[0].startColumn !== undefined);
         assert(context.CommandEnd[0].startLine !== undefined);
-        if (context.chunk != undefined) {
+
+        let lineStart: number;
+        let offsetStart: number;
+        if (
+          context.Newline !== undefined &&
+          context.Newline[0] !== undefined &&
+          context.Newline[0].endLine !== undefined &&
+          context.Newline[0].endOffset !== undefined
+        ) {
+          lineStart = context.Newline[0].endLine + 1;
+          offsetStart = context.Newline[0].endOffset + 1;
+        } else {
+          // start and end offsets for block commands with uncommented contents
+          assert(context.blockCommandUncommentedContents !== undefined);
+          const NewLineTokenArr = context.blockCommandUncommentedContents[0]
+            .children.Newline as IToken[];
+          lineStart = context.CommandStart[0].endLine + 1;
+          offsetStart = NewLineTokenArr[0].startOffset + 1;
+        }
+
+        if (
+          context.chunk != undefined ||
+          context.blockCommandUncommentedContents != undefined
+        ) {
           newNode.contentRange = {
             start: {
-              line: context.Newline[0].endLine + 1,
+              line: lineStart,
               column: 1,
-              offset: context.Newline[0].endOffset + 1,
+              offset: offsetStart,
             },
             end: {
               line: context.CommandEnd[0].startLine,
@@ -332,7 +360,12 @@ export function makeCstVisitor(
           errors,
           source,
         });
-        this.visit(context.chunk, { parent: newNode, errors, source });
+
+        this.visit(context.blockCommandUncommentedContents ?? context.chunk, {
+          parent: newNode,
+          errors,
+          source,
+        });
 
         // Find any line comment tokens associated with the command end token
         newNode.associatedTokens.push(
@@ -340,6 +373,13 @@ export function makeCstVisitor(
             isAssociated(lineComment, CommandEnd)
           )
         );
+      }
+
+      blockCommandUncommentedContents(
+        context: BlockCommandUncommentedContentsContext,
+        { parent, errors, source }: VisitorContext
+      ) {
+        this.visit(context.chunk, { parent, errors, source });
       }
 
       blockComment(
