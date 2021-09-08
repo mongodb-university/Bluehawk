@@ -24,6 +24,15 @@ What if there was a better way? What if you could write your examples in one pla
 and let a tool take care of removing your assertions and setup and copying the
 examples into your documentation? Bluehawk does exactly that.
 
+### Videos
+
+How do you use Bluehawk in workflows? Here are a couple of short video
+overviews of how the MongoDB Developer Education team uses Bluehawk to create 
+code examples:
+
+- [Bluehawk: Extract & Generate Code Examples](https://youtu.be/4G2n3Ps7qUY)
+- [Bluehawk: Generate Code for Tutorial Apps](https://youtu.be/DyF4tOxS0zU)
+
 ## Install
 
 Install the CLI globally:
