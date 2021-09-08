@@ -155,7 +155,7 @@ export class RootParser extends CstParser {
 
     // Rule for block comments that behave like line comments in block commands.
     // Define a block command as two block comments with an uncommented body.
-    // This is necessary for language like html that do not have a line comment.
+    // This is necessary for languages like html that do not have a line comment.
     this.RULE("blockCommandUncommentedContents", () => {
       this.CONSUME1(BlockCommentEnd);
       this.CONSUME1(Newline);

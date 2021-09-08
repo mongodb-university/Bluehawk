@@ -22,7 +22,7 @@ export function makeLexer(languageTokens: TokenType[]): Lexer {
       AttributeListStart,
       Identifier,
       Space,
-      ..._CommandAttributesPopTokens(languageTokens),
+      ...CommandAttributesPopTokens(languageTokens),
     ],
     AttributeListMode: makeAttributeListMode(languageTokens),
     AltParserMode: [
@@ -39,8 +39,8 @@ export function makeLexer(languageTokens: TokenType[]): Lexer {
 }
 
 // Helper function for generating command attribute pop tokens
-function _CommandAttributesPopTokens(languageTokens: TokenType[]): TokenType[] {
-  let popTokens: TokenType[] = [{ ...Newline, POP_MODE: true }];
+function CommandAttributesPopTokens(languageTokens: TokenType[]): TokenType[] {
+  const popTokens: TokenType[] = [{ ...Newline, POP_MODE: true }];
   // if block comments are defined, add them as pop tokens
   if (tokenCategoryFilter(languageTokens, [BlockCommentEnd]).length !== 0) {
     popTokens.push({

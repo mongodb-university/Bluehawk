@@ -329,7 +329,7 @@ export function makeCstVisitor(
         } else {
           // start and end offsets for block commands with uncommented contents
           assert(context.blockCommandUncommentedContents !== undefined);
-          let NewLineTokenArr = context.blockCommandUncommentedContents[0]
+          const NewLineTokenArr = context.blockCommandUncommentedContents[0]
             .children.Newline as IToken[];
           lineStart = context.CommandStart[0].endLine + 1;
           offsetStart = NewLineTokenArr[0].startOffset + 1;
