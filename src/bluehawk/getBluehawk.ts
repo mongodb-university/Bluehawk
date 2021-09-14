@@ -70,7 +70,6 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
         ".gvy",
         ".gy",
         ".gsh",
-        ".uxml"
       ],
       {
         languageId: "C-like",
