@@ -1,7 +1,7 @@
 import { Stats } from "fs";
 import * as path from "path";
 import { getBluehawk } from "../../bluehawk";
-import { MainArgs } from "../../cli";
+import { MainArgs } from "./actions";
 import { System } from "../../bluehawk/io/System";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 

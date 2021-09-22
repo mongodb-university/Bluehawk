@@ -4,10 +4,6 @@ import { loadPlugins } from "./Plugin";
 import { version as yargsVersion } from "yargs/package.json";
 import { version as bluehawkVersion } from "../../package.json";
 
-export interface MainArgs {
-  waitForListeners?: boolean;
-}
-
 export function commandDir<T>(
   argv: yargs.Argv<T>,
   directory: string,

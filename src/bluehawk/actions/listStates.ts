@@ -1,6 +1,5 @@
-import { Arguments } from "yargs";
 import { getBluehawk } from "../../bluehawk";
-import { MainArgs } from "../../cli";
+import { MainArgs } from "./actions";
 import { printJsonResult } from "./printJsonResult";
 
 export interface ListStatesArgs extends MainArgs {
@@ -9,9 +8,7 @@ export interface ListStatesArgs extends MainArgs {
   ignore?: string | string[];
 }
 
-export const listStates = async (
-  args: Arguments<ListStatesArgs>
-): Promise<void> => {
+export const listStates = async (args: ListStatesArgs): Promise<void> => {
   const { ignore, json, paths, waitForListeners } = args;
   const bluehawk = await getBluehawk();
 

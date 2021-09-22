@@ -1,11 +1,8 @@
-import { Arguments } from "yargs";
 import { getBluehawk } from "../../bluehawk";
-import { MainArgs } from "../../cli";
+import { MainArgs } from "./actions";
 import { printJsonResult } from "./printJsonResult";
 
-export const listCommands = async (
-  args: Arguments<MainArgs & { json?: boolean }>
-): Promise<void> => {
+export const listCommands = async (args: MainArgs): Promise<void> => {
   const { json } = args;
   const bluehawk = await getBluehawk();
 

@@ -1,16 +1,10 @@
-import { Stats } from "fs";
-import * as path from "path";
 import { CommandModule, Arguments, Argv } from "yargs";
-import { getBluehawk } from "../../bluehawk";
-import { MainArgs } from "../cli";
 import {
   withDestinationOption,
   withStateOption,
   withIgnoreOption,
 } from "../options";
-import { System } from "../../bluehawk/io/System";
-import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
-import { CopyArgs, copy } from "../actions";
+import { MainArgs, CopyArgs, copy } from "../../bluehawk";
 
 const commandModule: CommandModule<MainArgs & { rootPath: string }, CopyArgs> =
   {

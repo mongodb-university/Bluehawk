@@ -6,8 +6,7 @@ import {
   withIgnoreOption,
   withGenerateFormattedCodeSnippetsOption,
 } from "../options";
-import { MainArgs } from "../cli";
-import { SnipArgs, snip } from "../actions";
+import { MainArgs, SnipArgs, snip } from "../../bluehawk";
 
 const commandModule: CommandModule<MainArgs & { paths: string[] }, SnipArgs> = {
   command: "snip <paths..>",

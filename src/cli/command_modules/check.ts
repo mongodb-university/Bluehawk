@@ -1,7 +1,6 @@
 import { CommandModule, Arguments } from "yargs";
 import { withIgnoreOption, withJsonOption } from "../options";
-import { MainArgs } from "../cli";
-import { CheckArgs, check } from "../../bluehawk";
+import { MainArgs, CheckArgs, check } from "../../bluehawk";
 
 const commandModule: CommandModule<MainArgs & { paths: string[] }, CheckArgs> =
   {

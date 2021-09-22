@@ -1,7 +1,6 @@
 import { CommandModule } from "yargs";
-import { MainArgs } from "../cli";
 import { withJsonOption } from "../options";
-import { listCommands } from "../actions";
+import { MainArgs, listCommands } from "../../bluehawk";
 
 const commandModule: CommandModule<MainArgs, MainArgs & { json?: boolean }> = {
   command: "commands",

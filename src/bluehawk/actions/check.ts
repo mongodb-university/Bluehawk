@@ -1,16 +1,16 @@
-import { Arguments } from "yargs";
 import { getBluehawk } from "../../bluehawk";
 import { BluehawkError } from "../../bluehawk/BluehawkError";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
-import { MainArgs } from "../../cli";
+import { MainArgs } from "./actions";
 import { printJsonResult } from "./printJsonResult";
 
 export interface CheckArgs extends MainArgs {
   paths: string[];
   ignore?: string | string[];
+  json?: boolean;
 }
 
-export const check = async (args: Arguments<CheckArgs>): Promise<void> => {
+export const check = async (args: CheckArgs): Promise<void> => {
   const { ignore, json, paths, waitForListeners } = args;
   const bluehawk = await getBluehawk();
   const fileToErrorMap = new Map<string, BluehawkError[]>();
