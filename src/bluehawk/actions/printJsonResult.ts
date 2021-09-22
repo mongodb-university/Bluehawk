@@ -9,7 +9,7 @@ export function printJsonResult<T extends MainArgs & { json?: boolean }>(
   result: Record<string, any>
 ): void {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { json, ...info } = args; // Copy the args for output, minus a few
+  const { json, ...info } = args; // Copy the args for output, minus json
   console.log(
     JSON.stringify({
       bluehawkVersion: version,
