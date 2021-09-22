@@ -1,11 +1,11 @@
 import { Arguments } from "yargs";
 import { getBluehawk } from "../../bluehawk";
-import { MainArgs } from "../cli";
 import { BluehawkError } from "../../bluehawk/BluehawkError";
-import { printJsonResult } from "../printJsonResult";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
+import { MainArgs } from "../../cli";
+import { printJsonResult } from "./printJsonResult";
 
-interface CheckArgs extends MainArgs {
+export interface CheckArgs extends MainArgs {
   paths: string[];
   ignore?: string | string[];
 }

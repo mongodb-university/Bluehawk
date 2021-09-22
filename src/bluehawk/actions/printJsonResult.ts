@@ -1,5 +1,5 @@
 import { Arguments } from "yargs";
-import { version } from "../../package.json";
+import { version } from "../../../package.json";
 
 // Given the --json flag, prints results with additional useful information in a
 // uniform way

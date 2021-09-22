@@ -7,3 +7,4 @@ export * from "./commands";
 export * from "./parser";
 export * from "./processor";
 export * from "./project";
+export * from "./actions";

@@ -1,7 +1,7 @@
 import { Arguments } from "yargs";
 import { getBluehawk } from "../../bluehawk";
-import { MainArgs } from "../cli";
-import { printJsonResult } from "../printJsonResult";
+import { MainArgs } from "../../cli";
+import { printJsonResult } from "./printJsonResult";
 
 export interface ListStatesArgs extends MainArgs {
   paths: string[];

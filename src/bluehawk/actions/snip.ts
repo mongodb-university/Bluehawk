@@ -1,7 +1,7 @@
 import * as path from "path";
 import { getBluehawk, EmphasizeSourceAttributes } from "../../bluehawk";
 import { System } from "../../bluehawk/io/System";
-import { MainArgs } from "../cli";
+import { MainArgs } from "../../cli";
 import { ProcessResult } from "../../bluehawk/processor/Processor";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
