@@ -1,10 +1,9 @@
-import { Arguments, CommandModule } from "yargs";
-import { getBluehawk } from "../../../bluehawk";
-import { MainArgs } from "../../cli";
-import { withJsonOption } from "../../options";
-import { printJsonResult } from "../../printJsonResult";
+import { Arguments } from "yargs";
+import { getBluehawk } from "../../bluehawk";
+import { MainArgs } from "../cli";
+import { printJsonResult } from "../printJsonResult";
 
-const handler = async (
+export const listCommands = async (
   args: Arguments<MainArgs & { json?: boolean }>
 ): Promise<void> => {
   const { json } = args;
@@ -62,15 +61,3 @@ const handler = async (
 
   console.log(`available markup commands:\n\n${commandsListText}`);
 };
-
-const commandModule: CommandModule<MainArgs, MainArgs & { json?: boolean }> = {
-  command: "commands",
-  builder(args) {
-    return withJsonOption(args);
-  },
-  handler,
-  aliases: [],
-  describe: "list available commands",
-};
-
-export default commandModule;

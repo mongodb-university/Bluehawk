@@ -30,7 +30,7 @@ export async function run(): Promise<void> {
     describe: "add a plugin",
   }).argv;
 
-  const mainArgv = commandDir(yargs.help(), "commands").demandCommand();
+  const mainArgv = commandDir(yargs.help(), "command_modules").demandCommand();
 
   const plugins = await loadPlugins(preArgv.plugin);
 

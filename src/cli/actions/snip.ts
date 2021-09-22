@@ -1,19 +1,11 @@
 import * as path from "path";
-import { CommandModule, Arguments, Argv } from "yargs";
 import { getBluehawk, EmphasizeSourceAttributes } from "../../bluehawk";
-import {
-  withDestinationOption,
-  withStateOption,
-  withIdOption,
-  withIgnoreOption,
-  withGenerateFormattedCodeSnippetsOption,
-} from "../options";
 import { System } from "../../bluehawk/io/System";
 import { MainArgs } from "../cli";
 import { ProcessResult } from "../../bluehawk/processor/Processor";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
-interface SnipArgs extends MainArgs {
+export interface SnipArgs extends MainArgs {
   paths: string[];
   destination: string;
   state?: string;
@@ -155,7 +147,7 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
         // Not the requested id
         return;
       }
-      
+
       idsUsed.add(idAttribute);
     }
 
@@ -205,29 +197,3 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
 
   return errors;
 };
-
-const commandModule: CommandModule<MainArgs & { paths: string[] }, SnipArgs> = {
-  command: "snip <paths..>",
-  builder: (yargs): Argv<SnipArgs> => {
-    return withIgnoreOption(
-      withStateOption(
-        withIdOption(
-          withDestinationOption(withGenerateFormattedCodeSnippetsOption(yargs))
-        )
-      )
-    );
-  },
-  handler: async (args: Arguments<SnipArgs>) => {
-    const errors = await snip(args);
-    if (errors.length !== 0) {
-      console.error(
-        `Exiting with ${errors.length} error${errors.length === 1 ? "" : "s"}.`
-      );
-      process.exit(1);
-    }
-  },
-  aliases: [],
-  describe: "extract snippets",
-};
-
-export default commandModule;
