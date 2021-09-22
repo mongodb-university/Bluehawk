@@ -137,7 +137,7 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
   Copy permissions (using stat/chmod) to the given path from the file at the
   given path.
  */
-export const copyPermissions = async ({
+const copyPermissions = async ({
   to,
   from,
 }: {
