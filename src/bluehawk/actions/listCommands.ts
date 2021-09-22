@@ -2,7 +2,11 @@ import { getBluehawk } from "../../bluehawk";
 import { MainArgs } from "./actions";
 import { printJsonResult } from "./printJsonResult";
 
-export const listCommands = async (args: MainArgs): Promise<void> => {
+export interface ListCommandArgs extends MainArgs {
+  json?: boolean;
+}
+
+export const listCommands = async (args: ListCommandArgs): Promise<void> => {
   const { json } = args;
   const bluehawk = await getBluehawk();
 
