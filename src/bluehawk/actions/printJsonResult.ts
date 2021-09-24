@@ -1,4 +1,4 @@
-import { ActionArgs } from "./actions";
+import { ActionArgs } from "./ActionArgs";
 import { version } from "../../../package.json";
 
 // Given the --json flag, prints results with additional useful information in a

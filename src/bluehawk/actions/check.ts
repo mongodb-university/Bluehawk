@@ -1,7 +1,7 @@
 import { getBluehawk } from "../../bluehawk";
 import { BluehawkError } from "../../bluehawk/BluehawkError";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
-import { ActionArgs } from "./actions";
+import { ActionArgs } from "./ActionArgs";
 import { printJsonResult } from "./printJsonResult";
 
 export interface CheckArgs extends ActionArgs {
