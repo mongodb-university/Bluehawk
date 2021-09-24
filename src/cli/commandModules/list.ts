@@ -5,7 +5,7 @@ import * as path from "path";
 const commandModule: yargs.CommandModule = {
   command: "list",
   builder(yargs) {
-    return commandDir(yargs, path.join("commands", "list"));
+    return commandDir(yargs, path.join("commandModules", "list"));
   },
   handler() {
     yargs.showHelp();

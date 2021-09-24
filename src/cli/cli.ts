@@ -4,10 +4,6 @@ import { loadPlugins } from "./Plugin";
 import { version as yargsVersion } from "yargs/package.json";
 import { version as bluehawkVersion } from "../../package.json";
 
-export interface MainArgs {
-  waitForListeners?: boolean;
-}
-
 export function commandDir<T>(
   argv: yargs.Argv<T>,
   directory: string,
@@ -30,7 +26,7 @@ export async function run(): Promise<void> {
     describe: "add a plugin",
   }).argv;
 
-  const mainArgv = commandDir(yargs.help(), "commands").demandCommand();
+  const mainArgv = commandDir(yargs.help(), "commandModules").demandCommand();
 
   const plugins = await loadPlugins(preArgv.plugin);
 

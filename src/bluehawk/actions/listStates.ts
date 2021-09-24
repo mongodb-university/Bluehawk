@@ -1,18 +1,14 @@
-import { Arguments, CommandModule } from "yargs";
-import { getBluehawk } from "../../../bluehawk";
-import { MainArgs } from "../../cli";
-import { withIgnoreOption, withJsonOption } from "../../options";
-import { printJsonResult } from "../../printJsonResult";
+import { getBluehawk } from "../../bluehawk";
+import { ActionArgs } from "./ActionArgs";
+import { printJsonResult } from "./printJsonResult";
 
-interface ListStatesArgs extends MainArgs {
+export interface ListStatesArgs extends ActionArgs {
   paths: string[];
   json?: boolean;
   ignore?: string | string[];
 }
 
-export const listStates = async (
-  args: Arguments<ListStatesArgs>
-): Promise<void> => {
+export const listStates = async (args: ListStatesArgs): Promise<void> => {
   const { ignore, json, paths, waitForListeners } = args;
   const bluehawk = await getBluehawk();
 
@@ -47,20 +43,3 @@ export const listStates = async (
       .join("\n")}`
   );
 };
-
-const commandModule: CommandModule<
-  MainArgs & { paths: string[] },
-  ListStatesArgs
-> = {
-  command: "states <paths..>",
-  builder(argv) {
-    return withJsonOption(withIgnoreOption(argv));
-  },
-  async handler(args) {
-    return await listStates(args);
-  },
-  aliases: [],
-  describe: "list states used in the given project",
-};
-
-export default commandModule;
