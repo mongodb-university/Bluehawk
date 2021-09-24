@@ -1,11 +1,11 @@
 import * as path from "path";
 import { getBluehawk, EmphasizeSourceAttributes } from "../../bluehawk";
 import { System } from "../../bluehawk/io/System";
-import { MainArgs } from "./actions";
+import { ActionArgs } from "./actions";
 import { ProcessResult } from "../../bluehawk/processor/Processor";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
-export interface SnipArgs extends MainArgs {
+export interface SnipArgs extends ActionArgs {
   paths: string[];
   destination: string;
   state?: string;

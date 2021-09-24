@@ -1,3 +1,3 @@
-export interface MainArgs {
+export interface ActionArgs {
   waitForListeners?: boolean;
 }

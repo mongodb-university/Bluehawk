@@ -1,9 +1,9 @@
 import { CommandModule } from "yargs";
 import { withIgnoreOption, withJsonOption } from "../options";
-import { MainArgs, ListStatesArgs, listStates } from "../../bluehawk";
+import { ActionArgs, ListStatesArgs, listStates } from "../../bluehawk";
 
 const commandModule: CommandModule<
-  MainArgs & { paths: string[] },
+  ActionArgs & { paths: string[] },
   ListStatesArgs
 > = {
   command: "states <paths..>",

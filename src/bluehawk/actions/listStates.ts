@@ -1,8 +1,8 @@
 import { getBluehawk } from "../../bluehawk";
-import { MainArgs } from "./actions";
+import { ActionArgs } from "./actions";
 import { printJsonResult } from "./printJsonResult";
 
-export interface ListStatesArgs extends MainArgs {
+export interface ListStatesArgs extends ActionArgs {
   paths: string[];
   json?: boolean;
   ignore?: string | string[];

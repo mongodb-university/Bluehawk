@@ -1,10 +1,10 @@
 import { getBluehawk } from "../../bluehawk";
 import { BluehawkError } from "../../bluehawk/BluehawkError";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
-import { MainArgs } from "./actions";
+import { ActionArgs } from "./actions";
 import { printJsonResult } from "./printJsonResult";
 
-export interface CheckArgs extends MainArgs {
+export interface CheckArgs extends ActionArgs {
   paths: string[];
   ignore?: string | string[];
   json?: boolean;

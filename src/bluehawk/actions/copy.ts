@@ -1,11 +1,11 @@
 import { Stats } from "fs";
 import * as path from "path";
 import { getBluehawk } from "../../bluehawk";
-import { MainArgs } from "./actions";
+import { ActionArgs } from "./actions";
 import { System } from "../../bluehawk/io/System";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
-export interface CopyArgs extends MainArgs {
+export interface CopyArgs extends ActionArgs {
   rootPath: string;
   destination: string;
   state?: string;
