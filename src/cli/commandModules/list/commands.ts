@@ -1,6 +1,6 @@
 import { CommandModule } from "yargs";
-import { withJsonOption } from "../options";
-import { ActionArgs, ListCommandArgs, listCommands } from "../../bluehawk";
+import { withJsonOption } from "../../options";
+import { ActionArgs, ListCommandArgs, listCommands } from "../../../bluehawk";
 
 const commandModule: CommandModule<ActionArgs, ListCommandArgs> = {
   command: "commands",
