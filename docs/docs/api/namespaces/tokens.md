@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:37](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L37)
+[src/bluehawk/parser/lexer/tokens.ts:37](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L37)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:44](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L44)
+[src/bluehawk/parser/lexer/tokens.ts:44](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L44)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:17](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L17)
+[src/bluehawk/parser/lexer/tokens.ts:17](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L17)
 
 ___
 
@@ -44,7 +44,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:12](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L12)
+[src/bluehawk/parser/lexer/tokens.ts:12](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L12)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:77](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L77)
+[src/bluehawk/parser/lexer/tokens.ts:77](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L77)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:78](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L78)
+[src/bluehawk/parser/lexer/tokens.ts:78](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L78)
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:76](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L76)
+[src/bluehawk/parser/lexer/tokens.ts:76](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L76)
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:91](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L91)
+[src/bluehawk/parser/lexer/tokens.ts:91](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L91)
 
 ___
 
@@ -94,7 +94,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:86](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L86)
+[src/bluehawk/parser/lexer/tokens.ts:86](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L86)
 
 ___
 
@@ -104,7 +104,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:80](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L80)
+[src/bluehawk/parser/lexer/tokens.ts:80](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L80)
 
 ___
 
@@ -114,7 +114,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:96](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L96)
+[src/bluehawk/parser/lexer/tokens.ts:96](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L96)
 
 ___
 
@@ -124,7 +124,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:4](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L4)
+[src/bluehawk/parser/lexer/tokens.ts:4](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L4)
 
 ___
 
@@ -134,7 +134,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:101](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L101)
+[src/bluehawk/parser/lexer/tokens.ts:101](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L101)
 
 ___
 
@@ -144,7 +144,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:7](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L7)
+[src/bluehawk/parser/lexer/tokens.ts:7](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L7)
 
 ___
 
@@ -154,7 +154,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:59](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L59)
+[src/bluehawk/parser/lexer/tokens.ts:59](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L59)
 
 ___
 
@@ -164,7 +164,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:27](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L27)
+[src/bluehawk/parser/lexer/tokens.ts:27](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L27)
 
 ___
 
@@ -174,7 +174,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:22](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L22)
+[src/bluehawk/parser/lexer/tokens.ts:22](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L22)
 
 ___
 
@@ -184,7 +184,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:53](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L53)
+[src/bluehawk/parser/lexer/tokens.ts:53](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L53)
 
 ___
 
@@ -194,7 +194,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:32](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L32)
+[src/bluehawk/parser/lexer/tokens.ts:32](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L32)
 
 ___
 
@@ -204,4 +204,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:65](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/tokens.ts#L65)
+[src/bluehawk/parser/lexer/tokens.ts:65](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/tokens.ts#L65)

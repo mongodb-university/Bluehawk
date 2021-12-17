@@ -21,7 +21,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/commands/EmphasizeCommand.ts:13](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/EmphasizeCommand.ts#L13)
+[src/bluehawk/commands/EmphasizeCommand.ts:13](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/EmphasizeCommand.ts#L13)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/EmphasizeCommand.ts:9](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/EmphasizeCommand.ts#L9)
+[src/bluehawk/commands/EmphasizeCommand.ts:9](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/EmphasizeCommand.ts#L9)

@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/visitor/makeCstVisitor.ts:26](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/visitor/makeCstVisitor.ts#L26)
+[src/bluehawk/parser/visitor/makeCstVisitor.ts:26](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/visitor/makeCstVisitor.ts#L26)
 
 ___
 
@@ -24,4 +24,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/visitor/makeCstVisitor.ts:25](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/visitor/makeCstVisitor.ts#L25)
+[src/bluehawk/parser/visitor/makeCstVisitor.ts:25](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/visitor/makeCstVisitor.ts#L25)

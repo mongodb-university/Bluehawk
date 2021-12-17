@@ -22,7 +22,7 @@ The frontend of Bluehawk.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:41](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/bluehawk.ts#L41)
+[src/bluehawk/bluehawk.ts:41](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/bluehawk.ts#L41)
 
 ## Properties
 
@@ -32,7 +32,7 @@ The frontend of Bluehawk.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:204](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/bluehawk.ts#L204)
+[src/bluehawk/bluehawk.ts:204](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/bluehawk.ts#L204)
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:203](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/bluehawk.ts#L203)
+[src/bluehawk/bluehawk.ts:203](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/bluehawk.ts#L203)
 
 ## Accessors
 
@@ -56,7 +56,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:199](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/bluehawk.ts#L199)
+[src/bluehawk/bluehawk.ts:199](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/bluehawk.ts#L199)
 
 ## Methods
 
@@ -79,7 +79,7 @@ Specify the special patterns for a given language.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:76](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/bluehawk.ts#L76)
+[src/bluehawk/bluehawk.ts:76](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/bluehawk.ts#L76)
 
 ___
 
@@ -102,7 +102,7 @@ Parses the given source file into commands.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:144](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/bluehawk.ts#L144)
+[src/bluehawk/bluehawk.ts:144](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/bluehawk.ts#L144)
 
 ___
 
@@ -125,7 +125,7 @@ Runs through all given source paths to parse and process them.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:89](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/bluehawk.ts#L89)
+[src/bluehawk/bluehawk.ts:89](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/bluehawk.ts#L89)
 
 ___
 
@@ -149,7 +149,7 @@ results.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:192](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/bluehawk.ts#L192)
+[src/bluehawk/bluehawk.ts:192](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/bluehawk.ts#L192)
 
 ___
 
@@ -173,7 +173,7 @@ support for the command under the given name.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:69](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/bluehawk.ts#L69)
+[src/bluehawk/bluehawk.ts:69](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/bluehawk.ts#L69)
 
 ___
 
@@ -195,4 +195,4 @@ Subscribe to processed documents as they are processed by Bluehawk.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:180](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/bluehawk.ts#L180)
+[src/bluehawk/bluehawk.ts:180](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/bluehawk.ts#L180)

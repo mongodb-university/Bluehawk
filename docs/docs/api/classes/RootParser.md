@@ -31,7 +31,7 @@ CstParser.constructor
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:103](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L103)
+[src/bluehawk/parser/RootParser.ts:103](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L103)
 
 ## Properties
 
@@ -62,7 +62,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:327](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L327)
+[src/bluehawk/parser/RootParser.ts:327](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L327)
 
 ___
 
@@ -72,7 +72,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:91](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L91)
+[src/bluehawk/parser/RootParser.ts:91](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L91)
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:99](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L99)
+[src/bluehawk/parser/RootParser.ts:99](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L99)
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:93](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L93)
+[src/bluehawk/parser/RootParser.ts:93](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L93)
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:94](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L94)
+[src/bluehawk/parser/RootParser.ts:94](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L94)
 
 ___
 
@@ -112,7 +112,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:97](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L97)
+[src/bluehawk/parser/RootParser.ts:97](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L97)
 
 ___
 
@@ -122,7 +122,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:92](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L92)
+[src/bluehawk/parser/RootParser.ts:92](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L92)
 
 ___
 
@@ -132,7 +132,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:95](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L95)
+[src/bluehawk/parser/RootParser.ts:95](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L95)
 
 ___
 
@@ -142,7 +142,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:96](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L96)
+[src/bluehawk/parser/RootParser.ts:96](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L96)
 
 ___
 
@@ -180,7 +180,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:101](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L101)
+[src/bluehawk/parser/RootParser.ts:101](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L101)
 
 ___
 
@@ -190,7 +190,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:89](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L89)
+[src/bluehawk/parser/RootParser.ts:89](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L89)
 
 ___
 
@@ -200,7 +200,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:98](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L98)
+[src/bluehawk/parser/RootParser.ts:98](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L98)
 
 ___
 
@@ -210,7 +210,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:100](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L100)
+[src/bluehawk/parser/RootParser.ts:100](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L100)
 
 ## Methods
 
@@ -1492,7 +1492,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:277](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L277)
+[src/bluehawk/parser/RootParser.ts:277](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/RootParser.ts#L277)
 
 ___
 

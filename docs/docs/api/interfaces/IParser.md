@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/makeParser.ts:15](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/makeParser.ts#L15)
+[src/bluehawk/parser/makeParser.ts:15](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/makeParser.ts#L15)
 
 ## Methods
 
@@ -34,4 +34,4 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/makeParser.ts:16](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/makeParser.ts#L16)
+[src/bluehawk/parser/makeParser.ts:16](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/makeParser.ts#L16)

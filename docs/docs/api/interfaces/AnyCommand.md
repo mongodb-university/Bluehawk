@@ -24,7 +24,7 @@ Command.attributesSchema
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:15](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L15)
+[src/bluehawk/commands/Command.ts:15](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L15)
 
 ___
 
@@ -38,7 +38,7 @@ Command.description
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:12](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L12)
+[src/bluehawk/commands/Command.ts:12](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L12)
 
 ___
 
@@ -52,7 +52,7 @@ Command.name
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:9](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L9)
+[src/bluehawk/commands/Command.ts:9](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L9)
 
 ___
 
@@ -66,7 +66,7 @@ Command.rules
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:19](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L19)
+[src/bluehawk/commands/Command.ts:19](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L19)
 
 ___
 
@@ -76,7 +76,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:26](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L26)
+[src/bluehawk/commands/Command.ts:26](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L26)
 
 ___
 
@@ -86,7 +86,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:27](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L27)
+[src/bluehawk/commands/Command.ts:27](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L27)
 
 ## Methods
 
@@ -106,4 +106,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:28](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L28)
+[src/bluehawk/commands/Command.ts:28](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L28)

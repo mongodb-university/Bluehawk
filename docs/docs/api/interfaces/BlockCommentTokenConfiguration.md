@@ -14,4 +14,4 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makeBlockCommentTokens.ts:6](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/makeBlockCommentTokens.ts#L6)
+[src/bluehawk/parser/lexer/makeBlockCommentTokens.ts:6](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/makeBlockCommentTokens.ts#L6)

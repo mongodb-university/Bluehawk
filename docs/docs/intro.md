@@ -38,4 +38,4 @@ code examples:
 
 ## Contributing
 
-For more information about how to run, build, or test Bluehawk yourself, see [CONTRIBUTING.md](CONTRIBUTING.md).
+For more information about how to run, build, or test Bluehawk yourself, see [CONTRIBUTING.md](https://github.com/mongodb-university/Bluehawk/blob/main/CONTRIBUTING.md).

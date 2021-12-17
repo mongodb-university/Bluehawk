@@ -51,7 +51,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:64](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L64)
+[src/bluehawk/parser/CommandNode.ts:64](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L64)
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:85](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L85)
+[src/bluehawk/commands/Command.ts:85](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L85)
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:101](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L101)
+[src/bluehawk/commands/Command.ts:101](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L101)
 
 ___
 
@@ -107,7 +107,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/processor/Processor.ts:101](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/processor/Processor.ts#L101)
+[src/bluehawk/processor/Processor.ts:101](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/processor/Processor.ts#L101)
 
 ___
 
@@ -117,7 +117,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:111](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L111)
+[src/bluehawk/commands/Command.ts:111](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L111)
 
 ___
 
@@ -141,7 +141,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/OnBinaryFileFunction.ts:1](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/OnBinaryFileFunction.ts#L1)
+[src/bluehawk/OnBinaryFileFunction.ts:1](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/OnBinaryFileFunction.ts#L1)
 
 ## Variables
 
@@ -151,7 +151,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/EmphasizeCommand.ts:23](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/EmphasizeCommand.ts#L23)
+[src/bluehawk/commands/EmphasizeCommand.ts:23](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/EmphasizeCommand.ts#L23)
 
 ___
 
@@ -161,7 +161,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:86](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L86)
+[src/bluehawk/commands/Command.ts:86](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L86)
 
 ___
 
@@ -171,7 +171,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:102](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L102)
+[src/bluehawk/commands/Command.ts:102](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L102)
 
 ___
 
@@ -181,7 +181,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:112](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L112)
+[src/bluehawk/commands/Command.ts:112](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L112)
 
 ___
 
@@ -191,7 +191,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/RemoveCommand.ts:7](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/RemoveCommand.ts#L7)
+[src/bluehawk/commands/RemoveCommand.ts:7](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/RemoveCommand.ts#L7)
 
 ___
 
@@ -201,7 +201,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/ReplaceCommand.ts:10](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/ReplaceCommand.ts#L10)
+[src/bluehawk/commands/ReplaceCommand.ts:10](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/ReplaceCommand.ts#L10)
 
 ___
 
@@ -211,7 +211,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/SnippetCommand.ts:65](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/SnippetCommand.ts#L65)
+[src/bluehawk/commands/SnippetCommand.ts:65](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/SnippetCommand.ts#L65)
 
 ___
 
@@ -221,7 +221,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/StateCommand.ts:9](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/StateCommand.ts#L9)
+[src/bluehawk/commands/StateCommand.ts:9](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/StateCommand.ts#L9)
 
 ___
 
@@ -240,7 +240,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/io/System.ts:7](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/io/System.ts#L7)
+[src/bluehawk/io/System.ts:7](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/io/System.ts#L7)
 
 ___
 
@@ -250,7 +250,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/UncommentCommand.ts:6](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/UncommentCommand.ts#L6)
+[src/bluehawk/commands/UncommentCommand.ts:6](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/UncommentCommand.ts#L6)
 
 ___
 
@@ -276,7 +276,7 @@ Returns a standard, shared Bluehawk instance.
 
 #### Defined in
 
-[src/bluehawk/getBluehawk.ts:22](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/getBluehawk.ts#L22)
+[src/bluehawk/getBluehawk.ts:22](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/getBluehawk.ts#L22)
 
 ## Functions
 
@@ -296,7 +296,7 @@ Returns a standard, shared Bluehawk instance.
 
 #### Defined in
 
-[src/bluehawk/actions/check.ts:13](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/check.ts#L13)
+[src/bluehawk/actions/check.ts:13](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/actions/check.ts#L13)
 
 ___
 
@@ -316,7 +316,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:20](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/copy.ts#L20)
+[src/bluehawk/actions/copy.ts:20](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/actions/copy.ts#L20)
 
 ___
 
@@ -338,7 +338,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:17](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/snip.ts#L17)
+[src/bluehawk/actions/snip.ts:17](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/actions/snip.ts#L17)
 
 ___
 
@@ -364,7 +364,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/flatten.ts:2](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/flatten.ts#L2)
+[src/bluehawk/parser/flatten.ts:2](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/flatten.ts#L2)
 
 ___
 
@@ -384,7 +384,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:34](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/snip.ts#L34)
+[src/bluehawk/actions/snip.ts:34](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/actions/snip.ts#L34)
 
 ___
 
@@ -404,7 +404,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/listCommands.ts:9](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/listCommands.ts#L9)
+[src/bluehawk/actions/listCommands.ts:9](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/actions/listCommands.ts#L9)
 
 ___
 
@@ -424,7 +424,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/listStates.ts:11](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/listStates.ts#L11)
+[src/bluehawk/actions/listStates.ts:11](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/actions/listStates.ts#L11)
 
 ___
 
@@ -444,7 +444,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/project/loadProjectPaths.ts:56](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/project/loadProjectPaths.ts#L56)
+[src/bluehawk/project/loadProjectPaths.ts:56](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/project/loadProjectPaths.ts#L56)
 
 ___
 
@@ -470,7 +470,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:34](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L34)
+[src/bluehawk/commands/Command.ts:34](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L34)
 
 ___
 
@@ -492,7 +492,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makeBlockCommentTokens.ts:9](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/makeBlockCommentTokens.ts#L9)
+[src/bluehawk/parser/lexer/makeBlockCommentTokens.ts:9](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/makeBlockCommentTokens.ts#L9)
 
 ___
 
@@ -518,7 +518,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:67](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L67)
+[src/bluehawk/commands/Command.ts:67](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L67)
 
 ___
 
@@ -539,7 +539,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/visitor/makeCstVisitor.ts:48](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/visitor/makeCstVisitor.ts#L48)
+[src/bluehawk/parser/visitor/makeCstVisitor.ts:48](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/visitor/makeCstVisitor.ts#L48)
 
 ___
 
@@ -559,7 +559,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/Command.ts:51](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/Command.ts#L51)
+[src/bluehawk/commands/Command.ts:51](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/Command.ts#L51)
 
 ___
 
@@ -579,7 +579,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makeLineCommentToken.ts:4](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/makeLineCommentToken.ts#L4)
+[src/bluehawk/parser/lexer/makeLineCommentToken.ts:4](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/makeLineCommentToken.ts#L4)
 
 ___
 
@@ -599,7 +599,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/makeParser.ts:27](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/makeParser.ts#L27)
+[src/bluehawk/parser/makeParser.ts:27](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/makeParser.ts#L27)
 
 ___
 
@@ -626,7 +626,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makePayloadPattern.ts:20](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/makePayloadPattern.ts#L20)
+[src/bluehawk/parser/lexer/makePayloadPattern.ts:20](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/makePayloadPattern.ts#L20)
 
 ___
 
@@ -648,7 +648,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makePushParserTokens.ts:19](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/lexer/makePushParserTokens.ts#L19)
+[src/bluehawk/parser/lexer/makePushParserTokens.ts:19](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/lexer/makePushParserTokens.ts#L19)
 
 ___
 
@@ -669,7 +669,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/commands/removeMetaRange.ts:25](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/commands/removeMetaRange.ts#L25)
+[src/bluehawk/commands/removeMetaRange.ts:25](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/commands/removeMetaRange.ts#L25)
 
 ___
 
@@ -689,4 +689,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:100](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/snip.ts#L100)
+[src/bluehawk/actions/snip.ts:100](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/actions/snip.ts#L100)

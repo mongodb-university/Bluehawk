@@ -24,7 +24,7 @@ CommandNode.associatedTokens
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:26](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L26)
+[src/bluehawk/parser/CommandNode.ts:26](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L26)
 
 ___
 
@@ -38,7 +38,7 @@ CommandNode.attributes
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:53](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L53)
+[src/bluehawk/parser/CommandNode.ts:53](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L53)
 
 ___
 
@@ -52,7 +52,7 @@ CommandNode.children
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:52](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L52)
+[src/bluehawk/parser/CommandNode.ts:52](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L52)
 
 ___
 
@@ -66,7 +66,7 @@ CommandNode.commandName
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:10](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L10)
+[src/bluehawk/parser/CommandNode.ts:10](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L10)
 
 ___
 
@@ -80,7 +80,7 @@ CommandNode.contentRange
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:51](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L51)
+[src/bluehawk/parser/CommandNode.ts:51](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L51)
 
 ___
 
@@ -94,7 +94,7 @@ CommandNode.id
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:50](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L50)
+[src/bluehawk/parser/CommandNode.ts:50](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L50)
 
 ___
 
@@ -108,7 +108,7 @@ CommandNode.inContext
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:29](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L29)
+[src/bluehawk/parser/CommandNode.ts:29](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L29)
 
 ___
 
@@ -122,7 +122,7 @@ CommandNode.lineComments
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:23](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L23)
+[src/bluehawk/parser/CommandNode.ts:23](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L23)
 
 ___
 
@@ -136,7 +136,7 @@ CommandNode.lineRange
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:19](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L19)
+[src/bluehawk/parser/CommandNode.ts:19](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L19)
 
 ___
 
@@ -150,7 +150,7 @@ CommandNode.newlines
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:22](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L22)
+[src/bluehawk/parser/CommandNode.ts:22](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L22)
 
 ___
 
@@ -164,7 +164,7 @@ CommandNode.range
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:15](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L15)
+[src/bluehawk/parser/CommandNode.ts:15](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L15)
 
 ___
 
@@ -178,4 +178,4 @@ CommandNode.type
 
 #### Defined in
 
-[src/bluehawk/parser/CommandNode.ts:49](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/CommandNode.ts#L49)
+[src/bluehawk/parser/CommandNode.ts:49](https://github.com/mongodben/Bluehawk/blob/d355b52/src/bluehawk/parser/CommandNode.ts#L49)
