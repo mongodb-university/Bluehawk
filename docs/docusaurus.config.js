@@ -12,7 +12,6 @@ const config = {
   baseUrl: "/Bluehawk/",
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
-  favicon: "img/favicon.ico",
   organizationName: "mongodb-university", // Usually your GitHub org/user name.
   projectName: "Bluehawk", // Usually your repo name.
   plugins: [
