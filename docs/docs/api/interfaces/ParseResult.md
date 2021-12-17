@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/ParseResult.ts:8](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/ParseResult.ts#L8)
+[src/bluehawk/parser/ParseResult.ts:8](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/ParseResult.ts#L8)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/ParseResult.ts:7](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/ParseResult.ts#L7)
+[src/bluehawk/parser/ParseResult.ts:7](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/ParseResult.ts#L7)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/ParseResult.ts:10](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/ParseResult.ts#L10)
+[src/bluehawk/parser/ParseResult.ts:10](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/ParseResult.ts#L10)
 
 ___
 
@@ -44,4 +44,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/ParseResult.ts:9](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/ParseResult.ts#L9)
+[src/bluehawk/parser/ParseResult.ts:9](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/ParseResult.ts#L9)

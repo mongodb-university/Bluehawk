@@ -20,7 +20,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:10](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/actions/copy.ts#L10)
+[src/bluehawk/actions/copy.ts:10](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/copy.ts#L10)
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:12](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/actions/copy.ts#L12)
+[src/bluehawk/actions/copy.ts:12](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/copy.ts#L12)
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:9](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/actions/copy.ts#L9)
+[src/bluehawk/actions/copy.ts:9](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/copy.ts#L9)
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:11](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/actions/copy.ts#L11)
+[src/bluehawk/actions/copy.ts:11](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/copy.ts#L11)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:2](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/actions/ActionArgs.ts#L2)
+[src/bluehawk/actions/ActionArgs.ts:2](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/ActionArgs.ts#L2)
 
 ## Methods
 
@@ -86,4 +86,4 @@ Hook for additional work after a binary file is processed.
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:17](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/actions/copy.ts#L17)
+[src/bluehawk/actions/copy.ts:17](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/actions/copy.ts#L17)

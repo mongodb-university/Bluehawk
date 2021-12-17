@@ -31,7 +31,7 @@ CstParser.constructor
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:103](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L103)
+[src/bluehawk/parser/RootParser.ts:103](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L103)
 
 ## Properties
 
@@ -62,7 +62,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:327](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L327)
+[src/bluehawk/parser/RootParser.ts:327](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L327)
 
 ___
 
@@ -72,7 +72,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:91](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L91)
+[src/bluehawk/parser/RootParser.ts:91](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L91)
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:99](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L99)
+[src/bluehawk/parser/RootParser.ts:99](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L99)
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:93](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L93)
+[src/bluehawk/parser/RootParser.ts:93](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L93)
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:94](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L94)
+[src/bluehawk/parser/RootParser.ts:94](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L94)
 
 ___
 
@@ -112,7 +112,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:97](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L97)
+[src/bluehawk/parser/RootParser.ts:97](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L97)
 
 ___
 
@@ -122,7 +122,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:92](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L92)
+[src/bluehawk/parser/RootParser.ts:92](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L92)
 
 ___
 
@@ -132,7 +132,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:95](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L95)
+[src/bluehawk/parser/RootParser.ts:95](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L95)
 
 ___
 
@@ -142,7 +142,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:96](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L96)
+[src/bluehawk/parser/RootParser.ts:96](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L96)
 
 ___
 
@@ -170,7 +170,7 @@ CstParser.input
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:883
+node_modules/chevrotain/lib/chevrotain.d.ts:847
 
 ___
 
@@ -180,7 +180,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:101](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L101)
+[src/bluehawk/parser/RootParser.ts:101](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L101)
 
 ___
 
@@ -190,7 +190,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:89](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L89)
+[src/bluehawk/parser/RootParser.ts:89](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L89)
 
 ___
 
@@ -200,7 +200,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:98](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L98)
+[src/bluehawk/parser/RootParser.ts:98](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L98)
 
 ___
 
@@ -210,7 +210,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:100](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L100)
+[src/bluehawk/parser/RootParser.ts:100](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L100)
 
 ## Methods
 
@@ -278,7 +278,7 @@ CstParser.AT\_LEAST\_ONE
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:715
+node_modules/chevrotain/lib/chevrotain.d.ts:679
 
 ___
 
@@ -310,7 +310,7 @@ CstParser.AT\_LEAST\_ONE\_SEP
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:804
+node_modules/chevrotain/lib/chevrotain.d.ts:768
 
 ___
 
@@ -402,7 +402,7 @@ CstParser.CONSUME
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:190
+node_modules/chevrotain/lib/chevrotain.d.ts:184
 
 ___
 
@@ -438,7 +438,7 @@ CstParser.LA
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:900
+node_modules/chevrotain/lib/chevrotain.d.ts:864
 
 ___
 
@@ -491,7 +491,7 @@ CstParser.MANY
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:543
+node_modules/chevrotain/lib/chevrotain.d.ts:507
 
 ___
 
@@ -540,7 +540,7 @@ CstParser.MANY\_SEP
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:648
+node_modules/chevrotain/lib/chevrotain.d.ts:612
 
 ___
 
@@ -596,7 +596,7 @@ CstParser.OPTION
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:307
+node_modules/chevrotain/lib/chevrotain.d.ts:271
 
 ___
 
@@ -683,7 +683,7 @@ CstParser.OR
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:443
+node_modules/chevrotain/lib/chevrotain.d.ts:407
 
 ▸ `Protected` **OR**(`altsOrOpts`): `any`
 
@@ -703,7 +703,7 @@ CstParser.OR
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:444
+node_modules/chevrotain/lib/chevrotain.d.ts:408
 
 ___
 
@@ -727,7 +727,7 @@ CstParser.OR1
 
 #### Defined in
 
-docs/node_modules/chevrotain/lib/chevrotain.d.ts:451
+docs/node_modules/chevrotain/lib/chevrotain.d.ts:415
 
 ___
 
@@ -751,7 +751,7 @@ CstParser.OR2
 
 #### Defined in
 
-docs/node_modules/chevrotain/lib/chevrotain.d.ts:458
+docs/node_modules/chevrotain/lib/chevrotain.d.ts:422
 
 ___
 
@@ -775,7 +775,7 @@ CstParser.OR3
 
 #### Defined in
 
-docs/node_modules/chevrotain/lib/chevrotain.d.ts:465
+docs/node_modules/chevrotain/lib/chevrotain.d.ts:429
 
 ___
 
@@ -799,7 +799,7 @@ CstParser.OR4
 
 #### Defined in
 
-docs/node_modules/chevrotain/lib/chevrotain.d.ts:472
+docs/node_modules/chevrotain/lib/chevrotain.d.ts:436
 
 ___
 
@@ -823,7 +823,7 @@ CstParser.OR5
 
 #### Defined in
 
-docs/node_modules/chevrotain/lib/chevrotain.d.ts:479
+docs/node_modules/chevrotain/lib/chevrotain.d.ts:443
 
 ___
 
@@ -847,7 +847,7 @@ CstParser.OR6
 
 #### Defined in
 
-docs/node_modules/chevrotain/lib/chevrotain.d.ts:486
+docs/node_modules/chevrotain/lib/chevrotain.d.ts:450
 
 ___
 
@@ -871,7 +871,7 @@ CstParser.OR7
 
 #### Defined in
 
-docs/node_modules/chevrotain/lib/chevrotain.d.ts:493
+docs/node_modules/chevrotain/lib/chevrotain.d.ts:457
 
 ___
 
@@ -895,7 +895,7 @@ CstParser.OR8
 
 #### Defined in
 
-docs/node_modules/chevrotain/lib/chevrotain.d.ts:500
+docs/node_modules/chevrotain/lib/chevrotain.d.ts:464
 
 ___
 
@@ -919,7 +919,7 @@ CstParser.OR9
 
 #### Defined in
 
-docs/node_modules/chevrotain/lib/chevrotain.d.ts:507
+docs/node_modules/chevrotain/lib/chevrotain.d.ts:471
 
 ___
 
@@ -970,7 +970,7 @@ CstParser.OVERRIDE\_RULE
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:924
+node_modules/chevrotain/lib/chevrotain.d.ts:888
 
 ___
 
@@ -1013,7 +1013,7 @@ CstParser.RULE
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:914
+node_modules/chevrotain/lib/chevrotain.d.ts:878
 
 ___
 
@@ -1031,7 +1031,7 @@ CstParser.SKIP\_TOKEN
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:885
+node_modules/chevrotain/lib/chevrotain.d.ts:849
 
 ___
 
@@ -1071,7 +1071,7 @@ CstParser.SUBRULE
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:961
+node_modules/chevrotain/lib/chevrotain.d.ts:925
 
 ___
 
@@ -1104,7 +1104,7 @@ CstParser.atLeastOne
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:154
+node_modules/chevrotain/lib/chevrotain.d.ts:148
 
 ___
 
@@ -1134,7 +1134,7 @@ CstParser.canTokenTypeBeInsertedInRecovery
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:874
+node_modules/chevrotain/lib/chevrotain.d.ts:838
 
 ___
 
@@ -1289,7 +1289,7 @@ CstParser.getNextPossibleTokenTypes
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:879
+node_modules/chevrotain/lib/chevrotain.d.ts:843
 
 ___
 
@@ -1335,7 +1335,7 @@ CstParser.getTokenToInsert
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:865
+node_modules/chevrotain/lib/chevrotain.d.ts:829
 
 ___
 
@@ -1368,7 +1368,7 @@ CstParser.many
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:141
+node_modules/chevrotain/lib/chevrotain.d.ts:135
 
 ___
 
@@ -1467,7 +1467,7 @@ CstParser.or
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:128
+node_modules/chevrotain/lib/chevrotain.d.ts:125
 
 ___
 
@@ -1492,7 +1492,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:277](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/RootParser.ts#L277)
+[src/bluehawk/parser/RootParser.ts:277](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/RootParser.ts#L277)
 
 ___
 
@@ -1568,4 +1568,4 @@ CstParser.subrule
 
 #### Defined in
 
-node_modules/chevrotain/lib/chevrotain.d.ts:938
+node_modules/chevrotain/lib/chevrotain.d.ts:902

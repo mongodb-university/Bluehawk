@@ -11,7 +11,9 @@ operate upon the current line, while block commands operate upon the span of lin
 the start of the command and the end of the command. Since commands aren't valid syntax in
 most languages, you should place them in comments -- Bluehawk will still process them.
 To avoid name clashes with various languages and markup frameworks, all Bluehawk commands
-begin and end with colons (`:`). The following examples demonstrate the [remove](#remove)
+begin and end with colons (`:`).
+
+The following examples demonstrate the [remove](#remove)
 command in single-line and block forms:
 
 Single-line commands use `:<command>:` to markup a single line:
@@ -69,7 +71,7 @@ public class Main {
 > 💡 For a summary of all of the commands available in your local installation
 > of Bluehawk, run `bluehawk list commands`.
 
-### Attribute Lists
+## Attribute Lists
 
 Attribute lists are JSON objects that contain additional information about a command.
 They must use double quotes for fields, and the opening line of an attribute list
@@ -82,7 +84,7 @@ must appear on the same line as the command itself.
 // :replace-end:
 ```
 
-### Snippet
+## Snippet
 
 The `snippet` command, also aliased as `code-block`, marks a range of content in a file
 as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
@@ -119,14 +121,16 @@ Produces the following output:
 System.out.println("Hello world!");
 ```
 
-### State
+## State
 
 The `state` command marks a range of content in a file as part of a particular state.
 You can use the [snip](#snip) or [copy](#copy) CLI commands with the [state](#state)
 flag to generate output files that contain only content from a specific named state.
 When you use the `--state` flag to specify a state, all state blocks other than the
 specified state are removed from the output. All content not in a state block is
-unaffected and outputs normally. `state` can be helpful for managing tutorial code
+unaffected and outputs normally.
+
+`state` can be helpful for managing tutorial code
 with multiple steps, such as a "start" state that only contains `// TODO` and a
 "final" state that contains completed implementation code.
 
@@ -189,7 +193,7 @@ System.out.println("Hello world!");
 example++;
 ```
 
-### State-Uncomment
+## State-Uncomment
 
 The `state-uncomment` command combines the [state](#state) and [uncomment](#uncomment)
 commands. In terms of syntax, `state-uncomment` works exactly the same as `state`,
@@ -243,7 +247,7 @@ Produces the following output:
 With `state-uncomment`, you can create multiple valid end states but only run
 one of those states when executing your source code.
 
-### Uncomment
+## Uncomment
 
 The `uncomment` command removes a single comment from the beginning of
 each line of the spanned range in all output.
@@ -292,7 +296,7 @@ public class Main {
 }
 ```
 
-### Replace
+## Replace
 
 The `replace` command accepts a JSON dictionary called "terms" as input
 via an attribute list, and replaces occurrences string keys in the map within
@@ -356,7 +360,7 @@ public class Main {
 }
 ```
 
-### Emphasize
+## Emphasize
 
 The `emphasize` command highlights marked lines in formatted output.
 `emphasize` makes it easier to keep the correct lines highlighted
@@ -365,7 +369,7 @@ line numbers for you.
 
 You can use `emphasize` as either a block command or a line command.
 
-> 💡 The emphasize command only applies to [formatted output](#format).
+> 💡 The emphasize command only applies to [formatted output](./cli#format).
 > Use the `--format` flag with Bluehawk CLI to get formatted output.
 
 Consider the following file:
@@ -405,7 +409,7 @@ Produces the following output:
    System.out.println(dividend + " % " + divisor + " = " + modulus);
 ```
 
-### Remove
+## Remove
 
 The `remove` command, also aliased as `hide`, removes the spanned
 range from Bluehawk output. `remove` can be helpful for hiding

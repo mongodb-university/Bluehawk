@@ -6,16 +6,16 @@ sidebar_position: 2
 custom_edit_url: null
 ---
 
-### Commands
+## Commands
 
 Use commands to generate different kinds of output with Bluehawk, including
 code blocks, full files of code, and even error checks.
 
 > 💡 Commands for the Bluehawk CLI are not the same as
-> [Bluehawk Commands](#bluehawk-commands), the syntax
+> [Bluehawk Commands](./commands), the syntax
 > interpreted by Bluehawk to process input files.
 
-#### Snip
+### Snip
 
 ```
 bluehawk snip --destination <output-directory> <input-directory-or-file>
@@ -29,7 +29,7 @@ that omit all `state` command contents. However,
 you can use the `--state` flag to generate snippet files that include
 content from a single state that you specify.
 
-#### Copy
+### Copy
 
 ```
 bluehawk copy --destination <output-directory> <input-directory-or-file>
@@ -43,7 +43,7 @@ By default, this command generates output files that omit all `state`.
 However, you can use the `--state` flag to generate output files that
 include content from a single state that you specify.
 
-#### Check
+### Check
 
 ```
 bluehawk check <input-directory-or-file>
@@ -53,11 +53,11 @@ Generates non-zero output if processing any input files generates a Bluehawk
 error, zero output otherwise. Does not generate any files: instead, `check`
 outputs directly to command line.
 
-### Flags
+## Flags
 
 You can use flags to tweak the output of Bluehawk.
 
-#### Ignore
+### Ignore
 
 Pass a pattern to the `--ignore` flag to omit any file that matches that
 pattern from Bluehawk's input files. Bluehawk will not process or generate
@@ -65,12 +65,12 @@ output for any ignored file. You can use the `ignore` flag multiple times
 in a single Bluehawk execution to ignore multiple patterns. `.gitignore` files
 in the input directory tree are automatically used as ignore patterns.
 
-#### State
+### State
 
 Pass a state's id to the `--state` flag to include only the contents of that
 state, and no other states, in the generated output.
 
-#### Format
+### Format
 
 Pass the name of a markup syntax to the `--format` flag when generating snippets
 to generate a formatted version of that snippet in the specified markup syntax.

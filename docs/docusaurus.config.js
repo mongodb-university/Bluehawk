@@ -8,13 +8,13 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 const config = {
   title: "Bluehawk",
   tagline: "Markup processor for extracting and manipulating code",
-  url: "https://mongodben.github.io",
+  url: "https://mongodb-university.github.io",
   baseUrl: "/Bluehawk/",
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
-  organizationName: "mongodben", // Usually your GitHub org/user name.
-  projectName: "bluehawk", // Usually your repo name.
+  organizationName: "mongodb-university", // Usually your GitHub org/user name.
+  projectName: "Bluehawk", // Usually your repo name.
   plugins: [
     [
       "docusaurus-plugin-typedoc",
@@ -35,7 +35,8 @@ const config = {
           sidebarPath: require.resolve("./sidebars.js"),
           routeBasePath: "/",
           // Please change this to your repo.
-          editUrl: "https://github.com/facebook/docusaurus/edit/main/website/",
+          editUrl:
+            "https://github.com/mongodb-university/Bluehawk/blob/main/docs/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -64,25 +65,20 @@ const config = {
             title: "Docs",
             items: [
               {
-                label: "Tutorial",
-                to: "/docs/intro",
-              },
-            ],
-          },
-          {
-            title: "Community",
-            items: [
-              {
-                label: "Stack Overflow",
-                href: "https://stackoverflow.com/questions/tagged/docusaurus",
+                label: "Intro",
+                to: "/",
               },
               {
-                label: "Discord",
-                href: "https://discordapp.com/invite/docusaurus",
+                label: "Commands",
+                to: "/commands",
               },
               {
-                label: "Twitter",
-                href: "https://twitter.com/docusaurus",
+                label: "CLI",
+                to: "/cli",
+              },
+              {
+                label: "API",
+                to: "api",
               },
             ],
           },
@@ -90,17 +86,20 @@ const config = {
             title: "More",
             items: [
               {
-                label: "Blog",
-                to: "/blog",
+                label: "Github Repo",
+                href: "https://github.com/mongodb-university/Bluehawk",
               },
               {
-                label: "GitHub",
-                href: "https://github.com/facebook/docusaurus",
+                label: "Contributing Guidelines",
+                href: "https://github.com/mongodb-university/Bluehawk/blob/main/CONTRIBUTING.md",
+              },
+              {
+                label: "Submit Issue",
+                href: "https://github.com/mongodb-university/Bluehawk/issues",
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,

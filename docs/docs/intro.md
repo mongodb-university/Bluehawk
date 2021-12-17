@@ -13,9 +13,6 @@ With Bluehawk, you can:
 - Generate formatted code examples for use in documentation
 - Replace "finished" code with "todo" code for a branch in a tutorial repo
 
-> 💡 See our [API Documentation](https://mongodb-university.github.io/Bluehawk/) or
-> [open an issue](https://github.com/mongodb-university/Bluehawk/issues/new)
-
 ## Example
 
 Say you're documenting a library. To provide code examples for library functionality,

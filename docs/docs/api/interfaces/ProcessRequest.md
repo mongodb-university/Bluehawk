@@ -22,7 +22,7 @@ The specific command to process.
 
 #### Defined in
 
-[src/bluehawk/processor/Processor.ts:38](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/processor/Processor.ts#L38)
+[src/bluehawk/processor/Processor.ts:38](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/processor/Processor.ts#L38)
 
 ___
 
@@ -34,7 +34,7 @@ The overall result's command nodes being processed by the processor.
 
 #### Defined in
 
-[src/bluehawk/processor/Processor.ts:43](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/processor/Processor.ts#L43)
+[src/bluehawk/processor/Processor.ts:43](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/processor/Processor.ts#L43)
 
 ___
 
@@ -56,7 +56,7 @@ meta information from the command to an eventual listener.
 
 #### Defined in
 
-[src/bluehawk/processor/Processor.ts:33](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/processor/Processor.ts#L33)
+[src/bluehawk/processor/Processor.ts:33](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/processor/Processor.ts#L33)
 
 ## Methods
 
@@ -79,7 +79,7 @@ emit the file.
 
 #### Defined in
 
-[src/bluehawk/processor/Processor.ts:49](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/processor/Processor.ts#L49)
+[src/bluehawk/processor/Processor.ts:49](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/processor/Processor.ts#L49)
 
 ___
 
@@ -96,4 +96,4 @@ children.
 
 #### Defined in
 
-[src/bluehawk/processor/Processor.ts:55](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/processor/Processor.ts#L55)
+[src/bluehawk/processor/Processor.ts:55](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/processor/Processor.ts#L55)

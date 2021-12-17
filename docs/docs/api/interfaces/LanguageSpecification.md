@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/LanguageSpecification.ts:9](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/LanguageSpecification.ts#L9)
+[src/bluehawk/parser/LanguageSpecification.ts:9](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/LanguageSpecification.ts#L9)
 
 ___
 
@@ -24,7 +24,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/LanguageSpecification.ts:3](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/LanguageSpecification.ts#L3)
+[src/bluehawk/parser/LanguageSpecification.ts:3](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/LanguageSpecification.ts#L3)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/LanguageSpecification.ts:6](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/LanguageSpecification.ts#L6)
+[src/bluehawk/parser/LanguageSpecification.ts:6](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/LanguageSpecification.ts#L6)
 
 ___
 
@@ -44,7 +44,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/LanguageSpecification.ts:22](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/LanguageSpecification.ts#L22)
+[src/bluehawk/parser/LanguageSpecification.ts:22](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/LanguageSpecification.ts#L22)
 
 ___
 
@@ -54,4 +54,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/LanguageSpecification.ts:13](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/parser/LanguageSpecification.ts#L13)
+[src/bluehawk/parser/LanguageSpecification.ts:13](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/parser/LanguageSpecification.ts#L13)

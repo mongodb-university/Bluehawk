@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/project/Project.ts:7](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/project/Project.ts#L7)
+[src/bluehawk/project/Project.ts:7](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/project/Project.ts#L7)
 
 ___
 
@@ -24,4 +24,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/project/Project.ts:4](https://github.com/mongodben/Bluehawk/blob/b4aa3c0/src/bluehawk/project/Project.ts#L4)
+[src/bluehawk/project/Project.ts:4](https://github.com/mongodben/Bluehawk/blob/488980a/src/bluehawk/project/Project.ts#L4)
