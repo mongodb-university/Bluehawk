@@ -25,7 +25,7 @@ npm start
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
-### IMPORTANT NOE FOR FIRST BUILD
+### IMPORTANT NOTE FOR FIRST BUILD
 
 The first time you run the project, you'll run into an issue
 where the project doesn't build correctly. The error looks like:
