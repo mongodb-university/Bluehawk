@@ -4,6 +4,7 @@ import { System } from "../../bluehawk/io/System";
 import { ActionArgs } from "./ActionArgs";
 import { ProcessResult } from "../../bluehawk/processor/Processor";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
+import { isError } from "../../type-utils";
 
 export interface SnipArgs extends ActionArgs {
   paths: string[];
@@ -159,9 +160,11 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
         await createFormattedCodeBlock(result, destination, format);
       }
     } catch (error) {
-      const message = `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
-      console.error(message);
-      errors.push(message);
+      if (isError(error)) {
+        const message = `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
+        console.error(message);
+        errors.push(message);
+      }
     }
   });
 

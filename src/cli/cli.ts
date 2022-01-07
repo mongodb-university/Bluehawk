@@ -3,6 +3,7 @@ import { getBluehawk } from "../bluehawk";
 import { loadPlugins } from "./Plugin";
 import { version as yargsVersion } from "yargs/package.json";
 import { version as bluehawkVersion } from "../../package.json";
+import { isError } from "../type-utils";
 
 export function commandDir<T>(
   argv: yargs.Argv<T>,
@@ -42,7 +43,9 @@ export async function run(): Promise<void> {
         yargsVersion,
       });
     } catch (error) {
-      error.message = `Plugin '${path}' register() failed with error: ${error.message}`;
+      if (isError(error)) {
+        error.message = `Plugin '${path}' register() failed with error: ${error.message}`;
+      }
       throw error;
     }
   });

@@ -4,6 +4,7 @@ import { getBluehawk } from "../../bluehawk";
 import { ActionArgs } from "./ActionArgs";
 import { System } from "../../bluehawk/io/System";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
+import { isError } from "../../type-utils";
 
 export interface CopyArgs extends ActionArgs {
   rootPath: string;
@@ -26,9 +27,11 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
   try {
     stats = await System.fs.lstat(rootPath);
   } catch (error) {
-    const message = `Could not load stats for ${rootPath}: ${error.message}`;
-    console.error(message);
-    errors.push(message);
+    if (isError(error)) {
+      const message = `Could not load stats for ${rootPath}: ${error.message}`;
+      console.error(message);
+      errors.push(message);
+    }
     return errors;
   }
   const projectDirectory = !stats.isDirectory()
@@ -47,9 +50,11 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
       await System.fs.copyFile(filePath, targetPath);
       await copyPermissions({ to: targetPath, from: filePath });
     } catch (error) {
-      const message = `Failed to copy file ${filePath} to ${targetPath}: ${error.message}`;
-      console.error(message);
-      errors.push(message);
+      if (isError(error)) {
+        const message = `Failed to copy file ${filePath} to ${targetPath}: ${error.message}`;
+        console.error(message);
+        errors.push(message);
+      }
     } finally {
       const { onBinaryFile } = args;
       onBinaryFile && (await onBinaryFile(filePath));
@@ -108,9 +113,11 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
         from: document.path,
       });
     } catch (error) {
-      const message = `Failed to write file ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
-      console.error(message);
-      errors.push(message);
+      if (isError(error)) {
+        const message = `Failed to write file ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
+        console.error(message);
+        errors.push(message);
+      }
     }
   });
 

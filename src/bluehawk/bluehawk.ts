@@ -16,6 +16,7 @@ import { isBinaryFile } from "isbinaryfile";
 import { System } from "./io/System";
 import { OnBinaryFileFunction } from "./OnBinaryFileFunction";
 import { logErrorsToConsole, OnErrorFunction } from "./OnErrorFunction";
+import { isError, isString } from "../type-utils";
 
 interface BluehawkConfiguration {
   commands?: AnyCommand[];
@@ -127,9 +128,10 @@ export class Bluehawk {
           return;
         }
         await this.process(result, options);
-      } catch (e) {
+      } catch (error) {
+        const errorMessage = isError(error) ? error.stack : isString(error) ? error : ""
         console.error(`Encountered the following error while processing ${filePath}:
-${e.stack}
+${errorMessage}
 
 This is probably a bug in Bluehawk. Please send this stack trace (and the contents of ${filePath}, if possible) to the Bluehawk development team at https://github.com/mongodb-university/Bluehawk/issues/new`);
       }
@@ -158,9 +160,11 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     try {
       parser = this._parserStore.getParser(languageSpecification ?? source);
     } catch (error) {
-      console.warn(
-        `falling back to plaintext parser for ${source.path}: ${error.message}`
-      );
+      if (isError(error)) {
+        console.warn(
+          `falling back to plaintext parser for ${source.path}: ${error.message}`
+        );
+      }
       parser = this._parserStore.getDefaultParser();
     }
     const result = parser.parse(source);

@@ -18,6 +18,7 @@ import {
   nextLineAfterToken,
 } from "../locationFromToken";
 import { extractCommandNamesFromTokens } from "../extractCommandNamesFromTokens";
+import { isError } from "../../../type-utils";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
 
@@ -240,13 +241,15 @@ export function makeCstVisitor(
           );
           parent.attributes = object;
         } catch (error) {
-          errors.push(
-            jsonErrorToVisitorError(error, json, {
-              line: AttributeListStart.startLine ?? -1,
-              column: AttributeListStart.startColumn ?? -1,
-              offset: AttributeListStart.startOffset ?? -1,
-            })
-          );
+          if (isError(error)) {
+            errors.push(
+              jsonErrorToVisitorError(error, json, {
+                line: AttributeListStart.startLine ?? -1,
+                column: AttributeListStart.startColumn ?? -1,
+                offset: AttributeListStart.startOffset ?? -1,
+              })
+            );
+          }
         }
       }
 
