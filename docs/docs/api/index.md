@@ -1,3 +1,12 @@
+---
+id: "index"
+title: "bluehawk"
+slug: "/api/"
+sidebar_label: "Readme"
+sidebar_position: 0
+custom_edit_url: null
+---
+
 # Bluehawk
 
 [![npm version](https://badge.fury.io/js/bluehawk.svg)](https://badge.fury.io/js/bluehawk)
