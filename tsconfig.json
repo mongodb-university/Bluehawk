@@ -10,7 +10,8 @@
     "strict": true,
     "declaration": true,
     "declarationMap": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "useUnknownInCatchVariables": false
   },
   "sourceMap": true,
   "include": ["./src/**/*.ts"],
