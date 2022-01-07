@@ -1,4 +1,4 @@
-name: Test deployment
+name: Test docs deployment
 
 on:
   pull_request:
@@ -6,7 +6,6 @@ on:
     # it's not nec to run on main b.c this same flow occurs in the deploy action
     # for main.
     branches-ignore: [main]
-    paths: [website/**]
 
 jobs:
   test-deploy:

@@ -1,7 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy Docs to GitHub Pages
+
 on:
   push:
     branches: [main]
+
 jobs:
   deploy:
     name: Deploy to GitHub Pages
