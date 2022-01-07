@@ -1,12 +1,11 @@
 name: Test docs deployment
 
 on:
+  # runs on PR to main branch
+  push:
+    branches: ["!main"]
   pull_request:
-    # only run on not main branch to test
-    # it's not nec to run on main b.c this same flow occurs in the deploy action
-    # for main.
-    branches-ignore: [main]
-
+    branches: [main]
 jobs:
   test-deploy:
     name: Test deployment
