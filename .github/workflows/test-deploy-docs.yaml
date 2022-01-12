@@ -16,6 +16,9 @@ jobs:
         with:
           node-version: 14.x
           cache: npm
+      - name: Install Bluehawk dependencies
+        run: |
+          npm ci
       - name: Test build
         working-directory: docs
         run: |
