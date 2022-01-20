@@ -1,5 +1,5 @@
 import * as yargs from "yargs";
-import { commandDir } from "../cli";
+import { commandDir } from "../../bluehawk";
 import * as path from "path";
 
 const commandModule: yargs.CommandModule = {
