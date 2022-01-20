@@ -281,8 +281,8 @@ export class RootParser extends CstParser {
       (error): BluehawkError => ({
         component: "lexer",
         location: {
-          line: error.line,
-          column: error.column,
+          line: error.line || 0,
+          column: error.column || 0,
           offset: error.offset,
         },
         message: error.message,
