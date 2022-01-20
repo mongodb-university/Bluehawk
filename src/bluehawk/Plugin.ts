@@ -1,6 +1,6 @@
 import * as Path from "path";
-import { Argv } from "yargs";
-import { Bluehawk } from "../bluehawk";
+import yargs, { Argv } from "yargs";
+import { Bluehawk } from "./bluehawk";
 
 /**
   A plugin is a Node module that exports a register() function.
@@ -98,3 +98,23 @@ export const loadPlugins = async (
     },
   ];
 };
+
+/**
+  Loads a directory as yargs commands while supporting TypeScript for development.
+  See yargs.commandDir().
+ */
+export function commandDir<T>(
+  argv: yargs.Argv<T>,
+  directory: string,
+  options?: yargs.RequireDirectoryOptions
+): yargs.Argv<T> {
+  // Centralize the workaround for commandDir with TS
+  return argv.commandDir(directory, {
+    extensions: process.env.NODE_ENV === "development" ? ["js", "ts"] : ["js"],
+    exclude: /^(?:index|.*\.test)\.[jt]s$/,
+    visit(commandModule) {
+      return commandModule.default;
+    },
+    ...options,
+  });
+}
