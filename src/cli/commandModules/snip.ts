@@ -5,7 +5,7 @@ import {
   withIdOption,
   withIgnoreOption,
   withGenerateFormattedCodeSnippetsOption,
-} from "../options";
+} from "../../bluehawk/options";
 import { ActionArgs, SnipArgs, snip } from "../../bluehawk";
 
 const commandModule: CommandModule<ActionArgs & { paths: string[] }, SnipArgs> =

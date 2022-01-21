@@ -1,6 +1,5 @@
-import { CommandModule, Arguments } from "yargs";
-import { withIgnoreOption, withJsonOption } from "../options";
-import { ActionArgs, CheckArgs, check } from "../../bluehawk";
+import { CommandModule } from "yargs";
+import { withIgnoreOption, withJsonOption, ActionArgs, CheckArgs, check } from "../..";
 
 const commandModule: CommandModule<
   ActionArgs & { paths: string[] },
