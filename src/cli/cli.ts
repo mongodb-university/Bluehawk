@@ -1,3 +1,4 @@
+import * as Path from "path";
 import * as yargs from "yargs";
 import { getBluehawk, loadPlugins, commandDir } from "../bluehawk";
 import { version as yargsVersion } from "yargs/package.json";
@@ -9,7 +10,7 @@ export async function run(): Promise<void> {
     describe: "add a plugin",
   }).argv;
 
-  const mainArgv = commandDir(yargs.help(), "commandModules").demandCommand();
+  const mainArgv = commandDir(yargs.help(), Path.join(__dirname, "commandModules")).demandCommand();
 
   const plugins = await loadPlugins(preArgv.plugin);
 
