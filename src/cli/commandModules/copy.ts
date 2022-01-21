@@ -3,8 +3,10 @@ import {
   withDestinationOption,
   withStateOption,
   withIgnoreOption,
-} from "../options";
-import { ActionArgs, CopyArgs, copy } from "../../bluehawk";
+  ActionArgs,
+  CopyArgs,
+  copy
+} from "../..";
 
 const commandModule: CommandModule<
   ActionArgs & { rootPath: string },

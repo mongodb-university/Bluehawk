@@ -1,5 +1,5 @@
 import { CommandModule } from "yargs";
-import { withIgnoreOption, withJsonOption } from "../../options";
+import { withIgnoreOption, withJsonOption } from "../../../bluehawk/options";
 import { ActionArgs, ListStatesArgs, listStates } from "../../../bluehawk";
 
 const commandModule: CommandModule<
