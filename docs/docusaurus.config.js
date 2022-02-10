@@ -101,6 +101,7 @@ const config = {
         ],
       },
       prism: {
+        additionalLanguages: ["java", "swift"],
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
