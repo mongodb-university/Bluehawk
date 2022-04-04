@@ -73,24 +73,24 @@ const Text = createToken({
 // TODO: Allow any amount of non-newline white space (/[^\S\r\n]*/) to be
 // included before or after the actual tag name to make stripping it out
 // much easier.
-const COMMAND_START_PATTERN /**/ = /:([A-z0-9-]+)-start:/;
-const COMMAND_END_PATTERN /*  */ = /:([A-z0-9-]+)-end:/;
-const COMMAND_PATTERN /*      */ = /:([A-z0-9-]+):[^\S\r\n]*/;
+const TAG_START_PATTERN /**/ = /:([A-z0-9-]+)-start:/;
+const TAG_END_PATTERN /*  */ = /:([A-z0-9-]+)-end:/;
+const TAG_PATTERN /*      */ = /:([A-z0-9-]+):[^\S\r\n]*/;
 
 const TagStart = createToken({
   name: "TagStart",
-  pattern: COMMAND_START_PATTERN,
+  pattern: TAG_START_PATTERN,
   push_mode: "TagAttributesMode",
 });
 
 const TagEnd = createToken({
   name: "TagEnd",
-  pattern: COMMAND_END_PATTERN,
+  pattern: TAG_END_PATTERN,
 });
 
 const Tag = createToken({
   name: "Tag",
-  pattern: COMMAND_PATTERN,
+  pattern: TAG_PATTERN,
 });
 
 const Identifier = createToken({
@@ -111,9 +111,9 @@ export {
   PushParser,
   BlockCommentEnd,
   BlockCommentStart,
-  COMMAND_END_PATTERN,
-  COMMAND_PATTERN,
-  COMMAND_START_PATTERN,
+  TAG_END_PATTERN,
+  TAG_PATTERN,
+  TAG_START_PATTERN,
   Tag,
   TagEnd,
   TagStart,

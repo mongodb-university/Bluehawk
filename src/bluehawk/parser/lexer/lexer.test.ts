@@ -1,5 +1,5 @@
 import { makeLexer } from "./makeLexer";
-import { COMMAND_PATTERN } from "./tokens";
+import { TAG_PATTERN } from "./tokens";
 import { makeBlockCommentTokens } from "./makeBlockCommentTokens";
 import { makeLineCommentToken } from "./makeLineCommentToken";
 
@@ -116,7 +116,7 @@ describe("custom comment lexer", () => {
 
   it("rejects comment patterns that conflict with other tokens", () => {
     expect(() => {
-      makeLexer([makeLineCommentToken(COMMAND_PATTERN)]);
+      makeLexer([makeLineCommentToken(TAG_PATTERN)]);
     }).toThrowError(`Errors detected in definition of Lexer:
 The same RegExp pattern ->/:([A-z0-9-]+):[^\\S\\r\\n]*/<-has been used in all of the following Token Types: Tag, LineComment <-`);
   });

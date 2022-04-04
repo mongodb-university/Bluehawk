@@ -1,5 +1,5 @@
 import { validateTags } from "./processor/validator";
-import { COMMAND_PATTERN } from "./parser/lexer/tokens";
+import { TAG_PATTERN } from "./parser/lexer/tokens";
 import { Document } from "./Document";
 import {
   Listener,
@@ -146,7 +146,7 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     languageSpecification?: LanguageSpecification
   ): ParseResult => {
     // First, quickly check to see if this even has any tags.
-    if (!COMMAND_PATTERN.test(source.text.original)) {
+    if (!TAG_PATTERN.test(source.text.original)) {
       return {
         errors: [],
         tagNodes: [],

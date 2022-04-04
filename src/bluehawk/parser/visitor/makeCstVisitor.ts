@@ -1,6 +1,6 @@
 import { CstNode, IToken } from "chevrotain";
 import { strict as assert } from "assert";
-import { COMMAND_PATTERN } from "../lexer/tokens";
+import { TAG_PATTERN } from "../lexer/tokens";
 import { RootParser } from "../RootParser";
 import { jsonErrorToVisitorError } from "./jsonErrorToVisitorError";
 import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
@@ -428,7 +428,7 @@ export function makeCstVisitor(
         }
         assert(context.Tag);
         context.Tag.forEach((Tag) => {
-          const tagPatternResult = COMMAND_PATTERN.exec(Tag.image);
+          const tagPatternResult = TAG_PATTERN.exec(Tag.image);
           assert(tagPatternResult !== null);
           assert(Tag.startLine !== undefined);
           assert(Tag.startColumn !== undefined);
