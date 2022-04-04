@@ -1,21 +1,21 @@
 import { Bluehawk } from "../bluehawk";
 import { Document } from "../Document";
-import { StateCommand } from "./StateCommand";
-import { RemoveCommand } from "./RemoveCommand";
-import { SnippetCommand } from "./SnippetCommand";
+import { StateTag } from "./StateTag";
+import { RemoveTag } from "./RemoveTag";
+import { SnippetTag } from "./SnippetTag";
 
-describe("stateCommand", () => {
+describe("stateTag", () => {
   const bluehawk = new Bluehawk();
 
-  bluehawk.registerCommand(StateCommand);
-  bluehawk.registerCommand(RemoveCommand);
-  bluehawk.registerCommand(SnippetCommand);
+  bluehawk.registerTag(StateTag);
+  bluehawk.registerTag(RemoveTag);
+  bluehawk.registerTag(SnippetTag);
   bluehawk.addLanguage(["js"], {
     languageId: "javascript",
     blockComments: [[/\/\*/, /\*\//]],
     lineComments: [/\/\/ ?/],
   });
-  it("processes nested commands", async (done) => {
+  it("processes nested tags", async (done) => {
     const multipleInput = new Document({
       text: `
 // :state-start: begin
@@ -37,7 +37,7 @@ console.log("we are foo");
 // :state-end:
 end
 `,
-      path: "stateCommand.test.js",
+      path: "stateTag.test.js",
     });
 
     const multipleFinal = `
@@ -47,23 +47,23 @@ console.log("we are foo");
 end
 `;
     const parseResult = bluehawk.parse(multipleInput);
-    expect(parseResult.source.path).toBe("stateCommand.test.js");
+    expect(parseResult.source.path).toBe("stateTag.test.js");
     const files = await bluehawk.process(parseResult);
     // wait what? Two snippets?
     // It's because the snippet lives outside of the states
     // There would only be one snippet publish if it was nested
     expect(Object.keys(files)).toStrictEqual([
-      "stateCommand.test.js",
-      "stateCommand.test.js?state=begin",
-      "stateCommand.test.codeblock.foo.js?state=begin",
-      "stateCommand.test.codeblock.foo.js",
-      "stateCommand.test.js?state=final",
-      "stateCommand.test.codeblock.foo.js?state=final",
+      "stateTag.test.js",
+      "stateTag.test.js?state=begin",
+      "stateTag.test.codeblock.foo.js?state=begin",
+      "stateTag.test.codeblock.foo.js",
+      "stateTag.test.js?state=final",
+      "stateTag.test.codeblock.foo.js?state=final",
     ]);
 
-    expect(
-      files["stateCommand.test.js?state=final"].document.text.toString()
-    ).toBe(multipleFinal);
+    expect(files["stateTag.test.js?state=final"].document.text.toString()).toBe(
+      multipleFinal
+    );
     done();
   });
 
@@ -89,7 +89,7 @@ console.log("we are foo");
 // :state-end:
 end
 `,
-      path: "stateCommand.test.js",
+      path: "stateTag.test.js",
     });
 
     const multipleFinal = `
@@ -99,33 +99,33 @@ console.log("we are foo");
 end
 `;
     const parseResult = bluehawk.parse(multipleInput);
-    expect(parseResult.source.path).toBe("stateCommand.test.js");
+    expect(parseResult.source.path).toBe("stateTag.test.js");
     const files = await bluehawk.process(parseResult);
     // wait what? Two snippets?
     // It's because the snippet lives outside of the states
     // There would only be one snippet publish if it was nested
     expect(Object.keys(files)).toStrictEqual([
-      "stateCommand.test.js",
-      "stateCommand.test.js?state=begin",
-      "stateCommand.test.codeblock.foo.js?state=begin",
-      "stateCommand.test.codeblock.foo.js",
-      "stateCommand.test.js?state=final",
-      "stateCommand.test.codeblock.foo.js?state=final",
-      "stateCommand.test.js?state=bar",
-      "stateCommand.test.codeblock.foo.js?state=bar",
-      "stateCommand.test.js?state=baz",
-      "stateCommand.test.codeblock.foo.js?state=baz",
+      "stateTag.test.js",
+      "stateTag.test.js?state=begin",
+      "stateTag.test.codeblock.foo.js?state=begin",
+      "stateTag.test.codeblock.foo.js",
+      "stateTag.test.js?state=final",
+      "stateTag.test.codeblock.foo.js?state=final",
+      "stateTag.test.js?state=bar",
+      "stateTag.test.codeblock.foo.js?state=bar",
+      "stateTag.test.js?state=baz",
+      "stateTag.test.codeblock.foo.js?state=baz",
     ]);
 
-    expect(
-      files["stateCommand.test.js?state=final"].document.text.toString()
-    ).toBe(multipleFinal);
-    expect(
-      files["stateCommand.test.js?state=bar"].document.text.toString()
-    ).toBe(multipleFinal);
-    expect(
-      files["stateCommand.test.js?state=baz"].document.text.toString()
-    ).toBe(multipleFinal);
+    expect(files["stateTag.test.js?state=final"].document.text.toString()).toBe(
+      multipleFinal
+    );
+    expect(files["stateTag.test.js?state=bar"].document.text.toString()).toBe(
+      multipleFinal
+    );
+    expect(files["stateTag.test.js?state=baz"].document.text.toString()).toBe(
+      multipleFinal
+    );
     done();
   });
 
@@ -152,7 +152,7 @@ console.log("we are foo");
 // :state-end:
 end
 `,
-      path: "stateCommand.test.js",
+      path: "stateTag.test.js",
     });
 
     const multipleFinal = `
@@ -162,33 +162,33 @@ console.log("we are foo");
 end
 `;
     const parseResult = bluehawk.parse(multipleInput);
-    expect(parseResult.source.path).toBe("stateCommand.test.js");
+    expect(parseResult.source.path).toBe("stateTag.test.js");
     const files = await bluehawk.process(parseResult);
     // wait what? Two snippets?
     // It's because the snippet lives outside of the states
     // There would only be one snippet publish if it was nested
     expect(Object.keys(files)).toStrictEqual([
-      "stateCommand.test.js",
-      "stateCommand.test.js?state=begin",
-      "stateCommand.test.codeblock.foo.js?state=begin",
-      "stateCommand.test.codeblock.foo.js",
-      "stateCommand.test.js?state=final",
-      "stateCommand.test.codeblock.foo.js?state=final",
-      "stateCommand.test.js?state=bar",
-      "stateCommand.test.codeblock.foo.js?state=bar",
-      "stateCommand.test.js?state=baz",
-      "stateCommand.test.codeblock.foo.js?state=baz",
+      "stateTag.test.js",
+      "stateTag.test.js?state=begin",
+      "stateTag.test.codeblock.foo.js?state=begin",
+      "stateTag.test.codeblock.foo.js",
+      "stateTag.test.js?state=final",
+      "stateTag.test.codeblock.foo.js?state=final",
+      "stateTag.test.js?state=bar",
+      "stateTag.test.codeblock.foo.js?state=bar",
+      "stateTag.test.js?state=baz",
+      "stateTag.test.codeblock.foo.js?state=baz",
     ]);
 
-    expect(
-      files["stateCommand.test.js?state=final"].document.text.toString()
-    ).toBe(multipleFinal);
-    expect(
-      files["stateCommand.test.js?state=bar"].document.text.toString()
-    ).toBe(multipleFinal);
-    expect(
-      files["stateCommand.test.js?state=baz"].document.text.toString()
-    ).toBe(multipleFinal);
+    expect(files["stateTag.test.js?state=final"].document.text.toString()).toBe(
+      multipleFinal
+    );
+    expect(files["stateTag.test.js?state=bar"].document.text.toString()).toBe(
+      multipleFinal
+    );
+    expect(files["stateTag.test.js?state=baz"].document.text.toString()).toBe(
+      multipleFinal
+    );
     done();
     done();
   });

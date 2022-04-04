@@ -1,17 +1,17 @@
 import MagicString from "magic-string";
-import { BlockCommandNode } from "../parser/CommandNode";
+import { BlockTagNode } from "../parser/TagNode";
 import { ProcessRequest } from "../processor/Processor";
 import { idIsUnique } from "../processor/validator";
 import { strict as assert } from "assert";
 import {
-  makeBlockCommand,
+  makeBlockTag,
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
-} from "./Command";
+} from "./Tag";
 
 function dedentRange(
   s: MagicString,
-  { contentRange }: BlockCommandNode
+  { contentRange }: BlockTagNode
 ): MagicString {
   if (contentRange === undefined) {
     return s;
@@ -62,14 +62,14 @@ function dedentRange(
   return s;
 }
 
-export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
+export const SnippetTag = makeBlockTag<IdRequiredAttributes>({
   name: "snippet",
   description: "identifies snippets for extraction into standalone files",
   attributesSchema: IdRequiredAttributesSchema,
   rules: [idIsUnique],
-  process: (request: ProcessRequest<BlockCommandNode>): void => {
-    const { commandNode, document, fork } = request;
-    const { contentRange } = commandNode;
+  process: (request: ProcessRequest<BlockTagNode>): void => {
+    const { tagNode, document, fork } = request;
+    const { contentRange } = tagNode;
 
     if (document.attributes["snippet"] !== undefined) {
       // Nested snippet. Its output will be the same as unnested.
@@ -83,19 +83,19 @@ export const SnippetCommand = makeBlockCommand<IdRequiredAttributes>({
     );
 
     // Dedent
-    dedentRange(clonedSnippet, commandNode);
+    dedentRange(clonedSnippet, tagNode);
 
     // ID is required and enforced by the validator, so it should exist
-    assert(commandNode.id !== undefined && commandNode.id.length > 0);
+    assert(tagNode.id !== undefined && tagNode.id.length > 0);
 
     // Fork subset code block to another file
     fork({
       document,
-      commandNodes: commandNode.children ?? [],
-      newPath: document.pathWithInfix(`codeblock.${commandNode.id[0]}`),
+      tagNodes: tagNode.children ?? [],
+      newPath: document.pathWithInfix(`codeblock.${tagNode.id[0]}`),
       newText: clonedSnippet,
       newAttributes: {
-        snippet: commandNode.id[0],
+        snippet: tagNode.id[0],
       },
     });
   },

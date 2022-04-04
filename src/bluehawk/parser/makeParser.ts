@@ -64,7 +64,7 @@ export function makeParser(
       const parseResult = syntaxProcessor.parse(source.text.original);
       if (parseResult.cst === undefined) {
         return {
-          commandNodes: [],
+          tagNodes: [],
           errors: parseResult.errors,
           source,
           languageSpecification,
@@ -73,7 +73,7 @@ export function makeParser(
       const visitorResult = semanticsProcessor.visit(parseResult.cst, source);
       return {
         errors: [...parseResult.errors, ...visitorResult.errors],
-        commandNodes: visitorResult.commandNodes,
+        tagNodes: visitorResult.tagNodes,
         source,
         languageSpecification,
       };

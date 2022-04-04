@@ -1,15 +1,15 @@
 import { Bluehawk } from "../bluehawk";
 import { Document } from "../Document";
-import { ReplaceCommand } from "./ReplaceCommand";
-import { RemoveCommand } from "./RemoveCommand";
-import { SnippetCommand } from "./SnippetCommand";
+import { ReplaceTag } from "./ReplaceTag";
+import { RemoveTag } from "./RemoveTag";
+import { SnippetTag } from "./SnippetTag";
 
-describe("replace command", () => {
+describe("replace tag", () => {
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand(ReplaceCommand);
-  bluehawk.registerCommand(RemoveCommand);
-  bluehawk.registerCommand(SnippetCommand);
-  bluehawk.registerCommand(SnippetCommand, "code-block");
+  bluehawk.registerTag(ReplaceTag);
+  bluehawk.registerTag(RemoveTag);
+  bluehawk.registerTag(SnippetTag);
+  bluehawk.registerTag(SnippetTag, "code-block");
   bluehawk.addLanguage("js", {
     languageId: "javascript",
     blockComments: [[/\/\*/, /\*\//]],
@@ -26,7 +26,7 @@ describe("replace command", () => {
 
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors[0].message).toBe(
-      "attribute list for 'replace' command should be object"
+      "attribute list for 'replace' tag should be object"
     );
   });
 
@@ -40,7 +40,7 @@ describe("replace command", () => {
 
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors[0].message).toBe(
-      "attribute list for 'replace' command/terms/numbersNotAllowed should be string"
+      "attribute list for 'replace' tag/terms/numbersNotAllowed should be string"
     );
   });
 
@@ -199,7 +199,7 @@ it's my id
 
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors[0].message).toBe(
-      "attribute list for 'replace' command should have required property 'terms'"
+      "attribute list for 'replace' tag should have required property 'terms'"
     );
   });
 

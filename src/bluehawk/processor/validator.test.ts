@@ -1,24 +1,24 @@
 import { strict as assert } from "assert";
 import { RootParser } from "../parser/RootParser";
 import { makeCstVisitor } from "../parser/visitor/makeCstVisitor";
-import { validateCommands, idIsUnique } from "./validator";
+import { validateTags, idIsUnique } from "./validator";
 import { makeBlockCommentTokens } from "../parser/lexer/makeBlockCommentTokens";
 import { makeLineCommentToken } from "../parser/lexer/makeLineCommentToken";
 import { Document } from "../Document";
-import { CommandProcessors } from "./Processor";
+import { TagProcessors } from "./Processor";
 import {
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
-  makeBlockCommand,
-  makeBlockOrLineCommand,
-  makeLineCommand,
+  makeBlockTag,
+  makeBlockOrLineTag,
+  makeLineTag,
   NoAttributes,
   NoAttributesSchema,
-} from "../commands/Command";
+} from "../tags/Tag";
 
 describe("validator", () => {
-  const commandProcessors: CommandProcessors = {
-    "code-block": makeBlockCommand<IdRequiredAttributes>({
+  const tagProcessors: TagProcessors = {
+    "code-block": makeBlockTag<IdRequiredAttributes>({
       name: "code-block",
       attributesSchema: IdRequiredAttributesSchema,
       rules: [idIsUnique],
@@ -39,7 +39,7 @@ describe("validator", () => {
   ]);
   const { lexer } = parser;
 
-  test("validates non-code-block commands without error", () => {
+  test("validates non-code-block tags without error", () => {
     const tokens = lexer.tokenize(`
 // :a-start:
 the quick brown fox jumped
@@ -51,7 +51,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commandNodes, {});
+    const errors = validateTags(result.tagNodes, {});
     expect(errors.length).toBe(0);
   });
 
@@ -67,10 +67,10 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commandNodes, commandProcessors);
+    const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'code-block' command should be object"
+      "attribute list for 'code-block' tag should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -95,10 +95,10 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commandNodes, commandProcessors);
+    const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'code-block' command should be object"
+      "attribute list for 'code-block' tag should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 6,
@@ -123,10 +123,10 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commandNodes, commandProcessors);
+    const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(2);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'code-block' command should be object"
+      "attribute list for 'code-block' tag should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -134,7 +134,7 @@ the quick brown fox jumped
       offset: 4,
     });
     expect(errors[1].message).toStrictEqual(
-      "attribute list for 'code-block' command should be object"
+      "attribute list for 'code-block' tag should be object"
     );
     expect(errors[1].location).toStrictEqual({
       line: 6,
@@ -155,7 +155,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commandNodes, commandProcessors);
+    const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(0);
   });
 
@@ -175,7 +175,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commandNodes, commandProcessors);
+    const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
       "duplicate ID 'totallyuniqueid' found"
@@ -203,10 +203,10 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commandNodes, commandProcessors);
+    const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'code-block' command should be object"
+      "attribute list for 'code-block' tag should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -231,7 +231,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commandNodes, commandProcessors);
+    const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(0);
   });
 
@@ -251,7 +251,7 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commandNodes, commandProcessors);
+    const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
       "duplicate ID 'totallyuniqueid' found"
@@ -263,7 +263,7 @@ the quick brown fox jumped
     });
   });
 
-  test("throws an error a command that should only accept one id accepts more than one id", () => {
+  test("throws an error a tag that should only accept one id accepts more than one id", () => {
     const tokens = lexer.tokenize(`
 // :code-block-start: id1 id2
 the quick brown fox jumped
@@ -279,30 +279,30 @@ the quick brown fox jumped
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
-    const errors = validateCommands(result.commandNodes, commandProcessors);
+    const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'code-block' command/id should NOT have more than 1 items"
+      "attribute list for 'code-block' tag/id should NOT have more than 1 items"
     );
   });
 
-  it("validates block or line mode support on commands", () => {
-    const commandProcessors: CommandProcessors = {
-      lineOnlyCommand: makeLineCommand({
-        name: "lineOnlyCommand",
+  it("validates block or line mode support on tags", () => {
+    const tagProcessors: TagProcessors = {
+      lineOnlyTag: makeLineTag({
+        name: "lineOnlyTag",
         process(request) {
           // do nothing
         },
       }),
-      blockOnlyCommand: makeBlockCommand<NoAttributes>({
-        name: "blockOnlyCommand",
+      blockOnlyTag: makeBlockTag<NoAttributes>({
+        name: "blockOnlyTag",
         attributesSchema: NoAttributesSchema,
         process(request) {
           // do nothing
         },
       }),
-      blockOrLineCommand: makeBlockOrLineCommand({
-        name: "blockOrLineCommand",
+      blockOrLineTag: makeBlockOrLineTag({
+        name: "blockOrLineTag",
         attributesSchema: NoAttributesSchema,
         process(request) {
           // do nothing
@@ -310,18 +310,18 @@ the quick brown fox jumped
       }),
     };
 
-    const parseResult = parser.parse(`:lineOnlyCommand-start:
-:lineOnlyCommand-end:
-:blockOnlyCommand:
-:blockOrLineCommand:
-:blockOrLineCommand-start:
-:blockOrLineCommand-end:
+    const parseResult = parser.parse(`:lineOnlyTag-start:
+:lineOnlyTag-end:
+:blockOnlyTag:
+:blockOrLineTag:
+:blockOrLineTag-start:
+:blockOrLineTag-end:
 `);
     expect(parseResult.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     assert(parseResult.cst !== undefined);
     const result = visitor.visit(parseResult.cst, source);
-    const errors = validateCommands(result.commandNodes, commandProcessors);
+    const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors).toStrictEqual([
       {
         component: "validator",
@@ -331,17 +331,17 @@ the quick brown fox jumped
           offset: 0,
         },
         message:
-          "'lineOnlyCommand' cannot be used in block mode (i.e. with -start and -end)",
+          "'lineOnlyTag' cannot be used in block mode (i.e. with -start and -end)",
       },
       {
         component: "validator",
         location: {
           column: 1,
           line: 3,
-          offset: 46,
+          offset: 38,
         },
         message:
-          "'blockOnlyCommand' cannot be used in single line mode (i.e. without -start and -end around a block)",
+          "'blockOnlyTag' cannot be used in single line mode (i.e. without -start and -end around a block)",
       },
     ]);
   });

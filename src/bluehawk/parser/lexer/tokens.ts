@@ -71,25 +71,25 @@ const Text = createToken({
 // Shared patterns with captures for use in CstVisitor. Please ensure they stay
 // aligned (both in the editor for at-a-glance error checking and as regexes).
 // TODO: Allow any amount of non-newline white space (/[^\S\r\n]*/) to be
-// included before or after the actual command name to make stripping it out
+// included before or after the actual tag name to make stripping it out
 // much easier.
 const COMMAND_START_PATTERN /**/ = /:([A-z0-9-]+)-start:/;
 const COMMAND_END_PATTERN /*  */ = /:([A-z0-9-]+)-end:/;
 const COMMAND_PATTERN /*      */ = /:([A-z0-9-]+):[^\S\r\n]*/;
 
-const CommandStart = createToken({
-  name: "CommandStart",
+const TagStart = createToken({
+  name: "TagStart",
   pattern: COMMAND_START_PATTERN,
-  push_mode: "CommandAttributesMode",
+  push_mode: "TagAttributesMode",
 });
 
-const CommandEnd = createToken({
-  name: "CommandEnd",
+const TagEnd = createToken({
+  name: "TagEnd",
   pattern: COMMAND_END_PATTERN,
 });
 
-const Command = createToken({
-  name: "Command",
+const Tag = createToken({
+  name: "Tag",
   pattern: COMMAND_PATTERN,
 });
 
@@ -114,9 +114,9 @@ export {
   COMMAND_END_PATTERN,
   COMMAND_PATTERN,
   COMMAND_START_PATTERN,
-  Command,
-  CommandEnd,
-  CommandStart,
+  Tag,
+  TagEnd,
+  TagStart,
   Identifier,
   JsonStringLiteral,
   LineComment,

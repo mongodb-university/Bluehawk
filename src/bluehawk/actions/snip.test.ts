@@ -307,7 +307,7 @@ struct ContentView: SwiftUI.App {
       ),
       "utf8"
     );
-    // TODO: Expect this not to emphasize lines, since the :emphasize: command was
+    // TODO: Expect this not to emphasize lines, since the :emphasize: tag was
     // completely in the other state
     /*
   expect(fileContentsLocal).toStrictEqual(

@@ -9,7 +9,7 @@ custom_edit_url: null
 ### Tested Code Examples
 
 Imagine you want to paste some code from a unit test into your docs. You can
-mark up the unit test source file like this with Bluehawk commands like
+mark up the unit test source file like this with Bluehawk tags like
 `:snippet-start:`, `:snippet-end:`, `:remove-start:`, and `:remove-end:`:
 
 ```swift
@@ -30,7 +30,7 @@ func someTest() {
 // ... more tests ...
 ```
 
-Running Bluehawk with the `snip` command on this file will produce a snippet
+Running Bluehawk with the `snip` tag on this file will produce a snippet
 file called `SomeTest.codeblock.some-example.swift` that looks something like this:
 
 ```swift
@@ -59,7 +59,7 @@ branches, which can be tedious and error prone.
 
 To manage this process, you can use Bluehawk to mark up your tutorial source and
 indicate different states or checkpoints with the `:state-start:` and
-`:state-end:` commands:
+`:state-end:` tags:
 
 ```swift
 // WelcomeViewController.swift

@@ -103,7 +103,7 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
   const errors: string[] = [];
   const bluehawk = await getBluehawk();
 
-  // If a file contains the state command, the processor will generate multiple
+  // If a file contains the state tag, the processor will generate multiple
   // versions of the same file. Keep track of whether a state file was written
   // for the desired state name. We can also use this to diagnose possible typos
   // in params.state.
@@ -122,7 +122,7 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
     }
     const targetPath = path.join(destination, document.basename);
 
-    // Special handler for snippets in state commands
+    // Special handler for snippets in state tags
     if (state !== undefined) {
       const stateAttribute = document.attributes["state"];
       if (stateAttribute && stateAttribute !== state) {

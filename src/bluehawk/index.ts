@@ -4,7 +4,7 @@ export { OnBinaryFileFunction } from "./OnBinaryFileFunction";
 export { getBluehawk } from "./getBluehawk";
 export * from "./Plugin";
 export * from "./io/System";
-export * from "./commands";
+export * from "./tags";
 export * from "./parser";
 export * from "./processor";
 export * from "./project";

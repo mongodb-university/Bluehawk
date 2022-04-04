@@ -68,7 +68,7 @@ const config = {
                 to: "/",
               },
               {
-                label: "Commands",
+                label: "Tags",
                 to: "/commands",
               },
               {

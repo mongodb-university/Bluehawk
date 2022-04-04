@@ -7,23 +7,19 @@ import { innerLocationToOuterLocation } from "./innerOffsetToOuterLocation";
 import { BluehawkError } from "../../BluehawkError";
 import { Document } from "../../Document";
 import { PushParserPayload } from "../lexer/makePushParserTokens";
-import {
-  AnyCommandNode,
-  CommandNodeImpl,
-  LineCommandNode,
-} from "../CommandNode";
+import { AnyTagNode, TagNodeImpl, LineTagNode } from "../TagNode";
 import {
   locationFromToken,
   locationAfterToken,
   nextLineAfterToken,
 } from "../locationFromToken";
-import { extractCommandNamesFromTokens } from "../extractCommandNamesFromTokens";
+import { extractTagNamesFromTokens } from "../extractTagNamesFromTokens";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step3a_adding_actions$visitor.html
 
 export interface VisitorResult {
   errors: BluehawkError[];
-  commandNodes: AnyCommandNode[];
+  tagNodes: AnyTagNode[];
 }
 
 export interface IVisitor {
@@ -67,23 +63,23 @@ export function makeCstVisitor(
     LineComment?: IToken[];
   }
 
-  interface BlockCommandUncommentedContentsContext {
+  interface BlockTagUncommentedContentsContext {
     Newline: IToken[];
     chunk: CstNode[];
   }
 
-  interface BlockCommandContext {
-    CommandStart: IToken[];
-    commandAttribute?: CstNode[];
+  interface BlockTagContext {
+    TagStart: IToken[];
+    tagAttribute?: CstNode[];
     Newline?: IToken[];
     chunk?: CstNode[];
-    blockCommandUncommentedContents?: CstNode[];
-    CommandEnd: IToken[];
+    blockTagUncommentedContents?: CstNode[];
+    TagEnd: IToken[];
   }
 
   interface BlockCommentContext {
     BlockCommentStart: IToken[];
-    command?: CstNode[];
+    tag?: CstNode[];
     LineComment?: IToken[];
     Newline?: IToken[];
     blockComment?: CstNode[];
@@ -92,25 +88,25 @@ export function makeCstVisitor(
 
   interface ChunkContext {
     blockComment?: CstNode[];
-    command?: CstNode[];
+    tag?: CstNode[];
     lineComment?: CstNode[];
     pushParser?: CstNode[];
     Newline: IToken[];
   }
 
-  interface CommandContext {
-    Command?: IToken[];
-    blockCommand?: CstNode[];
+  interface TagContext {
+    Tag?: IToken[];
+    blockTag?: CstNode[];
   }
 
-  interface CommandAttributeContext {
+  interface TagAttributeContext {
     Identifier?: IToken[];
     attributeList?: CstNode[];
   }
 
   interface LineCommentContext {
     LineComment: IToken[];
-    command?: CstNode[];
+    tag?: CstNode[];
     BlockCommentStart?: IToken[];
     BlockCommentEnd?: IToken[];
   }
@@ -125,7 +121,7 @@ export function makeCstVisitor(
   // parent.
   interface VisitorContext {
     source: Document;
-    parent: CommandNodeImpl;
+    parent: TagNodeImpl;
     errors: BluehawkError[];
     lineComments?: IToken[];
   }
@@ -250,71 +246,71 @@ export function makeCstVisitor(
         }
       }
 
-      blockCommand(
-        context: BlockCommandContext,
+      blockTag(
+        context: BlockTagContext,
         { parent, errors, source, lineComments }: VisitorContext
       ) {
         assert(parent != null);
 
-        const CommandStart = context.CommandStart[0];
-        const CommandEnd = context.CommandEnd[0];
+        const TagStart = context.TagStart[0];
+        const TagEnd = context.TagEnd[0];
 
-        const [commandName, endCommandName] = extractCommandNamesFromTokens(
-          CommandStart,
-          CommandEnd
+        const [tagName, endTagName] = extractTagNamesFromTokens(
+          TagStart,
+          TagEnd
         );
 
-        // Compare start/end name to ensure it is the same command
-        if (commandName !== endCommandName) {
+        // Compare start/end name to ensure it is the same tag
+        if (tagName !== endTagName) {
           errors.push({
             component: "visitor",
-            location: locationFromToken(context.CommandEnd[0]),
-            message: `Unexpected ${endCommandName}-end closing ${commandName}-start`,
+            location: locationFromToken(context.TagEnd[0]),
+            message: `Unexpected ${endTagName}-end closing ${tagName}-start`,
           });
           return;
         }
 
-        const newNode = parent.makeChildBlockCommand(commandName, context);
+        const newNode = parent.makeChildBlockTag(tagName, context);
 
-        assert(CommandStart.startLine !== undefined);
-        assert(CommandStart.startColumn !== undefined);
-        assert(CommandEnd.endLine !== undefined);
-        assert(CommandEnd.endColumn !== undefined);
-        assert(CommandEnd.endOffset !== undefined);
+        assert(TagStart.startLine !== undefined);
+        assert(TagStart.startColumn !== undefined);
+        assert(TagEnd.endLine !== undefined);
+        assert(TagEnd.endColumn !== undefined);
+        assert(TagEnd.endOffset !== undefined);
         newNode.range = {
           start: {
-            line: CommandStart.startLine,
-            column: CommandStart.startColumn,
-            offset: CommandStart.startOffset,
+            line: TagStart.startLine,
+            column: TagStart.startColumn,
+            offset: TagStart.startOffset,
           },
           end: {
-            line: CommandEnd.endLine,
-            column: CommandEnd.endColumn,
-            offset: CommandEnd.endOffset,
+            line: TagEnd.endLine,
+            column: TagEnd.endColumn,
+            offset: TagEnd.endOffset,
           },
         };
         newNode.lineRange = {
           start: {
-            line: CommandStart.startLine,
+            line: TagStart.startLine,
             column: 1,
-            offset: CommandStart.startOffset - (CommandStart.startColumn - 1),
+            offset: TagStart.startOffset - (TagStart.startColumn - 1),
           },
-          end: nextLineAfterToken(CommandEnd, source.text.original),
+          end: nextLineAfterToken(TagEnd, source.text.original),
         };
 
         if (lineComments !== undefined) {
           newNode.associatedTokens.push(
             ...lineComments.filter(
               (lineComment) =>
-                lineComment.startOffset < CommandStart.startOffset &&
-                isAssociated(lineComment, CommandStart)
+                lineComment.startOffset < TagStart.startOffset &&
+                isAssociated(lineComment, TagStart)
             )
           );
         }
-        assert(context.CommandStart[0].endOffset !== undefined);
-        assert(context.CommandStart[0].endLine !== undefined);
-        assert(context.CommandEnd[0].startColumn !== undefined);
-        assert(context.CommandEnd[0].startLine !== undefined);
+        assert(context.TagStart[0].endOffset !== undefined);
+        assert(context.TagStart[0].endLine !== undefined);
+        assert(context.TagEnd[0].startColumn !== undefined);
+        assert(context.TagEnd[0].startLine !== undefined);
 
         let lineStart: number;
         let offsetStart: number;
@@ -327,17 +323,17 @@ export function makeCstVisitor(
           lineStart = context.Newline[0].endLine + 1;
           offsetStart = context.Newline[0].endOffset + 1;
         } else {
-          // start and end offsets for block commands with uncommented contents
-          assert(context.blockCommandUncommentedContents !== undefined);
-          const NewLineTokenArr = context.blockCommandUncommentedContents[0]
+          // start and end offsets for block tags with uncommented contents
+          assert(context.blockTagUncommentedContents !== undefined);
+          const NewLineTokenArr = context.blockTagUncommentedContents[0]
             .children.Newline as IToken[];
-          lineStart = context.CommandStart[0].endLine + 1;
+          lineStart = context.TagStart[0].endLine + 1;
           offsetStart = NewLineTokenArr[0].startOffset + 1;
         }
 
         if (
           context.chunk != undefined ||
-          context.blockCommandUncommentedContents != undefined
+          context.blockTagUncommentedContents != undefined
         ) {
           newNode.contentRange = {
             start: {
@@ -346,37 +342,37 @@ export function makeCstVisitor(
               offset: offsetStart,
             },
             end: {
-              line: context.CommandEnd[0].startLine,
-              column: 1, // Always end at the beginning of the line with the end command
+              line: context.TagEnd[0].startLine,
+              column: 1, // Always end at the beginning of the line with the end tag
               offset:
-                context.CommandEnd[0].startOffset -
-                (context.CommandEnd[0].startColumn - 1),
+                context.TagEnd[0].startOffset -
+                (context.TagEnd[0].startColumn - 1),
             },
           };
         }
 
-        this.visit(context.commandAttribute, {
+        this.visit(context.tagAttribute, {
           parent: newNode,
           errors,
           source,
         });
 
-        this.visit(context.blockCommandUncommentedContents ?? context.chunk, {
+        this.visit(context.blockTagUncommentedContents ?? context.chunk, {
           parent: newNode,
           errors,
           source,
         });
 
-        // Find any line comment tokens associated with the command end token
+        // Find any line comment tokens associated with the tag end token
         newNode.associatedTokens.push(
           ...newNode.lineComments.filter((lineComment) =>
-            isAssociated(lineComment, CommandEnd)
+            isAssociated(lineComment, TagEnd)
           )
         );
       }
 
-      blockCommandUncommentedContents(
-        context: BlockCommandUncommentedContentsContext,
+      blockTagUncommentedContents(
+        context: BlockTagUncommentedContentsContext,
         { parent, errors, source }: VisitorContext
       ) {
         this.visit(context.chunk, { parent, errors, source });
@@ -389,11 +385,11 @@ export function makeCstVisitor(
         assert(parent != null);
         // This node (blockComment) should not be included in the final output. We
         // use it to gather child nodes and attach them to the parent node.
-        parent.withErasedBlockCommand(context, (erasedBlockCommand) => {
-          erasedBlockCommand._context.push("blockComment");
+        parent.withErasedBlockTag(context, (erasedBlockTag) => {
+          erasedBlockTag._context.push("blockComment");
           this.visit(
-            [...(context.blockComment ?? []), ...(context.command ?? [])],
-            { parent: erasedBlockCommand, errors, source }
+            [...(context.blockComment ?? []), ...(context.tag ?? [])],
+            { parent: erasedBlockTag, errors, source }
           );
         });
       }
@@ -409,7 +405,7 @@ export function makeCstVisitor(
         this.visit(
           [
             ...(context.blockComment ?? []),
-            ...(context.command ?? []),
+            ...(context.tag ?? []),
             ...(context.lineComment ?? []),
             ...(context.pushParser ?? []),
           ].sort((a, b) => {
@@ -421,60 +417,57 @@ export function makeCstVisitor(
         );
       }
 
-      command(context: CommandContext, visitorContext: VisitorContext) {
+      tag(context: TagContext, visitorContext: VisitorContext) {
         const { parent, source, lineComments } = visitorContext;
         assert(parent != null);
         parent.addTokensFromContext(context);
-        if (context.blockCommand) {
-          assert(!context.Command); // Parser issue!
-          this.visit(context.blockCommand, visitorContext);
+        if (context.blockTag) {
+          assert(!context.Tag); // Parser issue!
+          this.visit(context.blockTag, visitorContext);
           return;
         }
-        assert(context.Command);
-        context.Command.forEach((Command) => {
-          const commandPatternResult = COMMAND_PATTERN.exec(Command.image);
-          assert(commandPatternResult !== null);
-          assert(Command.startLine !== undefined);
-          assert(Command.startColumn !== undefined);
-          assert(Command.endLine !== undefined);
-          assert(Command.endColumn !== undefined);
-          assert(Command.endOffset !== undefined);
-          const newNode = parent.makeChildLineCommand(
-            commandPatternResult[1],
-            context
-          );
+        assert(context.Tag);
+        context.Tag.forEach((Tag) => {
+          const tagPatternResult = COMMAND_PATTERN.exec(Tag.image);
+          assert(tagPatternResult !== null);
+          assert(Tag.startLine !== undefined);
+          assert(Tag.startColumn !== undefined);
+          assert(Tag.endLine !== undefined);
+          assert(Tag.endColumn !== undefined);
+          assert(Tag.endOffset !== undefined);
+          const newNode = parent.makeChildLineTag(tagPatternResult[1], context);
           newNode.range = {
             start: {
-              line: Command.startLine,
-              column: Command.startColumn,
-              offset: Command.startOffset,
+              line: Tag.startLine,
+              column: Tag.startColumn,
+              offset: Tag.startOffset,
             },
             end: {
-              line: Command.endLine,
-              column: Command.endColumn,
-              offset: Command.endOffset,
+              line: Tag.endLine,
+              column: Tag.endColumn,
+              offset: Tag.endOffset,
             },
           };
           newNode.lineRange = {
             start: {
-              line: Command.startLine,
+              line: Tag.startLine,
               column: 1,
-              offset: Command.startOffset - (Command.startColumn - 1),
+              offset: Tag.startOffset - (Tag.startColumn - 1),
             },
-            end: nextLineAfterToken(Command, source.text.original),
+            end: nextLineAfterToken(Tag, source.text.original),
           };
           if (lineComments !== undefined) {
             newNode.associatedTokens.push(
               ...lineComments.filter((lineComment) =>
-                isAssociated(lineComment, Command)
+                isAssociated(lineComment, Tag)
               )
             );
           }
         });
       }
 
-      commandAttribute(
-        context: CommandAttributeContext,
+      tagAttribute(
+        context: TagAttributeContext,
         visitorContext: VisitorContext
       ) {
         const { parent } = visitorContext;
@@ -500,16 +493,16 @@ export function makeCstVisitor(
       ) {
         assert(parent != null);
         parent.addTokensFromContext(context);
-        const { command } = context;
-        if (command === undefined) {
+        const { tag } = context;
+        if (tag === undefined) {
           return;
         }
-        parent.withErasedBlockCommand(context, (erasedBlockCommand) => {
-          // Any blockCommand that starts in a lineComment by definition MUST be
+        parent.withErasedBlockTag(context, (erasedBlockTag) => {
+          // Any blockTag that starts in a lineComment by definition MUST be
           // on the same line as the line comment
-          erasedBlockCommand._context.push("lineComment");
-          this.visit(command, {
-            parent: erasedBlockCommand,
+          erasedBlockTag._context.push("lineComment");
+          this.visit(tag, {
+            parent: erasedBlockTag,
             errors,
             source,
             lineComments: context.LineComment,
@@ -596,7 +589,7 @@ export function makeCstVisitor(
         }
         const result = visitor.visit(parseResult.cst, source);
         assert(parent.children !== undefined);
-        parent.children.push(...(result.commandNodes as CommandNodeImpl[]));
+        parent.children.push(...(result.tagNodes as TagNodeImpl[]));
         result.errors.forEach((error) =>
           errors.push({
             ...error,
@@ -614,13 +607,13 @@ export function makeCstVisitor(
   // that all methods correspond to a grammar rule, so this helper must be
   // external.
   const visit = (node: CstNode, source: Document): VisitorResult => {
-    const parent = CommandNodeImpl.rootCommand();
+    const parent = TagNodeImpl.rootTag();
     const errors: BluehawkError[] = [];
     visitor.visit([node], { errors, parent, source });
     return {
       errors,
-      commandNodes: (parent.children ?? []).map(
-        (child) => child.asBlockCommandNode() ?? (child as LineCommandNode)
+      tagNodes: (parent.children ?? []).map(
+        (child) => child.asBlockTagNode() ?? (child as LineTagNode)
       ),
     };
   };

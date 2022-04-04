@@ -1,18 +1,18 @@
 import {
   Bluehawk,
-  SnippetCommand,
-  ReplaceCommand,
-  RemoveCommand,
-  StateCommand,
-  UncommentCommand,
-  EmphasizeCommand,
+  SnippetTag,
+  ReplaceTag,
+  RemoveTag,
+  StateTag,
+  UncommentTag,
+  EmphasizeTag,
   tokens,
 } from ".";
 import {
-  makeBlockCommand,
+  makeBlockTag,
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
-} from "./commands";
+} from "./tags";
 
 let bluehawk: Bluehawk | undefined = undefined;
 
@@ -21,30 +21,30 @@ let bluehawk: Bluehawk | undefined = undefined;
  */
 export const getBluehawk = async (): Promise<Bluehawk> => {
   if (bluehawk === undefined) {
-    const StateUncommentCommand = makeBlockCommand<IdRequiredAttributes>({
+    const StateUncommentTag = makeBlockTag<IdRequiredAttributes>({
       name: "state-uncomment",
       description: "combines 'uncomment' and 'state'",
       attributesSchema: IdRequiredAttributesSchema,
       process(request) {
-        UncommentCommand.process(request);
-        StateCommand.process(request);
+        UncommentTag.process(request);
+        StateTag.process(request);
       },
     });
 
     bluehawk = new Bluehawk({
-      commands: [
-        RemoveCommand,
-        ReplaceCommand,
-        SnippetCommand,
-        StateCommand,
-        StateUncommentCommand,
-        UncommentCommand,
-        EmphasizeCommand,
+      tags: [
+        RemoveTag,
+        ReplaceTag,
+        SnippetTag,
+        StateTag,
+        StateUncommentTag,
+        UncommentTag,
+        EmphasizeTag,
       ],
       // Aliases for backwards compatibility
-      commandAliases: [
-        ["hide", RemoveCommand],
-        ["code-block", SnippetCommand],
+      tagAliases: [
+        ["hide", RemoveTag],
+        ["code-block", SnippetTag],
       ],
     });
 

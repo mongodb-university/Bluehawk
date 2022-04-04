@@ -2,9 +2,9 @@ import { Bluehawk } from "../bluehawk";
 import {
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
-  makeBlockCommand,
-  makeLineCommand,
-} from "../commands/Command";
+  makeBlockTag,
+  makeLineTag,
+} from "../tags/Tag";
 import { Document } from "../Document";
 import { ParseResult } from "../parser/ParseResult";
 
@@ -16,19 +16,19 @@ describe("processor", () => {
     lineComments: [/\/\/ ?/],
   });
 
-  it("ignores unknown commands", async (done) => {
+  it("ignores unknown tags", async (done) => {
     // NOTE: This is not necessarily the desired behavior, but it is the current
     // behavior.
     const source = new Document({
-      text: `:unknown-command:
+      text: `:unknown-tag:
 `,
       path: "test.js",
     });
 
     const parseResult = bluehawk.parse(source);
-    expect(parseResult.commandNodes[0].commandName).toBe("unknown-command");
+    expect(parseResult.tagNodes[0].tagName).toBe("unknown-tag");
     const files = await bluehawk.process(parseResult);
-    expect(files["test.js"].document.text.toString()).toBe(`:unknown-command:
+    expect(files["test.js"].document.text.toString()).toBe(`:unknown-tag:
 `);
     done();
   });
@@ -120,7 +120,7 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
     }, 11);
   });
 
-  it("passes correct command node type to ", async (done) => {
+  it("passes correct tag node type to ", async (done) => {
     const bluehawk = new Bluehawk();
     bluehawk.addLanguage(["js"], {
       languageId: "javascript",
@@ -129,68 +129,68 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
     });
 
     const state = {
-      calledLineCommandProcess: false,
-      calledBlockCommandProcess: false,
+      calledLineTagProcess: false,
+      calledBlockTagProcess: false,
     };
-    const LineCommand = makeLineCommand({
-      name: "line-command",
-      process({ commandNode }) {
-        expect(commandNode.attributes).toBeUndefined();
-        expect(commandNode.children).toBeUndefined();
-        expect(commandNode.contentRange).toBeUndefined();
-        expect(commandNode.commandName).toBe("line-command");
-        expect(commandNode.id).toBeUndefined();
-        expect(commandNode.type).toBe("line");
-        state.calledLineCommandProcess = true;
+    const LineTag = makeLineTag({
+      name: "line-tag",
+      process({ tagNode }) {
+        expect(tagNode.attributes).toBeUndefined();
+        expect(tagNode.children).toBeUndefined();
+        expect(tagNode.contentRange).toBeUndefined();
+        expect(tagNode.tagName).toBe("line-tag");
+        expect(tagNode.id).toBeUndefined();
+        expect(tagNode.type).toBe("line");
+        state.calledLineTagProcess = true;
       },
     });
 
-    const BlockCommand = makeBlockCommand<IdRequiredAttributes>({
-      name: "block-command",
+    const BlockTag = makeBlockTag<IdRequiredAttributes>({
+      name: "block-tag",
       attributesSchema: IdRequiredAttributesSchema,
-      process({ commandNode }) {
-        expect(commandNode.attributes).toBeDefined();
-        expect(commandNode.children).toBeDefined();
-        expect(commandNode.contentRange).toBeDefined();
-        expect(commandNode.id).toBe("test");
-        expect(commandNode.type).toBe("block");
-        state.calledBlockCommandProcess = true;
+      process({ tagNode }) {
+        expect(tagNode.attributes).toBeDefined();
+        expect(tagNode.children).toBeDefined();
+        expect(tagNode.contentRange).toBeDefined();
+        expect(tagNode.id).toBe("test");
+        expect(tagNode.type).toBe("block");
+        state.calledBlockTagProcess = true;
       },
     });
 
-    bluehawk.registerCommand(LineCommand);
-    bluehawk.registerCommand(BlockCommand);
+    bluehawk.registerTag(LineTag);
+    bluehawk.registerTag(BlockTag);
 
     await (async () => {
       const result = bluehawk.parse(
         new Document({
-          text: `:line-command-start:
-:line-command-end:
-:block-command:
+          text: `:line-tag-start:
+:line-tag-end:
+:block-tag:
 `,
           path: "test.js",
         })
       );
-      // Validate that line-command and block-command cannot be used in the
+      // Validate that line-tag and block-tag cannot be used in the
       // opposite mode
       expect(result.errors.map((error) => error.message)).toStrictEqual([
-        "'line-command' cannot be used in block mode (i.e. with -start and -end)",
-        "'block-command' cannot be used in single line mode (i.e. without -start and -end around a block)",
+        "'line-tag' cannot be used in block mode (i.e. with -start and -end)",
+        "'block-tag' cannot be used in single line mode (i.e. without -start and -end around a block)",
       ]);
 
-      // Command nodes exist anyway? (TODO: should they be removed if they do
+      // Tag nodes exist anyway? (TODO: should they be removed if they do
       // not pass the validator?)
-      expect(result.commandNodes.length).toBe(2);
+      expect(result.tagNodes.length).toBe(2);
     })();
     const result = bluehawk.parse(
       new Document({
-        text: `:line-command:\n`,
+        text: `:line-tag:\n`,
         path: "test.js",
       })
     );
     expect(result.errors).toStrictEqual([]);
     await bluehawk.process(result);
-    expect(state.calledLineCommandProcess).toBe(true);
+    expect(state.calledLineTagProcess).toBe(true);
     done();
   });
 });

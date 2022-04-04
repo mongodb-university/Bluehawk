@@ -68,9 +68,9 @@ describe("multilang", () => {
 
   it("parses without context switching", () => {
     const parseResult = parser.parse(`
-<!-- This is HTML :block-commented-command: -->
-// :command:
-# :command2:
+<!-- This is HTML :block-commented-tag: -->
+// :tag:
+# :tag2:
 `);
     expect(parseResult.errors).toStrictEqual([]);
     expect(parseResult.cst).toBeDefined();
@@ -80,31 +80,28 @@ describe("multilang", () => {
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
-      result.commandNodes.map((command) => [
-        command.commandName,
-        command.inContext,
-      ])
+      result.tagNodes.map((tag) => [tag.tagName, tag.inContext])
     ).toStrictEqual([
-      ["block-commented-command", "blockComment"],
-      ["command", "none"],
-      ["command2", "none"],
+      ["block-commented-tag", "blockComment"],
+      ["tag", "none"],
+      ["tag2", "none"],
     ]);
   });
 
   it("handles context switching", () => {
     const parseResult = parser.parse(`
-<!-- This is HTML :block-commented-command: -->
-// :command:
-# :command2:
+<!-- This is HTML :block-commented-tag: -->
+// :tag:
+# :tag2:
 <?php
-// This is PHP :line-commented-command:
-# :line-commented-command2:
-/* :block-commented-command2: */
-<!-- :command3: -->
+// This is PHP :line-commented-tag:
+# :line-commented-tag2:
+/* :block-commented-tag2: */
+<!-- :tag3: -->
 ?>
-<!-- This is HTML :block-commented-command3: -->
-// :command4:
-# :command5:
+<!-- This is HTML :block-commented-tag3: -->
+// :tag4:
+# :tag5:
 `);
     expect(parseResult.errors).toStrictEqual([]);
     expect(parseResult.cst).toBeDefined();
@@ -114,21 +111,18 @@ describe("multilang", () => {
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
-      result.commandNodes.map((command) => [
-        command.commandName,
-        command.inContext,
-      ])
+      result.tagNodes.map((tag) => [tag.tagName, tag.inContext])
     ).toStrictEqual([
-      ["block-commented-command", "blockComment"],
-      ["command", "none"],
-      ["command2", "none"],
-      ["line-commented-command", "lineComment"],
-      ["line-commented-command2", "lineComment"],
-      ["block-commented-command2", "blockComment"],
-      ["command3", "none"],
-      ["block-commented-command3", "blockComment"],
-      ["command4", "none"],
-      ["command5", "none"],
+      ["block-commented-tag", "blockComment"],
+      ["tag", "none"],
+      ["tag2", "none"],
+      ["line-commented-tag", "lineComment"],
+      ["line-commented-tag2", "lineComment"],
+      ["block-commented-tag2", "blockComment"],
+      ["tag3", "none"],
+      ["block-commented-tag3", "blockComment"],
+      ["tag4", "none"],
+      ["tag5", "none"],
     ]);
   });
 
@@ -167,11 +161,11 @@ describe("multilang", () => {
       }),
     ]);
     const parseResult = markdownParser.parse(`
-// :command:
+// :tag:
 \`\`\`
-// :line-commented-command:
+// :line-commented-tag:
 \`\`\`
-:command2:
+:tag2:
 `);
     const visitor = makeCstVisitor(markdownParser, getParser);
     expect(parseResult.cst).toBeDefined();
@@ -181,14 +175,11 @@ describe("multilang", () => {
     const result = visitor.visit(parseResult.cst, someSource);
     expect(result.errors).toStrictEqual([]);
     expect(
-      result.commandNodes.map((command) => [
-        command.commandName,
-        command.inContext,
-      ])
+      result.tagNodes.map((tag) => [tag.tagName, tag.inContext])
     ).toStrictEqual([
-      ["command", "none"],
-      ["line-commented-command", "lineComment"],
-      ["command2", "none"],
+      ["tag", "none"],
+      ["line-commented-tag", "lineComment"],
+      ["tag2", "none"],
     ]);
   });
 });

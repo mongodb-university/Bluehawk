@@ -1,4 +1,4 @@
-import { validateCommands } from "./processor/validator";
+import { validateTags } from "./processor/validator";
 import { COMMAND_PATTERN } from "./parser/lexer/tokens";
 import { Document } from "./Document";
 import {
@@ -7,7 +7,7 @@ import {
   BluehawkFiles,
   ProcessOptions,
 } from "./processor/Processor";
-import { AnyCommand } from "./commands/Command";
+import { AnyTag } from "./tags/Tag";
 import { ParseResult } from "./parser/ParseResult";
 import { ParserStore } from "./parser/ParserStore";
 import { IParser, LanguageSpecification } from "./parser";
@@ -18,8 +18,8 @@ import { OnBinaryFileFunction } from "./OnBinaryFileFunction";
 import { logErrorsToConsole, OnErrorFunction } from "./OnErrorFunction";
 
 interface BluehawkConfiguration {
-  commands?: AnyCommand[];
-  commandAliases?: [string, AnyCommand][];
+  tags?: AnyTag[];
+  tagAliases?: [string, AnyTag][];
   languageSpecs?: { [extension: string]: LanguageSpecification };
 }
 
@@ -43,15 +43,15 @@ export class Bluehawk {
       return;
     }
 
-    const { commands, commandAliases, languageSpecs } = configuration;
+    const { tags, tagAliases, languageSpecs } = configuration;
 
-    if (commands !== undefined) {
-      commands.forEach((command) => this.registerCommand(command));
+    if (tags !== undefined) {
+      tags.forEach((tag) => this.registerTag(tag));
     }
 
-    if (commandAliases !== undefined) {
-      commandAliases.forEach((nameCommandPair) =>
-        this.registerCommand(nameCommandPair[1], nameCommandPair[0])
+    if (tagAliases !== undefined) {
+      tagAliases.forEach((nameTagPair) =>
+        this.registerTag(nameTagPair[1], nameTagPair[0])
       );
     }
 
@@ -63,11 +63,11 @@ export class Bluehawk {
   }
 
   /**
-    Register the given command on the processor and validator. This enables
-    support for the command under the given name.
+    Register the given tag on the processor and validator. This enables
+    support for the tag under the given name.
    */
-  registerCommand(command: AnyCommand, alternateName?: string): void {
-    this._processor.registerCommand(command, alternateName);
+  registerTag(tag: AnyTag, alternateName?: string): void {
+    this._processor.registerTag(tag, alternateName);
   }
 
   /**
@@ -139,17 +139,17 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
   };
 
   /**
-    Parses the given source file into commands.
+    Parses the given source file into tags.
    */
   parse = (
     source: Document,
     languageSpecification?: LanguageSpecification
   ): ParseResult => {
-    // First, quickly check to see if this even has any commands.
+    // First, quickly check to see if this even has any tags.
     if (!COMMAND_PATTERN.test(source.text.original)) {
       return {
         errors: [],
-        commandNodes: [],
+        tagNodes: [],
         source,
       };
     }
@@ -164,8 +164,8 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
       parser = this._parserStore.getDefaultParser();
     }
     const result = parser.parse(source);
-    const validateErrors = validateCommands(
-      result.commandNodes,
+    const validateErrors = validateTags(
+      result.tagNodes,
       this._processor.processors
     );
     return {
@@ -186,7 +186,7 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
   }
 
   /**
-    Executes the commands on the given source. Use [[Bluehawk.subscribe]] to get
+    Executes the tags on the given source. Use [[Bluehawk.subscribe]] to get
     results.
    */
   process = async (
