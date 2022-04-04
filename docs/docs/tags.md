@@ -16,7 +16,7 @@ begin and end with colons (`:`).
 The following examples demonstrate the [remove](#remove)
 tag in single-line and block forms:
 
-Single-line tags use `:<tag>:` to markup a single line:
+Single-line tags use `:<tag>:` to mark up a single line:
 
 ```java
 public class Main {
@@ -78,16 +78,16 @@ They must use double quotes for fields, and the opening line of an attribute lis
 must appear on the same line as the tag itself.
 
 ```java
-// :tag: {
+// :some-tag-start: {
 //    "field": "value"
 // }
-// :replace-end:
+// :some-tag-end:
 ```
 
 ## Snippet
 
 The `snippet` tag, also aliased as `code-block`, marks a range of content in a file
-as a snippet. You can use the [snip](#snip) CLI tag to generate snippet files from
+as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
 these snippets.
 
 Because `snippet` operates on ranges of content, it is only available as
@@ -107,7 +107,7 @@ public class Main {
 }
 ```
 
-Running the following tag:
+Running the following command:
 
 ```
 bluehawk snip Main.java -d .
@@ -124,7 +124,7 @@ System.out.println("Hello world!");
 ## State
 
 The `state` tag marks a range of content in a file as part of a particular state.
-You can use the [snip](#snip) or [copy](#copy) CLI tags with the [state](#state)
+You can use the [snip](#snip) or [copy](#copy) CLI commands with the [state](#state)
 flag to generate output files that contain only content from a specific named state.
 When you use the `--state` flag to specify a state, all state blocks other than the
 specified state are removed from the output. All content not in a state block is
@@ -161,7 +161,7 @@ public class Main {
 }
 ```
 
-Running the following tag:
+Running the following command:
 
 ```
 bluehawk snip Main.java -d . --state hello-user
@@ -177,7 +177,7 @@ System.out.println("Hello user!");
 example++;
 ```
 
-Alternatively, running the following tag:
+Alternatively, running the following command:
 
 ```
 bluehawk snip Main.java -d . --state hello-world
@@ -225,7 +225,7 @@ public class Main {
 }
 ```
 
-Running the following tag:
+Running the following command:
 
 ```
 bluehawk snip Main.java -d . --state subtract-one
@@ -275,7 +275,7 @@ public class Main {
 }
 ```
 
-Running the following tag:
+Running the following command:
 
 ```
 bluehawk copy Main.java -d .
@@ -335,7 +335,7 @@ public class MyMainExample {
 // :replace-end:
 ```
 
-Running the following tag:
+Running the following command:
 
 ```
 bluehawk copy Main.java -d .
@@ -389,7 +389,7 @@ public class Main {
 }
 ```
 
-Running the following tag:
+Running the following command:
 
 ```
 bluehawk snip Main.java -d . --format=rst
@@ -437,7 +437,7 @@ public class Main {
 }
 ```
 
-Running the following tag:
+Running the following command:
 
 ```
 bluehawk snip Main.java -d .

@@ -30,7 +30,7 @@ func someTest() {
 // ... more tests ...
 ```
 
-Running Bluehawk with the `snip` tag on this file will produce a snippet
+Running Bluehawk with the `snip` command on this file will produce a snippet
 file called `SomeTest.codeblock.some-example.swift` that looks something like this:
 
 ```swift

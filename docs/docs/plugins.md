@@ -6,8 +6,8 @@ sidebar_position: 4
 custom_edit_url: null
 ---
 
-You can add tags and listeners by creating a JS file or node project that
-implements the register() function:
+You can add tags, CLI commands, and listeners by creating a JS file or node
+project that implements the register() function:
 
 ```js
 // myPlugin.js
