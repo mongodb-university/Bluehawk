@@ -1,20 +1,16 @@
 import { Bluehawk } from "../bluehawk";
 import { Document } from "../Document";
-import {
-  makeBlockOrLineCommand,
-  NoAttributes,
-  NoAttributesSchema,
-} from "./Command";
+import { makeBlockOrLineTag, NoAttributes, NoAttributesSchema } from "./Tag";
 import { removeMetaRange } from "./removeMetaRange";
 
 describe("removeMetaRange", () => {
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand(
-    makeBlockOrLineCommand<NoAttributes>({
+  bluehawk.registerTag(
+    makeBlockOrLineTag<NoAttributes>({
       attributesSchema: NoAttributesSchema,
       name: "strip-this",
-      process({ document, commandNode }) {
-        removeMetaRange(document.text, commandNode);
+      process({ document, tagNode }) {
+        removeMetaRange(document.text, tagNode);
       },
     })
   );
@@ -24,8 +20,8 @@ describe("removeMetaRange", () => {
     lineComments: [/\/\/ ?/],
   });
 
-  it("behaves on block commands", async () => {
-    // Note that it completely deletes the line on which the -end command is
+  it("behaves on block tags", async () => {
+    // Note that it completely deletes the line on which the -end tag is
     // found.
     const source = new Document({
       text: `const bar = "foo";
@@ -53,7 +49,7 @@ const qux = "baz";
 `
     );
   });
-  it("behaves on line commands", async () => {
+  it("behaves on line tags", async () => {
     const source = new Document({
       text: `const bar = "foo";
 const baz = "bar"; // :strip-this:
@@ -74,7 +70,7 @@ const qux = "baz"; // not this
     );
   });
 
-  it("behaves with doubled-up line commands", async () => {
+  it("behaves with doubled-up line tags", async () => {
     const source = new Document({
       text: `abc
 def // :strip-this: :strip-this:

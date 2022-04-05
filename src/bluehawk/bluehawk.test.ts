@@ -4,8 +4,8 @@ import { Document } from "./Document";
 import {
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
-  makeBlockCommand,
-} from "./commands";
+  makeBlockTag,
+} from "./tags";
 import { System } from "./io/System";
 import { getBluehawk } from "./getBluehawk";
 
@@ -13,8 +13,8 @@ describe("bluehawk", () => {
   beforeEach(System.useMemfs);
 
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand(
-    makeBlockCommand<IdRequiredAttributes>({
+  bluehawk.registerTag(
+    makeBlockTag<IdRequiredAttributes>({
       name: "code-block",
       attributesSchema: IdRequiredAttributesSchema,
       process(request) {
@@ -33,9 +33,9 @@ describe("bluehawk", () => {
     const input = new Document({
       text: `
     this is ignored
-    :some-command-start:
-    this is in the command
-    :some-command-end:
+    :some-tag-start:
+    this is in the tag
+    :some-tag-end:
 `,
       path: "testPath",
     });
@@ -46,9 +46,9 @@ describe("bluehawk", () => {
   it("contains lexing errors", () => {
     const input = new Document({
       text: `
-    :some-command-start: '
+    :some-tag-start: '
     this is ignored
-    :some-command-end:
+    :some-tag-end:
     `,
       path: "testPath",
     });
@@ -57,12 +57,12 @@ describe("bluehawk", () => {
     expect(output.errors[0]).toStrictEqual({
       component: "lexer",
       location: {
-        column: 26,
+        column: 22,
         line: 2,
-        offset: 26,
+        offset: 22,
       },
       message:
-        "unexpected character: ->'<- at offset: 26, skipped 1 characters.",
+        "unexpected character: ->'<- at offset: 22, skipped 1 characters.",
     });
   });
 
@@ -70,9 +70,9 @@ describe("bluehawk", () => {
     const input = new Document({
       text: `
     this is ignored
-    :some-command-start:
-    this is in the command
-    :some-command-start:
+    :some-tag-start:
+    this is in the tag
+    :some-tag-start:
 `,
       path: "testPath",
     });
@@ -81,12 +81,12 @@ describe("bluehawk", () => {
     expect(output.errors[0]).toStrictEqual({
       component: "parser",
       location: {
-        column: 25,
+        column: 21,
         line: 5,
-        offset: 97,
+        offset: 85,
       },
       message:
-        "5:25(97) blockCommand: After Newline, expected CommandEnd but found EOF",
+        "5:21(85) blockTag: After Newline, expected TagEnd but found EOF",
     });
   });
 
@@ -95,9 +95,9 @@ describe("bluehawk", () => {
     const input = new Document({
       text: `
     this is ignored
-    :some-command-start:
-    this is in the command
-    :some-command-end:
+    :some-tag-start:
+    this is in the tag
+    :some-tag-end:
 `,
       path: "testPath",
     });
@@ -111,7 +111,7 @@ describe("bluehawk", () => {
       text: `
     this is ignored
     :code-block-start:
-    this is in the command
+    this is in the tag
     :code-block-end:
 `,
       path: "testPath",
@@ -125,7 +125,7 @@ describe("bluehawk", () => {
         line: 3,
         offset: 25,
       },
-      message: "attribute list for 'code-block' command should be object",
+      message: "attribute list for 'code-block' tag should be object",
     });
   });
 
@@ -135,7 +135,7 @@ describe("bluehawk", () => {
     this is ignored
     :code-block-start: foo
     :emphasize-start:
-    this is in the command
+    this is in the tag
     :emphasize-end:
     :code-block-end:
 `,

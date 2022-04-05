@@ -18,11 +18,11 @@ describe("visitor", () => {
   it("can be constructed", () => {
     const tokens = lexer.tokenize(`
 this is annotated text
-:command: attribute
-:no-attribute-command:
-:this-is-a-block-command-start: attribute
+:tag: attribute
+:no-attribute-tag:
+:this-is-a-block-tag-start: attribute
 annotated text
-:this-is-a-block-command-end:
+:this-is-a-block-tag-end:
 /* this is a block comment */
 // this is a line comment
 `);
@@ -33,11 +33,11 @@ annotated text
     visitor.visit(cst, source);
   });
 
-  it("supports multiple commands", () => {
+  it("supports multiple tags", () => {
     const tokens = lexer.tokenize(`
-:A-command:
-:B-command:
-:C-command:
+:A-tag:
+:B-tag:
+:C-tag:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -46,20 +46,20 @@ annotated text
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(3);
-    expect(result.commandNodes[0].commandName).toBe("A-command");
-    expect(result.commandNodes[1].commandName).toBe("B-command");
-    expect(result.commandNodes[2].commandName).toBe("C-command");
+    expect(result.tagNodes.length).toBe(3);
+    expect(result.tagNodes[0].tagName).toBe("A-tag");
+    expect(result.tagNodes[1].tagName).toBe("B-tag");
+    expect(result.tagNodes[2].tagName).toBe("C-tag");
   });
 
-  it("supports multiple block commands", () => {
+  it("supports multiple block tags", () => {
     const tokens = lexer.tokenize(`
-:A-command-start:
-:A-command-end:
-:B-command-start:
-:B-command-end:
-:C-command-start:
-:C-command-end:
+:A-tag-start:
+:A-tag-end:
+:B-tag-start:
+:B-tag-end:
+:C-tag-start:
+:C-tag-end:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -68,16 +68,16 @@ annotated text
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(3);
-    expect(result.commandNodes[0].commandName).toBe("A-command");
-    expect(result.commandNodes[1].commandName).toBe("B-command");
-    expect(result.commandNodes[2].commandName).toBe("C-command");
+    expect(result.tagNodes.length).toBe(3);
+    expect(result.tagNodes[0].tagName).toBe("A-tag");
+    expect(result.tagNodes[1].tagName).toBe("B-tag");
+    expect(result.tagNodes[2].tagName).toBe("C-tag");
   });
 
-  it("detects mismatched non-nested command names", () => {
+  it("detects mismatched non-nested tag names", () => {
     const tokens = lexer.tokenize(`
-:this-is-a-command-start:
-:this-is-a-different-command-end:
+:this-is-a-tag-start:
+:this-is-a-different-tag-end:
 `);
     expect(tokens.errors).toStrictEqual([]);
     parser.input = tokens.tokens;
@@ -86,12 +86,12 @@ annotated text
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors[0].message).toBe(
-      "Unexpected this-is-a-different-command-end closing this-is-a-command-start"
+      "Unexpected this-is-a-different-tag-end closing this-is-a-tag-start"
     );
-    expect(result.commandNodes.length).toBe(0);
+    expect(result.tagNodes.length).toBe(0);
   });
 
-  it("supports nested commands", () => {
+  it("supports nested tags", () => {
     const tokens = lexer.tokenize(`
 :A-start: a
   :B-start: b
@@ -109,14 +109,14 @@ annotated text
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(1);
-    expect((result.commandNodes[0].children ?? []).length).toBe(1);
-    expect(
-      (result.commandNodes[0].children ?? [])[0].children?.length ?? 0
-    ).toBe(2);
+    expect(result.tagNodes.length).toBe(1);
+    expect((result.tagNodes[0].children ?? []).length).toBe(1);
+    expect((result.tagNodes[0].children ?? [])[0].children?.length ?? 0).toBe(
+      2
+    );
   });
 
-  it("supports id commands", () => {
+  it("supports id tags", () => {
     const tokens = lexer.tokenize(`
 :A-start: label
 :A-end:
@@ -128,23 +128,23 @@ annotated text
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes[0].commandName).toBe("A");
-    expect((result.commandNodes[0].children ?? []).length).toBe(0);
+    expect(result.tagNodes[0].tagName).toBe("A");
+    expect((result.tagNodes[0].children ?? []).length).toBe(0);
     expect(
-      result.commandNodes[0].id !== undefined &&
-        result.commandNodes[0].id.length == 1 &&
-        result.commandNodes[0].id[0]
+      result.tagNodes[0].id !== undefined &&
+        result.tagNodes[0].id.length == 1 &&
+        result.tagNodes[0].id[0]
     ).toBe("label");
   });
 
-  it("detects comment context on line commands", () => {
+  it("detects comment context on line tags", () => {
     const tokens = lexer.tokenize(`
-0 /* :command-in-a-block-comment: */
-1 // :line-commented-command:
-2 // /* :still-line-commented-command: */
-3 /* // :still-block-commented-command: */
+0 /* :tag-in-a-block-comment: */
+1 // :line-commented-tag:
+2 // /* :still-line-commented-tag: */
+3 /* // :still-block-commented-tag: */
 /*
-4 :another-block-commented-command:
+4 :another-block-commented-tag:
 */
 5 :not-in-context:
 `);
@@ -155,35 +155,27 @@ annotated text
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes[0].commandName).toBe(
-      "command-in-a-block-comment"
-    );
-    expect(result.commandNodes[0].inContext).toBe("blockComment");
-    expect(result.commandNodes[1].commandName).toBe("line-commented-command");
-    expect(result.commandNodes[1].inContext).toBe("lineComment");
-    expect(result.commandNodes[2].commandName).toBe(
-      "still-line-commented-command"
-    );
-    expect(result.commandNodes[2].inContext).toBe("lineComment");
-    expect(result.commandNodes[3].commandName).toBe(
-      "still-block-commented-command"
-    );
-    expect(result.commandNodes[3].inContext).toBe("blockComment");
-    expect(result.commandNodes[4].commandName).toBe(
-      "another-block-commented-command"
-    );
-    expect(result.commandNodes[4].inContext).toBe("blockComment");
-    expect(result.commandNodes[5].commandName).toBe("not-in-context");
-    expect(result.commandNodes[5].inContext).toBe("none");
+    expect(result.tagNodes[0].tagName).toBe("tag-in-a-block-comment");
+    expect(result.tagNodes[0].inContext).toBe("blockComment");
+    expect(result.tagNodes[1].tagName).toBe("line-commented-tag");
+    expect(result.tagNodes[1].inContext).toBe("lineComment");
+    expect(result.tagNodes[2].tagName).toBe("still-line-commented-tag");
+    expect(result.tagNodes[2].inContext).toBe("lineComment");
+    expect(result.tagNodes[3].tagName).toBe("still-block-commented-tag");
+    expect(result.tagNodes[3].inContext).toBe("blockComment");
+    expect(result.tagNodes[4].tagName).toBe("another-block-commented-tag");
+    expect(result.tagNodes[4].inContext).toBe("blockComment");
+    expect(result.tagNodes[5].tagName).toBe("not-in-context");
+    expect(result.tagNodes[5].inContext).toBe("none");
   });
 
-  it("detects comment context on block commands", () => {
-    const tokens = lexer.tokenize(`// :line-commented-block-command-start:
-// // // // :line-commented-block-command-end: */
+  it("detects comment context on block tags", () => {
+    const tokens = lexer.tokenize(`// :line-commented-block-tag-start:
+// // // // :line-commented-block-tag-end: */
 
 /*
-2 // :not-really-line-commented-block-command-start:
-:not-really-line-commented-block-command-end:
+2 // :not-really-line-commented-block-tag-start:
+:not-really-line-commented-block-tag-end:
 */
 
 :not-in-context-start:
@@ -199,21 +191,19 @@ annotated text
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes[0].commandName).toBe(
-      "line-commented-block-command"
+    expect(result.tagNodes[0].tagName).toBe("line-commented-block-tag");
+    expect(result.tagNodes[0].inContext).toBe("lineComment");
+    expect(result.tagNodes[1].tagName).toBe(
+      "not-really-line-commented-block-tag"
     );
-    expect(result.commandNodes[0].inContext).toBe("lineComment");
-    expect(result.commandNodes[1].commandName).toBe(
-      "not-really-line-commented-block-command"
-    );
-    expect(result.commandNodes[1].inContext).toBe("blockComment");
-    expect(result.commandNodes[2].commandName).toBe("not-in-context");
-    expect(result.commandNodes[2].inContext).toBe("none");
-    expect(result.commandNodes[3].commandName).toBe("lcb");
-    expect(result.commandNodes[3].inContext).toBe("lineComment");
+    expect(result.tagNodes[1].inContext).toBe("blockComment");
+    expect(result.tagNodes[2].tagName).toBe("not-in-context");
+    expect(result.tagNodes[2].inContext).toBe("none");
+    expect(result.tagNodes[3].tagName).toBe("lcb");
+    expect(result.tagNodes[3].inContext).toBe("lineComment");
   });
 
-  it("never puts lineComment context on a top-level command that starts on another line", () => {
+  it("never puts lineComment context on a top-level tag that starts on another line", () => {
     const tokens = lexer.tokenize(`//
 ////
 /* */ hiya :not-sure-how-to-test-this: // comment
@@ -226,10 +216,8 @@ annotated text
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes[0].commandName).toBe(
-      "not-sure-how-to-test-this"
-    );
-    expect(result.commandNodes[0].inContext).toBe("none");
+    expect(result.tagNodes[0].tagName).toBe("not-sure-how-to-test-this");
+    expect(result.tagNodes[0].inContext).toBe("none");
   });
 
   test("descendants inherit context", () => {
@@ -253,36 +241,36 @@ annotated text
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    const a = result.commandNodes[0];
-    expect(a.commandName).toBe("a");
+    const a = result.tagNodes[0];
+    expect(a.tagName).toBe("a");
     expect(a.inContext).toBe("lineComment");
     expect(a.children).toBeDefined();
     if (a.children === undefined) {
       return;
     }
     const b = a.children[0];
-    expect(b.commandName).toBe("b");
+    expect(b.tagName).toBe("b");
     expect(b.inContext).toBe("lineComment");
     expect(b.children).toBeDefined();
     if (b.children === undefined) {
       return;
     }
     const c = b.children[0];
-    expect(c.commandName).toBe("c");
+    expect(c.tagName).toBe("c");
     expect(c.inContext).toBe("blockComment");
     expect(c.children).toBeDefined();
     if (c.children === undefined) {
       return;
     }
     const d = c.children[0];
-    expect(d.commandName).toBe("d");
+    expect(d.tagName).toBe("d");
     expect(d.inContext).toBe("blockComment");
     const e = b.children[1];
-    expect(e.commandName).toBe("e");
+    expect(e.tagName).toBe("e");
     expect(e.inContext).toBe("lineComment");
   });
 
-  test("identifies start and end lines for block commands", () => {
+  test("identifies start and end lines for block tags", () => {
     const tokens = lexer.tokenize(`
 // :a-start:
 the quick brown fox jumped
@@ -295,20 +283,20 @@ the quick brown fox jumped
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(1);
-    const a = result.commandNodes[0];
-    expect(a.commandName).toBe("a");
-    // range describes the total block range, from the start of the first command
-    // to the end of the last command
-    expect(result.commandNodes[0].range.start.line).toBe(2);
-    expect(result.commandNodes[0].range.start.column).toBe(4);
-    expect(result.commandNodes[0].range.start.offset).toBe(4);
-    expect(result.commandNodes[0].range.end.line).toBe(4);
-    expect(result.commandNodes[0].range.end.column).toBe(10);
-    expect(result.commandNodes[0].range.end.offset).toBe(50);
+    expect(result.tagNodes.length).toBe(1);
+    const a = result.tagNodes[0];
+    expect(a.tagName).toBe("a");
+    // range describes the total block range, from the start of the first tag
+    // to the end of the last tag
+    expect(result.tagNodes[0].range.start.line).toBe(2);
+    expect(result.tagNodes[0].range.start.column).toBe(4);
+    expect(result.tagNodes[0].range.start.offset).toBe(4);
+    expect(result.tagNodes[0].range.end.line).toBe(4);
+    expect(result.tagNodes[0].range.end.column).toBe(10);
+    expect(result.tagNodes[0].range.end.offset).toBe(50);
   });
 
-  test("identifies start and end lines for block command content", () => {
+  test("identifies start and end lines for block tag content", () => {
     const tokens = lexer.tokenize(`
 // :a-start:
 the quick brown fox jumped
@@ -321,24 +309,24 @@ the quick brown fox jumped
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(1);
-    const a = result.commandNodes[0];
-    expect(a.commandName).toBe("a");
-    // contentRange describes the range of the block's content, including sub-commands
-    // but not the current start/endcommands
-    expect(result.commandNodes[0].contentRange).toBeDefined();
-    if (result.commandNodes[0].contentRange === undefined) {
+    expect(result.tagNodes.length).toBe(1);
+    const a = result.tagNodes[0];
+    expect(a.tagName).toBe("a");
+    // contentRange describes the range of the block's content, including sub-tags
+    // but not the current start/endtags
+    expect(result.tagNodes[0].contentRange).toBeDefined();
+    if (result.tagNodes[0].contentRange === undefined) {
       return;
     }
-    expect(result.commandNodes[0].contentRange.start.line).toBe(3);
-    expect(result.commandNodes[0].contentRange.start.column).toBe(1);
-    expect(result.commandNodes[0].contentRange.start.offset).toBe(14);
-    expect(result.commandNodes[0].contentRange.end.line).toBe(4);
-    expect(result.commandNodes[0].contentRange.end.column).toBe(1);
-    //expect(result.commands[0].contentRange.end.offset).toBe(43);
+    expect(result.tagNodes[0].contentRange.start.line).toBe(3);
+    expect(result.tagNodes[0].contentRange.start.column).toBe(1);
+    expect(result.tagNodes[0].contentRange.start.offset).toBe(14);
+    expect(result.tagNodes[0].contentRange.end.line).toBe(4);
+    expect(result.tagNodes[0].contentRange.end.column).toBe(1);
+    //expect(result.tags[0].contentRange.end.offset).toBe(43);
   });
 
-  test("identifies start and end lines for nested block commands", () => {
+  test("identifies start and end lines for nested block tags", () => {
     const tokens = lexer.tokenize(`
 // :a-start:
 the quick brown fox jumped
@@ -357,20 +345,20 @@ and again
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(1);
+    expect(result.tagNodes.length).toBe(1);
 
-    const a = result.commandNodes[0];
-    expect(a.commandName).toBe("a");
-    // range describes the total block range, from the start of the first command
-    // to the end of the last command
+    const a = result.tagNodes[0];
+    expect(a.tagName).toBe("a");
+    // range describes the total block range, from the start of the first tag
+    // to the end of the last tag
     expect(a.range.start.line).toBe(2);
     expect(a.range.start.column).toBe(4);
     expect(a.range.start.offset).toBe(4);
     expect(a.range.end.line).toBe(10);
     expect(a.range.end.column).toBe(10);
     expect(a.range.end.offset).toBe(124);
-    // contentRange describes the range of the block's content, including sub-commands
-    // but not the current start/endcommands
+    // contentRange describes the range of the block's content, including sub-tags
+    // but not the current start/endtags
     expect(a.contentRange).toBeDefined();
     if (a.contentRange === undefined) {
       return;
@@ -382,18 +370,18 @@ and again
     expect(a.contentRange.end.column).toBe(1);
     expect(a.contentRange.end.offset).toBe(115);
 
-    const b = (result.commandNodes[0].children ?? [])[0];
-    expect(b.commandName).toBe("b");
-    // range describes the total block range, from the start of the first command
-    // to the end of the last command
+    const b = (result.tagNodes[0].children ?? [])[0];
+    expect(b.tagName).toBe("b");
+    // range describes the total block range, from the start of the first tag
+    // to the end of the last tag
     expect(b.range.start.line).toBe(4);
     expect(b.range.start.column).toBe(4);
     expect(b.range.start.offset).toBe(44);
     expect(b.range.end.line).toBe(9);
     expect(b.range.end.column).toBe(10);
     expect(b.range.end.offset).toBe(113);
-    // contentRange describes the range of the block's content, including sub-commands
-    // but not the current start/endcommands
+    // contentRange describes the range of the block's content, including sub-tags
+    // but not the current start/endtags
     expect(b.contentRange).toBeDefined();
     if (b.contentRange === undefined) {
       return;
@@ -405,18 +393,18 @@ and again
     expect(b.contentRange.end.column).toBe(1);
     expect(b.contentRange.end.offset).toBe(104);
 
-    const c = ((result.commandNodes[0].children ?? [])[0].children ?? [])[0];
-    expect(c.commandName).toBe("c");
-    // range describes the total block range, from the start of the first command
-    // to the end of the last command
+    const c = ((result.tagNodes[0].children ?? [])[0].children ?? [])[0];
+    expect(c.tagName).toBe("c");
+    // range describes the total block range, from the start of the first tag
+    // to the end of the last tag
     expect(c.range.start.line).toBe(6);
     expect(c.range.start.column).toBe(4);
     expect(c.range.start.offset).toBe(73);
     expect(c.range.end.line).toBe(8);
     expect(c.range.end.column).toBe(10);
     expect(c.range.end.offset).toBe(102);
-    // contentRange describes the range of the block's content, including sub-commands
-    // but not the current start/endcommands
+    // contentRange describes the range of the block's content, including sub-tags
+    // but not the current start/endtags
     expect(c.contentRange).toBeDefined();
     if (c.contentRange === undefined) {
       return;
@@ -430,8 +418,8 @@ and again
   });
 
   test("lines and columns are 1-based index while offsets are 0-based", () => {
-    const tokens = lexer.tokenize(`:A-command:
- :B-command:
+    const tokens = lexer.tokenize(`:A-tag:
+ :B-tag:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -440,25 +428,25 @@ and again
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes[0].commandName).toBe("A-command");
-    expect(result.commandNodes[0].range.start.line).toBe(1);
-    expect(result.commandNodes[0].range.start.column).toBe(1);
-    expect(result.commandNodes[0].range.start.offset).toBe(0);
-    expect(result.commandNodes[0].range.end.line).toBe(1);
-    expect(result.commandNodes[0].range.end.column).toBe(11);
-    expect(result.commandNodes[1].commandName).toBe("B-command");
-    expect(result.commandNodes[1].range.start.line).toBe(2);
-    expect(result.commandNodes[1].range.start.column).toBe(2);
-    expect(result.commandNodes[1].range.start.offset).toBe(13);
-    expect(result.commandNodes[1].range.end.line).toBe(2);
-    expect(result.commandNodes[1].range.end.column).toBe(12);
+    expect(result.tagNodes[0].tagName).toBe("A-tag");
+    expect(result.tagNodes[0].range.start.line).toBe(1);
+    expect(result.tagNodes[0].range.start.column).toBe(1);
+    expect(result.tagNodes[0].range.start.offset).toBe(0);
+    expect(result.tagNodes[0].range.end.line).toBe(1);
+    expect(result.tagNodes[0].range.end.column).toBe(7);
+    expect(result.tagNodes[1].tagName).toBe("B-tag");
+    expect(result.tagNodes[1].range.start.line).toBe(2);
+    expect(result.tagNodes[1].range.start.column).toBe(2);
+    expect(result.tagNodes[1].range.start.offset).toBe(9);
+    expect(result.tagNodes[1].range.end.line).toBe(2);
+    expect(result.tagNodes[1].range.end.column).toBe(8);
   });
 
-  test("identifies start and end lines for one-liner commands", () => {
+  test("identifies start and end lines for one-liner tags", () => {
     const tokens = lexer.tokenize(`
-// :A-command:
-// :B-command:
-// :C-command:
+// :A-tag:
+// :B-tag:
+// :C-tag:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -467,23 +455,23 @@ and again
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(3);
-    expect(result.commandNodes[0].commandName).toBe("A-command");
-    expect(result.commandNodes[0].range.start.line).toBe(2);
-    expect(result.commandNodes[0].range.start.column).toBe(4);
-    expect(result.commandNodes[0].range.start.offset).toBe(4);
-    expect(result.commandNodes[1].commandName).toBe("B-command");
-    expect(result.commandNodes[1].range.start.line).toBe(3);
-    expect(result.commandNodes[1].range.start.column).toBe(4);
-    expect(result.commandNodes[1].range.start.offset).toBe(19);
-    expect(result.commandNodes[2].commandName).toBe("C-command");
-    expect(result.commandNodes[2].range.start.line).toBe(4);
-    expect(result.commandNodes[2].range.start.column).toBe(4);
-    expect(result.commandNodes[2].range.start.offset).toBe(34);
+    expect(result.tagNodes.length).toBe(3);
+    expect(result.tagNodes[0].tagName).toBe("A-tag");
+    expect(result.tagNodes[0].range.start.line).toBe(2);
+    expect(result.tagNodes[0].range.start.column).toBe(4);
+    expect(result.tagNodes[0].range.start.offset).toBe(4);
+    expect(result.tagNodes[1].tagName).toBe("B-tag");
+    expect(result.tagNodes[1].range.start.line).toBe(3);
+    expect(result.tagNodes[1].range.start.column).toBe(4);
+    expect(result.tagNodes[1].range.start.offset).toBe(15);
+    expect(result.tagNodes[2].tagName).toBe("C-tag");
+    expect(result.tagNodes[2].range.start.line).toBe(4);
+    expect(result.tagNodes[2].range.start.column).toBe(4);
+    expect(result.tagNodes[2].range.start.offset).toBe(26);
   });
 
   it("identifies ranges for many one-liners on the same commented line", () => {
-    const tokens = lexer.tokenize(`// :A-command: :B-command: :C-command:
+    const tokens = lexer.tokenize(`// :A-tag: :B-tag: :C-tag:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -492,9 +480,9 @@ and again
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(3);
-    expect(result.commandNodes[0].commandName).toBe("A-command");
-    expect(result.commandNodes[0].range).toStrictEqual({
+    expect(result.tagNodes.length).toBe(3);
+    expect(result.tagNodes[0].tagName).toBe("A-tag");
+    expect(result.tagNodes[0].range).toStrictEqual({
       start: {
         line: 1,
         column: 4,
@@ -502,39 +490,39 @@ and again
       },
       end: {
         line: 1,
-        column: 15,
-        offset: 14,
+        column: 11,
+        offset: 10,
       },
     });
-    expect(result.commandNodes[1].commandName).toBe("B-command");
-    expect(result.commandNodes[1].range).toStrictEqual({
+    expect(result.tagNodes[1].tagName).toBe("B-tag");
+    expect(result.tagNodes[1].range).toStrictEqual({
       start: {
         line: 1,
-        column: 16,
-        offset: 15,
+        column: 12,
+        offset: 11,
       },
       end: {
         line: 1,
-        column: 27,
-        offset: 26,
+        column: 19,
+        offset: 18,
       },
     });
-    expect(result.commandNodes[2].commandName).toBe("C-command");
-    expect(result.commandNodes[2].range).toStrictEqual({
+    expect(result.tagNodes[2].tagName).toBe("C-tag");
+    expect(result.tagNodes[2].range).toStrictEqual({
       start: {
         line: 1,
-        column: 28,
-        offset: 27,
+        column: 20,
+        offset: 19,
       },
       end: {
         line: 1,
-        column: 38,
-        offset: 37,
+        column: 26,
+        offset: 25,
       },
     });
   });
 
-  it("identifies range for empty block command content", () => {
+  it("identifies range for empty block tag content", () => {
     const tokens = lexer.tokenize(`:a-start:
 :a-end:
 `);
@@ -545,11 +533,11 @@ and again
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(1);
-    expect(result.commandNodes[0].contentRange).toBeUndefined();
+    expect(result.tagNodes.length).toBe(1);
+    expect(result.tagNodes[0].contentRange).toBeUndefined();
   });
 
-  it("identifies content range for block commands with attributeLists", () => {
+  it("identifies content range for block tags with attributeLists", () => {
     const tokenString = `:a-start: {
 
 
@@ -569,24 +557,24 @@ line 10 :a-end:
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(1);
+    expect(result.tagNodes.length).toBe(1);
     const lines = tokenString.split("\n");
-    expect(result.commandNodes[0].contentRange).toBeDefined();
-    if (result.commandNodes[0].contentRange === undefined) {
+    expect(result.tagNodes[0].contentRange).toBeDefined();
+    if (result.tagNodes[0].contentRange === undefined) {
       return;
     }
-    expect(result.commandNodes[0].contentRange.start.line).toBe(9);
-    expect(lines[result.commandNodes[0].contentRange.start.line - 1]).toBe(
+    expect(result.tagNodes[0].contentRange.start.line).toBe(9);
+    expect(lines[result.tagNodes[0].contentRange.start.line - 1]).toBe(
       "line 9 -- some more content"
     );
-    expect(result.commandNodes[0].contentRange.start.column).toBe(1);
-    expect(result.commandNodes[0].contentRange.start.offset).toBe(28);
-    expect(result.commandNodes[0].contentRange.end.line).toBe(10);
-    expect(result.commandNodes[0].contentRange.end.column).toBe(1);
-    expect(result.commandNodes[0].contentRange.end.offset).toBe(56);
+    expect(result.tagNodes[0].contentRange.start.column).toBe(1);
+    expect(result.tagNodes[0].contentRange.start.offset).toBe(28);
+    expect(result.tagNodes[0].contentRange.end.line).toBe(10);
+    expect(result.tagNodes[0].contentRange.end.column).toBe(1);
+    expect(result.tagNodes[0].contentRange.end.offset).toBe(56);
 
     // Remember lines are 1-based while the lines array starts at index 0
-    expect(lines[result.commandNodes[0].contentRange.end.line - 1]).toBe(
+    expect(lines[result.tagNodes[0].contentRange.end.line - 1]).toBe(
       "line 10 :a-end:"
     );
   });
@@ -609,10 +597,10 @@ line 10 :a-end:
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
     expect(
-      result.commandNodes[0].lineComments.map((token) => token.startLine)
+      result.tagNodes[0].lineComments.map((token) => token.startLine)
     ).toStrictEqual([3]);
     expect(
-      (result.commandNodes[0].children ?? [])[0].lineComments.map(
+      (result.tagNodes[0].children ?? [])[0].lineComments.map(
         (token) => token.startLine
       )
     ).toStrictEqual([5]);
@@ -632,7 +620,7 @@ c2345678 :a-start:
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors).toStrictEqual([]);
-    expect(result.commandNodes.length).toBe(1);
+    expect(result.tagNodes.length).toBe(1);
     // Re-add newlines since they are included in the offset
     const lines = tokenString.split("\n").map((line) => `${line}\n`);
     expect(lines[0].length).toBe(9);
@@ -640,19 +628,19 @@ c2345678 :a-start:
     expect(lines[2].length).toBe(19);
     expect(lines[3].length).toBe(3);
     expect(lines[4].length).toBe(11);
-    expect(result.commandNodes[0].contentRange).toBeDefined();
-    if (result.commandNodes[0].contentRange === undefined) {
+    expect(result.tagNodes[0].contentRange).toBeDefined();
+    if (result.tagNodes[0].contentRange === undefined) {
       return;
     }
-    expect(result.commandNodes[0].contentRange.start.line).toBe(4);
-    expect(result.commandNodes[0].contentRange.start.column).toBe(1);
+    expect(result.tagNodes[0].contentRange.start.line).toBe(4);
+    expect(result.tagNodes[0].contentRange.start.column).toBe(1);
 
-    expect(result.commandNodes[0].contentRange.start.offset).toBe(
+    expect(result.tagNodes[0].contentRange.start.offset).toBe(
       lines[0].length + lines[1].length + lines[2].length
     );
-    expect(result.commandNodes[0].contentRange.end.line).toBe(5);
-    expect(result.commandNodes[0].contentRange.end.column).toBe(1);
-    expect(result.commandNodes[0].contentRange.end.offset).toBe(
+    expect(result.tagNodes[0].contentRange.end.line).toBe(5);
+    expect(result.tagNodes[0].contentRange.end.column).toBe(1);
+    expect(result.tagNodes[0].contentRange.end.offset).toBe(
       lines[0].length + lines[1].length + lines[2].length + lines[3].length
     );
   });
@@ -666,7 +654,7 @@ b-end: // TYPO!
     const { errors } = parser.parse(input);
     expect(errors[0].message).toBe("Unexpected ':a-end:' closing ':b-start:'");
     expect(errors[1].message).toBe(
-      "4:8(43) blockCommand: After Newline, expected CommandEnd but found EOF"
+      "4:8(43) blockTag: After Newline, expected TagEnd but found EOF"
     );
     expect(errors.length).toBe(2);
   });

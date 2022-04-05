@@ -6,17 +6,17 @@ sidebar_position: 4
 custom_edit_url: null
 ---
 
-You can add commands and listeners by creating a JS file or node project that
-implements the register() function:
+You can add tags, CLI commands, and listeners by creating a JS file or node
+project that implements the register() function:
 
 ```js
 // myPlugin.js
 exports.register = (bluehawk) => {
-  // Register a new command, :my-command:
-  bluehawk.registerCommand("my-command", {
+  // Register a new tag, :my-tag:
+  bluehawk.registerTag("my-tag", {
     rules: [],
     process: (request) => {
-      // Execute command
+      // Execute tag
     },
   });
 

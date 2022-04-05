@@ -1,32 +1,32 @@
 import { strict as assert } from "assert";
 import {
-  makeBlockCommand,
+  makeBlockTag,
   IdsRequiredAttributes,
   IdsRequiredAttributesSchema,
-} from "./Command";
-import { RemoveCommand } from "./RemoveCommand";
+} from "./Tag";
+import { RemoveTag } from "./RemoveTag";
 
-export const StateCommand = makeBlockCommand<IdsRequiredAttributes>({
+export const StateTag = makeBlockTag<IdsRequiredAttributes>({
   name: "state",
   description:
-    "given a state name(s) as command ids, identifies blocks that should only appear in the given state's version of the file",
+    "given a state name(s) as tag ids, identifies blocks that should only appear in the given state's version of the file",
   attributesSchema: IdsRequiredAttributesSchema,
   process(request) {
-    const { commandNode, fork, document, commandNodes } = request;
+    const { tagNode, fork, document, tagNodes } = request;
 
     const stateAttribute = document.attributes["state"];
 
     if (stateAttribute === undefined) {
       // We are not processing in a state file, so start one
-      commandNode.attributes.id.forEach((id: string) => {
+      tagNode.attributes.id.forEach((id: string) => {
         fork({
           document,
-          commandNodes,
+          tagNodes,
           newModifiers: {
             state: id,
           },
           newAttributes: {
-            // Set the state attribute for next time StateCommand is invoked on the
+            // Set the state attribute for next time StateTag is invoked on the
             // new file
             state: id,
           },
@@ -35,8 +35,8 @@ export const StateCommand = makeBlockCommand<IdsRequiredAttributes>({
     }
 
     // Strip all other states
-    if (!commandNode.attributes.id.includes(stateAttribute)) {
-      RemoveCommand.process(request);
+    if (!tagNode.attributes.id.includes(stateAttribute)) {
+      RemoveTag.process(request);
     }
   },
 });

@@ -1,12 +1,12 @@
 import { Bluehawk } from "../bluehawk";
 import { Document } from "../Document";
-import { SnippetCommand } from "./SnippetCommand";
-import { RemoveCommand } from "./RemoveCommand";
+import { SnippetTag } from "./SnippetTag";
+import { RemoveTag } from "./RemoveTag";
 
-describe("snippet Command", () => {
+describe("snippet Tag", () => {
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand(SnippetCommand);
-  bluehawk.registerCommand(RemoveCommand);
+  bluehawk.registerTag(SnippetTag);
+  bluehawk.registerTag(RemoveTag);
   bluehawk.addLanguage(["js", "swift"], {
     languageId: "javascript",
     blockComments: [[/\/\*/, /\*\//]],

@@ -23,7 +23,7 @@ From the `/docs` folder:
 npm start
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+This tag starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
 ## Build
 
@@ -33,11 +33,11 @@ From the `/docs` folder:
 npm run build
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+This tag generates static content into the `build` directory and can be served using any static contents hosting service.
 
 ## Deployment
 
-The docs autodeploy with a Github action. If you need to manually deploy the docs, run this command from the `/docs` folder:
+The docs autodeploy with a Github action. If you need to manually deploy the docs, run this tag from the `/docs` folder:
 
 ```shell
 GIT_USER=<Your GitHub username> USE_SSH=true npm run deploy

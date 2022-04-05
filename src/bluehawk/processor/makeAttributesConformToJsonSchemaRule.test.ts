@@ -1,9 +1,5 @@
 import { JSONSchemaType } from "ajv";
-import {
-  CommandNodeImpl,
-  CommandNodeAttributes,
-  AnyCommandNode,
-} from "../parser/CommandNode";
+import { TagNodeImpl, TagNodeAttributes, AnyTagNode } from "../parser/TagNode";
 import { Range } from "../Range";
 import { makeAttributesConformToJsonSchemaRule } from "./makeAttributesConformToJsonSchemaRule";
 import { ValidateCstResult } from "./validator";
@@ -23,19 +19,17 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
   };
   const makeValidateCstResult = (): ValidateCstResult => {
     return {
-      commandsById: new Map(),
+      tagsById: new Map(),
       errors: [],
     };
   };
 
-  const mockCommandNode = (
-    attributes?: CommandNodeAttributes
-  ): AnyCommandNode => {
-    const node = CommandNodeImpl.rootCommand();
-    node.commandName = "mock";
+  const mockTagNode = (attributes?: TagNodeAttributes): AnyTagNode => {
+    const node = TagNodeImpl.rootTag();
+    node.tagName = "mock";
     node.range = mockRange;
     node.attributes = attributes;
-    return node as AnyCommandNode;
+    return node as AnyTagNode;
   };
 
   type MyType = {
@@ -55,7 +49,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
     });
     const result = makeValidateCstResult();
     rule(
-      mockCommandNode({
+      mockTagNode({
         // missing requiredNumber
         notNegative: -1, // invalid value
       }),
@@ -70,7 +64,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
           offset: 0,
         },
         message:
-          "attribute list for 'mock' command should have required property 'requiredNumber'",
+          "attribute list for 'mock' tag should have required property 'requiredNumber'",
       },
     ]);
   });
@@ -87,18 +81,18 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
     });
     let result = makeValidateCstResult();
     rule(
-      mockCommandNode({
+      mockTagNode({
         // missing requiredNumber
         notNegative: -1,
       }),
       result
     );
     expect(result.errors.map((error) => error.message)).toStrictEqual([
-      "attribute list for 'mock' command should have required property 'requiredNumber'",
+      "attribute list for 'mock' tag should have required property 'requiredNumber'",
     ]);
     result = makeValidateCstResult();
     rule(
-      mockCommandNode({
+      mockTagNode({
         // fix first issue
         requiredNumber: 1,
         notNegative: -1,
@@ -106,11 +100,11 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
       result
     );
     expect(result.errors.map((error) => error.message)).toStrictEqual([
-      "attribute list for 'mock' command/notNegative should be >= 0",
+      "attribute list for 'mock' tag/notNegative should be >= 0",
     ]);
     result = makeValidateCstResult();
     rule(
-      mockCommandNode({
+      mockTagNode({
         requiredNumber: 1,
         // fix second issue
         notNegative: 1,
@@ -131,9 +125,9 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
       required: ["requiredNumber"],
       additionalProperties: false,
     });
-    rule(mockCommandNode(), result);
+    rule(mockTagNode(), result);
     expect(result.errors[0].message).toBe(
-      "attribute list for 'mock' command should be object"
+      "attribute list for 'mock' tag should be object"
     );
   });
 

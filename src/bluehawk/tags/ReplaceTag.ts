@@ -1,13 +1,13 @@
-import { makeBlockCommand } from "./Command";
+import { makeBlockTag } from "./Tag";
 
-type ReplaceCommandAttributes = {
+type ReplaceTagAttributes = {
   terms: {
     // Replace '<key>' with '<value>'
     [searchTerm: string]: /* replaceTerm */ string;
   };
 };
 
-export const ReplaceCommand = makeBlockCommand<ReplaceCommandAttributes>({
+export const ReplaceTag = makeBlockTag<ReplaceTagAttributes>({
   name: "replace",
   description:
     "given 'terms' object in the attribute list, replaces term keys with corresponding values within the block",
@@ -24,11 +24,11 @@ export const ReplaceCommand = makeBlockCommand<ReplaceCommandAttributes>({
     },
   },
 
-  process({ commandNode, document }) {
-    const attributes = commandNode.attributes as ReplaceCommandAttributes;
+  process({ tagNode, document }) {
+    const attributes = tagNode.attributes as ReplaceTagAttributes;
     const { text } = document;
 
-    const { contentRange } = commandNode;
+    const { contentRange } = tagNode;
     const contentLength = contentRange.end.offset - contentRange.start.offset;
     const { terms } = attributes;
     Object.entries(terms).forEach(([searchTerm, replaceTerm]) => {

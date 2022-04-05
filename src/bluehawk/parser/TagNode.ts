@@ -2,50 +2,50 @@ import { strict as assert } from "assert";
 import { IToken } from "chevrotain";
 import { Range } from "../Range";
 
-// The CommandNode represents a command found by the visitor.
-interface CommandNode {
+// The TagNode represents a tag found by the visitor.
+interface TagNode {
   type: "line" | "block";
 
-  // The name of the command (without -start or -end).
-  commandName: string;
+  // The name of the tag (without -start or -end).
+  tagName: string;
 
-  // For block commands, range from the first character of the command (start)
-  // token to the last character of the command (end) token. For line commands,
-  // range from command token start to end.
+  // For block tags, range from the first character of the tag (start)
+  // token to the last character of the tag (end) token. For line tags,
+  // range from tag token start to end.
   range: Range;
 
-  // Range from the beginning of the line on which the command (start) token
-  // appears to the end of the line on which the command (end) token appears.
+  // Range from the beginning of the line on which the tag (start) token
+  // appears to the end of the line on which the tag (end) token appears.
   lineRange: Range;
 
   // Potentially useful tokens contained in the node
   newlines: IToken[];
   lineComments: IToken[];
 
-  // The comment tokens on the line the command was found in, if any.
+  // The comment tokens on the line the tag was found in, if any.
   associatedTokens: IToken[];
 
-  // The comment context the command was found in.
-  inContext: CommandNodeContext;
+  // The comment context the tag was found in.
+  inContext: TagNodeContext;
 
   // Returns the id found in the attributes list or directly after the block
-  // command.
+  // tag.
   id?: string[];
 
-  // Block commands have an inner range that includes the lines between the
-  // attribute list and the end command token.
+  // Block tags have an inner range that includes the lines between the
+  // attribute list and the end tag token.
   contentRange?: Range;
 
-  // The child command nodes.
-  children?: CommandNode[];
+  // The child tag nodes.
+  children?: TagNode[];
 
-  // Attributes come from JSON and their schema depends on the command.
-  attributes?: CommandNodeAttributes;
+  // Attributes come from JSON and their schema depends on the tag.
+  attributes?: TagNodeAttributes;
 }
 
-// A line command applies to a specific line and does not have -start or -end
+// A line tag applies to a specific line and does not have -start or -end
 // tags.
-export interface LineCommandNode extends CommandNode {
+export interface LineTagNode extends TagNode {
   type: "line";
   id: undefined;
   contentRange: undefined;
@@ -53,24 +53,24 @@ export interface LineCommandNode extends CommandNode {
   attributes: undefined;
 }
 
-// A block command applies to a range of lines and has -start and -end tags.
-export interface BlockCommandNode extends CommandNode {
+// A block tag applies to a range of lines and has -start and -end tags.
+export interface BlockTagNode extends TagNode {
   type: "block";
   contentRange: Range;
-  children: AnyCommandNode[];
-  attributes: CommandNodeAttributes;
+  children: AnyTagNode[];
+  attributes: TagNodeAttributes;
 }
 
-export type AnyCommandNode = LineCommandNode | BlockCommandNode;
+export type AnyTagNode = LineTagNode | BlockTagNode;
 
-export type CommandNodeContext =
+export type TagNodeContext =
   | "none"
   | "stringLiteral"
   | "lineComment"
   | "blockComment";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CommandNodeAttributes = { [member: string]: any };
+export type TagNodeAttributes = { [member: string]: any };
 
 interface VisitorContext {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -79,64 +79,58 @@ interface VisitorContext {
   LineComment?: IToken[];
 }
 
-export class CommandNodeImpl implements CommandNode {
+export class TagNodeImpl implements TagNode {
   type: "line" | "block";
-  commandName: string;
-  get inContext(): CommandNodeContext {
+  tagName: string;
+  get inContext(): TagNodeContext {
     return this._context[this._context.length - 1] || "none";
   }
-  _context = Array<CommandNodeContext>();
+  _context = Array<TagNodeContext>();
   range: Range;
   lineRange: Range;
 
-  // Only available in block commands
+  // Only available in block tags
   get id(): string[] | undefined {
     return this.attributes?.id;
   }
   contentRange?: Range;
-  children?: CommandNodeImpl[];
-  attributes?: CommandNodeAttributes;
+  children?: TagNodeImpl[];
+  attributes?: TagNodeAttributes;
   newlines: IToken[] = [];
   lineComments: IToken[] = [];
   associatedTokens: IToken[] = [];
 
   // Imports potentially useful tokens from a visitor context object.
-  // Only use this in visitors that do not create the CommandNodeImpl.
+  // Only use this in visitors that do not create the TagNodeImpl.
   addTokensFromContext(context: VisitorContext): void {
     this.newlines.push(...(context.Newline ?? []));
     this.lineComments.push(...(context.LineComment ?? []));
   }
 
-  // Block Commands operate on their inner range and can have children, IDs, and
+  // Block Tags operate on their inner range and can have children, IDs, and
   // attributes.
-  makeChildBlockCommand(
-    commandName: string,
-    context: VisitorContext
-  ): CommandNodeImpl {
+  makeChildBlockTag(tagName: string, context: VisitorContext): TagNodeImpl {
     assert(this.children);
-    const command = new CommandNodeImpl("block", commandName, context, this);
-    return command;
+    const tag = new TagNodeImpl("block", tagName, context, this);
+    return tag;
   }
 
-  // Line Commands operate on the line they appear in and cannot have children,
+  // Line Tags operate on the line they appear in and cannot have children,
   // IDs, or attributes.
-  makeChildLineCommand(
-    commandName: string,
-    context: VisitorContext
-  ): CommandNodeImpl {
+  makeChildLineTag(tagName: string, context: VisitorContext): TagNodeImpl {
     assert(this.children);
-    return new CommandNodeImpl("line", commandName, context, this);
+    return new TagNodeImpl("line", tagName, context, this);
   }
 
-  withErasedBlockCommand(
+  withErasedBlockTag(
     context: VisitorContext,
-    callback: (erasedBlockCommand: CommandNodeImpl) => void
+    callback: (erasedBlockTag: TagNodeImpl) => void
   ): void {
     assert(this.children);
     // We erase whatever element created the context and add what would have
     // been that element's children to the parent node. This is definitely
     // weird, but only used internally...
-    const node = new CommandNodeImpl(
+    const node = new TagNodeImpl(
       "block",
       "__this_should_not_be_here___please_file_a_bug__",
       context
@@ -149,25 +143,25 @@ export class CommandNodeImpl implements CommandNode {
     this.associatedTokens.push(...node.associatedTokens);
   }
 
-  // The root command is the root node of a parsed document and contains all
+  // The root tag is the root node of a parsed document and contains all
   // other nodes in the document.
-  static rootCommand(): CommandNodeImpl {
-    const command = new CommandNodeImpl("block", "__root__", {});
-    return command;
+  static rootTag(): TagNodeImpl {
+    const tag = new TagNodeImpl("block", "__root__", {});
+    return tag;
   }
 
   private constructor(
     type: "block" | "line",
-    commandName: string,
+    tagName: string,
     context: VisitorContext,
-    parentToAttachTo?: CommandNodeImpl
+    parentToAttachTo?: TagNodeImpl
   ) {
     this.type = type;
     if (type === "block") {
       this.children = [];
     }
 
-    this.commandName = commandName;
+    this.tagName = tagName;
     // FIXME: ranges should always be valid, so pass them in the constructor
     this.range = {
       start: {
@@ -201,11 +195,11 @@ export class CommandNodeImpl implements CommandNode {
     }
   }
 
-  asBlockCommandNode = (): BlockCommandNode | undefined => {
-    return this.type === "block" ? (this as BlockCommandNode) : undefined;
+  asBlockTagNode = (): BlockTagNode | undefined => {
+    return this.type === "block" ? (this as BlockTagNode) : undefined;
   };
 
-  asLineCommandNode = (): LineCommandNode | undefined => {
-    return this.type === "line" ? (this as LineCommandNode) : undefined;
+  asLineTagNode = (): LineTagNode | undefined => {
+    return this.type === "line" ? (this as LineTagNode) : undefined;
   };
 }

@@ -3,7 +3,7 @@ import * as Path from "path";
 import { SourceMapConsumer } from "source-map";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CommandAttributes = { [forCommandName: string]: any };
+export type TagAttributes = { [forTagName: string]: any };
 
 /**
   Represents a file either before or after processing.
@@ -62,12 +62,12 @@ export class Document {
   readonly modifiers: { [key: string]: string };
 
   /**
-    Attributes that a command can store information in for later processing by
+    Attributes that a tag can store information in for later processing by
     listeners.
 
     These do not affect the identity of the document.
    */
-  attributes: CommandAttributes;
+  attributes: TagAttributes;
 
   /**
     Returns the name of the file minus the file extension.
@@ -106,7 +106,7 @@ export class Document {
     text: string | MagicString;
     path: string;
     modifiers?: { [key: string]: string };
-    attributes?: CommandAttributes;
+    attributes?: TagAttributes;
   }) {
     this.text =
       typeof text === "string" || text instanceof String

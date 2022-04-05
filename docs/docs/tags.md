@@ -1,22 +1,22 @@
 ---
-id: "commands"
-title: "Commands"
-sidebar_label: "Commands"
+id: "tags"
+title: "Tags"
+sidebar_label: "Tags"
 sidebar_position: 1
 custom_edit_url: null
 ---
 
-Bluehawk **commands** come in two forms: _single-line_ and _block_. Single-line commands
-operate upon the current line, while block commands operate upon the span of lines between
-the start of the command and the end of the command. Since commands aren't valid syntax in
+Bluehawk **tags** come in two forms: _single-line_ and _block_. Single-line tags
+operate upon the current line, while block tags operate upon the span of lines between
+the start of the tag and the end of the tag. Since tags aren't valid syntax in
 most languages, you should place them in comments -- Bluehawk will still process them.
-To avoid name clashes with various languages and markup frameworks, all Bluehawk commands
+To avoid name clashes with various languages and markup frameworks, all Bluehawk tags
 begin and end with colons (`:`).
 
 The following examples demonstrate the [remove](#remove)
-command in single-line and block forms:
+tag in single-line and block forms:
 
-Single-line commands use `:<command>:` to markup a single line:
+Single-line tags use `:<tag>:` to mark up a single line:
 
 ```java
 public class Main {
@@ -30,7 +30,7 @@ public class Main {
 }
 ```
 
-Block commands use `:<command>-start:` and `:<command>-end:` to mark the beginning and end
+Block tags use `:<tag>-start:` and `:<tag>-end:` to mark the beginning and end
 of a spanned range of lines:
 
 ```java
@@ -47,10 +47,10 @@ public class Main {
 }
 ```
 
-Some commands, like `remove` in the examples above, don't require any arguments at all.
-Other commands, such as `snippet`, require a unique (to that file) identifier. Yet other
-commands, such as `replace`, require an [attribute list](#attribute-lists) of JSON objects. Pass arguments to
-commands by listing them after the command itself:
+Some tags, like `remove` in the examples above, don't require any arguments at all.
+Other tags, such as `snippet`, require a unique (to that file) identifier. Yet other
+tags, such as `replace`, require an [attribute list](#attribute-lists) of JSON objects. Pass arguments to
+tags by listing them after the tag itself:
 
 ```java
 public class Main {
@@ -68,30 +68,30 @@ public class Main {
 }
 ```
 
-> 💡 For a summary of all of the commands available in your local installation
-> of Bluehawk, run `bluehawk list commands`.
+> 💡 For a summary of all of the tags available in your local installation
+> of Bluehawk, run `bluehawk list tags`.
 
 ## Attribute Lists
 
-Attribute lists are JSON objects that contain additional information about a command.
+Attribute lists are JSON objects that contain additional information about a tag.
 They must use double quotes for fields, and the opening line of an attribute list
-must appear on the same line as the command itself.
+must appear on the same line as the tag itself.
 
 ```java
-// :command: {
+// :some-tag-start: {
 //    "field": "value"
 // }
-// :replace-end:
+// :some-tag-end:
 ```
 
 ## Snippet
 
-The `snippet` command, also aliased as `code-block`, marks a range of content in a file
+The `snippet` tag, also aliased as `code-block`, marks a range of content in a file
 as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
 these snippets.
 
 Because `snippet` operates on ranges of content, it is only available as
-a block command. You must pass `snippet` an identifier.
+a block tag. You must pass `snippet` an identifier.
 
 Consider the following file:
 
@@ -123,7 +123,7 @@ System.out.println("Hello world!");
 
 ## State
 
-The `state` command marks a range of content in a file as part of a particular state.
+The `state` tag marks a range of content in a file as part of a particular state.
 You can use the [snip](#snip) or [copy](#copy) CLI commands with the [state](#state)
 flag to generate output files that contain only content from a specific named state.
 When you use the `--state` flag to specify a state, all state blocks other than the
@@ -135,10 +135,10 @@ with multiple steps, such as a "start" state that only contains `// TODO` and a
 "final" state that contains completed implementation code.
 
 Because `state` operates on ranges of content, it is only available as
-a block command. You must pass `state` at _least one_ identifier, which determines
+a block tag. You must pass `state` at _least one_ identifier, which determines
 the name of the state or states that the block belongs to. You can pass
 in a list of identifiers either through a space-separated list directly after
-the command itself, or through the `id` field of an [attribute list](#attribute-lists).
+the tag itself, or through the `id` field of an [attribute list](#attribute-lists).
 
 Consider the following file:
 
@@ -195,14 +195,14 @@ example++;
 
 ## State-Uncomment
 
-The `state-uncomment` command combines the [state](#state) and [uncomment](#uncomment)
-commands. In terms of syntax, `state-uncomment` works exactly the same as `state`,
+The `state-uncomment` tag combines the [state](#state) and [uncomment](#uncomment)
+tags. In terms of syntax, `state-uncomment` works exactly the same as `state`,
 except one layer of commenting is removed from the entire state in produced output.
 Use `state-uncomment` to prevent executable code in a state from actually executing
 in the source code you use to produce output.
 
 Because `state-uncomment` operates on ranges of content, it is only available as
-a block command.
+a block tag.
 
 Consider the following file:
 
@@ -249,14 +249,14 @@ one of those states when executing your source code.
 
 ## Uncomment
 
-The `uncomment` command removes a single comment from the beginning of
+The `uncomment` tag removes a single comment from the beginning of
 each line of the spanned range in all output.
 
 Because `uncomment` operates on ranges of content, it is only available as
-a block command.
+a block tag.
 
 > 💡 Comments are only specified in certain language types. For example, plaintext
-> does not have a comment syntax, so this command does nothing in plaintext.
+> does not have a comment syntax, so this tag does nothing in plaintext.
 
 Consider the following file:
 
@@ -298,14 +298,14 @@ public class Main {
 
 ## Replace
 
-The `replace` command accepts a JSON dictionary called "terms" as input
+The `replace` tag accepts a JSON dictionary called "terms" as input
 via an attribute list, and replaces occurrences string keys in the map within
 the spanned range with their map values in all output. You can use
 `replace` to hide implementation details like complicated class names
 or API endpoint URLs in generated output.
 
 Because `replace` operates on ranges of content, it is only available
-as a block command. You must pass an attribute list containing "terms",
+as a block tag. You must pass an attribute list containing "terms",
 a dictionary of strings to strings.
 
 Consider the following file:
@@ -362,14 +362,14 @@ public class Main {
 
 ## Emphasize
 
-The `emphasize` command highlights marked lines in formatted output.
+The `emphasize` tag highlights marked lines in formatted output.
 `emphasize` makes it easier to keep the correct lines highlighted
 when you update code samples, because it calculates the highlighted
 line numbers for you.
 
-You can use `emphasize` as either a block command or a line command.
+You can use `emphasize` as either a block tag or a line tag.
 
-> 💡 The emphasize command only applies to [formatted output](./cli#format).
+> 💡 The emphasize tag only applies to [formatted output](./cli#format).
 > Use the `--format` flag with Bluehawk CLI to get formatted output.
 
 Consider the following file:
@@ -411,12 +411,12 @@ Produces the following output:
 
 ## Remove
 
-The `remove` command, also aliased as `hide`, removes the spanned
+The `remove` tag, also aliased as `hide`, removes the spanned
 range from Bluehawk output. `remove` can be helpful for hiding
 assertions and state setup from user-facing code samples.
 
-You can use `remove` as either a block command or a
-line command.
+You can use `remove` as either a block tag or a
+line tag.
 
 Consider the following file:
 

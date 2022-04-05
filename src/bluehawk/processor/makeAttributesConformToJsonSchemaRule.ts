@@ -1,4 +1,4 @@
-import { AnyCommandNode } from "../parser";
+import { AnyTagNode } from "../parser";
 import Ajv, { JSONSchemaType, AnySchema } from "ajv";
 import { Rule, ValidateCstResult } from "./validator";
 
@@ -10,7 +10,7 @@ export const makeAttributesConformToJsonSchemaRule = <Type = unknown>(
 ): Rule => {
   const validate = ajv.compile(schema);
   return (
-    { attributes, range, commandName }: AnyCommandNode,
+    { attributes, range, tagName }: AnyTagNode,
     result: ValidateCstResult
   ) => {
     if (validate(attributes)) {
@@ -32,7 +32,7 @@ export const makeAttributesConformToJsonSchemaRule = <Type = unknown>(
       location: range.start,
       message: ajv.errorsText(validate.errors, {
         separator: "\n",
-        dataVar: `attribute list for '${commandName}' command`,
+        dataVar: `attribute list for '${tagName}' tag`,
       }),
     });
   };

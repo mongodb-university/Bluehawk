@@ -56,7 +56,7 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     }
   };
 
-  // If a file contains the state command, the processor will generate multiple
+  // If a file contains the state tag, the processor will generate multiple
   // versions of the same file. Keep track of whether a state file was written
   // for the desired state name. We can also use this to diagnose possible typos
   // in params.state.
@@ -86,8 +86,8 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
 
     // We will either write the state-processed version or the default
     // version. If a file we already saved is later found to have had state
-    // commands in it, then the state version will overwrite it. However, we
-    // will never overwrite a state command processed version with the default
+    // tags in it, then the state version will overwrite it. However, we
+    // will never overwrite a state tag processed version with the default
     // version.
     if (state === desiredState) {
       stateVersionWrittenForPath[document.path] = true;

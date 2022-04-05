@@ -9,9 +9,9 @@ import {
   PopParser,
   BlockCommentStart,
   BlockCommentEnd,
-  Command,
-  CommandEnd,
-  CommandStart,
+  Tag,
+  TagEnd,
+  TagStart,
   Newline,
   Identifier,
   JsonStringLiteral,
@@ -21,7 +21,7 @@ import {
 import { ErrorMessageProvider } from "./ErrorMessageProvider";
 import { BluehawkError } from "../BluehawkError";
 import { locationFromToken } from "./locationFromToken";
-import { extractCommandNamesFromTokens } from "./extractCommandNamesFromTokens";
+import { extractTagNamesFromTokens } from "./extractTagNamesFromTokens";
 import { LanguageSpecification } from "./LanguageSpecification";
 
 // See https://sap.github.io/chevrotain/docs/tutorial/step2_parsing.html
@@ -53,32 +53,32 @@ annotatedText
 attributeList
   : AttributeListStart (attributeList | JsonStringLiteral | Newline | LineComment)* AttributeListEnd
 
-blockCommandUncommentedContents
+blockTagUncommentedContents
   : BlockCommentEnd Newline (chunk)* BlockCommentStart 
 
-blockCommand
-  : CommandStart (commandAttribute)? (BlockCommentEnd*backtrack* | (Newline)?) ((chunk)* | blockCommandUncommentedContents) CommandEnd
+blockTag
+  : TagStart (tagAttribute)? (BlockCommentEnd*backtrack* | (Newline)?) ((chunk)* | blockTagUncommentedContents) TagEnd
 
 blockComment
-  : BlockCommentStart (command | LineComment | NewLine | BlockCommentStart†)* BlockCommentEnd
+  : BlockCommentStart (tag | LineComment | NewLine | BlockCommentStart†)* BlockCommentEnd
 
 chunk
-  : (command | blockComment | lineComment | pushParser | StringLiteral)* (Newline | EOF)††
+  : (tag | blockComment | lineComment | pushParser | StringLiteral)* (Newline | EOF)††
 
-command
-  : blockCommand | Command
+tag
+  : blockTag | Tag
 
-commandAttribute
+tagAttribute
   : (Identifier)+ | attributeList
 
 lineComment
-  : LineComment (Command | LineComment | BlockCommentStart | BlockCommentEnd)*
+  : LineComment (Tag | LineComment | BlockCommentStart | BlockCommentEnd)*
 
 pushParser
   : PushParser_X (pushParser | Newline)* PopParser_X
 
 † = if canNestBlockComments
-†† = newline optional in blockCommand
+†† = newline optional in blockTag
 */
 
 type Rule = (idx?: number) => CstNode;
@@ -90,10 +90,10 @@ export class RootParser extends CstParser {
 
   annotatedText: Rule = UndefinedRule;
   chunk: Rule = UndefinedRule;
-  blockCommand: Rule = UndefinedRule;
-  blockCommandUncommentedContents: Rule = UndefinedRule;
-  command: Rule = UndefinedRule;
-  commandAttribute: Rule = UndefinedRule;
+  blockTag: Rule = UndefinedRule;
+  blockTagUncommentedContents: Rule = UndefinedRule;
+  tag: Rule = UndefinedRule;
+  tagAttribute: Rule = UndefinedRule;
   blockComment: Rule = UndefinedRule;
   lineComment: Rule = UndefinedRule;
   attributeList: Rule = UndefinedRule;
@@ -119,12 +119,12 @@ export class RootParser extends CstParser {
 
     // A chunk is roughly a line of text or block(s) followed by a newline. We
     // have to distinguish chunk from annotatedText in order to be able to
-    // distinguish a LineComment near the end of a blockCommand from a
-    // LineComment within a blockCommand's inner chunks.
+    // distinguish a LineComment near the end of a blockTag from a
+    // LineComment within a blockTag's inner chunks.
     this.RULE("chunk", () => {
       this.MANY(() => {
         this.OR([
-          { ALT: () => this.SUBRULE(this.command) },
+          { ALT: () => this.SUBRULE(this.tag) },
           { ALT: () => this.SUBRULE(this.blockComment) },
           { ALT: () => this.SUBRULE(this.lineComment) },
           { ALT: () => this.SUBRULE(this.pushParser) },
@@ -137,7 +137,7 @@ export class RootParser extends CstParser {
           // Allow for files and lineComment lines to end without a newline.
           GATE: () => {
             const { name } = this.LA(1).tokenType;
-            return name === "EOF" || name === CommandEnd.name;
+            return name === "EOF" || name === TagEnd.name;
           },
           ALT: () => {
             return;
@@ -146,51 +146,49 @@ export class RootParser extends CstParser {
       ]);
     });
 
-    this.RULE("command", () => {
+    this.RULE("tag", () => {
       this.OR([
-        { ALT: () => this.SUBRULE(this.blockCommand) },
-        { ALT: () => this.CONSUME(Command) },
+        { ALT: () => this.SUBRULE(this.blockTag) },
+        { ALT: () => this.CONSUME(Tag) },
       ]);
     });
 
-    // Rule for block comments that behave like line comments in block commands.
-    // Define a block command as two block comments with an uncommented body.
+    // Rule for block comments that behave like line comments in block tags.
+    // Define a block tag as two block comments with an uncommented body.
     // This is necessary for languages like html that do not have a line comment.
-    this.RULE("blockCommandUncommentedContents", () => {
+    this.RULE("blockTagUncommentedContents", () => {
       this.CONSUME1(BlockCommentEnd);
       this.CONSUME1(Newline);
       this.MANY(() => this.SUBRULE(this.chunk));
       this.CONSUME2(BlockCommentStart);
     });
 
-    this.RULE("blockCommand", () => {
-      const startToken = this.CONSUME1(CommandStart);
-      this.OPTION1(() => this.SUBRULE(this.commandAttribute));
+    this.RULE("blockTag", () => {
+      const startToken = this.CONSUME1(TagStart);
+      this.OPTION1(() => this.SUBRULE(this.tagAttribute));
       this.OR1([
         { ALT: () => this.CONSUME2(Newline) },
         { ALT: () => this.BACKTRACK(() => this.CONSUME(BlockCommentEnd)) },
       ]);
       this.OR2([
-        { ALT: () => this.SUBRULE(this.blockCommandUncommentedContents) },
+        { ALT: () => this.SUBRULE(this.blockTagUncommentedContents) },
         { ALT: () => this.MANY2(() => this.SUBRULE(this.chunk)) },
       ]);
-      const endToken = this.CONSUME3(
-        startToken.payload?.endToken ?? CommandEnd
-      );
+      const endToken = this.CONSUME3(startToken.payload?.endToken ?? TagEnd);
 
       if (this.RECORDING_PHASE) {
         return;
       }
 
-      // Detect command start/end name mismatch here or we might never get to
-      // the semantic stage that can actually tell command names apart. We don't
-      // want to have a token for every registered command, so receiving the
+      // Detect tag start/end name mismatch here or we might never get to
+      // the semantic stage that can actually tell tag names apart. We don't
+      // want to have a token for every registered tag, so receiving the
       // paired endToken in the payload doesn't quite work out.
-      const [startCommandName, endCommandName] = extractCommandNamesFromTokens(
+      const [startTagName, endTagName] = extractTagNamesFromTokens(
         startToken,
         endToken
       );
-      if (startCommandName !== endCommandName) {
+      if (startTagName !== endTagName) {
         this._bluehawkErrors.push({
           component: "parser",
           location: locationFromToken(endToken),
@@ -199,7 +197,7 @@ export class RootParser extends CstParser {
       }
     });
 
-    this.RULE("commandAttribute", () => {
+    this.RULE("tagAttribute", () => {
       this.OR([
         { ALT: () => this.AT_LEAST_ONE(() => this.CONSUME(Identifier)) },
         { ALT: () => this.SUBRULE(this.attributeList) },
@@ -210,7 +208,7 @@ export class RootParser extends CstParser {
       const startToken = this.CONSUME(BlockCommentStart);
       this.MANY(() =>
         this.OR([
-          { ALT: () => this.SUBRULE(this.command) },
+          { ALT: () => this.SUBRULE(this.tag) },
           { ALT: () => this.CONSUME(LineComment) },
           { ALT: () => this.CONSUME(Newline) },
           {
@@ -227,7 +225,7 @@ export class RootParser extends CstParser {
       this.CONSUME(LineComment);
       this.MANY(() =>
         this.OR([
-          { ALT: () => this.SUBRULE(this.command) },
+          { ALT: () => this.SUBRULE(this.tag) },
           { ALT: () => this.CONSUME1(LineComment) },
           { ALT: () => this.CONSUME(BlockCommentStart) },
           { ALT: () => this.CONSUME(BlockCommentEnd) },
@@ -242,7 +240,7 @@ export class RootParser extends CstParser {
       this.MANY(() => {
         // Consume any token but block comment tokens. We disallow block comment
         // tokens here because it prevents block comment straddling in block
-        // commands.
+        // tags.
         this.OR([
           { ALT: () => this.CONSUME(LineComment) },
           { ALT: () => this.CONSUME(Newline) },

@@ -1,19 +1,19 @@
 import { strict as assert } from "assert";
 import { IToken } from "chevrotain";
-import { AnyCommandNode, flatten } from "../parser";
-import { makeBlockCommand, NoAttributes, NoAttributesSchema } from "./Command";
+import { AnyTagNode, flatten } from "../parser";
+import { makeBlockTag, NoAttributes, NoAttributesSchema } from "./Tag";
 
-export const UncommentCommand = makeBlockCommand<NoAttributes>({
+export const UncommentTag = makeBlockTag<NoAttributes>({
   name: "uncomment",
   description:
     "removes up to one line comment token from every line in its range",
   attributesSchema: NoAttributesSchema,
   process(request) {
-    const { commandNode, document } = request;
+    const { tagNode, document } = request;
     const { text } = document;
 
     // Get all line comments in the hierarchy
-    const lineComments = flatten(commandNode as AnyCommandNode)
+    const lineComments = flatten(tagNode as AnyTagNode)
       .reduce((acc, cur) => [...acc, ...cur.lineComments], [] as IToken[])
       .sort((a, b) => a.startOffset - b.startOffset);
 

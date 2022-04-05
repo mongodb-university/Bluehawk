@@ -1,12 +1,12 @@
 import { Bluehawk } from "../bluehawk";
 import { Document } from "../Document";
-import { UncommentCommand } from "./UncommentCommand";
-import { RemoveCommand } from "./RemoveCommand";
+import { UncommentTag } from "./UncommentTag";
+import { RemoveTag } from "./RemoveTag";
 
-describe("uncomment command", () => {
+describe("uncomment tag", () => {
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand(UncommentCommand);
-  bluehawk.registerCommand(RemoveCommand);
+  bluehawk.registerTag(UncommentTag);
+  bluehawk.registerTag(RemoveTag);
   bluehawk.addLanguage(["js"], {
     languageId: "javascript",
     blockComments: [[/\/\*/, /\*\//]],

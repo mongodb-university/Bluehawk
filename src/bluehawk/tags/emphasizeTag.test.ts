@@ -1,10 +1,10 @@
 import { Bluehawk } from "../bluehawk";
 import { Document } from "../Document";
-import { EmphasizeCommand } from "./EmphasizeCommand";
+import { EmphasizeTag } from "./EmphasizeTag";
 
-describe("emphasize command", () => {
+describe("emphasize tag", () => {
   const bluehawk = new Bluehawk({
-    commands: [EmphasizeCommand],
+    tags: [EmphasizeTag],
   });
   bluehawk.addLanguage("js", {
     languageId: "javascript",
@@ -12,7 +12,7 @@ describe("emphasize command", () => {
     lineComments: [/\/\/ ?/],
   });
 
-  it("works as a one line command", async (done) => {
+  it("works as a one line tag", async (done) => {
     const source = new Document({
       text: `a
 b // :emphasize:

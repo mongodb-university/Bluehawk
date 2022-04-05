@@ -16,13 +16,13 @@ import { tokenCategoryFilter } from "./tokenCategoryFilter";
 export function makeLexer(languageTokens: TokenType[]): Lexer {
   const modes = {
     RootMode: makeRootMode(languageTokens),
-    // After a command start tag, there may be an attributes list or ID until the
+    // After a tag start tag, there may be an attributes list or ID until the
     // end of line or a block comment end.
-    CommandAttributesMode: [
+    TagAttributesMode: [
       AttributeListStart,
       Identifier,
       Space,
-      ...CommandAttributesPopTokens(languageTokens),
+      ...TagAttributesPopTokens(languageTokens),
     ],
     AttributeListMode: makeAttributeListMode(languageTokens),
     AltParserMode: [
@@ -38,8 +38,8 @@ export function makeLexer(languageTokens: TokenType[]): Lexer {
   });
 }
 
-// Helper function for generating command attribute pop tokens
-function CommandAttributesPopTokens(languageTokens: TokenType[]): TokenType[] {
+// Helper function for generating tag attribute pop tokens
+function TagAttributesPopTokens(languageTokens: TokenType[]): TokenType[] {
   const popTokens: TokenType[] = [{ ...Newline, POP_MODE: true }];
   // if block comments are defined, add them as pop tokens
   if (tokenCategoryFilter(languageTokens, [BlockCommentEnd]).length !== 0) {

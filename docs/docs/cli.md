@@ -11,10 +11,6 @@ custom_edit_url: null
 Use commands to generate different kinds of output with Bluehawk, including
 code blocks, full files of code, and even error checks.
 
-> 💡 Commands for the Bluehawk CLI are not the same as
-> [Bluehawk Commands](./commands), the syntax
-> interpreted by Bluehawk to process input files.
-
 ### Snip
 
 ```
@@ -22,10 +18,10 @@ bluehawk snip --destination <output-directory> <input-directory-or-file>
 ```
 
 Output "snippet files" that contain only the content of `code-block` or
-`snippet` Bluehawk commands, named in the format
+`snippet` Bluehawk tags, named in the format
 `<source-file-name>.codeblock.<codeblock-name>.<source-file-extension>`.
 By default, this command generates snippets
-that omit all `state` command contents. However,
+that omit all `state` tag contents. However,
 you can use the `--state` flag to generate snippet files that include
 content from a single state that you specify.
 
@@ -51,7 +47,7 @@ bluehawk check <input-directory-or-file>
 
 Generates non-zero output if processing any input files generates a Bluehawk
 error, zero output otherwise. Does not generate any files: instead, `check`
-outputs directly to command line.
+outputs directly to the command line.
 
 ## Flags
 

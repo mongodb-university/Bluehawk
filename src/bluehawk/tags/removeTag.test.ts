@@ -1,11 +1,11 @@
 import { Bluehawk } from "../bluehawk";
 import { Document } from "../Document";
-import { RemoveCommand } from "./RemoveCommand";
+import { RemoveTag } from "./RemoveTag";
 import MagicString from "magic-string";
 
-describe("remove command", () => {
+describe("remove tag", () => {
   const bluehawk = new Bluehawk();
-  bluehawk.registerCommand(RemoveCommand);
+  bluehawk.registerTag(RemoveTag);
   bluehawk.addLanguage("js", {
     languageId: "javascript",
     blockComments: [[/\/\*/, /\*\//]],
@@ -106,11 +106,11 @@ e
 
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors[0].message).toStrictEqual(
-      "attribute list for 'remove' command should be null"
+      "attribute list for 'remove' tag should be null"
     );
   });
 
-  it("works as a line command", async (done) => {
+  it("works as a line tag", async (done) => {
     const input = `leave this
 this should be removed // :remove:
 and leave this
