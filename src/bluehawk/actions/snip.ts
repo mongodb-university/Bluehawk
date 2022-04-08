@@ -80,8 +80,8 @@ export const formatInRst = async (
       const end = await document.getNewLocationFor(range.end);
       rstEmphasizeRanges.push({
         // ternary operator here because start or end are both optional, but one of them must be defined
-        start: start ? start.line : end!.line,
-        end: end ? end.line : start!.line,
+        start: start !== undefined ? start.line : end!.line,
+        end: end !== undefined ? end.line : start!.line,
       });
     }
 
@@ -127,8 +127,8 @@ export const formatInDocusaurus = async (
       const end = await document.getNewLocationFor(range.end);
       emphasizeRanges.push({
         // ternary operator here because start or end are both optional, but one of them must be defined
-        start: start ? start.line : end!.line,
-        end: end ? end.line : start!.line,
+        start: start !== undefined ? start.line : end!.line,
+        end: end !== undefined ? end.line : start!.line,
       });
     }
   }

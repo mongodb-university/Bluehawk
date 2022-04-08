@@ -131,6 +131,68 @@ console.log(bar);
     done();
   });
 
+  it("generates correct docusarus-formatted code blocks for start and end blocks at the beginning and end of the block", async (done) => {
+    const rootPath = Path.resolve("/path/to/project");
+    const destinationPath = "/destination";
+    const testFileName = "test.js";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(destinationPath, {
+      recursive: true,
+    });
+    await System.fs.writeFile(
+      Path.join(rootPath, testFileName),
+      `// :code-block-start: foo
+// :emphasize-start:
+const bar = "foo"
+describe("some stuff", () => {
+  it("foos the bar", () => {
+    expect(true).toBeTruthy();
+  });
+});
+console.log(bar);
+// :emphasize-end:
+// :code-block-end:
+    `,
+      {
+        encoding: "utf8",
+      }
+    );
+
+    await snip({
+      paths: [rootPath],
+      destination: destinationPath,
+      state: undefined,
+      ignore: undefined,
+      format: "docusaurus",
+      waitForListeners: true,
+    });
+
+    const destinationList = await System.fs.readdir(destinationPath);
+    expect(destinationList).toStrictEqual([
+      "test.codeblock.foo.js",
+      "test.codeblock.foo.js.code-block.md",
+    ]);
+
+    const fileContents = await System.fs.readFile(
+      Path.join(destinationPath, "test.codeblock.foo.js.code-block.md"),
+      "utf8"
+    );
+    expect(fileContents).toStrictEqual(`// highlight-start
+const bar = "foo"
+describe("some stuff", () => {
+  it("foos the bar", () => {
+    expect(true).toBeTruthy();
+  });
+});
+console.log(bar);
+// highlight-end
+`);
+    done();
+  });
+
   it("correctly logics multiple ranges within RST snippets", async () => {
     const rootPath = Path.resolve("/path/to/project");
     const destinationPath = "/destinationB";
