@@ -11,7 +11,7 @@ export interface SnipArgs extends ActionArgs {
   state?: string;
   id?: string | string[];
   ignore?: string | string[];
-  format?: "rst";
+  format?: "rst" | "docusaurus";
 }
 
 export const createFormattedCodeBlock = async (
@@ -26,6 +26,15 @@ export const createFormattedCodeBlock = async (
     const targetPath = path.join(
       destination,
       `${document.basename}.code-block.rst`
+    );
+    await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+  } else if (format === "docusaurus") {
+    const formattedCodeblock = await formatInDocusaurus(result);
+
+    const { document } = result;
+    const targetPath = path.join(
+      destination,
+      `${document.basename}.code-block.md`
     );
     await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
   } // add additional elses + "formatInLanguage" methods to handle other markup languages
@@ -69,9 +78,11 @@ export const formatInRst = async (
     for (const range of emphasizeAttributes.ranges) {
       const start = await document.getNewLocationFor(range.start);
       const end = await document.getNewLocationFor(range.end);
-      if (start !== undefined && end !== undefined) {
-        rstEmphasizeRanges.push({ start: start.line, end: end.line });
-      }
+      rstEmphasizeRanges.push({
+        // ternary operator here because start or end are both optional, but one of them must be defined
+        start: start ? start.line : end!.line,
+        end: end ? end.line : start!.line,
+      });
     }
 
     rstFormattedRanges = rstEmphasizeRanges
@@ -95,6 +106,45 @@ export const formatInRst = async (
       .join("\n"),
   ].join("\n");
   return formattedCodeblock;
+};
+
+export const formatInDocusaurus = async (
+  result: ProcessResult
+): Promise<string | undefined> => {
+  const { document } = result;
+  if (document.attributes["snippet"] === undefined) {
+    return undefined;
+  }
+
+  // get the list of emphasize ranges, converting individual emphasize lines to ranges for simplicity
+  const emphasizeAttributes = document.attributes[
+    "emphasize"
+  ] as EmphasizeSourceAttributes;
+  const emphasizeRanges: { start: number; end: number }[] = [];
+  if (emphasizeAttributes !== undefined) {
+    for (const range of emphasizeAttributes.ranges) {
+      const start = await document.getNewLocationFor(range.start);
+      const end = await document.getNewLocationFor(range.end);
+      emphasizeRanges.push({
+        // ternary operator here because start or end are both optional, but one of them must be defined
+        start: start ? start.line : end!.line,
+        end: end ? end.line : start!.line,
+      });
+    }
+  }
+
+  // insert docusaurus higlight magic tags at start and end of ranges, inserting in reverse order to keep line numbers stable
+  const lines = document.text.toString().split(/\r\n|\r|\n/);
+  if (emphasizeRanges.length > 0) {
+    for (let i = emphasizeRanges.length - 1; i >= 0; --i) {
+      // subtract one from the line numbers because the array is zero-indexed, but the lines are one-indexed
+      lines.splice(emphasizeRanges[i].end, 0, "// highlight-end");
+      lines.splice(emphasizeRanges[i].start - 1, 0, "// highlight-start");
+    }
+  }
+
+  // pop some newlines in between those lines so it doesn't come out as one long single-line spew of insanity
+  return lines.join("\n");
 };
 
 export const snip = async (args: SnipArgs): Promise<string[]> => {
