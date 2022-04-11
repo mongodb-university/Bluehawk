@@ -5,7 +5,7 @@ import {
   withIgnoreOption,
   ActionArgs,
   CopyArgs,
-  copy
+  copy,
 } from "../..";
 
 const commandModule: CommandModule<
@@ -17,7 +17,26 @@ const commandModule: CommandModule<
     return withIgnoreOption(withStateOption(withDestinationOption(yargs)));
   },
   handler: async (args: Arguments<CopyArgs>) => {
-    const errors = await copy(args);
+    const { errors, filesCopied } = await copy(args);
+    filesCopied.forEach(({ fromPath, toPath, type, errorMessage }) => {
+      console.log(
+        `${
+          errorMessage === undefined ? "Copied" : "FAILED:"
+        } ${type} file ${fromPath} -> ${toPath}${
+          errorMessage === undefined ? "" : `: ${errorMessage}`
+        }`
+      );
+    });
+
+    console.log(
+      `Processed ${filesCopied.length} files
+- ${filesCopied.filter(({ type }) => type === "binary").length} binary files
+- ${filesCopied.filter(({ type }) => type === "text").length} text files
+- ${
+        filesCopied.filter(({ errorMessage }) => errorMessage !== undefined)
+          .length
+      } errors`
+    );
     if (errors.length !== 0) {
       console.error(
         `Exiting with ${errors.length} error${errors.length === 1 ? "" : "s"}.`

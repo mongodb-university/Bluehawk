@@ -16,7 +16,7 @@ describe("copy", () => {
       recursive: true,
     });
     await System.fs.writeFile(Path.join(rootPath, "test.txt"), "utf8");
-    const errors = await copy({
+    const { errors } = await copy({
       destination: destinationPath,
       rootPath,
     });
@@ -40,7 +40,7 @@ describe("copy", () => {
     const filePath = Path.join(rootPath, "test.bin");
     await System.fs.writeFile(filePath, new Uint8Array([0, 1, 2, 3, 4, 5]));
     let didCallBinaryFileForPath: string | undefined = undefined;
-    const errors = await copy({
+    const { errors } = await copy({
       destination: destinationPath,
       rootPath,
       onBinaryFile(path) {
@@ -71,7 +71,7 @@ describe("copy", () => {
     const textPath = Path.join(rootPath, "test.sh");
     await System.fs.writeFile(textPath, "# this is a script", "utf8");
     await System.fs.chmod(textPath, 0o100755);
-    const errors = await copy({
+    const { errors } = await copy({
       destination: destinationPath,
       rootPath,
     });

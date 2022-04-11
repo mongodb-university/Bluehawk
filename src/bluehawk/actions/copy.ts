@@ -1,3 +1,4 @@
+import { MessageHandler } from "./../io/messageHandler";
 import { Stats } from "fs";
 import * as path from "path";
 import { getBluehawk } from "../../bluehawk";
@@ -17,10 +18,22 @@ export interface CopyArgs extends ActionArgs {
   onBinaryFile?(path: string): Promise<void> | void;
 }
 
-export const copy = async (args: CopyArgs): Promise<string[]> => {
+type CopyInfo = {
+  fromPath: string;
+  toPath: string;
+  type: "binary" | "text";
+  errorMessage?: string;
+};
+
+export class CopyResult {
+  errors: string[] = [];
+  filesCopied: CopyInfo[] = [];
+}
+
+export const copy = async (args: CopyArgs): Promise<CopyResult> => {
+  const result = new CopyResult();
   const { destination, ignore, rootPath, waitForListeners } = args;
   const desiredState = args.state;
-  const errors: string[] = [];
   const bluehawk = await getBluehawk();
   let stats: Stats;
   try {
@@ -28,8 +41,8 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
   } catch (error) {
     const message = `Could not load stats for ${rootPath}: ${error.message}`;
     console.error(message);
-    errors.push(message);
-    return errors;
+    result.errors.push(message);
+    return result;
   }
   const projectDirectory = !stats.isDirectory()
     ? path.dirname(rootPath)
@@ -42,6 +55,11 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
       path.relative(projectDirectory, path.dirname(filePath))
     );
     const targetPath = path.join(directory, path.basename(filePath));
+    const copyInfo: CopyInfo = {
+      fromPath: filePath,
+      toPath: targetPath,
+      type: "binary",
+    };
     try {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.copyFile(filePath, targetPath);
@@ -49,8 +67,10 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     } catch (error) {
       const message = `Failed to copy file ${filePath} to ${targetPath}: ${error.message}`;
       console.error(message);
-      errors.push(message);
+      result.errors.push(message);
+      copyInfo.errorMessage = error.message;
     } finally {
+      result.filesCopied.push(copyInfo);
       const { onBinaryFile } = args;
       onBinaryFile && (await onBinaryFile(filePath));
     }
@@ -64,8 +84,8 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     [path: string]: boolean;
   } = {};
 
-  bluehawk.subscribe(async (result) => {
-    const { document, parseResult } = result;
+  bluehawk.subscribe(async (processResult) => {
+    const { document, parseResult } = processResult;
     if (document.attributes.snippet) {
       // Not a pure state file
       return;
@@ -100,6 +120,11 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     );
     const targetPath = path.join(directory, document.basename);
 
+    const copyInfo: CopyInfo = {
+      fromPath: document.path,
+      toPath: targetPath,
+      type: "text",
+    };
     try {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
@@ -110,8 +135,10 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     } catch (error) {
       const message = `Failed to write file ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
       console.error(message);
-      errors.push(message);
+      result.errors.push(message);
+      copyInfo.errorMessage = error.message;
     }
+    result.filesCopied.push(copyInfo);
   });
 
   await bluehawk.parseAndProcess(rootPath, {
@@ -120,17 +147,17 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     waitForListeners: waitForListeners ?? false,
     onErrors(filepath, newErrors) {
       logErrorsToConsole(filepath, newErrors);
-      errors.push(...newErrors.map((e) => e.message));
+      result.errors.push(...newErrors.map((e) => e.message));
     },
   });
 
   if (desiredState && Object.keys(stateVersionWrittenForPath).length === 0) {
     const message = `Warning: state '${desiredState}' never found in ${projectDirectory}`;
     console.warn(message);
-    errors.push(message);
+    result.errors.push(message);
   }
 
-  return errors;
+  return result;
 };
 
 /**
