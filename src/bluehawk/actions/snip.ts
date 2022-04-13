@@ -5,13 +5,15 @@ import { ActionArgs } from "./ActionArgs";
 import { ProcessResult } from "../../bluehawk/processor/Processor";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
+type Format = "rst" | "docusaurus";
+
 export interface SnipArgs extends ActionArgs {
   paths: string[];
   destination: string;
   state?: string;
   id?: string | string[];
   ignore?: string | string[];
-  format?: "rst" | "docusaurus";
+  format?: Format | Format[];
 }
 
 export const createFormattedCodeBlock = async (
@@ -136,11 +138,11 @@ export const formatInDocusaurus = async (
   // insert docusaurus higlight magic tags at start and end of ranges, inserting in reverse order to keep line numbers stable
   const lines = document.text.toString().split(/\r\n|\r|\n/);
   if (emphasizeRanges.length > 0) {
-    for (let i = emphasizeRanges.length - 1; i >= 0; --i) {
+    emphasizeRanges.reverse().forEach((range) => {
       // subtract one from the line numbers because the array is zero-indexed, but the lines are one-indexed
-      lines.splice(emphasizeRanges[i].end, 0, "// highlight-end");
-      lines.splice(emphasizeRanges[i].start - 1, 0, "// highlight-start");
-    }
+      lines.splice(range.end, 0, "// highlight-end");
+      lines.splice(range.start - 1, 0, "// highlight-start");
+    });
   }
 
   // pop some newlines in between those lines so it doesn't come out as one long single-line spew of insanity
@@ -148,8 +150,9 @@ export const formatInDocusaurus = async (
 };
 
 export const snip = async (args: SnipArgs): Promise<string[]> => {
-  const { paths, destination, state, id, ignore, format, waitForListeners } =
-    args;
+  const { paths, destination, state, id, ignore, waitForListeners } = args;
+  const formats =
+    args.format && !Array.isArray(args.format) ? [args.format] : args.format;
   const errors: string[] = [];
   const bluehawk = await getBluehawk();
 
@@ -205,8 +208,10 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
 
       // Create formatted snippet block
-      if (format !== undefined) {
-        await createFormattedCodeBlock(result, destination, format);
+      if (formats !== undefined) {
+        for (const format of formats) {
+          await createFormattedCodeBlock(result, destination, format);
+        }
       }
     } catch (error) {
       const message = `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
