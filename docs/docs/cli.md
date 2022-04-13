@@ -70,6 +70,7 @@ state, and no other states, in the generated output.
 
 Pass the name of a markup syntax to the `--format` flag when generating snippets
 to generate a formatted version of that snippet in the specified markup syntax.
-This command currently only supports
+This command currently supports
 [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) syntax using
-the identifier `rst`.
+`rst` and [docusaurus](https://docusaurus.io/docs/markdown-features/code-blocks#highlighting-with-comments)
+syntax with `docusaurus`.
