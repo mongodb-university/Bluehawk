@@ -59,6 +59,7 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
         ".kt",
         ".java",
         ".js",
+        ".json",
         ".dart",
         ".jsx",
         ".m",
