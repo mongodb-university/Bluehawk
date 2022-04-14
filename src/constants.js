@@ -2,6 +2,7 @@ let comments = {
   cs: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
   c: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
   js: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
+  json: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
   swift: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
   kt: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
   java: { start_block: ["/*"], end_block: ["*/"], line: ["//"] },
