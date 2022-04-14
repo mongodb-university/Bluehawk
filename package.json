@@ -1,42 +1,65 @@
 {
   "name": "bluehawk",
-  "version": "1.0.0",
-  "description": "",
-  "main": "./build",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mongodb-university/Bluehawk"
+  },
+  "version": "0.7.6",
+  "description": "A markup language and tool for extracting code examples, checkpointing tutorials, and dynamically transforming text",
+  "keywords": [
+    "docs",
+    "docs-as-code",
+    "docs tools",
+    "tutorials",
+    "code examples",
+    "code snippets"
+  ],
+  "homepage": "https://github.com/mongodb-university/Bluehawk#readme",
+  "bugs": {
+    "url": "https://github.com/mongodb-university/Bluehawk/issues"
+  },
+  "main": "./build/src",
+  "bin": {
+    "bluehawk": "./build/src/main.js"
+  },
   "scripts": {
+    "clean": "rm -rf build",
     "build": "tsc -b",
     "watch": "tsc -b -w",
-    "test": "npm run ts-test && npm run js-test",
-    "js-test": "npm run build && mocha --require 'js-test/hooks.js' -- 'js-test/*.test.js'",
-    "ts-test": "jest",
-    "coverage": "jest --coverage"
+    "test": "jest",
+    "verbose": "jest --verbose",
+    "coverage": "jest --coverage",
+    "docs": "cd docs && npm i && npm run build",
+    "release": "release-it"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "MongoDB Developer Education Team",
+  "license": "Apache-2.0",
   "dependencies": {
-    "chalk": "^4.1.0",
-    "clear": "^0.1.0",
-    "figlet": "^1.5.0",
-    "fs": "0.0.1-security",
-    "fsify": "^4.0.1",
-    "inquirer": "^7.3.3",
-    "line-reader": "^0.4.0",
-    "mocha": "^8.1.3",
-    "rimraf": "^3.0.2",
-    "yargs": "^15.4.1"
+    "ajv": "^7.0.0",
+    "chevrotain": "^10.0.0",
+    "ignore": "^5.0.0",
+    "isbinaryfile": "^4.0.0",
+    "magic-string": "^0.25.0",
+    "memfs": "^3.0.0",
+    "source-map": "^0.7.0",
+    "yargs": "^15.0.0"
   },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.10.4",
-    "@types/node": "^12.12.0",
-    "@typescript-eslint/eslint-plugin": "^4.4.0",
-    "@typescript-eslint/parser": "^2.34.0",
-    "chai": "^4.2.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.12.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "jest": "^26.5.2",
-    "prettier": "^2.1.2",
-    "ts-jest": "^26.4.1",
-    "typescript": "^4.0.3"
+    "@babel/preset-typescript": "^7.0.0",
+    "@types/jest": "^26.0.0",
+    "@types/node": "^12.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^8.0.0",
+    "eslint-plugin-tsdoc": "^0.2.0",
+    "jest": "^26.0.0",
+    "prettier": "^2.0.0",
+    "release-it": "^14.0.0",
+    "ts-jest": "^26.0.0",
+    "typedoc": "^0.22.0",
+    "typescript": "^4.0.0"
+  },
+  "prettier": {
+    "semi": true
   }
 }
