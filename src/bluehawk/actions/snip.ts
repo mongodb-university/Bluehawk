@@ -1,3 +1,4 @@
+import { ActionReporter } from "./ActionReporter";
 import * as path from "path";
 import { getBluehawk, EmphasizeSourceAttributes } from "../../bluehawk";
 import { System } from "../../bluehawk/io/System";
@@ -14,11 +15,17 @@ export interface SnipArgs extends ActionArgs {
   format?: "rst";
 }
 
-export const createFormattedCodeBlock = async (
-  result: ProcessResult,
-  destination: string,
-  format: string
-): Promise<void> => {
+export const createFormattedCodeBlock = async ({
+  format,
+  result,
+  destination,
+  reporter,
+}: {
+  result: ProcessResult;
+  destination: string;
+  format: string;
+  reporter: ActionReporter;
+}): Promise<void> => {
   if (format === "rst") {
     const formattedCodeblock = await formatInRst(result);
 
@@ -28,6 +35,11 @@ export const createFormattedCodeBlock = async (
       `${document.basename}.code-block.rst`
     );
     await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+    reporter.onFileWritten({
+      type: "text",
+      sourcePath: document.path,
+      destinationPath: targetPath,
+    });
   } // add additional elses + "formatInLanguage" methods to handle other markup languages
 };
 
@@ -98,8 +110,16 @@ export const formatInRst = async (
 };
 
 export const snip = async (args: SnipArgs): Promise<string[]> => {
-  const { paths, destination, state, id, ignore, format, waitForListeners } =
-    args;
+  const {
+    paths,
+    destination,
+    state,
+    id,
+    ignore,
+    format,
+    waitForListeners,
+    reporter,
+  } = args;
   const errors: string[] = [];
   const bluehawk = await getBluehawk();
 
@@ -153,19 +173,36 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
 
     try {
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
+      reporter.onFileWritten({
+        type: "text",
+        sourcePath: document.path,
+        destinationPath: targetPath,
+      });
 
       // Create formatted snippet block
       if (format !== undefined) {
-        await createFormattedCodeBlock(result, destination, format);
+        await createFormattedCodeBlock({
+          result,
+          destination,
+          format,
+          reporter,
+        });
       }
     } catch (error) {
       const message = `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
       console.error(message);
       errors.push(message);
+      reporter.onWriteFailed({
+        type: "text",
+        destinationPath: targetPath,
+        sourcePath: parseResult.source.path,
+        error,
+      });
     }
   });
 
   await bluehawk.parseAndProcess(paths, {
+    reporter,
     ignore,
     waitForListeners: waitForListeners ?? false,
     onErrors(filepath, newErrors) {
@@ -180,6 +217,10 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
     )}`;
     console.warn(message);
     errors.push(message);
+    reporter.onStateNotFound({
+      state,
+      paths,
+    });
   }
 
   // if an id was not used, print a warning
@@ -192,6 +233,10 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
         " "
       )}" were not used. Is something misspelled?`;
       console.warn(message);
+      reporter.onIdsUnused({
+        ids: unused,
+        paths,
+      });
     }
   }
 

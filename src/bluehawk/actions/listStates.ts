@@ -9,7 +9,7 @@ export interface ListStatesArgs extends ActionArgs {
 }
 
 export const listStates = async (args: ListStatesArgs): Promise<void> => {
-  const { ignore, json, paths, waitForListeners } = args;
+  const { ignore, json, paths, waitForListeners, reporter } = args;
   const bluehawk = await getBluehawk();
 
   const statesFound = new Set<string>();
@@ -23,6 +23,7 @@ export const listStates = async (args: ListStatesArgs): Promise<void> => {
   });
 
   await bluehawk.parseAndProcess(paths, {
+    reporter,
     ignore,
     waitForListeners: waitForListeners ?? false,
   });
@@ -32,14 +33,9 @@ export const listStates = async (args: ListStatesArgs): Promise<void> => {
     return;
   }
 
-  if (statesFound.size === 0) {
-    console.log(`no states found in ${paths}`);
-    return;
-  }
-
-  console.log(
-    `states found:\n${Array.from(statesFound)
-      .map((s) => `- ${s}`)
-      .join("\n")}`
-  );
+  reporter.onStatesFound({
+    action: "listStates",
+    paths,
+    statesFound: Array.from(statesFound),
+  });
 };

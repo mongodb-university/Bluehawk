@@ -32,7 +32,7 @@ export class CopyResult {
 
 export const copy = async (args: CopyArgs): Promise<CopyResult> => {
   const result = new CopyResult();
-  const { destination, ignore, rootPath, waitForListeners } = args;
+  const { destination, ignore, rootPath, waitForListeners, reporter } = args;
   const desiredState = args.state;
   const bluehawk = await getBluehawk();
   let stats: Stats;
@@ -64,6 +64,11 @@ export const copy = async (args: CopyArgs): Promise<CopyResult> => {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.copyFile(filePath, targetPath);
       await copyPermissions({ to: targetPath, from: filePath });
+      reporter.onFileWritten({
+        type: "binary",
+        sourcePath: filePath,
+        destinationPath: targetPath,
+      });
     } catch (error) {
       const message = `Failed to copy file ${filePath} to ${targetPath}: ${error.message}`;
       console.error(message);
@@ -132,6 +137,11 @@ export const copy = async (args: CopyArgs): Promise<CopyResult> => {
         to: targetPath,
         from: document.path,
       });
+      reporter.onFileWritten({
+        type: "text",
+        sourcePath: document.path,
+        destinationPath: targetPath,
+      });
     } catch (error) {
       const message = `Failed to write file ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
       console.error(message);
@@ -149,6 +159,7 @@ export const copy = async (args: CopyArgs): Promise<CopyResult> => {
       logErrorsToConsole(filepath, newErrors);
       result.errors.push(...newErrors.map((e) => e.message));
     },
+    reporter,
   });
 
   if (desiredState && Object.keys(stateVersionWrittenForPath).length === 0) {

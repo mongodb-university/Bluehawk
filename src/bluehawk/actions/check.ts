@@ -10,6 +10,8 @@ export interface CheckArgs extends ActionArgs {
   json?: boolean;
 }
 
+export interface CheckResult {}
+
 export const check = async (args: CheckArgs): Promise<void> => {
   const { ignore, json, paths, waitForListeners } = args;
   const bluehawk = await getBluehawk();

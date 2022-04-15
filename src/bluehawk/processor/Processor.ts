@@ -1,3 +1,4 @@
+import { ActionReporter } from "./../actions/ActionReporter";
 import { strict as assert } from "assert";
 import { AnyTagNode, ParseResult } from "../parser";
 import { Document, TagAttributes } from "../Document";
