@@ -79,7 +79,7 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
       }
     );
 
-    bluehawk.addLanguage(["", ".txt", ".rst", ".md"], {
+    bluehawk.addLanguage(["", ".txt", ".rst", ".md", ".json"], {
       languageId: "text",
     });
 

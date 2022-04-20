@@ -6,13 +6,15 @@ import { ActionArgs } from "./ActionArgs";
 import { ProcessResult } from "../../bluehawk/processor/Processor";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
+type Format = "rst" | "docusaurus";
+
 export interface SnipArgs extends ActionArgs {
   paths: string[];
   destination: string;
   state?: string;
   id?: string | string[];
   ignore?: string | string[];
-  format?: "rst";
+  format?: Format | Format[];
 }
 
 export const createFormattedCodeBlock = async ({
@@ -33,6 +35,21 @@ export const createFormattedCodeBlock = async ({
     const targetPath = path.join(
       destination,
       `${document.basename}.code-block.rst`
+    );
+    await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+
+    reporter.onFileWritten({
+      type: "text",
+      sourcePath: document.path,
+      destinationPath: targetPath,
+    });
+  } else if (format === "docusaurus") {
+    const formattedCodeblock = await formatInDocusaurus(result);
+
+    const { document } = result;
+    const targetPath = path.join(
+      destination,
+      `${document.basename}.code-block.md`
     );
     await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
     reporter.onFileWritten({
@@ -81,9 +98,11 @@ export const formatInRst = async (
     for (const range of emphasizeAttributes.ranges) {
       const start = await document.getNewLocationFor(range.start);
       const end = await document.getNewLocationFor(range.end);
-      if (start !== undefined && end !== undefined) {
-        rstEmphasizeRanges.push({ start: start.line, end: end.line });
-      }
+      rstEmphasizeRanges.push({
+        // ternary operator here because start or end are both optional, but one of them must be defined
+        start: start !== undefined ? start.line : end!.line,
+        end: end !== undefined ? end.line : start!.line,
+      });
     }
 
     rstFormattedRanges = rstEmphasizeRanges
@@ -109,19 +128,53 @@ export const formatInRst = async (
   return formattedCodeblock;
 };
 
+export const formatInDocusaurus = async (
+  result: ProcessResult
+): Promise<string | undefined> => {
+  const { document } = result;
+  if (document.attributes["snippet"] === undefined) {
+    return undefined;
+  }
+
+  // get the list of emphasize ranges, converting individual emphasize lines to ranges for simplicity
+  const emphasizeAttributes = document.attributes[
+    "emphasize"
+  ] as EmphasizeSourceAttributes;
+  const emphasizeRanges: { start: number; end: number }[] = [];
+  if (emphasizeAttributes !== undefined) {
+    for (const range of emphasizeAttributes.ranges) {
+      const start = await document.getNewLocationFor(range.start);
+      const end = await document.getNewLocationFor(range.end);
+      emphasizeRanges.push({
+        // ternary operator here because start or end are both optional, but one of them must be defined
+        start: start !== undefined ? start.line : end!.line,
+        end: end !== undefined ? end.line : start!.line,
+      });
+    }
+  }
+
+  // insert docusaurus higlight magic tags at start and end of ranges, inserting in reverse order to keep line numbers stable
+  const lines = document.text.toString().split(/\r\n|\r|\n/);
+  if (emphasizeRanges.length > 0) {
+    emphasizeRanges.reverse().forEach((range) => {
+      // subtract one from the line numbers because the array is zero-indexed, but the lines are one-indexed
+      lines.splice(range.end, 0, "// highlight-end");
+      lines.splice(range.start - 1, 0, "// highlight-start");
+    });
+  }
+
+  // pop some newlines in between those lines so it doesn't come out as one long single-line spew of insanity
+  return lines.join("\n");
+};
+
 export const snip = async (
   args: WithActionReporter<SnipArgs>
 ): Promise<void> => {
-  const {
-    paths,
-    destination,
-    state,
-    id,
-    ignore,
-    format,
-    waitForListeners,
-    reporter,
-  } = args;
+  const { paths, destination, state, id, ignore, waitForListeners, reporter } =
+    args;
+  const formats =
+    args.format && !Array.isArray(args.format) ? [args.format] : args.format;
+  const errors: string[] = [];
   const bluehawk = await getBluehawk();
 
   // If a file contains the state tag, the processor will generate multiple
@@ -181,13 +234,15 @@ export const snip = async (
       });
 
       // Create formatted snippet block
-      if (format !== undefined) {
-        await createFormattedCodeBlock({
-          result,
-          destination,
-          format,
-          reporter,
-        });
+      if (formats !== undefined) {
+        for (const format of formats) {
+          await createFormattedCodeBlock({
+            result,
+            destination,
+            format,
+            reporter,
+          });
+        }
       }
     } catch (error) {
       reporter.onWriteFailed({

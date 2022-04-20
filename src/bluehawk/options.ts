@@ -60,7 +60,7 @@ export function withGenerateFormattedCodeSnippetsOption<T>(
 ): Argv<T & { generateFormattedCodeSnippets?: string }> {
   return option(yargs, "format", {
     requiresArg: true,
-    choices: ["rst"],
+    choices: ["rst", "docusaurus"],
     alias: "f",
     string: true,
     describe:
