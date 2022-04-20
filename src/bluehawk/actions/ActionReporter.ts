@@ -10,6 +10,7 @@ export type WithActionReporter<T> = T & { reporter: ActionReporter };
   Handles various events for user information.
  */
 export interface ActionReporter {
+  logLevel: LogLevel;
   get errorCount(): number;
 
   // Info
@@ -34,6 +35,12 @@ export interface ActionReporter {
     Users should call this after an action is complete.
    */
   summary(): void;
+}
+
+export enum LogLevel {
+  Info = 0,
+  Warning = 1,
+  Error = 2,
 }
 
 export type FileEvent = {
