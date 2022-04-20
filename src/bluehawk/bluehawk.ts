@@ -107,8 +107,7 @@ export class Bluehawk {
     // options if any
     const options = { ...defaultOptions, ...(optionsIn ?? {}) };
 
-    const { onBinaryFile, onErrors, ignore } = options;
-    const reporter = options.reporter ?? new ConsoleActionReporter();
+    const { onBinaryFile, onErrors, ignore, reporter } = options;
 
     const filePaths = await loadProjectPaths({
       rootPath: path,
@@ -120,7 +119,7 @@ export class Bluehawk {
         const blob = await System.fs.readFile(filePath);
         const stat = await System.fs.lstat(filePath);
         if (await isBinaryFile(blob, stat.size)) {
-          reporter.onBinaryFile({ sourcePath: filePath });
+          reporter?.onBinaryFile({ sourcePath: filePath });
           onBinaryFile && (await onBinaryFile(filePath));
           return;
         }
@@ -128,7 +127,7 @@ export class Bluehawk {
         const document = new Document({ text, path: filePath });
         const result = this.parse(document, { ...options, reporter });
         if (result.errors.length !== 0) {
-          reporter.onBluehawkErrors({
+          reporter?.onBluehawkErrors({
             sourcePath: filePath,
             errors: result.errors,
           });
@@ -136,7 +135,7 @@ export class Bluehawk {
           return;
         }
 
-        reporter.onFileParsed({
+        reporter?.onFileParsed({
           sourcePath: filePath,
           parseResult: result,
         });
@@ -150,6 +149,11 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     });
 
     await Promise.allSettled(promises);
+    await this.waitForListeners();
+  };
+
+  waitForListeners = async (): Promise<void> => {
+    return this._processor.waitForListeners();
   };
 
   /**

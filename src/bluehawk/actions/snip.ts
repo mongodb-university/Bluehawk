@@ -111,7 +111,7 @@ export const formatInRst = async (
 
 export const snip = async (
   args: WithActionReporter<SnipArgs>
-): Promise<string[]> => {
+): Promise<void> => {
   const {
     paths,
     destination,
@@ -122,7 +122,6 @@ export const snip = async (
     waitForListeners,
     reporter,
   } = args;
-  const errors: string[] = [];
   const bluehawk = await getBluehawk();
 
   // If a file contains the state tag, the processor will generate multiple
@@ -191,9 +190,6 @@ export const snip = async (
         });
       }
     } catch (error) {
-      const message = `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
-      console.error(message);
-      errors.push(message);
       reporter.onWriteFailed({
         type: "text",
         destinationPath: targetPath,
@@ -234,6 +230,4 @@ export const snip = async (
       });
     }
   }
-
-  return errors;
 };

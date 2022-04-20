@@ -104,6 +104,7 @@ export type Listener = (result: ProcessResult) => void | Promise<void>;
 export class Processor {
   readonly processors: TagProcessors = {};
   private _listeners = new Set<Listener>();
+  private _publishPromises: Promise<void>[] = [];
 
   /**
     Adds a tag definition to the processor. This tag becomes available
@@ -141,6 +142,17 @@ export class Processor {
     });
     await Promise.allSettled(_processorState.promises);
     return _processorState.files;
+  };
+
+  /**
+    Call after all process calls have been made to wait for outstanding promises
+    to resolve.
+
+    Has no effect if `waitForListeners` was set to true.
+   */
+  waitForListeners = async (): Promise<void> => {
+    await Promise.allSettled(this._publishPromises);
+    this._publishPromises = [];
   };
 
   private _removeMetaRanges = (
@@ -206,6 +218,8 @@ export class Processor {
     // continue processing files.
     if (_processorState.waitForListeners) {
       await publishPromise;
+    } else {
+      this._publishPromises.push(publishPromise);
     }
   }
 
