@@ -1,5 +1,9 @@
 import { ParseResult } from "./../";
 import { BluehawkError } from "./../BluehawkError";
+
+/**
+  Handles various events for user information.
+ */
 export interface ActionReporter {
   // Info
   onBinaryFile(event: BinaryFileEvent): void;
@@ -15,6 +19,13 @@ export interface ActionReporter {
   // Errors
   onWriteFailed(event: WriteFailedEvent): void;
   onBluehawkErrors(event: BluehawkErrorsEvent): void;
+
+  /**
+    Request the summary of all things reported so far.
+
+    Users should call this after an action is complete.
+   */
+  summary(): void;
 }
 
 export type FileEvent = {

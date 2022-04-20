@@ -11,13 +11,23 @@ import {
   WriteFailedEvent,
 } from "./ActionReporter";
 export class ConsoleActionReporter implements ActionReporter {
+  _count = {
+    binaryFiles: 0,
+    textFiles: 0,
+    filesWritten: 0,
+    errors: 0,
+  };
+
   onBinaryFile(event: FileEvent): void {
+    ++this._count.binaryFiles;
     console.log(`found binary file: ${event.sourcePath}`);
   }
   onFileParsed(event: FileParsedEvent): void {
+    ++this._count.textFiles;
     console.log(`parsed file: ${event.sourcePath}`);
   }
   onFileWritten(event: FileWrittenEvent): void {
+    ++this._count.filesWritten;
     console.log(
       `wrote ${event.type} file based on ${event.sourcePath} -> ${event.destinationPath}`
     );
@@ -37,11 +47,14 @@ export class ConsoleActionReporter implements ActionReporter {
     );
   }
   onWriteFailed(event: WriteFailedEvent): void {
+    ++this._count.errors;
     console.error(
       `failed to write file ${event.sourcePath} -> ${event.destinationPath}: ${event.error.message}`
     );
   }
   onBluehawkErrors(event: BluehawkErrorsEvent): void {
+    ++this._count.textFiles;
+    this._count.errors += event.errors.length;
     console.error(
       `bluehawk errors on ${event.sourcePath}:\n${event.errors
         .map((error) => {
@@ -49,5 +62,14 @@ export class ConsoleActionReporter implements ActionReporter {
         })
         .join("\n")}`
     );
+  }
+
+  summary(): void {
+    const { binaryFiles, errors, textFiles, filesWritten } = this._count;
+    console.log(`Processed ${binaryFiles + textFiles} files:
+- ${binaryFiles} binary files
+- ${textFiles} text files
+- ${errors} errors
+- ${filesWritten} files written`);
   }
 }
