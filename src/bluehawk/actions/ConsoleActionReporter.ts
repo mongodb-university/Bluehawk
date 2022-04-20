@@ -1,6 +1,7 @@
 import {
   ActionReporter,
   BluehawkErrorsEvent,
+  FileErrorEvent,
   FileEvent,
   FileParsedEvent,
   FileWrittenEvent,
@@ -10,6 +11,7 @@ import {
   StatesFoundEvent,
   WriteFailedEvent,
 } from "./ActionReporter";
+
 export class ConsoleActionReporter implements ActionReporter {
   _count = {
     binaryFiles: 0,
@@ -17,6 +19,10 @@ export class ConsoleActionReporter implements ActionReporter {
     filesWritten: 0,
     errors: 0,
   };
+
+  get errorCount(): number {
+    return this._count.errors;
+  }
 
   onBinaryFile(event: FileEvent): void {
     ++this._count.binaryFiles;
@@ -45,6 +51,10 @@ export class ConsoleActionReporter implements ActionReporter {
     console.warn(
       `parser not found for file ${event.sourcePath}: ${event.error.message}`
     );
+  }
+  onFileError(event: FileErrorEvent): void {
+    ++this._count.errors;
+    console.error(`file error: ${event.sourcePath}: ${event.error.message}`);
   }
   onWriteFailed(event: WriteFailedEvent): void {
     ++this._count.errors;

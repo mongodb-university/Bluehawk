@@ -1,5 +1,12 @@
+import { ConsoleActionReporter } from "./../../bluehawk/actions/ConsoleActionReporter";
 import { CommandModule } from "yargs";
-import { withIgnoreOption, withJsonOption, ActionArgs, CheckArgs, check } from "../..";
+import {
+  withIgnoreOption,
+  withJsonOption,
+  ActionArgs,
+  CheckArgs,
+  check,
+} from "../..";
 
 const commandModule: CommandModule<
   ActionArgs & { paths: string[] },
@@ -10,7 +17,10 @@ const commandModule: CommandModule<
     return withJsonOption(withIgnoreOption(yargs));
   },
   async handler(args) {
-    return await check(args);
+    const reporter = new ConsoleActionReporter();
+    await check({ ...args, reporter });
+    reporter.summary();
+    process.exit(reporter.errorCount > 0 ? 1 : 0);
   },
   aliases: [],
   describe:

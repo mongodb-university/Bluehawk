@@ -1,3 +1,4 @@
+import { WithActionReporter } from "./ActionReporter";
 import { getBluehawk } from "../../bluehawk";
 import { ActionArgs } from "./ActionArgs";
 import { printJsonResult } from "./printJsonResult";
@@ -8,7 +9,9 @@ export interface ListStatesArgs extends ActionArgs {
   ignore?: string | string[];
 }
 
-export const listStates = async (args: ListStatesArgs): Promise<void> => {
+export const listStates = async (
+  args: WithActionReporter<ListStatesArgs>
+): Promise<void> => {
   const { ignore, json, paths, waitForListeners, reporter } = args;
   const bluehawk = await getBluehawk();
 

@@ -1,4 +1,4 @@
-import { ActionReporter } from "./ActionReporter";
+import { WithActionReporter, ActionReporter } from "./ActionReporter";
 import * as path from "path";
 import { getBluehawk, EmphasizeSourceAttributes } from "../../bluehawk";
 import { System } from "../../bluehawk/io/System";
@@ -109,7 +109,9 @@ export const formatInRst = async (
   return formattedCodeblock;
 };
 
-export const snip = async (args: SnipArgs): Promise<string[]> => {
+export const snip = async (
+  args: WithActionReporter<SnipArgs>
+): Promise<string[]> => {
   const {
     paths,
     destination,
@@ -205,18 +207,15 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
     reporter,
     ignore,
     waitForListeners: waitForListeners ?? false,
-    onErrors(filepath, newErrors) {
-      logErrorsToConsole(filepath, newErrors);
-      errors.push(...newErrors.map((e) => e.message));
+    onErrors(sourcePath, errors) {
+      reporter.onBluehawkErrors({
+        sourcePath,
+        errors,
+      });
     },
   });
 
   if (state && Object.keys(stateVersionWrittenForPath).length === 0) {
-    const message = `Warning: state '${state}' never found in ${paths.join(
-      ", "
-    )}`;
-    console.warn(message);
-    errors.push(message);
     reporter.onStateNotFound({
       state,
       paths,
@@ -229,10 +228,6 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
     const dedupIds = typeof id === "string" ? new Set([id]) : new Set(id);
     if (id && idsUsed.size !== dedupIds.size) {
       const unused = Array.from(dedupIds).filter((x) => !idsUsed.has(x));
-      const message = `Warning: the ids "${[...unused].join(
-        " "
-      )}" were not used. Is something misspelled?`;
-      console.warn(message);
       reporter.onIdsUnused({
         ids: unused,
         paths,

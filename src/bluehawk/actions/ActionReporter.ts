@@ -2,9 +2,16 @@ import { ParseResult } from "./../";
 import { BluehawkError } from "./../BluehawkError";
 
 /**
+  Creates a type with a required ActionReporter field.
+ */
+export type WithActionReporter<T> = T & { reporter: ActionReporter };
+
+/**
   Handles various events for user information.
  */
 export interface ActionReporter {
+  get errorCount(): number;
+
   // Info
   onBinaryFile(event: BinaryFileEvent): void;
   onFileParsed(event: FileParsedEvent): void;
@@ -17,6 +24,7 @@ export interface ActionReporter {
   onParserNotFound(event: ParserNotFoundEvent): void;
 
   // Errors
+  onFileError(event: FileErrorEvent): void;
   onWriteFailed(event: WriteFailedEvent): void;
   onBluehawkErrors(event: BluehawkErrorsEvent): void;
 
@@ -60,6 +68,10 @@ export type IdsUnusedEvent = {
 };
 
 export type ParserNotFoundEvent = FileEvent & {
+  error: Error;
+};
+
+export type FileErrorEvent = FileEvent & {
   error: Error;
 };
 

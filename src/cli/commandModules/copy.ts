@@ -1,3 +1,4 @@
+import { ConsoleActionReporter } from "./../../bluehawk/actions/ConsoleActionReporter";
 import { CommandModule, Arguments, Argv } from "yargs";
 import {
   withDestinationOption,
@@ -17,32 +18,10 @@ const commandModule: CommandModule<
     return withIgnoreOption(withStateOption(withDestinationOption(yargs)));
   },
   handler: async (args: Arguments<CopyArgs>) => {
-    const { errors, filesCopied } = await copy(args);
-    filesCopied.forEach(({ fromPath, toPath, type, errorMessage }) => {
-      console.log(
-        `${
-          errorMessage === undefined ? "Copied" : "FAILED:"
-        } ${type} file ${fromPath} -> ${toPath}${
-          errorMessage === undefined ? "" : `: ${errorMessage}`
-        }`
-      );
-    });
-
-    console.log(
-      `Processed ${filesCopied.length} files
-- ${filesCopied.filter(({ type }) => type === "binary").length} binary files
-- ${filesCopied.filter(({ type }) => type === "text").length} text files
-- ${
-        filesCopied.filter(({ errorMessage }) => errorMessage !== undefined)
-          .length
-      } errors`
-    );
-    if (errors.length !== 0) {
-      console.error(
-        `Exiting with ${errors.length} error${errors.length === 1 ? "" : "s"}.`
-      );
-      process.exit(1);
-    }
+    const reporter = new ConsoleActionReporter();
+    await copy({ ...args, reporter });
+    reporter.summary();
+    process.exit(reporter.errorCount > 0 ? 1 : 0);
   },
   aliases: [],
   describe:

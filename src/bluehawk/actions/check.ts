@@ -1,6 +1,6 @@
+import { WithActionReporter } from "./ActionReporter";
 import { getBluehawk } from "../../bluehawk";
 import { BluehawkError } from "../../bluehawk/BluehawkError";
-import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 import { ActionArgs } from "./ActionArgs";
 import { printJsonResult } from "./printJsonResult";
 
@@ -12,13 +12,18 @@ export interface CheckArgs extends ActionArgs {
 
 export interface CheckResult {}
 
-export const check = async (args: CheckArgs): Promise<void> => {
-  const { ignore, json, paths, waitForListeners } = args;
+export const check = async (
+  args: WithActionReporter<CheckArgs>
+): Promise<void> => {
+  const { ignore, json, paths, waitForListeners, reporter } = args;
   const bluehawk = await getBluehawk();
   const fileToErrorMap = new Map<string, BluehawkError[]>();
 
   const addErrors = (filePath: string, errors: BluehawkError[]) => {
-    logErrorsToConsole(filePath, errors);
+    reporter.onBluehawkErrors({
+      errors,
+      sourcePath: filePath,
+    });
     const existingErrors = fileToErrorMap.get(filePath) ?? [];
     fileToErrorMap.set(filePath, [...existingErrors, ...errors]);
   };
@@ -42,6 +47,4 @@ export const check = async (args: CheckArgs): Promise<void> => {
     const errorsByPath = Object.fromEntries(Array.from(fileToErrorMap));
     printJsonResult(args, errorsByPath);
   }
-
-  process.exit(fileToErrorMap.size);
 };

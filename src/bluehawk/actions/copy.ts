@@ -1,10 +1,9 @@
-import { MessageHandler } from "./../io/messageHandler";
+import { WithActionReporter } from "./ActionReporter";
 import { Stats } from "fs";
 import * as path from "path";
 import { getBluehawk } from "../../bluehawk";
 import { ActionArgs } from "./ActionArgs";
 import { System } from "../../bluehawk/io/System";
-import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
 export interface CopyArgs extends ActionArgs {
   rootPath: string;
@@ -18,20 +17,9 @@ export interface CopyArgs extends ActionArgs {
   onBinaryFile?(path: string): Promise<void> | void;
 }
 
-type CopyInfo = {
-  fromPath: string;
-  toPath: string;
-  type: "binary" | "text";
-  errorMessage?: string;
-};
-
-export class CopyResult {
-  errors: string[] = [];
-  filesCopied: CopyInfo[] = [];
-}
-
-export const copy = async (args: CopyArgs): Promise<CopyResult> => {
-  const result = new CopyResult();
+export const copy = async (
+  args: WithActionReporter<CopyArgs>
+): Promise<void> => {
   const { destination, ignore, rootPath, waitForListeners, reporter } = args;
   const desiredState = args.state;
   const bluehawk = await getBluehawk();
@@ -39,10 +27,11 @@ export const copy = async (args: CopyArgs): Promise<CopyResult> => {
   try {
     stats = await System.fs.lstat(rootPath);
   } catch (error) {
-    const message = `Could not load stats for ${rootPath}: ${error.message}`;
-    console.error(message);
-    result.errors.push(message);
-    return result;
+    reporter.onFileError({
+      error,
+      sourcePath: rootPath,
+    });
+    return;
   }
   const projectDirectory = !stats.isDirectory()
     ? path.dirname(rootPath)
@@ -55,11 +44,6 @@ export const copy = async (args: CopyArgs): Promise<CopyResult> => {
       path.relative(projectDirectory, path.dirname(filePath))
     );
     const targetPath = path.join(directory, path.basename(filePath));
-    const copyInfo: CopyInfo = {
-      fromPath: filePath,
-      toPath: targetPath,
-      type: "binary",
-    };
     try {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.copyFile(filePath, targetPath);
@@ -70,15 +54,14 @@ export const copy = async (args: CopyArgs): Promise<CopyResult> => {
         destinationPath: targetPath,
       });
     } catch (error) {
-      const message = `Failed to copy file ${filePath} to ${targetPath}: ${error.message}`;
-      console.error(message);
-      result.errors.push(message);
-      copyInfo.errorMessage = error.message;
-    } finally {
-      result.filesCopied.push(copyInfo);
-      const { onBinaryFile } = args;
-      onBinaryFile && (await onBinaryFile(filePath));
+      reporter.onWriteFailed({
+        destinationPath: targetPath,
+        sourcePath: filePath,
+        error,
+        type: "binary",
+      });
     }
+    onBinaryFile && (await onBinaryFile(filePath));
   };
 
   // If a file contains the state tag, the processor will generate multiple
@@ -125,11 +108,6 @@ export const copy = async (args: CopyArgs): Promise<CopyResult> => {
     );
     const targetPath = path.join(directory, document.basename);
 
-    const copyInfo: CopyInfo = {
-      fromPath: document.path,
-      toPath: targetPath,
-      type: "text",
-    };
     try {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
@@ -143,32 +121,34 @@ export const copy = async (args: CopyArgs): Promise<CopyResult> => {
         destinationPath: targetPath,
       });
     } catch (error) {
-      const message = `Failed to write file ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
-      console.error(message);
-      result.errors.push(message);
-      copyInfo.errorMessage = error.message;
+      reporter.onWriteFailed({
+        destinationPath: targetPath,
+        sourcePath: parseResult.source.path,
+        error,
+        type: "text",
+      });
     }
-    result.filesCopied.push(copyInfo);
   });
 
   await bluehawk.parseAndProcess(rootPath, {
     ignore,
     onBinaryFile,
     waitForListeners: waitForListeners ?? false,
-    onErrors(filepath, newErrors) {
-      logErrorsToConsole(filepath, newErrors);
-      result.errors.push(...newErrors.map((e) => e.message));
+    onErrors(sourcePath, errors) {
+      reporter.onBluehawkErrors({
+        errors,
+        sourcePath,
+      });
     },
     reporter,
   });
 
   if (desiredState && Object.keys(stateVersionWrittenForPath).length === 0) {
-    const message = `Warning: state '${desiredState}' never found in ${projectDirectory}`;
-    console.warn(message);
-    result.errors.push(message);
+    reporter.onStateNotFound({
+      state: desiredState,
+      paths: [projectDirectory],
+    });
   }
-
-  return result;
 };
 
 /**
