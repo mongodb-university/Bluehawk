@@ -41,6 +41,7 @@ export const check = async (
     ignore,
     onErrors: addErrors,
     waitForListeners: waitForListeners ?? false,
+    reporter,
   });
 
   if (json) {

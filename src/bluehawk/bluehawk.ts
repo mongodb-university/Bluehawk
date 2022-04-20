@@ -26,13 +26,13 @@ interface BluehawkConfiguration {
 }
 
 type ParseAndProcessOptions = ProcessOptions & {
-  reporter?: ActionReporter;
+  reporter: ActionReporter;
   onBinaryFile?: OnBinaryFileFunction;
   onErrors?: OnErrorFunction;
   ignore?: string | string[];
 };
 
-const defaultOptions: ParseAndProcessOptions = {
+const defaultOptions: Omit<ParseAndProcessOptions, "reporter"> = {
   waitForListeners: false,
   onErrors: logErrorsToConsole,
 };
