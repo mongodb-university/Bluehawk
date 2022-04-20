@@ -1,3 +1,4 @@
+import { ConsoleActionReporter } from "./ConsoleActionReporter";
 import * as Path from "path";
 import { getBluehawk, System } from "../../bluehawk";
 import { copy } from "./copy";
@@ -16,12 +17,15 @@ describe("copy", () => {
       recursive: true,
     });
     await System.fs.writeFile(Path.join(rootPath, "test.txt"), "utf8");
-    const { errors } = await copy({
+    const reporter = new ConsoleActionReporter();
+    await copy({
+      reporter,
       destination: destinationPath,
       rootPath,
+      waitForListeners: true,
     });
 
-    expect(errors).toStrictEqual([]);
+    expect(reporter.errorCount).toBe(0);
     const sourceList = await System.fs.readdir(rootPath);
     expect(sourceList).toStrictEqual(["test.txt"]);
     const destinationList = await System.fs.readdir(destinationPath);
@@ -40,15 +44,18 @@ describe("copy", () => {
     const filePath = Path.join(rootPath, "test.bin");
     await System.fs.writeFile(filePath, new Uint8Array([0, 1, 2, 3, 4, 5]));
     let didCallBinaryFileForPath: string | undefined = undefined;
-    const { errors } = await copy({
+    const reporter = new ConsoleActionReporter();
+    await copy({
+      reporter,
       destination: destinationPath,
       rootPath,
       onBinaryFile(path) {
         didCallBinaryFileForPath = path;
       },
+      waitForListeners: true,
     });
 
-    expect(errors).toStrictEqual([]);
+    expect(reporter.errorCount).toBe(0);
     const sourceList = await System.fs.readdir(rootPath);
     expect(sourceList).toStrictEqual(["test.bin"]);
     const destinationList = await System.fs.readdir(destinationPath);
@@ -71,12 +78,15 @@ describe("copy", () => {
     const textPath = Path.join(rootPath, "test.sh");
     await System.fs.writeFile(textPath, "# this is a script", "utf8");
     await System.fs.chmod(textPath, 0o100755);
-    const { errors } = await copy({
+    const reporter = new ConsoleActionReporter();
+    await copy({
+      reporter,
       destination: destinationPath,
       rootPath,
+      waitForListeners: true,
     });
 
-    expect(errors).toStrictEqual([]);
+    expect(reporter.errorCount).toBe(0);
     const sourceList = await System.fs.readdir(rootPath);
     expect(sourceList).toStrictEqual(["test.bin", "test.sh"]);
     const destinationList = await System.fs.readdir(destinationPath);

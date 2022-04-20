@@ -1,3 +1,4 @@
+import { ConsoleActionReporter } from "./ConsoleActionReporter";
 import * as Path from "path";
 import { getBluehawk, System } from "../../bluehawk";
 import { snip } from "./snip";
@@ -5,7 +6,7 @@ import { snip } from "./snip";
 describe("snip", () => {
   beforeEach(getBluehawk.reset);
   beforeEach(System.useMemfs);
-
+  const reporter = new ConsoleActionReporter();
   it("generates correct RST snippets", async (done) => {
     const rootPath = Path.resolve("/path/to/project");
     const destinationPath = "/destination";
@@ -37,6 +38,7 @@ describe("snip", () => {
     );
 
     await snip({
+      reporter,
       paths: [rootPath],
       destination: destinationPath,
       state: undefined,
@@ -104,6 +106,7 @@ line 9
     );
 
     const errors = await snip({
+      reporter,
       paths: [rootPath],
       destination: destinationPath,
       state: undefined,
@@ -165,6 +168,7 @@ line 9
     await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
 
     const errors = await snip({
+      reporter,
       paths: [rootPath],
       destination: destinationPath,
       waitForListeners: true,
@@ -237,12 +241,14 @@ struct ContentView: SwiftUI.App {
     await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
 
     await snip({
+      reporter,
       paths: [rootPath],
       destination: destinationPathSync,
       format: "rst",
       state: "sync",
     });
     await snip({
+      reporter,
       paths: [rootPath],
       destination: destinationPathLocal,
       format: "rst",
@@ -355,6 +361,7 @@ struct ContentView: SwiftUI.App {
     await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
 
     await snip({
+      reporter,
       paths: [rootPath],
       destination: destinationPathLocal,
       id: [snippet_1, snippet_2],

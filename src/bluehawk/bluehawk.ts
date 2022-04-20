@@ -157,12 +157,12 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
    */
   parse = (
     source: Document,
-    options: {
+    options?: {
       languageSpecification?: LanguageSpecification;
-      reporter: ActionReporter;
+      reporter?: ActionReporter;
     }
   ): ParseResult => {
-    const { reporter, languageSpecification } = options;
+    const { reporter, languageSpecification } = options ?? {};
     // First, quickly check to see if this even has any tags.
     if (!TAG_PATTERN.test(source.text.original)) {
       return {
@@ -176,10 +176,7 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     try {
       parser = this._parserStore.getParser(languageSpecification ?? source);
     } catch (error) {
-      console.warn(
-        `falling back to plaintext parser for ${source.path}: ${error.message}`
-      );
-      reporter.onParserNotFound({
+      reporter?.onParserNotFound({
         sourcePath: source.path,
         error,
       });

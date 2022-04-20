@@ -61,7 +61,7 @@ export const copy = async (
         type: "binary",
       });
     }
-    onBinaryFile && (await onBinaryFile(filePath));
+    args.onBinaryFile && args.onBinaryFile(filePath);
   };
 
   // If a file contains the state tag, the processor will generate multiple
