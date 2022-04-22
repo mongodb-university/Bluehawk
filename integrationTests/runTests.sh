@@ -15,22 +15,29 @@ function checksum() {
   popd > /dev/null
 }
 
-# Run tests
-TESTS=("snip")
+# Select tests
+if [ -z "$1" ]
+then
+  TESTS=`find . -name "test.sh"`
+else
+  TESTS="$1"/test.sh
+fi
 
+# Run tests
 for TEST in $TESTS
 do
-  ./"$TEST"/test.sh
-  checksum ./"$TEST"/expected
+  TEST_DIR="$(dirname "$TEST")"
+  "$TEST"
+  checksum ./"$TEST_DIR"/expected
   EXPECTED_CHECKSUM=$CHECKSUM_RESULT
-  checksum ./"$TEST"/output
+  checksum ./"$TEST_DIR"/output
   OUTPUT_CHECKSUM=$CHECKSUM_RESULT
   if [ "$EXPECTED_CHECKSUM" != "$OUTPUT_CHECKSUM" ]
   then
-    echo "Test failed: $TEST"
-    echo "Compare ./$TEST/expected and ./$TEST/output to debug."
+    echo "Test failed: $TEST_DIR"
+    echo "Compare ./$TEST_DIR/expected and ./$TEST_DIR/output to debug."
     exit 1
   else
-    echo "✅ Test passed: $TEST"
+    echo "✅ Test passed: $TEST_DIR"
   fi
 done
