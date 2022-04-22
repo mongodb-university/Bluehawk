@@ -4,6 +4,7 @@ import {
   withDestinationOption,
   withStateOption,
   withIgnoreOption,
+  withLogLevelOption,
   ActionArgs,
   CopyArgs,
   copy,
@@ -15,10 +16,12 @@ const commandModule: CommandModule<
 > = {
   command: "copy <rootPath>",
   builder: (yargs): Argv<CopyArgs> => {
-    return withIgnoreOption(withStateOption(withDestinationOption(yargs)));
+    return withLogLevelOption(
+      withIgnoreOption(withStateOption(withDestinationOption(yargs)))
+    );
   },
   handler: async (args: Arguments<CopyArgs>) => {
-    const reporter = new ConsoleActionReporter();
+    const reporter = new ConsoleActionReporter(args);
     await copy({ ...args, reporter });
     reporter.printSummary();
     process.exit(reporter.errorCount > 0 ? 1 : 0);

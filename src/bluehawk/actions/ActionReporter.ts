@@ -38,9 +38,10 @@ export interface ActionReporter {
 }
 
 export enum LogLevel {
-  Info = 0,
-  Warning = 1,
-  Error = 2,
+  None = 0,
+  Error,
+  Warning,
+  Info,
 }
 
 export type FileEvent = {

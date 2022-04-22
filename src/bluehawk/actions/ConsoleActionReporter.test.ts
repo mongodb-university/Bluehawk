@@ -101,5 +101,12 @@ describe("ConsoleActionReporter", () => {
     expect(counter.log).toBe(0);
     expect(counter.warn).toBe(0);
     expect(counter.error).toBeGreaterThan(0);
+
+    counter = new ConsoleCounter();
+    reporter.logLevel = LogLevel.None;
+    dummyReport(reporter);
+    expect(counter.log).toBe(0);
+    expect(counter.warn).toBe(0);
+    expect(counter.error).toBe(0);
   });
 });

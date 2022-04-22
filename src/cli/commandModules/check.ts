@@ -3,6 +3,7 @@ import { CommandModule } from "yargs";
 import {
   withIgnoreOption,
   withJsonOption,
+  withLogLevelOption,
   ActionArgs,
   CheckArgs,
   check,
@@ -14,10 +15,10 @@ const commandModule: CommandModule<
 > = {
   command: "check <paths..>",
   builder(yargs) {
-    return withJsonOption(withIgnoreOption(yargs));
+    return withLogLevelOption(withJsonOption(withIgnoreOption(yargs)));
   },
   async handler(args) {
-    const reporter = new ConsoleActionReporter();
+    const reporter = new ConsoleActionReporter(args);
     await check({ ...args, reporter });
     reporter.printSummary();
     process.exit(reporter.errorCount > 0 ? 1 : 0);

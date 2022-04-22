@@ -1,6 +1,10 @@
 import { ConsoleActionReporter } from "./../../../bluehawk/actions/ConsoleActionReporter";
 import { CommandModule } from "yargs";
-import { withIgnoreOption, withJsonOption } from "../../../bluehawk/options";
+import {
+  withIgnoreOption,
+  withJsonOption,
+  withLogLevelOption,
+} from "../../../bluehawk/options";
 import { ActionArgs, ListStatesArgs, listStates } from "../../../bluehawk";
 
 const commandModule: CommandModule<
@@ -9,10 +13,10 @@ const commandModule: CommandModule<
 > = {
   command: "states <paths..>",
   builder(argv) {
-    return withJsonOption(withIgnoreOption(argv));
+    return withLogLevelOption(withJsonOption(withIgnoreOption(argv)));
   },
   async handler(args) {
-    const reporter = new ConsoleActionReporter();
+    const reporter = new ConsoleActionReporter(args);
     await listStates({ ...args, reporter });
     reporter.printSummary();
     process.exit(reporter.errorCount > 0 ? 1 : 0);
