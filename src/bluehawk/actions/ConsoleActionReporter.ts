@@ -97,7 +97,7 @@ export class ConsoleActionReporter implements ActionReporter {
     }
   }
 
-  summary(): void {
+  printSummary(): void {
     const { binaryFiles, errors, textFiles, filesWritten } = this._count;
     console.log(`Processed ${binaryFiles + textFiles} files:
 - ${binaryFiles} binary files

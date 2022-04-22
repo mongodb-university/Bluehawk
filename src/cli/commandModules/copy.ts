@@ -20,7 +20,7 @@ const commandModule: CommandModule<
   handler: async (args: Arguments<CopyArgs>) => {
     const reporter = new ConsoleActionReporter();
     await copy({ ...args, reporter });
-    reporter.summary();
+    reporter.printSummary();
     process.exit(reporter.errorCount > 0 ? 1 : 0);
   },
   aliases: [],

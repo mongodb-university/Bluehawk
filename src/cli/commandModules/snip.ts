@@ -26,7 +26,7 @@ const commandModule: CommandModule<ActionArgs & { paths: string[] }, SnipArgs> =
     handler: async (args: Arguments<SnipArgs>) => {
       const reporter = new ConsoleActionReporter();
       await snip({ ...args, reporter });
-      reporter.summary();
+      reporter.printSummary();
       process.exit(reporter.errorCount > 0 ? 1 : 0);
     },
     aliases: [],

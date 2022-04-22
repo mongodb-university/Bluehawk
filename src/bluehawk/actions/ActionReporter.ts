@@ -34,7 +34,7 @@ export interface ActionReporter {
 
     Users should call this after an action is complete.
    */
-  summary(): void;
+  printSummary(): void;
 }
 
 export enum LogLevel {

@@ -14,7 +14,7 @@ const commandModule: CommandModule<
   async handler(args) {
     const reporter = new ConsoleActionReporter();
     await listStates({ ...args, reporter });
-    reporter.summary();
+    reporter.printSummary();
     process.exit(reporter.errorCount > 0 ? 1 : 0);
   },
   aliases: [],
