@@ -1,0 +1,11 @@
+Hi, this is a sample text.
+
+:state-start: state1
+This text should be in state1
+:state-end:
+:state-start: state2
+This text should be in state2
+:state-end:
+
+That's all, folks!
+

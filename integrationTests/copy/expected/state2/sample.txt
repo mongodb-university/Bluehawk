@@ -1,0 +1,6 @@
+Hi, this is a sample text.
+
+This text should be in state2
+
+That's all, folks!
+

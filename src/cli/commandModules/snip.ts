@@ -1,3 +1,4 @@
+import { ConsoleActionReporter } from "./../../bluehawk/actions/ConsoleActionReporter";
 import { CommandModule, Arguments, Argv } from "yargs";
 import {
   withDestinationOption,
@@ -5,6 +6,7 @@ import {
   withIdOption,
   withIgnoreOption,
   withGenerateFormattedCodeSnippetsOption,
+  withLogLevelOption,
 } from "../../bluehawk/options";
 import { ActionArgs, SnipArgs, snip } from "../../bluehawk";
 
@@ -12,26 +14,23 @@ const commandModule: CommandModule<ActionArgs & { paths: string[] }, SnipArgs> =
   {
     command: "snip <paths..>",
     builder: (yargs): Argv<SnipArgs> => {
-      return withIgnoreOption(
-        withStateOption(
-          withIdOption(
-            withDestinationOption(
-              withGenerateFormattedCodeSnippetsOption(yargs)
+      return withLogLevelOption(
+        withIgnoreOption(
+          withStateOption(
+            withIdOption(
+              withDestinationOption(
+                withGenerateFormattedCodeSnippetsOption(yargs)
+              )
             )
           )
         )
       );
     },
     handler: async (args: Arguments<SnipArgs>) => {
-      const errors = await snip(args);
-      if (errors.length !== 0) {
-        console.error(
-          `Exiting with ${errors.length} error${
-            errors.length === 1 ? "" : "s"
-          }.`
-        );
-        process.exit(1);
-      }
+      const reporter = new ConsoleActionReporter(args);
+      await snip({ ...args, reporter });
+      reporter.printSummary();
+      process.exit(reporter.errorCount > 0 ? 1 : 0);
     },
     aliases: [],
     describe: "extract snippets",

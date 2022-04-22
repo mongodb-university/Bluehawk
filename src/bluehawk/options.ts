@@ -78,3 +78,14 @@ export function withJsonOption<T>(
     once: true,
   });
 }
+
+export function withLogLevelOption<T>(
+  yargs: Argv<T>
+): Argv<T & { logLevel?: number }> {
+  return option(yargs, "logLevel", {
+    number: true,
+    describe:
+      "set the reporter log level. 0=none, 1=errors only, 2=warnings & above, 3=all",
+    once: true,
+  });
+}

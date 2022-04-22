@@ -151,9 +151,7 @@ describe("bluehawk", () => {
       });
     });
 
-    await bluehawk.parseAndProcess("/path/to", {
-      waitForListeners: true,
-    });
+    await bluehawk.parseAndProcess("/path/to");
     expect(calledForPath).toStrictEqual([
       "/path/to/code.codeblock.foo.js",
       "/path/to/code.js",

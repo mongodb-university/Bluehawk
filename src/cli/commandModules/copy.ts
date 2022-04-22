@@ -1,11 +1,13 @@
+import { ConsoleActionReporter } from "./../../bluehawk/actions/ConsoleActionReporter";
 import { CommandModule, Arguments, Argv } from "yargs";
 import {
   withDestinationOption,
   withStateOption,
   withIgnoreOption,
+  withLogLevelOption,
   ActionArgs,
   CopyArgs,
-  copy
+  copy,
 } from "../..";
 
 const commandModule: CommandModule<
@@ -14,16 +16,15 @@ const commandModule: CommandModule<
 > = {
   command: "copy <rootPath>",
   builder: (yargs): Argv<CopyArgs> => {
-    return withIgnoreOption(withStateOption(withDestinationOption(yargs)));
+    return withLogLevelOption(
+      withIgnoreOption(withStateOption(withDestinationOption(yargs)))
+    );
   },
   handler: async (args: Arguments<CopyArgs>) => {
-    const errors = await copy(args);
-    if (errors.length !== 0) {
-      console.error(
-        `Exiting with ${errors.length} error${errors.length === 1 ? "" : "s"}.`
-      );
-      process.exit(1);
-    }
+    const reporter = new ConsoleActionReporter(args);
+    await copy({ ...args, reporter });
+    reporter.printSummary();
+    process.exit(reporter.errorCount > 0 ? 1 : 0);
   },
   aliases: [],
   describe:

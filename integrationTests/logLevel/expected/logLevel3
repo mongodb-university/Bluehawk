@@ -1,0 +1,11 @@
+parsed file: path/to/project/input/normalFile.txt
+bluehawk errors on path/to/project/input/sample.txt:
+(parser) Line 11:1 - 11:1(162) blockTag: After Newline, expected TagEnd but found EOF
+bluehawk errors on path/to/project/input/sample.txt:
+(parser) Line 11:1 - 11:1(162) blockTag: After Newline, expected TagEnd but found EOF
+state not found: notfound
+Processed 3 files:
+- 0 binary files
+- 3 text files
+- 2 errors
+- 0 files written
