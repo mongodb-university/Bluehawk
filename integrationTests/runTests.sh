@@ -11,7 +11,7 @@ export BLUEHAWK="node $PROJECT_ROOT/build/src/main"
 
 function checksum() {
   pushd "$1" > /dev/null
-  CHECKSUM_RESULT=`find . -type f -exec shasum {} + | sort | shasum`
+  CHECKSUM_RESULT=`find . -type f ! -name ".DS_Store" -exec shasum {} + | sort | shasum`
   popd > /dev/null
 }
 
