@@ -15,13 +15,13 @@ npm run build
 If compilation is successful, you can run bluehawk like so:
 
 ```sh
-node build/src/cli/main.js snip -o <output directory> <folder to source file or directory>
+node build/src/main.js snip -o <output directory> <folder to source file or directory>
 ```
 
 Which you can alias as:
 
 ```sh
-alias bluehawk-dev="node /path/to/bluehawk/build/src/cli/main.js"
+alias bluehawk-dev="node /path/to/bluehawk/build/src/main.js"
 ```
 
 # Running Tests
