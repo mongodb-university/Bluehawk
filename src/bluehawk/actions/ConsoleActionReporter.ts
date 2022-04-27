@@ -49,7 +49,7 @@ export class ConsoleActionReporter implements ActionReporter {
     ++this._count.filesWritten;
     if (this.logLevel >= LogLevel.Info) {
       console.log(
-        `wrote ${event.type} file based on ${event.sourcePath} -> ${event.destinationPath}`
+        `wrote ${event.type} file based on ${event.sourcePath} -> ${event.outputPath}`
       );
     }
   }
@@ -85,7 +85,7 @@ export class ConsoleActionReporter implements ActionReporter {
     ++this._count.errors;
     if (this.logLevel >= LogLevel.Error) {
       console.error(
-        `failed to write file ${event.sourcePath} -> ${event.destinationPath}: ${event.error.message}`
+        `failed to write file ${event.sourcePath} -> ${event.outputPath}: ${event.error.message}`
       );
     }
   }

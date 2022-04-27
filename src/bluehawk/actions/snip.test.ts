@@ -11,13 +11,13 @@ describe("snip", () => {
 
   it("generates correct RST snippets AND docusaurus snippets", async (done) => {
     const rootPath = Path.resolve("/path/to/project");
-    const destinationPath = "/destination";
+    const outputPath = "/output";
     const testFileName = "test.js";
 
     await System.fs.mkdir(rootPath, {
       recursive: true,
     });
-    await System.fs.mkdir(destinationPath, {
+    await System.fs.mkdir(outputPath, {
       recursive: true,
     });
     await System.fs.writeFile(
@@ -42,22 +42,22 @@ describe("snip", () => {
     await snip({
       reporter,
       paths: [rootPath],
-      destination: destinationPath,
+      output: outputPath,
       state: undefined,
       ignore: undefined,
       format: ["rst", "docusaurus"],
       waitForListeners: true,
     });
 
-    const destinationList = await System.fs.readdir(destinationPath);
-    expect(destinationList).toStrictEqual([
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual([
       "test.codeblock.foo.js",
       "test.codeblock.foo.js.code-block.md",
       "test.codeblock.foo.js.code-block.rst",
     ]);
 
     const rstFileContents = await System.fs.readFile(
-      Path.join(destinationPath, "test.codeblock.foo.js.code-block.rst"),
+      Path.join(outputPath, "test.codeblock.foo.js.code-block.rst"),
       "utf8"
     );
     expect(rstFileContents).toStrictEqual(`.. code-block:: javascript
@@ -73,7 +73,7 @@ describe("snip", () => {
 `);
 
     const mdFileContents = await System.fs.readFile(
-      Path.join(destinationPath, "test.codeblock.foo.js.code-block.md"),
+      Path.join(outputPath, "test.codeblock.foo.js.code-block.md"),
       "utf8"
     );
     expect(mdFileContents).toStrictEqual(`const bar = "foo"
@@ -91,13 +91,13 @@ console.log(bar);
 
   it("generates correct docusarus-formatted code blocks for start and end blocks at the beginning and end of the block", async (done) => {
     const rootPath = Path.resolve("/path/to/project");
-    const destinationPath = "/destination";
+    const outputPath = "/output";
     const testFileName = "test.js";
 
     await System.fs.mkdir(rootPath, {
       recursive: true,
     });
-    await System.fs.mkdir(destinationPath, {
+    await System.fs.mkdir(outputPath, {
       recursive: true,
     });
     await System.fs.writeFile(
@@ -122,21 +122,21 @@ console.log(bar);
     await snip({
       reporter,
       paths: [rootPath],
-      destination: destinationPath,
+      output: outputPath,
       state: undefined,
       ignore: undefined,
       format: "docusaurus",
       waitForListeners: true,
     });
 
-    const destinationList = await System.fs.readdir(destinationPath);
-    expect(destinationList).toStrictEqual([
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual([
       "test.codeblock.foo.js",
       "test.codeblock.foo.js.code-block.md",
     ]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(destinationPath, "test.codeblock.foo.js.code-block.md"),
+      Path.join(outputPath, "test.codeblock.foo.js.code-block.md"),
       "utf8"
     );
     expect(fileContents).toStrictEqual(`// highlight-start
@@ -154,13 +154,13 @@ console.log(bar);
 
   it("correctly logics multiple ranges within RST snippets", async () => {
     const rootPath = Path.resolve("/path/to/project");
-    const destinationPath = "/destinationB";
+    const outputPath = "/outputB";
     const testFileName = "test.js";
 
     await System.fs.mkdir(rootPath, {
       recursive: true,
     });
-    await System.fs.mkdir(destinationPath, {
+    await System.fs.mkdir(outputPath, {
       recursive: true,
     });
     await System.fs.writeFile(
@@ -189,20 +189,20 @@ line 9
     await snip({
       reporter,
       paths: [rootPath],
-      destination: destinationPath,
+      output: outputPath,
       state: undefined,
       ignore: undefined,
       format: "rst",
       waitForListeners: true,
     });
-    const destinationList = await System.fs.readdir(destinationPath);
-    expect(destinationList).toStrictEqual([
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual([
       "test.codeblock.foo.js",
       "test.codeblock.foo.js.code-block.rst",
     ]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(destinationPath, "test.codeblock.foo.js.code-block.rst"),
+      Path.join(outputPath, "test.codeblock.foo.js.code-block.rst"),
       "utf8"
     );
     expect(fileContents).toStrictEqual(`.. code-block:: javascript
@@ -222,13 +222,13 @@ line 9
 
   it("correctly logics multiple ranges within Docusaurus snippets", async () => {
     const rootPath = Path.resolve("/path/to/project");
-    const destinationPath = "/destinationB";
+    const outputPath = "/outputB";
     const testFileName = "test.js";
 
     await System.fs.mkdir(rootPath, {
       recursive: true,
     });
-    await System.fs.mkdir(destinationPath, {
+    await System.fs.mkdir(outputPath, {
       recursive: true,
     });
     await System.fs.writeFile(
@@ -257,21 +257,21 @@ line 9
     await snip({
       reporter,
       paths: [rootPath],
-      destination: destinationPath,
+      output: outputPath,
       state: undefined,
       ignore: undefined,
       format: "docusaurus",
       waitForListeners: true,
     });
 
-    const destinationList = await System.fs.readdir(destinationPath);
-    expect(destinationList).toStrictEqual([
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual([
       "test.codeblock.foo.js",
       "test.codeblock.foo.js.code-block.md",
     ]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(destinationPath, "test.codeblock.foo.js.code-block.md"),
+      Path.join(outputPath, "test.codeblock.foo.js.code-block.md"),
       "utf8"
     );
     expect(fileContents).toStrictEqual(`line 1
@@ -307,13 +307,13 @@ line 9
 
 `;
     const rootPath = "/path/to/project";
-    const destinationPath = "/carriageReturns";
+    const outputPath = "/carriageReturns";
     const testFileName = "test.js";
 
     await System.fs.mkdir(rootPath, {
       recursive: true,
     });
-    await System.fs.mkdir(destinationPath, {
+    await System.fs.mkdir(outputPath, {
       recursive: true,
     });
     await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
@@ -321,15 +321,15 @@ line 9
     await snip({
       reporter,
       paths: [rootPath],
-      destination: destinationPath,
+      output: outputPath,
       waitForListeners: true,
     });
 
-    const destinationList = await System.fs.readdir(destinationPath);
-    expect(destinationList).toStrictEqual(["test.codeblock.foo.js"]);
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual(["test.codeblock.foo.js"]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(destinationPath, "test.codeblock.foo.js"),
+      Path.join(outputPath, "test.codeblock.foo.js"),
       "utf8"
     );
     expect(JSON.stringify(fileContents)).toStrictEqual(
@@ -375,17 +375,17 @@ struct ContentView: SwiftUI.App {
 // :code-block-end:
 `;
     const rootPath = "/path/to/project";
-    const destinationPathSync = "/stateAndEmphasize/sync";
-    const destinationPathLocal = "/stateAndEmphasize/local";
+    const outputPathSync = "/stateAndEmphasize/sync";
+    const outputPathLocal = "/stateAndEmphasize/local";
     const testFileName = "test.swift";
 
     await System.fs.mkdir(rootPath, {
       recursive: true,
     });
-    await System.fs.mkdir(destinationPathSync, {
+    await System.fs.mkdir(outputPathSync, {
       recursive: true,
     });
-    await System.fs.mkdir(destinationPathLocal, {
+    await System.fs.mkdir(outputPathLocal, {
       recursive: true,
     });
     await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
@@ -393,20 +393,20 @@ struct ContentView: SwiftUI.App {
     await snip({
       reporter,
       paths: [rootPath],
-      destination: destinationPathSync,
+      output: outputPathSync,
       format: "rst",
       state: "sync",
     });
     await snip({
       reporter,
       paths: [rootPath],
-      destination: destinationPathLocal,
+      output: outputPathLocal,
       format: "rst",
       state: "local",
     });
 
     let fileContentsSync = await System.fs.readFile(
-      Path.join(destinationPathSync, "test.codeblock.content-view.swift"),
+      Path.join(outputPathSync, "test.codeblock.content-view.swift"),
       "utf8"
     );
     // Verify states are working in non-rst version
@@ -430,7 +430,7 @@ struct ContentView: SwiftUI.App {
     // Now check states for rst version
     fileContentsSync = await System.fs.readFile(
       Path.join(
-        destinationPathSync,
+        outputPathSync,
         "test.codeblock.content-view.swift.code-block.rst"
       ),
       "utf8"
@@ -458,7 +458,7 @@ struct ContentView: SwiftUI.App {
 
     const fileContentsLocal = await System.fs.readFile(
       Path.join(
-        destinationPathLocal,
+        outputPathLocal,
         "test.codeblock.content-view.swift.code-block.rst"
       ),
       "utf8"
@@ -499,13 +499,13 @@ struct ContentView: SwiftUI.App {
     const rootPath = "/path/to/project";
     const snippetName1 = `test.codeblock.${snippet_1}.js`;
     const snippetName2 = `test.codeblock.${snippet_2}.js`;
-    const destinationPathLocal = "/stateAndEmphasize/local";
+    const outputPathLocal = "/stateAndEmphasize/local";
     const testFileName = "test.js";
 
     await System.fs.mkdir(rootPath, {
       recursive: true,
     });
-    await System.fs.mkdir(destinationPathLocal, {
+    await System.fs.mkdir(outputPathLocal, {
       recursive: true,
     });
     await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
@@ -513,20 +513,20 @@ struct ContentView: SwiftUI.App {
     await snip({
       reporter,
       paths: [rootPath],
-      destination: destinationPathLocal,
+      output: outputPathLocal,
       id: [snippet_1, snippet_2],
     });
 
     const fileContents1Sync = await System.fs.readFile(
-      Path.join(destinationPathLocal, snippetName1),
+      Path.join(outputPathLocal, snippetName1),
       "utf8"
     );
     const fileContents2Sync = await System.fs.readFile(
-      Path.join(destinationPathLocal, snippetName2),
+      Path.join(outputPathLocal, snippetName2),
       "utf8"
     );
 
-    const allFilesInDest = await System.fs.readdir(destinationPathLocal);
+    const allFilesInDest = await System.fs.readdir(outputPathLocal);
     // Verify that only the snippet with the requested ID was produced
     expect(allFilesInDest).toStrictEqual([snippetName1, snippetName2]);
     // Verify that the contents of the requested snippet is correct

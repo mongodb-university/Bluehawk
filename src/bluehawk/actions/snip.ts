@@ -10,7 +10,7 @@ type Format = "rst" | "docusaurus";
 
 export interface SnipArgs extends ActionArgs {
   paths: string[];
-  destination: string;
+  output: string;
   state?: string;
   id?: string | string[];
   ignore?: string | string[];
@@ -20,11 +20,11 @@ export interface SnipArgs extends ActionArgs {
 export const createFormattedCodeBlock = async ({
   format,
   result,
-  destination,
+  output,
   reporter,
 }: {
   result: ProcessResult;
-  destination: string;
+  output: string;
   format: string;
   reporter: ActionReporter;
 }): Promise<void> => {
@@ -32,30 +32,24 @@ export const createFormattedCodeBlock = async ({
     const formattedCodeblock = await formatInRst(result);
 
     const { document } = result;
-    const targetPath = path.join(
-      destination,
-      `${document.basename}.code-block.rst`
-    );
+    const targetPath = path.join(output, `${document.basename}.code-block.rst`);
     await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
 
     reporter.onFileWritten({
       type: "text",
       sourcePath: document.path,
-      destinationPath: targetPath,
+      outputPath: targetPath,
     });
   } else if (format === "docusaurus") {
     const formattedCodeblock = await formatInDocusaurus(result);
 
     const { document } = result;
-    const targetPath = path.join(
-      destination,
-      `${document.basename}.code-block.md`
-    );
+    const targetPath = path.join(output, `${document.basename}.code-block.md`);
     await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
     reporter.onFileWritten({
       type: "text",
       sourcePath: document.path,
-      destinationPath: targetPath,
+      outputPath: targetPath,
     });
   } // add additional elses + "formatInLanguage" methods to handle other markup languages
 };
@@ -170,8 +164,7 @@ export const formatInDocusaurus = async (
 export const snip = async (
   args: WithActionReporter<SnipArgs>
 ): Promise<void> => {
-  const { paths, destination, state, id, ignore, waitForListeners, reporter } =
-    args;
+  const { paths, output, state, id, ignore, waitForListeners, reporter } = args;
   const formats =
     args.format && !Array.isArray(args.format) ? [args.format] : args.format;
   const errors: string[] = [];
@@ -194,7 +187,7 @@ export const snip = async (
     if (document.attributes["snippet"] === undefined) {
       return;
     }
-    const targetPath = path.join(destination, document.basename);
+    const targetPath = path.join(output, document.basename);
 
     // Special handler for snippets in state tags
     if (state !== undefined) {
@@ -230,7 +223,7 @@ export const snip = async (
       reporter.onFileWritten({
         type: "text",
         sourcePath: document.path,
-        destinationPath: targetPath,
+        outputPath: targetPath,
       });
 
       // Create formatted snippet block
@@ -238,7 +231,7 @@ export const snip = async (
         for (const format of formats) {
           await createFormattedCodeBlock({
             result,
-            destination,
+            output,
             format,
             reporter,
           });
@@ -247,7 +240,7 @@ export const snip = async (
     } catch (error) {
       reporter.onWriteFailed({
         type: "text",
-        destinationPath: targetPath,
+        outputPath: targetPath,
         sourcePath: parseResult.source.path,
         error,
       });

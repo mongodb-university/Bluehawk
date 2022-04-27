@@ -123,5 +123,5 @@ implementation code, but no "TODO":
 ```
 
 You can run Bluehawk on an entire directory, and each file in the repo will be
-copied or transformed to the destination. This makes it easy to copy one state
+copied or transformed to the output directory. This makes it easy to copy one state
 of the entire tutorial source into another repo that learners can clone.
