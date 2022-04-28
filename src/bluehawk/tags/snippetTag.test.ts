@@ -19,7 +19,7 @@ describe("snippet Tag", () => {
     expect(true).toBeTruthy();
   });
 });`;
-    const source = new Document({
+    const input = new Document({
       text: `const bar = "foo"
 
 // :snippet-start: foo
@@ -30,7 +30,7 @@ console.log(bar);
       path: "snippet.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(Object.keys(files)).toStrictEqual([
       "snippet.test.js",
@@ -43,7 +43,7 @@ console.log(bar);
   });
 
   it("dedents the snippet", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `const bar = "foo"
     // :snippet-start: foo
      abc
@@ -54,7 +54,7 @@ console.log(bar);
       path: "snippet.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(
       files["snippet.test.codeblock.foo.js"].document.text.toString()
@@ -68,7 +68,7 @@ ghi
   });
 
   it("dedents a realistic snippet", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `        // :snippet-start: delete-collection
         let realm = try! Realm()
         try! realm.write {
@@ -83,7 +83,7 @@ ghi
       path: "snippet.test.swift",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(
       files[
@@ -104,7 +104,7 @@ try! realm.write {
   });
 
   it("handles empty snippets", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `const bar = "foo"
     // :snippet-start: foo
     // :snippet-end:
@@ -112,7 +112,7 @@ try! realm.write {
       path: "snippet.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(
       files["snippet.test.codeblock.foo.js"].document.text.toString()
@@ -121,7 +121,7 @@ try! realm.write {
   });
 
   it("handles adjusted offsets", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `some text
 // :snippet-start: foo
 // :remove-start:
@@ -132,7 +132,7 @@ hide this
       path: "snippet.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(
       files["snippet.test.codeblock.foo.js"].document.text.toString()
@@ -141,7 +141,7 @@ hide this
   });
 
   it("supports nested snippets", async () => {
-    const source = new Document({
+    const input = new Document({
       text: `some text
 // :snippet-start: a
 hello
@@ -154,7 +154,7 @@ world
       path: "snippet.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["snippet.test.codeblock.a.js"].document.text.toString()).toBe(
       `hello

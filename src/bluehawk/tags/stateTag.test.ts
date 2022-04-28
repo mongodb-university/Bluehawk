@@ -47,7 +47,7 @@ console.log("we are foo");
 end
 `;
     const parseResult = bluehawk.parse(multipleInput);
-    expect(parseResult.source.path).toBe("stateTag.test.js");
+    expect(parseResult.input.path).toBe("stateTag.test.js");
     const files = await bluehawk.process(parseResult);
     // wait what? Two snippets?
     // It's because the snippet lives outside of the states
@@ -99,7 +99,7 @@ console.log("we are foo");
 end
 `;
     const parseResult = bluehawk.parse(multipleInput);
-    expect(parseResult.source.path).toBe("stateTag.test.js");
+    expect(parseResult.input.path).toBe("stateTag.test.js");
     const files = await bluehawk.process(parseResult);
     // wait what? Two snippets?
     // It's because the snippet lives outside of the states
@@ -162,7 +162,7 @@ console.log("we are foo");
 end
 `;
     const parseResult = bluehawk.parse(multipleInput);
-    expect(parseResult.source.path).toBe("stateTag.test.js");
+    expect(parseResult.input.path).toBe("stateTag.test.js");
     const files = await bluehawk.process(parseResult);
     // wait what? Two snippets?
     // It's because the snippet lives outside of the states

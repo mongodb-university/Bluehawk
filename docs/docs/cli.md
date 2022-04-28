@@ -19,7 +19,7 @@ bluehawk snip --output <output-directory> <input-directory-or-file>
 
 Output "snippet files" that contain only the content of `code-block` or
 `snippet` Bluehawk tags, named in the format
-`<source-file-name>.codeblock.<codeblock-name>.<source-file-extension>`.
+`<input-file-name>.codeblock.<codeblock-name>.<input-file-extension>`.
 By default, this command generates snippets
 that omit all `state` tag contents. However,
 you can use the `--state` flag to generate snippet files that include

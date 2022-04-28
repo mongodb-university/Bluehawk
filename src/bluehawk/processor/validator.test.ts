@@ -28,7 +28,7 @@ describe("validator", () => {
     }),
   };
 
-  const source = new Document({
+  const input = new Document({
     path: "",
     text: "",
   });
@@ -50,7 +50,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     const errors = validateTags(result.tagNodes, {});
     expect(errors.length).toBe(0);
   });
@@ -66,7 +66,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
@@ -94,7 +94,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
@@ -122,7 +122,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(2);
     expect(errors[0].message).toStrictEqual(
@@ -154,7 +154,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(0);
   });
@@ -174,7 +174,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
@@ -202,7 +202,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
@@ -230,7 +230,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(0);
   });
@@ -250,7 +250,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
@@ -278,7 +278,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
@@ -320,7 +320,7 @@ the quick brown fox jumped
     expect(parseResult.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
     assert(parseResult.cst !== undefined);
-    const result = visitor.visit(parseResult.cst, source);
+    const result = visitor.visit(parseResult.cst, input);
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors).toStrictEqual([
       {

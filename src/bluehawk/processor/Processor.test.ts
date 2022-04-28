@@ -19,13 +19,13 @@ describe("processor", () => {
   it("ignores unknown tags", async (done) => {
     // NOTE: This is not necessarily the desired behavior, but it is the current
     // behavior.
-    const source = new Document({
+    const input = new Document({
       text: `:unknown-tag:
 `,
       path: "test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     expect(parseResult.tagNodes[0].tagName).toBe("unknown-tag");
     const files = await bluehawk.process(parseResult);
     expect(files["test.js"].document.text.toString()).toBe(`:unknown-tag:
@@ -34,13 +34,13 @@ describe("processor", () => {
   });
 
   it("supports async listeners", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `abc\n`,
       path: "test.js",
     });
 
     const bluehawk = new Bluehawk();
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
 
     let didCallListener = 0;
     let didWaitForListener = 0;
@@ -70,13 +70,13 @@ describe("processor", () => {
   });
 
   it("does not stop on misbehaving listeners", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `abc\n`,
       path: "test.js",
     });
 
     const bluehawk = new Bluehawk();
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
 
     let didCallListener = 0;
     let didWaitForListener = 0;

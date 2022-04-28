@@ -1,6 +1,6 @@
 import { WithActionReporter, ActionReporter } from "./ActionReporter";
 import * as path from "path";
-import { getBluehawk, EmphasizeSourceAttributes } from "../../bluehawk";
+import { getBluehawk, EmphasizeInputAttributes } from "../../bluehawk";
 import { System } from "../../bluehawk/io/System";
 import { ActionArgs } from "./ActionArgs";
 import { ProcessResult } from "../../bluehawk/processor/Processor";
@@ -37,7 +37,7 @@ export const createFormattedCodeBlock = async ({
 
     reporter.onFileWritten({
       type: "text",
-      sourcePath: document.path,
+      inputPath: document.path,
       outputPath: targetPath,
     });
   } else if (format === "docusaurus") {
@@ -48,7 +48,7 @@ export const createFormattedCodeBlock = async ({
     await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
     reporter.onFileWritten({
       type: "text",
-      sourcePath: document.path,
+      inputPath: document.path,
       outputPath: targetPath,
     });
   } // add additional elses + "formatInLanguage" methods to handle other markup languages
@@ -64,7 +64,7 @@ export const formatInRst = async (
 
   const emphasizeAttributes = document.attributes[
     "emphasize"
-  ] as EmphasizeSourceAttributes;
+  ] as EmphasizeInputAttributes;
 
   // nasty hack to cover the suffixes/rst languages we use most often
   // TODO: switch to a better mapping
@@ -133,7 +133,7 @@ export const formatInDocusaurus = async (
   // get the list of emphasize ranges, converting individual emphasize lines to ranges for simplicity
   const emphasizeAttributes = document.attributes[
     "emphasize"
-  ] as EmphasizeSourceAttributes;
+  ] as EmphasizeInputAttributes;
   const emphasizeRanges: { start: number; end: number }[] = [];
   if (emphasizeAttributes !== undefined) {
     for (const range of emphasizeAttributes.ranges) {
@@ -222,7 +222,7 @@ export const snip = async (
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
       reporter.onFileWritten({
         type: "text",
-        sourcePath: document.path,
+        inputPath: document.path,
         outputPath: targetPath,
       });
 
@@ -241,7 +241,7 @@ export const snip = async (
       reporter.onWriteFailed({
         type: "text",
         outputPath: targetPath,
-        sourcePath: parseResult.source.path,
+        inputPath: parseResult.input.path,
         error,
       });
     }
@@ -251,9 +251,9 @@ export const snip = async (
     reporter,
     ignore,
     waitForListeners: waitForListeners ?? false,
-    onErrors(sourcePath, errors) {
+    onErrors(inputPath, errors) {
       reporter.onBluehawkErrors({
-        sourcePath,
+        inputPath,
         errors,
       });
     },

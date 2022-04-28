@@ -51,7 +51,7 @@ async function traverse(
   return (await Promise.all(promises)).flat();
 }
 
-// Given a source entry point path, load all paths to files within, mindful of
+// Given a input entry point path, load all paths to files within, mindful of
 // .gitignore.
 export async function loadProjectPaths(project: Project): Promise<string[]> {
   const projectRoot = path.resolve(project.rootPath);

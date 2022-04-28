@@ -22,7 +22,7 @@ export const check = async (
   const addErrors = (filePath: string, errors: BluehawkError[]) => {
     reporter.onBluehawkErrors({
       errors,
-      sourcePath: filePath,
+      inputPath: filePath,
     });
     const existingErrors = fileToErrorMap.get(filePath) ?? [];
     fileToErrorMap.set(filePath, [...existingErrors, ...errors]);
@@ -30,13 +30,13 @@ export const check = async (
 
   // Define the handler for generating snippet files.
   bluehawk.subscribe(({ parseResult }) => {
-    const { errors, source } = parseResult;
+    const { errors, input } = parseResult;
     if (errors.length !== 0) {
-      addErrors(source.path, errors);
+      addErrors(input.path, errors);
     }
   });
 
-  // Run through all given source paths and process them.
+  // Run through all given input paths and process them.
   await bluehawk.parseAndProcess(paths, {
     ignore,
     onErrors: addErrors,

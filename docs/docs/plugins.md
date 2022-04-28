@@ -30,7 +30,7 @@ exports.register = (bluehawk) => {
 Usage:
 
 ```shell
-bluehawk --plugin ./myPlugin source.txt
+bluehawk --plugin ./myPlugin input.txt
 ```
 
 You can pass the --plugin flag multiple times to load different plugins or create a plugin that is composed of other plugins.

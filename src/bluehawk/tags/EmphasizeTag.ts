@@ -12,7 +12,7 @@ export interface EmphasizeRange {
   };
 }
 
-export interface EmphasizeSourceAttributes {
+export interface EmphasizeInputAttributes {
   ranges: EmphasizeRange[];
 }
 

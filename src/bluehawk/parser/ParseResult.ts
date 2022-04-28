@@ -6,6 +6,6 @@ import { LanguageSpecification } from "./LanguageSpecification";
 export interface ParseResult {
   errors: BluehawkError[];
   tagNodes: AnyTagNode[];
-  source: Document;
+  input: Document;
   languageSpecification?: LanguageSpecification;
 }

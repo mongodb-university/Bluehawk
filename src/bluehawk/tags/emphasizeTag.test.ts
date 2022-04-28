@@ -13,7 +13,7 @@ describe("emphasize tag", () => {
   });
 
   it("works as a one line tag", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `a
 b // :emphasize:
 c
@@ -21,7 +21,7 @@ c
       path: "test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["test.js"].document.text.toString()).toBe(
       `a
@@ -55,12 +55,12 @@ describe("some stuff", () => {
 console.log(bar);
 `;
 
-    const source = new Document({
+    const input = new Document({
       text: singleInput,
       path: "test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["test.js"].document.text.toString()).toBe(`const bar = "foo"
 
@@ -100,12 +100,12 @@ describe("some stuff", () => {
 console.log(bar);
 `;
 
-    const source = new Document({
+    const input = new Document({
       text: singleInput,
       path: "test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["test.js"].document.text.toString()).toBe(`const bar = "foo"
 
@@ -151,12 +151,12 @@ line 8
 // :emphasize-end:
 line 9`;
 
-    const source = new Document({
+    const input = new Document({
       text: singleInput,
       path: "test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["test.js"].document.text.toString()).toBe(`line 1
 line 2

@@ -14,7 +14,7 @@ describe("uncomment tag", () => {
   });
 
   it("uncomments", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `// :uncomment-start:
 //comment
 no comment
@@ -24,7 +24,7 @@ no comment
       path: "uncomment.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["uncomment.test.js"].document.text.toString()).toBe(
       `comment
@@ -36,7 +36,7 @@ no comment
   });
 
   it("handles one space after comments", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `// :uncomment-start:
 // comment
 no comment
@@ -46,7 +46,7 @@ no comment
       path: "uncomment.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["uncomment.test.js"].document.text.toString()).toBe(
       `comment
@@ -58,7 +58,7 @@ no comment
   });
 
   it("nests", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `// :uncomment-start:
 // comment
 // // :uncomment-start:
@@ -70,7 +70,7 @@ no comment
       path: "uncomment.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["uncomment.test.js"].document.text.toString()).toBe(
       `comment
@@ -82,7 +82,7 @@ no comment
   });
 
   it("uncomments only at the beginning of the line (after whitespace if any)", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `// :uncomment-start:
       a//
 leave me alone // comment
@@ -96,7 +96,7 @@ leave this alone // // double comment
       path: "uncomment.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["uncomment.test.js"].document.text.toString()).toBe(
       `      a//
@@ -112,7 +112,7 @@ leave this alone // // double comment
   });
 
   it("pairs with remove", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `// :uncomment-start:
 // comment
 // :remove-start:
@@ -127,7 +127,7 @@ no comment
       path: "uncomment.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["uncomment.test.js"].document.text.toString()).toBe(
       `comment

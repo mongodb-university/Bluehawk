@@ -84,7 +84,7 @@ export class Bluehawk {
   };
 
   /**
-    Runs through all given source paths to parse and process them.
+    Runs through all given input paths to parse and process them.
 
     @param path - The path or paths to the directory or files to parse and process.
     @param options - The options for parsing and processing.
@@ -119,7 +119,7 @@ export class Bluehawk {
         const blob = await System.fs.readFile(filePath);
         const stat = await System.fs.lstat(filePath);
         if (await isBinaryFile(blob, stat.size)) {
-          reporter?.onBinaryFile({ sourcePath: filePath });
+          reporter?.onBinaryFile({ inputPath: filePath });
           onBinaryFile && (await onBinaryFile(filePath));
           return;
         }
@@ -128,7 +128,7 @@ export class Bluehawk {
         const result = this.parse(document, { ...options, reporter });
         if (result.errors.length !== 0) {
           reporter?.onBluehawkErrors({
-            sourcePath: filePath,
+            inputPath: filePath,
             errors: result.errors,
           });
           onErrors && onErrors(filePath, result.errors);
@@ -136,7 +136,7 @@ export class Bluehawk {
         }
 
         reporter?.onFileParsed({
-          sourcePath: filePath,
+          inputPath: filePath,
           parseResult: result,
         });
         await this.process(result, options);
@@ -157,10 +157,10 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
   };
 
   /**
-    Parses the given source file into tags.
+    Parses the given input file into tags.
    */
   parse = (
-    source: Document,
+    input: Document,
     options?: {
       languageSpecification?: LanguageSpecification;
       reporter?: ActionReporter;
@@ -168,25 +168,25 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
   ): ParseResult => {
     const { reporter, languageSpecification } = options ?? {};
     // First, quickly check to see if this even has any tags.
-    if (!TAG_PATTERN.test(source.text.original)) {
+    if (!TAG_PATTERN.test(input.text.original)) {
       return {
         errors: [],
         tagNodes: [],
-        source,
+        input,
       };
     }
 
     let parser: IParser;
     try {
-      parser = this._parserStore.getParser(languageSpecification ?? source);
+      parser = this._parserStore.getParser(languageSpecification ?? input);
     } catch (error) {
       reporter?.onParserNotFound({
-        sourcePath: source.path,
+        inputPath: input.path,
         error,
       });
       parser = this._parserStore.getDefaultParser();
     }
-    const result = parser.parse(source);
+    const result = parser.parse(input);
     const validateErrors = validateTags(
       result.tagNodes,
       this._processor.processors
@@ -209,7 +209,7 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
   }
 
   /**
-    Executes the tags on the given source. Use [[Bluehawk.subscribe]] to get
+    Executes the tags on the given input. Use [[Bluehawk.subscribe]] to get
     results.
    */
   process = async (

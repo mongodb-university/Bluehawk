@@ -9,7 +9,7 @@ custom_edit_url: null
 ### Tested Code Examples
 
 Imagine you want to paste some code from a unit test into your docs. You can
-mark up the unit test source file like this with Bluehawk tags like
+mark up the unit test input file like this with Bluehawk tags like
 `:snippet-start:`, `:snippet-end:`, `:remove-start:`, and `:remove-end:`:
 
 ```swift

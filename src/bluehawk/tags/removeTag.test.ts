@@ -53,12 +53,12 @@ describe("some stuff", () => {
 console.log(bar);
 `;
 
-    const source = new Document({
+    const inputFile = new Document({
       text: singleInput,
       path: "test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(inputFile);
     const files = await bluehawk.process(parseResult);
     expect(files["test.js"].document.text.toString()).toBe(`const bar = "foo"
 
@@ -68,7 +68,7 @@ console.log(bar);
   });
 
   it("nests", async (done) => {
-    const source = new Document({
+    const inputFile = new Document({
       text: `a
 :remove-start:
 b
@@ -82,7 +82,7 @@ e
       path: "test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(inputFile);
     const files = await bluehawk.process(parseResult);
     expect(files["test.js"].document.text.toString()).toBe(
       `a
@@ -99,12 +99,12 @@ e
 // :remove-end:
 `;
 
-    const source = new Document({
+    const inputFile = new Document({
       text: input,
       path: "test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(inputFile);
     expect(parseResult.errors[0].message).toStrictEqual(
       "attribute list for 'remove' tag should be null"
     );
@@ -118,12 +118,12 @@ this should also be removed // :remove: // do it
 but not this
 `;
 
-    const source = new Document({
+    const inputFile = new Document({
       text: input,
       path: "test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(inputFile);
     const files = await bluehawk.process(parseResult);
     expect(files["test.js"].document.text.toString()).toBe(
       `leave this

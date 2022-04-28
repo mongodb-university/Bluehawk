@@ -10,7 +10,7 @@ describe("JSON attribute lists", () => {
     makeLineCommentToken(/\/\//),
   ]);
   const { lexer } = parser;
-  const source = new Document({
+  const input = new Document({
     text: "mock",
     path: "mock",
   });
@@ -24,7 +24,7 @@ describe("JSON attribute lists", () => {
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes[0].tagName).toBe("A-tag");
     expect(result.tagNodes[0].attributes).toStrictEqual({});
@@ -48,7 +48,7 @@ describe("JSON attribute lists", () => {
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes[0].tagName).toBe("A-tag");
     expect(result.tagNodes[0].attributes).toStrictEqual({
@@ -81,7 +81,7 @@ describe("JSON attribute lists", () => {
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.tagNodes[0].attributes).toBeUndefined();
     expect(result.errors[0].message).toBe("Unexpected number in JSON");
     expect(result.errors[0].location).toStrictEqual({
@@ -104,7 +104,7 @@ describe("JSON attribute lists", () => {
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors[0].location).toStrictEqual({
       line: 5,
       column: 1,
@@ -127,7 +127,7 @@ describe("JSON attribute lists", () => {
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors[0].location).toStrictEqual({
       line: 5,
       column: 1,
@@ -150,7 +150,7 @@ describe("JSON attribute lists", () => {
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors[0].location).toStrictEqual({
       line: 5,
       column: 1,
@@ -175,7 +175,7 @@ describe("JSON attribute lists", () => {
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes[0].attributes).toStrictEqual({
       a: 1,
@@ -197,7 +197,7 @@ describe("JSON attribute lists", () => {
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes[0].attributes).toStrictEqual({
       a: "//",
@@ -217,7 +217,7 @@ describe("JSON attribute lists", () => {
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors[0].location).toStrictEqual({
       line: 3,
       column: 4,

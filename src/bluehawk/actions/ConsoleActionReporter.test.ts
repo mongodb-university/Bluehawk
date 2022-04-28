@@ -4,27 +4,27 @@ import { ConsoleActionReporter } from "./ConsoleActionReporter";
 
 const dummyReport = (reporter: ActionReporter) => {
   reporter.onBinaryFile({
-    sourcePath: "test",
+    inputPath: "test",
   });
   reporter.onBluehawkErrors({
-    sourcePath: "test",
+    inputPath: "test",
     errors: [],
   });
   reporter.onFileError({
-    sourcePath: "test",
+    inputPath: "test",
     error: new Error(),
   });
   reporter.onFileParsed({
-    sourcePath: "foo",
+    inputPath: "foo",
     parseResult: {
       errors: [],
-      source: {} as Document,
+      input: {} as Document,
       tagNodes: [],
     },
   });
   reporter.onFileWritten({
     outputPath: "foo",
-    sourcePath: "bar",
+    inputPath: "bar",
     type: "text",
   });
   reporter.onIdsUnused({
@@ -33,7 +33,7 @@ const dummyReport = (reporter: ActionReporter) => {
   });
   reporter.onParserNotFound({
     error: new Error(),
-    sourcePath: "test",
+    inputPath: "test",
   });
   reporter.onStateNotFound({
     paths: [],
@@ -47,7 +47,7 @@ const dummyReport = (reporter: ActionReporter) => {
   reporter.onWriteFailed({
     type: "text",
     outputPath: "foo",
-    sourcePath: "bar",
+    inputPath: "bar",
     error: new Error(),
   });
 };

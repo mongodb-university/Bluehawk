@@ -13,7 +13,7 @@ import { makeCstVisitor } from "./visitor";
 // Complete parser (lexicon, syntax, and semantics).
 export interface IParser {
   languageSpecification: LanguageSpecification;
-  parse(source: Document): ParseResult;
+  parse(input: Document): ParseResult;
 }
 
 // Token patterns are required to be sticky (y flag)
@@ -58,23 +58,23 @@ export function makeParser(
   const syntaxProcessor = new RootParser(languageTokens);
   const semanticsProcessor = makeCstVisitor(syntaxProcessor);
   return {
-    parse(source: Document) {
+    parse(input: Document) {
       // ⚠️ Caller is responsible for making sure this parser is appropriate for
-      // the source language
-      const parseResult = syntaxProcessor.parse(source.text.original);
+      // the input language
+      const parseResult = syntaxProcessor.parse(input.text.original);
       if (parseResult.cst === undefined) {
         return {
           tagNodes: [],
           errors: parseResult.errors,
-          source,
+          input,
           languageSpecification,
         };
       }
-      const visitorResult = semanticsProcessor.visit(parseResult.cst, source);
+      const visitorResult = semanticsProcessor.visit(parseResult.cst, input);
       return {
         errors: [...parseResult.errors, ...visitorResult.errors],
         tagNodes: visitorResult.tagNodes,
-        source,
+        input,
         languageSpecification,
       };
     },

@@ -41,7 +41,7 @@ export class Document {
   readonly id: string;
 
   /**
-    The source text as a conveniently editable magic string. See
+    The input text as a conveniently editable magic string. See
     https://www.npmjs.com/package/magic-string for details.
    */
   text: MagicString;

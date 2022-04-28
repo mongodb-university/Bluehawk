@@ -41,7 +41,7 @@ CC
 });
 
 describe("multilang", () => {
-  const someSource = new Document({
+  const someInput = new Document({
     path: "mock",
     text: "mock",
   });
@@ -77,7 +77,7 @@ describe("multilang", () => {
     if (parseResult.cst === undefined) {
       return;
     }
-    const result = visitor.visit(parseResult.cst, someSource);
+    const result = visitor.visit(parseResult.cst, someInput);
     expect(result.errors).toStrictEqual([]);
     expect(
       result.tagNodes.map((tag) => [tag.tagName, tag.inContext])
@@ -108,7 +108,7 @@ describe("multilang", () => {
     if (parseResult.cst === undefined) {
       return;
     }
-    const result = visitor.visit(parseResult.cst, someSource);
+    const result = visitor.visit(parseResult.cst, someInput);
     expect(result.errors).toStrictEqual([]);
     expect(
       result.tagNodes.map((tag) => [tag.tagName, tag.inContext])
@@ -138,7 +138,7 @@ describe("multilang", () => {
     if (parseResult.cst === undefined) {
       return;
     }
-    const result = visitor.visit(parseResult.cst, someSource);
+    const result = visitor.visit(parseResult.cst, someInput);
     expect(result.errors[0].message).toContain(
       "blockComment: After Newline, expected BlockCommentEnd but found EOF"
     );
@@ -172,7 +172,7 @@ describe("multilang", () => {
     if (parseResult.cst === undefined) {
       return;
     }
-    const result = visitor.visit(parseResult.cst, someSource);
+    const result = visitor.visit(parseResult.cst, someInput);
     expect(result.errors).toStrictEqual([]);
     expect(
       result.tagNodes.map((tag) => [tag.tagName, tag.inContext])

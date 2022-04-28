@@ -28,7 +28,7 @@ const commandModule: CommandModule<
   },
   aliases: [],
   describe:
-    "clone source project to output directory with Bluehawk commands processed",
+    "clone input project to output directory with Bluehawk commands processed",
 };
 
 export default commandModule;

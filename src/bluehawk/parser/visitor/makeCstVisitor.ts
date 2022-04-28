@@ -24,7 +24,7 @@ export interface VisitorResult {
 
 export interface IVisitor {
   parser: RootParser;
-  visit(node: CstNode, source: Document): VisitorResult;
+  visit(node: CstNode, input: Document): VisitorResult;
 }
 
 // Returns true if the given earlier token is "associated" with the given later
@@ -120,7 +120,7 @@ export function makeCstVisitor(
   // methods operate on the parent node, usually by adding child nodes to the
   // parent.
   interface VisitorContext {
-    source: Document;
+    input: Document;
     parent: TagNodeImpl;
     errors: BluehawkError[];
     lineComments?: IToken[];
@@ -248,7 +248,7 @@ export function makeCstVisitor(
 
       blockTag(
         context: BlockTagContext,
-        { parent, errors, source, lineComments }: VisitorContext
+        { parent, errors, input, lineComments }: VisitorContext
       ) {
         assert(parent != null);
 
@@ -295,7 +295,7 @@ export function makeCstVisitor(
             column: 1,
             offset: TagStart.startOffset - (TagStart.startColumn - 1),
           },
-          end: nextLineAfterToken(TagEnd, source.text.original),
+          end: nextLineAfterToken(TagEnd, input.text.original),
         };
 
         if (lineComments !== undefined) {
@@ -354,13 +354,13 @@ export function makeCstVisitor(
         this.visit(context.tagAttribute, {
           parent: newNode,
           errors,
-          source,
+          input,
         });
 
         this.visit(context.blockTagUncommentedContents ?? context.chunk, {
           parent: newNode,
           errors,
-          source,
+          input,
         });
 
         // Find any line comment tokens associated with the tag end token
@@ -373,14 +373,14 @@ export function makeCstVisitor(
 
       blockTagUncommentedContents(
         context: BlockTagUncommentedContentsContext,
-        { parent, errors, source }: VisitorContext
+        { parent, errors, input }: VisitorContext
       ) {
-        this.visit(context.chunk, { parent, errors, source });
+        this.visit(context.chunk, { parent, errors, input });
       }
 
       blockComment(
         context: BlockCommentContext,
-        { parent, errors, source }: VisitorContext
+        { parent, errors, input }: VisitorContext
       ) {
         assert(parent != null);
         // This node (blockComment) should not be included in the final output. We
@@ -389,7 +389,7 @@ export function makeCstVisitor(
           erasedBlockTag._context.push("blockComment");
           this.visit(
             [...(context.blockComment ?? []), ...(context.tag ?? [])],
-            { parent: erasedBlockTag, errors, source }
+            { parent: erasedBlockTag, errors, input }
           );
         });
       }
@@ -418,7 +418,7 @@ export function makeCstVisitor(
       }
 
       tag(context: TagContext, visitorContext: VisitorContext) {
-        const { parent, source, lineComments } = visitorContext;
+        const { parent, input, lineComments } = visitorContext;
         assert(parent != null);
         parent.addTokensFromContext(context);
         if (context.blockTag) {
@@ -454,7 +454,7 @@ export function makeCstVisitor(
               column: 1,
               offset: Tag.startOffset - (Tag.startColumn - 1),
             },
-            end: nextLineAfterToken(Tag, source.text.original),
+            end: nextLineAfterToken(Tag, input.text.original),
           };
           if (lineComments !== undefined) {
             newNode.associatedTokens.push(
@@ -489,7 +489,7 @@ export function makeCstVisitor(
 
       lineComment(
         context: LineCommentContext,
-        { parent, errors, source }: VisitorContext
+        { parent, errors, input }: VisitorContext
       ) {
         assert(parent != null);
         parent.addTokensFromContext(context);
@@ -504,7 +504,7 @@ export function makeCstVisitor(
           this.visit(tag, {
             parent: erasedBlockTag,
             errors,
-            source,
+            input,
             lineComments: context.LineComment,
           });
         });
@@ -512,7 +512,7 @@ export function makeCstVisitor(
 
       pushParser(
         context: PushParserContext,
-        { parent, errors, source }: VisitorContext
+        { parent, errors, input }: VisitorContext
       ) {
         // ⚠️ This should not recursively visit inner pushParsers
         assert(parent != null);
@@ -587,7 +587,7 @@ export function makeCstVisitor(
           });
           return;
         }
-        const result = visitor.visit(parseResult.cst, source);
+        const result = visitor.visit(parseResult.cst, input);
         assert(parent.children !== undefined);
         parent.children.push(...(result.tagNodes as TagNodeImpl[]));
         result.errors.forEach((error) =>
@@ -606,10 +606,10 @@ export function makeCstVisitor(
   // The entrypoint for the visitor. Chevrotain's validateVisitor() requires
   // that all methods correspond to a grammar rule, so this helper must be
   // external.
-  const visit = (node: CstNode, source: Document): VisitorResult => {
+  const visit = (node: CstNode, input: Document): VisitorResult => {
     const parent = TagNodeImpl.rootTag();
     const errors: BluehawkError[] = [];
-    visitor.visit([node], { errors, parent, source });
+    visitor.visit([node], { errors, parent, input });
     return {
       errors,
       tagNodes: (parent.children ?? []).map(

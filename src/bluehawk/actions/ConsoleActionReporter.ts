@@ -36,20 +36,20 @@ export class ConsoleActionReporter implements ActionReporter {
   onBinaryFile(event: FileEvent): void {
     ++this._count.binaryFiles;
     if (this.logLevel >= LogLevel.Info) {
-      console.log(`found binary file: ${event.sourcePath}`);
+      console.log(`found binary file: ${event.inputPath}`);
     }
   }
   onFileParsed(event: FileParsedEvent): void {
     ++this._count.textFiles;
     if (this.logLevel >= LogLevel.Info) {
-      console.log(`parsed file: ${event.sourcePath}`);
+      console.log(`parsed file: ${event.inputPath}`);
     }
   }
   onFileWritten(event: FileWrittenEvent): void {
     ++this._count.filesWritten;
     if (this.logLevel >= LogLevel.Info) {
       console.log(
-        `wrote ${event.type} file based on ${event.sourcePath} -> ${event.outputPath}`
+        `wrote ${event.type} file based on ${event.inputPath} -> ${event.outputPath}`
       );
     }
   }
@@ -71,21 +71,21 @@ export class ConsoleActionReporter implements ActionReporter {
   onParserNotFound(event: ParserNotFoundEvent): void {
     if (this.logLevel >= LogLevel.Warning) {
       console.warn(
-        `parser not found for file ${event.sourcePath}: ${event.error.message}`
+        `parser not found for file ${event.inputPath}: ${event.error.message}`
       );
     }
   }
   onFileError(event: FileErrorEvent): void {
     ++this._count.errors;
     if (this.logLevel >= LogLevel.Error) {
-      console.error(`file error: ${event.sourcePath}: ${event.error.message}`);
+      console.error(`file error: ${event.inputPath}: ${event.error.message}`);
     }
   }
   onWriteFailed(event: WriteFailedEvent): void {
     ++this._count.errors;
     if (this.logLevel >= LogLevel.Error) {
       console.error(
-        `failed to write file ${event.sourcePath} -> ${event.outputPath}: ${event.error.message}`
+        `failed to write file ${event.inputPath} -> ${event.outputPath}: ${event.error.message}`
       );
     }
   }
@@ -94,7 +94,7 @@ export class ConsoleActionReporter implements ActionReporter {
     this._count.errors += event.errors.length;
     if (this.logLevel >= LogLevel.Error) {
       console.error(
-        `bluehawk errors on ${event.sourcePath}:\n${event.errors
+        `bluehawk errors on ${event.inputPath}:\n${event.errors
           .map((error) => {
             return `(${error.component}) Line ${error.location.line}:${error.location.column} - ${error.message}`;
           })

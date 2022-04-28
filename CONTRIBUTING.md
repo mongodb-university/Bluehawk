@@ -15,7 +15,7 @@ npm run build
 If compilation is successful, you can run bluehawk like so:
 
 ```sh
-node build/src/main.js snip -o <output directory> <folder to source file or directory>
+node build/src/main.js snip -o <output directory> <folder to input file or directory>
 ```
 
 Which you can alias as:
@@ -58,8 +58,8 @@ Bluehawk has three major components:
   decide what to do with results (e.g. save to file). Can add custom tags
   and language specifications (i.e. comment syntax). The main client is the CLI,
   but you can use Bluehawk as a library and implement your own clients.
-- **Parser:** finds tags in a source file and diagnoses markup errors.
-- **Processor:** executes tags on a source file to produce transformed documents.
+- **Parser:** finds tags in a input file and diagnoses markup errors.
+- **Processor:** executes tags on a input file to produce transformed documents.
 
 ## File Language-Specific Tokens
 

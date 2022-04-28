@@ -130,14 +130,14 @@ export class Processor {
     processOptions?: ProcessOptions
   ): Promise<BluehawkFiles> => {
     this._removeMetaRanges(
-      parseResult.source.text,
+      parseResult.input.text,
       parseResult.tagNodes,
       processOptions
     );
     const _processorState = new ProcessorState(parseResult, processOptions);
     await this._fork({
       tagNodes: parseResult.tagNodes,
-      document: parseResult.source,
+      document: parseResult.input,
       _processorState,
     });
     await Promise.allSettled(_processorState.promises);

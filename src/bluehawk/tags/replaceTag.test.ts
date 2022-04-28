@@ -17,35 +17,35 @@ describe("replace tag", () => {
   });
 
   it("errors when no attribute list is given", () => {
-    const source = new Document({
+    const input = new Document({
       text: `// :replace-start:
 // :replace-end:
 `,
       path: "replace.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     expect(parseResult.errors[0].message).toBe(
       "attribute list for 'replace' tag should be object"
     );
   });
 
   it("errors when invalid attribute list is given", () => {
-    const source = new Document({
+    const input = new Document({
       text: `// :replace-start: {"terms":{"numbersNotAllowed": 1}}
 // :replace-end:
 `,
       path: "replace.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     expect(parseResult.errors[0].message).toBe(
       "attribute list for 'replace' tag/terms/numbersNotAllowed should be string"
     );
   });
 
   it("replaces keys with values", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `// :replace-start: {
 // "terms": {
 //   "Replace Me": "It works!",
@@ -59,7 +59,7 @@ and see test2
       path: "replace.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     expect(parseResult.errors).toStrictEqual([]);
     const files = await bluehawk.process(parseResult);
     expect(files["replace.test.js"].document.text.toString())
@@ -71,7 +71,7 @@ and see --replaced--
   });
 
   it("is case sensitive", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `// :replace-start: {"terms": {
 //   "Notice the Case": "It works!",
 //   "UNCHANGED": "changed"
@@ -84,7 +84,7 @@ and see unchanged
       path: "replace.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     expect(parseResult.errors.length).toBe(0);
     const files = await bluehawk.process(parseResult);
     expect(files["replace.test.js"].document.text.toString())
@@ -96,7 +96,7 @@ and see unchanged
   });
 
   it("replaces all instances within the block", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `replaceme
 replaceme
 ---
@@ -118,7 +118,7 @@ replaceme
       path: "replace.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     expect(parseResult.errors.length).toBe(0);
     const files = await bluehawk.process(parseResult);
     expect(files["replace.test.js"].document.text.toString()).toBe(`replaceme
@@ -139,7 +139,7 @@ replaceme
   });
 
   it("can't match outside of its block", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `// :replace-start: {"terms": {
 //   ":replace-": "hacked"
 // }}
@@ -149,7 +149,7 @@ replaceme
       path: "replace.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     expect(parseResult.errors).toStrictEqual([]);
     const files = await bluehawk.process(parseResult);
     expect(files["replace.test.js"].document.text.toString()).toBe(
@@ -159,7 +159,7 @@ replaceme
   });
 
   it("interoperates with remove", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `// :replace-start: {"terms": {
 //   "removethis": ""
 // }}
@@ -176,7 +176,7 @@ andremovethisaswell
       path: "replace.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     expect(parseResult.errors).toStrictEqual([]);
     const files = await bluehawk.process(parseResult);
     expect(files["replace.test.js"].document.text.toString())
@@ -189,7 +189,7 @@ andaswell
   });
 
   it("doesn't unexpectedly use id as a replacement", () => {
-    const source = new Document({
+    const input = new Document({
       text: `// :replace-start: foo
 it's my id
 :replace-end:
@@ -197,14 +197,14 @@ it's my id
       path: "replace.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     expect(parseResult.errors[0].message).toBe(
       "attribute list for 'replace' tag should have required property 'terms'"
     );
   });
 
   it("handles a real-world example", async (done) => {
-    const source = new Document({
+    const input = new Document({
       text: `// :replace-start: {
 //   "terms": {
 //     "ReadWriteDataExamples_": ""
@@ -269,7 +269,7 @@ class ReadWriteData: XCTestCase {
       path: "replace.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     expect(parseResult.errors.length).toBe(0);
     const files = await bluehawk.process(parseResult);
     expect(files["replace.test.js"].document.text.toString())

@@ -23,7 +23,7 @@ describe("removeMetaRange", () => {
   it("behaves on block tags", async () => {
     // Note that it completely deletes the line on which the -end tag is
     // found.
-    const source = new Document({
+    const input = new Document({
       text: `const bar = "foo";
 // :strip-this-start: {
 // "a": 1,
@@ -38,7 +38,7 @@ const qux = "baz";
       path: "strip.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["strip.test.js"].document.text.toString()).toBe(
       `const bar = "foo";
@@ -50,7 +50,7 @@ const qux = "baz";
     );
   });
   it("behaves on line tags", async () => {
-    const source = new Document({
+    const input = new Document({
       text: `const bar = "foo";
 const baz = "bar"; // :strip-this:
 :strip-this: :not-this:
@@ -59,7 +59,7 @@ const qux = "baz"; // not this :strip-this:
       path: "strip.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["strip.test.js"].document.text.toString()).toBe(
       `const bar = "foo";
@@ -71,7 +71,7 @@ const qux = "baz"; // not this
   });
 
   it("behaves with doubled-up line tags", async () => {
-    const source = new Document({
+    const input = new Document({
       text: `abc
 def // :strip-this: :strip-this:
 ghi // :strip-this: // :strip-this:
@@ -80,7 +80,7 @@ jkl //// :strip-this: // :strip-this:
       path: "strip.test.js",
     });
 
-    const parseResult = bluehawk.parse(source);
+    const parseResult = bluehawk.parse(input);
     const files = await bluehawk.process(parseResult);
     expect(files["strip.test.js"].document.text.toString()).toBe(
       `abc

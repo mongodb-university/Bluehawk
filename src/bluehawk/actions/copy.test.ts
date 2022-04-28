@@ -26,10 +26,10 @@ describe("copy", () => {
     });
 
     expect(reporter.errorCount).toBe(0);
-    const sourceList = await System.fs.readdir(rootPath);
-    expect(sourceList).toStrictEqual(["test.txt"]);
+    const inputList = await System.fs.readdir(rootPath);
+    expect(inputList).toStrictEqual(["test.txt"]);
     const outputList = await System.fs.readdir(outputPath);
-    expect(outputList).toStrictEqual(sourceList);
+    expect(outputList).toStrictEqual(inputList);
   });
 
   it("copies binary files", async () => {
@@ -56,10 +56,10 @@ describe("copy", () => {
     });
 
     expect(reporter.errorCount).toBe(0);
-    const sourceList = await System.fs.readdir(rootPath);
-    expect(sourceList).toStrictEqual(["test.bin"]);
+    const inputList = await System.fs.readdir(rootPath);
+    expect(inputList).toStrictEqual(["test.bin"]);
     const outputList = await System.fs.readdir(outputPath);
-    expect(outputList).toStrictEqual(sourceList);
+    expect(outputList).toStrictEqual(inputList);
     expect(didCallBinaryFileForPath).toBe(filePath);
   });
 
@@ -87,10 +87,10 @@ describe("copy", () => {
     });
 
     expect(reporter.errorCount).toBe(0);
-    const sourceList = await System.fs.readdir(rootPath);
-    expect(sourceList).toStrictEqual(["test.bin", "test.sh"]);
+    const inputList = await System.fs.readdir(rootPath);
+    expect(inputList).toStrictEqual(["test.bin", "test.sh"]);
     const outputList = await System.fs.readdir(outputPath);
-    expect(outputList).toStrictEqual(sourceList);
+    expect(outputList).toStrictEqual(inputList);
     const modes = [
       await System.fs.stat(Path.join(outputPath, "test.bin")),
       await System.fs.stat(Path.join(outputPath, "test.sh")),

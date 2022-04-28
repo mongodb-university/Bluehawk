@@ -10,7 +10,7 @@ describe("visitor", () => {
     makeLineCommentToken(/\/\//),
   ]);
   const { lexer } = parser;
-  const source = new Document({
+  const input = new Document({
     text: "mock",
     path: "mock",
   });
@@ -30,7 +30,7 @@ annotated text
     parser.input = tokens.tokens;
     const visitor = makeCstVisitor(parser);
     const cst = parser.annotatedText();
-    visitor.visit(cst, source);
+    visitor.visit(cst, input);
   });
 
   it("supports multiple tags", () => {
@@ -44,7 +44,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(3);
     expect(result.tagNodes[0].tagName).toBe("A-tag");
@@ -66,7 +66,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(3);
     expect(result.tagNodes[0].tagName).toBe("A-tag");
@@ -84,7 +84,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors[0].message).toBe(
       "Unexpected this-is-a-different-tag-end closing this-is-a-tag-start"
     );
@@ -107,7 +107,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(1);
     expect((result.tagNodes[0].children ?? []).length).toBe(1);
@@ -126,7 +126,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes[0].tagName).toBe("A");
     expect((result.tagNodes[0].children ?? []).length).toBe(0);
@@ -153,7 +153,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes[0].tagName).toBe("tag-in-a-block-comment");
     expect(result.tagNodes[0].inContext).toBe("blockComment");
@@ -189,7 +189,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes[0].tagName).toBe("line-commented-block-tag");
     expect(result.tagNodes[0].inContext).toBe("lineComment");
@@ -214,7 +214,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes[0].tagName).toBe("not-sure-how-to-test-this");
     expect(result.tagNodes[0].inContext).toBe("none");
@@ -239,7 +239,7 @@ annotated text
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     const a = result.tagNodes[0];
     expect(a.tagName).toBe("a");
@@ -281,7 +281,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(1);
     const a = result.tagNodes[0];
@@ -307,7 +307,7 @@ the quick brown fox jumped
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(1);
     const a = result.tagNodes[0];
@@ -343,7 +343,7 @@ and again
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(1);
 
@@ -426,7 +426,7 @@ and again
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes[0].tagName).toBe("A-tag");
     expect(result.tagNodes[0].range.start.line).toBe(1);
@@ -453,7 +453,7 @@ and again
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(3);
     expect(result.tagNodes[0].tagName).toBe("A-tag");
@@ -478,7 +478,7 @@ and again
     const cst = parser.annotatedText();
     expect(parser.errors.length).toBe(0);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(3);
     expect(result.tagNodes[0].tagName).toBe("A-tag");
@@ -531,7 +531,7 @@ and again
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(1);
     expect(result.tagNodes[0].contentRange).toBeUndefined();
@@ -555,7 +555,7 @@ line 10 :a-end:
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(1);
     const lines = tokenString.split("\n");
@@ -594,7 +594,7 @@ line 10 :a-end:
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(
       result.tagNodes[0].lineComments.map((token) => token.startLine)
@@ -618,7 +618,7 @@ c2345678 :a-start:
     const cst = parser.annotatedText();
     expect(parser.errors).toStrictEqual([]);
     const visitor = makeCstVisitor(parser);
-    const result = visitor.visit(cst, source);
+    const result = visitor.visit(cst, input);
     expect(result.errors).toStrictEqual([]);
     expect(result.tagNodes.length).toBe(1);
     // Re-add newlines since they are included in the offset
