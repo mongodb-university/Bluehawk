@@ -14,7 +14,7 @@ code blocks, full files of code, and even error checks.
 ### Snip
 
 ```
-bluehawk snip --destination <output-directory> <input-directory-or-file>
+bluehawk snip --output <output-directory> <input-directory-or-file>
 ```
 
 Output "snippet files" that contain only the content of `code-block` or
@@ -28,11 +28,11 @@ content from a single state that you specify.
 ### Copy
 
 ```
-bluehawk copy --destination <output-directory> <input-directory-or-file>
+bluehawk copy --output <output-directory> <input-directory-or-file>
 ```
 
 Output full bluehawk-processed input files, in their original directory
-structure, to destination directory. Binary files are copied without
+structure, to output directory. Binary files are copied without
 Bluehawk processing. You can use the `--ignore` flag to add gitignore-style
 ignore patterns that omit matched files from output.
 By default, this command generates output files that omit all `state`.

@@ -1,7 +1,7 @@
 import { ConsoleActionReporter } from "./../../bluehawk/actions/ConsoleActionReporter";
 import { CommandModule, Arguments, Argv } from "yargs";
 import {
-  withDestinationOption,
+  withOutputOption,
   withStateOption,
   withIgnoreOption,
   withLogLevelOption,
@@ -17,7 +17,7 @@ const commandModule: CommandModule<
   command: "copy <rootPath>",
   builder: (yargs): Argv<CopyArgs> => {
     return withLogLevelOption(
-      withIgnoreOption(withStateOption(withDestinationOption(yargs)))
+      withIgnoreOption(withStateOption(withOutputOption(yargs)))
     );
   },
   handler: async (args: Arguments<CopyArgs>) => {
@@ -28,7 +28,7 @@ const commandModule: CommandModule<
   },
   aliases: [],
   describe:
-    "clone source project to destination with Bluehawk commands processed",
+    "clone source project to output directory with Bluehawk commands processed",
 };
 
 export default commandModule;

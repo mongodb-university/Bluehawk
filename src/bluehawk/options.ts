@@ -13,11 +13,11 @@ function option<T, K extends string, O extends Options & { once?: boolean }>(
   });
 }
 
-export function withDestinationOption<T>(
+export function withOutputOption<T>(
   yargs: Argv<T>
-): Argv<T & { destination: string }> {
-  return option(yargs, "destination", {
-    alias: "d",
+): Argv<T & { output: string }> {
+  return option(yargs, "output", {
+    alias: "o",
     string: true,
     describe: "the output directory",
     required: true,

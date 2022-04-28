@@ -16,6 +16,6 @@ do
   # - Redirect stderr to stdout
   # - Pipe to sed, delete any instances of your computer name
   # - Pipe to a file
-  $BLUEHAWK snip -d output/ignoreThis --state notfound --logLevel $LOGLEVEL input 2>&1 | sed -e "s!$(pwd)!path/to/project!g" > output/logLevel$LOGLEVEL
+  $BLUEHAWK snip -o output/ignoreThis --state notfound --logLevel $LOGLEVEL input 2>&1 | sed -e "s!$(pwd)!path/to/project!g" > output/logLevel$LOGLEVEL
 done
 set -e

@@ -7,7 +7,7 @@ import { System } from "../../bluehawk/io/System";
 
 export interface CopyArgs extends ActionArgs {
   rootPath: string;
-  destination: string;
+  output: string;
   state?: string;
   ignore?: string | string[];
 
@@ -20,7 +20,7 @@ export interface CopyArgs extends ActionArgs {
 export const copy = async (
   args: WithActionReporter<CopyArgs>
 ): Promise<void> => {
-  const { destination, ignore, rootPath, waitForListeners, reporter } = args;
+  const { output, ignore, rootPath, waitForListeners, reporter } = args;
   const desiredState = args.state;
   const bluehawk = await getBluehawk();
   let stats: Stats;
@@ -40,7 +40,7 @@ export const copy = async (
   const onBinaryFile = async (filePath: string) => {
     // Copy binary files directly
     const directory = path.join(
-      destination,
+      output,
       path.relative(projectDirectory, path.dirname(filePath))
     );
     const targetPath = path.join(directory, path.basename(filePath));
@@ -51,11 +51,11 @@ export const copy = async (
       reporter.onFileWritten({
         type: "binary",
         sourcePath: filePath,
-        destinationPath: targetPath,
+        outputPath: targetPath,
       });
     } catch (error) {
       reporter.onWriteFailed({
-        destinationPath: targetPath,
+        outputPath: targetPath,
         sourcePath: filePath,
         error,
         type: "binary",
@@ -103,7 +103,7 @@ export const copy = async (
 
     // Use the same relative path
     const directory = path.join(
-      destination,
+      output,
       path.relative(projectDirectory, path.dirname(document.path))
     );
     const targetPath = path.join(directory, document.basename);
@@ -118,11 +118,11 @@ export const copy = async (
       reporter.onFileWritten({
         type: "text",
         sourcePath: document.path,
-        destinationPath: targetPath,
+        outputPath: targetPath,
       });
     } catch (error) {
       reporter.onWriteFailed({
-        destinationPath: targetPath,
+        outputPath: targetPath,
         sourcePath: parseResult.source.path,
         error,
         type: "text",

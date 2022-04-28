@@ -1,7 +1,7 @@
 import { ConsoleActionReporter } from "./../../bluehawk/actions/ConsoleActionReporter";
 import { CommandModule, Arguments, Argv } from "yargs";
 import {
-  withDestinationOption,
+  withOutputOption,
   withStateOption,
   withIdOption,
   withIgnoreOption,
@@ -18,9 +18,7 @@ const commandModule: CommandModule<ActionArgs & { paths: string[] }, SnipArgs> =
         withIgnoreOption(
           withStateOption(
             withIdOption(
-              withDestinationOption(
-                withGenerateFormattedCodeSnippetsOption(yargs)
-              )
+              withOutputOption(withGenerateFormattedCodeSnippetsOption(yargs))
             )
           )
         )

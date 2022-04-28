@@ -55,7 +55,7 @@ export type FileParsedEvent = FileEvent & {
 };
 
 export type FileWrittenEvent = FileEvent & {
-  destinationPath: string;
+  outputPath: string;
   type: "text" | "binary";
 };
 

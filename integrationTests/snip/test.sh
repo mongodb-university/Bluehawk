@@ -5,4 +5,4 @@ cd "$(dirname "$0")"
 rm -rf output
 mkdir output
 
-$BLUEHAWK snip -d ./output input
+$BLUEHAWK snip -o ./output input

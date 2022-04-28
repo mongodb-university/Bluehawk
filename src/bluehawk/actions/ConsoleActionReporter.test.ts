@@ -23,7 +23,7 @@ const dummyReport = (reporter: ActionReporter) => {
     },
   });
   reporter.onFileWritten({
-    destinationPath: "foo",
+    outputPath: "foo",
     sourcePath: "bar",
     type: "text",
   });
@@ -46,7 +46,7 @@ const dummyReport = (reporter: ActionReporter) => {
   });
   reporter.onWriteFailed({
     type: "text",
-    destinationPath: "foo",
+    outputPath: "foo",
     sourcePath: "bar",
     error: new Error(),
   });
