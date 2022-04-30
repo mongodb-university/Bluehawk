@@ -86,7 +86,7 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
       stringLiterals: [
         {
           pattern: tokens.PYTHON_STRING_LITERAL_PATTERN,
-          multiline: false,
+          multiline: true,
         },
       ],
     });

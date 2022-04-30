@@ -1,9 +1,8 @@
 import { createToken, Lexer } from "chevrotain";
 import { PayloadQuery, makePayloadPattern } from "./makePayloadPattern";
 
-// Does not account for triple quote strings.
 export const PYTHON_STRING_LITERAL_PATTERN =
-  /((?<!\\)".*?(?<!\\)")|((?<!\\)'.*?(?<!\\)')/;
+  /((?<!\\)'''(.|\n)*?(?<!\\)''')|((?<!\\)".*?(?<!\\)")|((?<!\\)'.*?(?<!\\)')/;
 
 export const JSON_STRING_LITERAL_PATTERN =
   /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/;

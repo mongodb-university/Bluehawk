@@ -108,7 +108,11 @@ a=1+2
 # :state-start: ${state}
 print("hello world#:remove:")
 print('hello \\'world#:remove:')
-print('hello 'world#:remove:)
+print('hello ') #:remove:
+'''
+this must show up # :remove:
+this also
+'''
 # :state-end:
 # :state-start: ${state + "-not"}
 "Shouldnt print"
@@ -140,6 +144,10 @@ dont_look_at_me = True # :remove:
     expect(rstFileContents).toStrictEqual(`a=1+2
 print("hello world#:remove:")
 print('hello \\'world#:remove:')
+'''
+this must show up # :remove:
+this also
+'''
 `);
     done();
   });
