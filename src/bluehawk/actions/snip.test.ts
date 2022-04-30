@@ -105,12 +105,14 @@ console.log(bar);
       Path.join(rootPath, testFileName),
       `# :code-block-start: foo
 a=1+2
-''':state-start: ${state}
-print("hello world")
-''':state-end:'''
-''':state-start: ${state + "-not"}
-Shouldn't print
-''':state-end:'''
+# :state-start: ${state}
+print("hello world#:remove:")
+print('hello \\'world#:remove:')
+print('hello 'world#:remove:)
+# :state-end:
+# :state-start: ${state + "-not"}
+"Shouldnt print"
+# :state-end:
 dont_look_at_me = True # :remove:
 # :code-block-end:
     `,
@@ -136,7 +138,8 @@ dont_look_at_me = True # :remove:
       "utf8"
     );
     expect(rstFileContents).toStrictEqual(`a=1+2
-print("hello world")
+print("hello world#:remove:")
+print('hello \\'world#:remove:')
 `);
     done();
   });

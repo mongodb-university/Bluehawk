@@ -82,8 +82,13 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
     // Add all supported extensions here.
     bluehawk.addLanguage([".py"], {
       languageId: "Python",
-      blockComments: [[/'''/, /'''/]],
       lineComments: [/# ?/],
+      stringLiterals: [
+        {
+          pattern: tokens.PYTHON_STRING_LITERAL_PATTERN,
+          multiline: false,
+        },
+      ],
     });
 
     bluehawk.addLanguage(["", ".txt", ".rst", ".md", ".json"], {
