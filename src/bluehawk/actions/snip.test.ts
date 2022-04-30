@@ -104,14 +104,17 @@ console.log(bar);
     await System.fs.writeFile(
       Path.join(rootPath, testFileName),
       `# :code-block-start: foo
-a=1+2
+start=1
 # :state-start: ${state}
-print("hello world#:remove:")
-print('hello \\'world#:remove:')
-print('hello ') #:remove:
+print("this shouldn't get removed#:remove:")
+print('neither should this \\'get removed#:remove:')
+print('this should' + "get removed") #:remove:
 '''
 this must show up # :remove:
 this also
+\\''' i should stay # :remove:
+'\\'' me too # :remove:
+''\\' this too # :remove
 '''
 # :state-end:
 # :state-start: ${state + "-not"}
@@ -141,12 +144,15 @@ dont_look_at_me = True # :remove:
       Path.join(outputPath, "test.codeblock.foo.py"),
       "utf8"
     );
-    expect(rstFileContents).toStrictEqual(`a=1+2
-print("hello world#:remove:")
-print('hello \\'world#:remove:')
+    expect(rstFileContents).toStrictEqual(`start=1
+print("this shouldn't get removed#:remove:")
+print('neither should this \\'get removed#:remove:')
 '''
 this must show up # :remove:
 this also
+\\''' i should stay # :remove:
+'\\'' me too # :remove:
+''\\' this too # :remove
 '''
 `);
     done();
