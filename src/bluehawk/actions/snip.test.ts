@@ -89,6 +89,58 @@ console.log(bar);
     done();
   });
 
+  it("generates correct Python snippets", async (done) => {
+    const rootPath = Path.resolve("/path/to/project");
+    const outputPath = "/output";
+    const testFileName = "test.py";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(outputPath, {
+      recursive: true,
+    });
+    const state = "test-state";
+    await System.fs.writeFile(
+      Path.join(rootPath, testFileName),
+      `# :code-block-start: foo
+a=1+2
+''':state-start: ${state}
+print("hello world")
+''':state-end:'''
+''':state-start: ${state + "-not"}
+Shouldn't print
+''':state-end:'''
+dont_look_at_me = True # :remove:
+# :code-block-end:
+    `,
+      {
+        encoding: "utf8",
+      }
+    );
+
+    await snip({
+      reporter,
+      paths: [rootPath],
+      output: outputPath,
+      state: state,
+      ignore: undefined,
+      waitForListeners: true,
+    });
+
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual(["test.codeblock.foo.py"]);
+
+    const rstFileContents = await System.fs.readFile(
+      Path.join(outputPath, "test.codeblock.foo.py"),
+      "utf8"
+    );
+    expect(rstFileContents).toStrictEqual(`a=1+2
+print("hello world")
+`);
+    done();
+  });
+
   it("generates correct docusarus-formatted code blocks for start and end blocks at the beginning and end of the block", async (done) => {
     const rootPath = Path.resolve("/path/to/project");
     const outputPath = "/output";
