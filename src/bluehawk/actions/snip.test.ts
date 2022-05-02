@@ -116,6 +116,13 @@ this also
 '\\'' me too # :remove:
 ''\\' this too # :remove
 '''
+"""
+this must show up # :remove:
+\\""" i should stay # :remove:
+"\\"" me too # :remove:
+""\\" this too # :remove:
+''' me too # :remove:
+"""
 # :state-end:
 # :state-start: ${state + "-not"}
 "Shouldnt print"
@@ -154,6 +161,13 @@ this also
 '\\'' me too # :remove:
 ''\\' this too # :remove
 '''
+"""
+this must show up # :remove:
+\\""" i should stay # :remove:
+"\\"" me too # :remove:
+""\\" this too # :remove:
+''' me too # :remove:
+"""
 `);
     done();
   });
