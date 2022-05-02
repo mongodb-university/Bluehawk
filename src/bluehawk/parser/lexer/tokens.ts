@@ -1,6 +1,10 @@
 import { createToken, Lexer } from "chevrotain";
 import { PayloadQuery, makePayloadPattern } from "./makePayloadPattern";
 
+/*
+This pattern treats multi-line string literals in Python
+(triple quoted strings) as strings rather than block comments.
+*/
 export const PYTHON_STRING_LITERAL_PATTERN =
   /((?<!\\)'''(.|\n)*?(?<!\\)''')|((?<!\\)"""(.|\n)*?(?<!\\)""")|((?<!\\)".*?(?<!\\)")|((?<!\\)'.*?(?<!\\)')/;
 
