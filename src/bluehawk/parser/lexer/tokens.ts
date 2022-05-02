@@ -4,10 +4,8 @@ import { PayloadQuery, makePayloadPattern } from "./makePayloadPattern";
 /*
 It is idiomatic in Python to use a multi-line string literal
 (triple quoted-string) for both string assignment
-and as a multi-line comment block. The following pattern
-DOES NOT support using a multi-line string literal as a
-block comment in Bluehawk. Multi-line string literals in Python
-are treated as strings rather than block comments in Bluehawk.
+and as a multi-line comment block. Bluehawk treats multi-line
+string literals in Python as strings rather than block comments.
 */
 export const PYTHON_STRING_LITERAL_PATTERN =
   /((?<!\\)'''(.|\n)*?(?<!\\)''')|((?<!\\)"""(.|\n)*?(?<!\\)""")|((?<!\\)".*?(?<!\\)")|((?<!\\)'.*?(?<!\\)')/;
