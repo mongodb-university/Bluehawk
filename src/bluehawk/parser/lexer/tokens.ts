@@ -1,6 +1,15 @@
 import { createToken, Lexer } from "chevrotain";
 import { PayloadQuery, makePayloadPattern } from "./makePayloadPattern";
 
+/*
+It is idiomatic in Python to use a multi-line string literal
+(triple quoted-string) for both string assignment
+and as a multi-line comment block. Bluehawk treats multi-line
+string literals in Python as strings rather than block comments.
+*/
+export const PYTHON_STRING_LITERAL_PATTERN =
+  /((?<!\\)'''(.|\n)*?(?<!\\)''')|((?<!\\)"""(.|\n)*?(?<!\\)""")|((?<!\\)".*?(?<!\\)")|((?<!\\)'.*?(?<!\\)')/;
+
 export const JSON_STRING_LITERAL_PATTERN =
   /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/;
 

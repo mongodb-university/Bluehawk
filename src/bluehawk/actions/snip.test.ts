@@ -89,6 +89,89 @@ console.log(bar);
     done();
   });
 
+  it("generates correct Python snippets", async (done) => {
+    const rootPath = Path.resolve("/path/to/project");
+    const outputPath = "/output";
+    const testFileName = "test.py";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(outputPath, {
+      recursive: true,
+    });
+    const state = "test-state";
+    await System.fs.writeFile(
+      Path.join(rootPath, testFileName),
+      `# :code-block-start: foo
+start=1
+# :state-start: ${state}
+print("this shouldn't get removed#:remove:")
+print('neither should this \\'get removed#:remove:')
+print('this should' + "get removed") #:remove:
+'''
+this must show up # :remove:
+this also
+\\''' i should stay # :remove:
+'\\'' me too # :remove:
+''\\' this too # :remove
+'''
+"""
+this must show up # :remove:
+\\""" i should stay # :remove:
+"\\"" me too # :remove:
+""\\" this too # :remove:
+''' me too # :remove:
+"""
+# :state-end:
+# :state-start: ${state + "-not"}
+"Shouldnt print"
+# :state-end:
+dont_look_at_me = True # :remove:
+# :code-block-end:
+    `,
+      {
+        encoding: "utf8",
+      }
+    );
+
+    await snip({
+      reporter,
+      paths: [rootPath],
+      output: outputPath,
+      state: state,
+      ignore: undefined,
+      waitForListeners: true,
+    });
+
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual(["test.codeblock.foo.py"]);
+
+    const rstFileContents = await System.fs.readFile(
+      Path.join(outputPath, "test.codeblock.foo.py"),
+      "utf8"
+    );
+    expect(rstFileContents).toStrictEqual(`start=1
+print("this shouldn't get removed#:remove:")
+print('neither should this \\'get removed#:remove:')
+'''
+this must show up # :remove:
+this also
+\\''' i should stay # :remove:
+'\\'' me too # :remove:
+''\\' this too # :remove
+'''
+"""
+this must show up # :remove:
+\\""" i should stay # :remove:
+"\\"" me too # :remove:
+""\\" this too # :remove:
+''' me too # :remove:
+"""
+`);
+    done();
+  });
+
   it("generates correct docusarus-formatted code blocks for start and end blocks at the beginning and end of the block", async (done) => {
     const rootPath = Path.resolve("/path/to/project");
     const outputPath = "/output";
