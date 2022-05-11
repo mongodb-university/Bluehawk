@@ -13,7 +13,10 @@ export async function run(): Promise<void> {
   const mainArgv = commandDir(
     yargs.help(),
     Path.join(__dirname, "commandModules")
-  ).demandCommand();
+  )
+    .demandCommand()
+    .recommendCommands()
+    .strict();
 
   const plugins = await loadPlugins(preArgv.plugin);
 
