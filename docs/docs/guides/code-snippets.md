@@ -27,6 +27,15 @@ string literal awareness - that allows it to:
 - Parse multi-line, commented out JSON "attribute lists" of tags so they 
   don't create syntax errors in your code
 
+There is not currently a way to find out which languages Bluehawk supports
+from the CLI. However, you can see the [supported file extensions in
+the Bluehawk source](https://github.com/mongodb-university/Bluehawk/blob/8bb5766e5f30182ed3992eae8f36dba8a8db99ba/src/bluehawk/getBluehawk.ts#L52) 
+to see if Bluehawk supports your preferred language.
+
+To request support for your language, [file an issue in the Bluehawk 
+repository](https://github.com/mongodb-university/Bluehawk/issues), or 
+make a PR to add support for your preferred language.
+
 ### Output File Names
 
 When you start a Bluehawk code block tag, you append a descriptive title, 
