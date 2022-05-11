@@ -71,7 +71,7 @@ commands.
 
 Start by annotating your tutorial with [Bluehawk tags](/reference/tags).
 As with [code snippets](code-snippets), you open and close a code block
-with `code-block-start` and `code-block-end`. You can 
+with `snippet-start` and `snippet-end`. You can 
 [hide or remove code](code-snippets#hide-or-remove-code) if your tutorial 
 contains tests or boilerplate you don't want to expose in your documentation.
 You can also [replace](code-snippets#replace) awkward terms with more 
@@ -83,7 +83,7 @@ the content to change based on which state you want to show. This example
 is from the Realm React Native Tutorial 
 [TasksProvider.js file](https://github.com/mongodb/docs-realm/blob/master/tutorial/rn/providers/TasksProvider.js).
 
-We start a code block called `clean-up`. Then you see `// :state-start: final`.
+We start a snippet called `clean-up`. Then you see `// :state-start: final`.
 In this code snippet, `final` is the identifier we use for 
 [the "final" branch](https://github.com/mongodb-university/realm-tutorial-react-native/blob/final/providers/TasksProvider.js)
 in our clonable tutorial git repository. The code after the `final` state
@@ -96,7 +96,7 @@ code in the `state-uncomment` section. The comment is "double commented" -
 after uncommenting, it shows as a regular comment.
 
 ```js
-// :code-block-start: clean-up
+// :snippet-start: clean-up
     return () => {
       // cleanup function
       const projectRealm = realmRef.current;
@@ -111,7 +111,7 @@ after uncommenting, it shows as a regular comment.
         setTasks([]);
       }
     };
-// :code-block-end:
+// :snippet-end:
 ```
 
 After we extract the snippets, this code block looks like this in the `final` 
@@ -207,6 +207,7 @@ repository, this GitHub workflow does a few things:
 - It runs `bluehawk check` to [verify there are no Bluehawk errors](/reference/cli#check) 
 in our files.
 - It uses a [GitHub Action](https://github.com/mongodb/docs-realm/tree/master/.github/actions/push-to-artifact-repo) 
+with a [Bluehawk plugin](https://github.com/cbush/bluehawk-plugin-git) 
 to copy, commit, and push transformed code to artifact repos.
 
 The GitHub Action copies code examples for each Bluehawk state to a git 

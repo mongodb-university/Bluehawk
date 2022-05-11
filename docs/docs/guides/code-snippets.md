@@ -18,7 +18,14 @@ The first step to use Bluehawk is to annotate your unit tests with
 [Bluehawk tags](/reference/tags). Tags are similar to HTML or XML; you 
 put a `start` tag before the code you want to annotate, and an `end` tag
 after it. Bluehawk reads those start and end tags, and generates output
-files based on your annotations. Bluehawk tags live in comment blocks.
+files based on your annotations. You can use Bluehawk tags in any text file.
+
+The Bluehawk tool has language-specific "comment awareness" - as well as 
+string literal awareness - that allows it to:
+
+- Avoid making snippet files with a closing block comment token at the front
+- Parse multi-line, commented out JSON "attribute lists" of tags so they 
+  don't create syntax errors in your code
 
 ### Output File Names
 
@@ -26,14 +33,14 @@ When you start a Bluehawk code block tag, you append a descriptive title,
 similar to:
 
 ```
-// :code-block-start: person-model
+// :snippet-start: person-model
 ```
 
 When you generate Bluehawk output, the output file name concatenates:
 
 - The name of your unit test file
 - The word `codeblock`
-- The descriptive name that you put in the `code-block-start` tag
+- The descriptive name that you put in the `snippet-start` tag
 - The file type of your unit test file
 
 For this example, the code block is in a file called Models.swift, so
@@ -41,20 +48,20 @@ the generated output file name would be: `Models.codeblock.person-model.swift`.
 
 ### Example Unit Test Annotation
 
-#### Code block start and end
+#### Snippet start and end
 
 This is a complete code example in the 
 [Models.swift](https://github.com/mongodb/docs-realm/blob/master/examples/ios/Examples/Models.swift)
 file in the Realm Docs iOS Unit Test suite.
 
 For this code snippet, we don't need to show the `import` statement in our final
-example, so we start the code block after it. Then, after the code we want
-to show in our final example, we end the code block.
+example, so we start the snippet after it. Then, after the code we want
+to show in our final example, we end the snippet.
 
 ```swift
 import RealmSwift
 
-// :code-block-start: person-model
+// :snippet-start: person-model
 class Person: Object {
     // Required string property
     @Persisted var name: String = ""
@@ -65,7 +72,7 @@ class Person: Object {
     // Optional integral type property
     @Persisted var age: Int?
 }
-// :code-block-end:
+// :snippet-end:
 ```
 
 The output file becomes 
@@ -85,8 +92,8 @@ class Person: Object {
 }
 ```
 
-The output file includes only the lines of code between the `code-block-start` 
-and the `code-block-end`.
+The output file includes only the lines of code between the `snippet-start` 
+and the `snippet-end` tags.
 
 #### Hide or Remove code
 
@@ -95,7 +102,7 @@ documentation viewers.
 
 This example is from the [ManageEmailPasswordUsers.swift](https://github.com/mongodb/docs-realm/blob/master/examples/ios/Examples/ManageEmailPasswordUsers.swift) file in the Realm Docs iOS Unit Test suite.
 
-This uses the code block start and end tags, but it also uses `// :hide-start:`
+This uses the snippet start and end tags, but it also uses `// :hide-start:`
 and `// :hide-end:` to hide elements of the code example. Here, we're hiding
 a test assertion in the `catch` block that the documentation viewer doesn't 
 need to see. You might also use it to hide test setup or teardown code 
@@ -103,7 +110,7 @@ that isn't relevant to your documentation viewers.
 
 ```swift
     func testPasswordResetFunc() async {
-        // :code-block-start: password-reset-function
+        // :snippet-start: password-reset-function
         let app = App(id: YOUR_REALM_APP_ID)
         let client = app.emailPasswordAuth
 
@@ -126,7 +133,7 @@ that isn't relevant to your documentation viewers.
             XCTAssertEqual(error.localizedDescription, "user not found")
             // :hide-end:
         }
-        // :code-block-end:
+        // :snippet-end:
     }
 ```
 
@@ -177,7 +184,7 @@ file:
 import XCTest
 import RealmSwift
 
-// :code-block-start: models
+// :snippet-start: models
 class ReadWriteDataExamples_DogToy: Object {
     @Persisted var name = ""
 }
@@ -207,7 +214,7 @@ class ReadWriteDataExamples_DogClub: Object {
     @Persisted var name = ""
     @Persisted var members: List<ReadWriteDataExamples_Person>
 }
-// :code-block-end:
+// :snippet-end:
 // Many more lines of code examples, until eventually, we end the replace
 // :replace-end:
 ```
@@ -266,6 +273,11 @@ class DogClub: Object {
 
 The long, awkward name has been replaced with nothing.
 
+:::tip
+Be careful with `replace`. Use VerySpecificNamesAndCharacters_ here so 
+you can be sure you don't unintentionally delete something common.
+:::
+
 ## Use the CLI to Extract Snippets
 
 After you annotate your code examples with Bluehawk tags, use the 
@@ -277,7 +289,7 @@ The most common command you'll use is `bluehawk snip`. When you snip code
 blocks, you pass the output directory and the input file or directory.
 
 ```shell
-bluehawk snip --destination <output-directory> <input-directory-or-file>
+bluehawk snip -o <output-directory> <input-directory-or-file>
 ```
 
 ### Extract Code from a Single File
