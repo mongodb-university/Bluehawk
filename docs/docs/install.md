@@ -1,7 +1,7 @@
 ---
-id: "getting-started"
-title: "Getting Started"
-sidebar_label: "Getting Started"
+id: "install"
+title: "Install Bluehawk"
+sidebar_label: "Install"
 sidebar_position: 0
 custom_edit_url: null
 ---
