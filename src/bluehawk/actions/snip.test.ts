@@ -564,6 +564,86 @@ struct ContentView: SwiftUI.App {
  `);
  */
   });
+
+  it("handles states when no state is specified", async () => {
+    const text = `// Used in quickstart
+// :snippet-start: define-model
+// :state-start: dart
+import 'package:realm_dart/realm.dart';
+// :state-end:
+
+// :state-start: flutter
+// :state-uncomment-start: flutter
+// import 'package:realm/realm.dart';
+// :state-uncomment-end:
+// :state-end:
+
+part 'define_realm_model_test.g.dart'; // :remove:
+// :uncomment-start:
+// part 'car.g.dart';
+// :uncomment-end:
+
+@RealmModel()
+class _Car {
+  @PrimaryKey()
+  late String make;
+
+  late String? model;
+  late int? miles;
+}
+// :snippet-end:
+
+main() {}
+`;
+    const rootPath = "/path/to/project";
+    const outputPath = "/output";
+    const testFileName = "test.dart";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(outputPath, {
+      recursive: true,
+    });
+    await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
+
+    let fileCount = 0;
+    await snip({
+      reporter: {
+        ...reporter,
+        errorCount: 0,
+        onFileWritten() {
+          fileCount++;
+        },
+      },
+      paths: [rootPath],
+      output: outputPath,
+    });
+
+    let fileContents = await System.fs.readFile(
+      Path.join(outputPath, "test.codeblock.define-model.dart"),
+      "utf8"
+    );
+    console.log(fileContents);
+    expect(fileContents).toBe(
+      `
+
+part 'car.g.dart';
+
+@RealmModel()
+class _Car {
+  @PrimaryKey()
+  late String make;
+
+  late String? model;
+  late int? miles;
+}
+`
+    );
+    // Don't write a file for each state (old bug)
+    expect(fileCount).toBe(1);
+  });
+
   it("handles the --id option with multiple args", async () => {
     const snippet_1 = "id-1";
     const snippet_2 = "id-2";
