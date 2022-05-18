@@ -190,21 +190,19 @@ export const snip = async (
     const targetPath = path.join(output, document.basename);
 
     // Special handler for snippets in state tags
-    if (state !== undefined) {
-      const stateAttribute = document.attributes["state"];
-      if (stateAttribute && stateAttribute !== state) {
-        // Not the requested state
-        return;
-      }
-      const stateVersionWritten = stateVersionWrittenForPath[document.path];
-      if (stateVersionWritten === true) {
-        // Already wrote state version, so nothing more to do. This prevents a
-        // non-state version from overwriting the desired state version.
-        return;
-      }
-      if (stateAttribute === state) {
-        stateVersionWrittenForPath[document.path] = true;
-      }
+    const stateAttribute = document.attributes["state"];
+    if (stateAttribute && stateAttribute !== state) {
+      // Not the requested state
+      return;
+    }
+    const stateVersionWritten = stateVersionWrittenForPath[document.path];
+    if (stateVersionWritten === true) {
+      // Already wrote state version, so nothing more to do. This prevents a
+      // non-state version from overwriting the desired state version.
+      return;
+    }
+    if (stateAttribute === state) {
+      stateVersionWrittenForPath[document.path] = true;
     }
 
     if (id !== undefined) {
