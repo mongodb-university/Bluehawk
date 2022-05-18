@@ -33,63 +33,72 @@ export class ConsoleActionReporter implements ActionReporter {
     return this._count.errors;
   }
 
-  onBinaryFile(event: FileEvent): void {
+  onBinaryFile = (event: FileEvent): void => {
     ++this._count.binaryFiles;
     if (this.logLevel >= LogLevel.Info) {
       console.log(`found binary file: ${event.sourcePath}`);
     }
-  }
-  onFileParsed(event: FileParsedEvent): void {
+  };
+
+  onFileParsed = (event: FileParsedEvent): void => {
     ++this._count.textFiles;
     if (this.logLevel >= LogLevel.Info) {
       console.log(`parsed file: ${event.sourcePath}`);
     }
-  }
-  onFileWritten(event: FileWrittenEvent): void {
+  };
+
+  onFileWritten = (event: FileWrittenEvent): void => {
     ++this._count.filesWritten;
     if (this.logLevel >= LogLevel.Info) {
       console.log(
         `wrote ${event.type} file based on ${event.sourcePath} -> ${event.outputPath}`
       );
     }
-  }
-  onStatesFound(event: StatesFoundEvent): void {
+  };
+
+  onStatesFound = (event: StatesFoundEvent): void => {
     if (this.logLevel >= LogLevel.Info) {
       console.log(`found states: ${event.statesFound.join(", ")}`);
     }
-  }
-  onStateNotFound(event: StateNotFoundEvent): void {
+  };
+
+  onStateNotFound = (event: StateNotFoundEvent): void => {
     if (this.logLevel >= LogLevel.Warning) {
       console.warn(`state not found: ${event.state}`);
     }
-  }
-  onIdsUnused(event: IdsUnusedEvent): void {
+  };
+
+  onIdsUnused = (event: IdsUnusedEvent): void => {
     if (this.logLevel >= LogLevel.Warning) {
       console.warn(`ids not used: ${event.ids.join(", ")}`);
     }
-  }
-  onParserNotFound(event: ParserNotFoundEvent): void {
+  };
+
+  onParserNotFound = (event: ParserNotFoundEvent): void => {
     if (this.logLevel >= LogLevel.Warning) {
       console.warn(
         `parser not found for file ${event.sourcePath}: ${event.error.message}`
       );
     }
-  }
-  onFileError(event: FileErrorEvent): void {
+  };
+
+  onFileError = (event: FileErrorEvent): void => {
     ++this._count.errors;
     if (this.logLevel >= LogLevel.Error) {
       console.error(`file error: ${event.sourcePath}: ${event.error.message}`);
     }
-  }
-  onWriteFailed(event: WriteFailedEvent): void {
+  };
+
+  onWriteFailed = (event: WriteFailedEvent): void => {
     ++this._count.errors;
     if (this.logLevel >= LogLevel.Error) {
       console.error(
         `failed to write file ${event.sourcePath} -> ${event.outputPath}: ${event.error.message}`
       );
     }
-  }
-  onBluehawkErrors(event: BluehawkErrorsEvent): void {
+  };
+
+  onBluehawkErrors = (event: BluehawkErrorsEvent): void => {
     ++this._count.textFiles;
     this._count.errors += event.errors.length;
     if (this.logLevel >= LogLevel.Error) {
@@ -101,14 +110,14 @@ export class ConsoleActionReporter implements ActionReporter {
           .join("\n")}`
       );
     }
-  }
+  };
 
-  printSummary(): void {
+  printSummary = (): void => {
     const { binaryFiles, errors, textFiles, filesWritten } = this._count;
     console.log(`Processed ${binaryFiles + textFiles} files:
 - ${binaryFiles} binary files
 - ${textFiles} text files
 - ${errors} errors
 - ${filesWritten} files written`);
-  }
+  };
 }
