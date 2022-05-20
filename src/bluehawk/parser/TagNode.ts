@@ -28,10 +28,6 @@ interface TagNode {
   // The comment context the tag was found in.
   inContext: TagNodeContext;
 
-  // Returns the id found in the attributes list or directly after the block
-  // tag.
-  id?: string[];
-
   // Block tags have an inner range that includes the lines between the
   // attribute list and the end tag token.
   contentRange?: Range;
@@ -41,6 +37,9 @@ interface TagNode {
 
   // Attributes come from JSON and their schema depends on the tag.
   attributes?: TagNodeAttributes;
+
+  // Shorthand args are passed after a tag name.
+  shorthandArgs?: string[];
 }
 
 // A line tag applies to a specific line and does not have -start or -end
@@ -95,6 +94,7 @@ export class TagNodeImpl implements TagNode {
   }
   contentRange?: Range;
   children?: TagNodeImpl[];
+  shorthandArgs?: string[];
   attributes?: TagNodeAttributes;
   newlines: IToken[] = [];
   lineComments: IToken[] = [];

@@ -1,6 +1,5 @@
 import { ConsoleActionReporter } from "./actions/ConsoleActionReporter";
 import { ActionReporter } from "./actions/ActionReporter";
-import { validateTags } from "./processor/validator";
 import { TAG_PATTERN } from "./parser/lexer/tokens";
 import { Document } from "./Document";
 import {
@@ -186,15 +185,10 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
       });
       parser = this._parserStore.getDefaultParser();
     }
-    const result = parser.parse(source);
-    const validateErrors = validateTags(
-      result.tagNodes,
-      this._processor.processors
-    );
-    return {
-      ...result,
-      errors: [...result.errors, ...validateErrors],
-    };
+    return parser.parse({
+      source,
+      tagProcessors: this._processor.processors,
+    });
   };
 
   /**

@@ -476,12 +476,11 @@ export function makeCstVisitor(
         const Identifier = context.Identifier;
         const attributeList = context.attributeList;
         if (Identifier != undefined && Identifier.length != 0) {
-          assert(!attributeList); // parser issue
-          parent.attributes = {
-            id: Identifier.map((identifier) => identifier.image),
-          };
-        } else if (attributeList !== undefined) {
-          assert(!Identifier);
+          parent.shorthandArgs = Identifier.map(
+            (identifier) => identifier.image
+          );
+        }
+        if (attributeList !== undefined) {
           assert(attributeList.length === 1); // should be impossible to have more than 1 list
           this.visit(attributeList, visitorContext);
         }
