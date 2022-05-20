@@ -1,3 +1,4 @@
+import { WithActionReporter, ActionReporter } from "./ActionReporter";
 import * as path from "path";
 import { getBluehawk, EmphasizeSourceAttributes } from "../../bluehawk";
 import { System } from "../../bluehawk/io/System";
@@ -9,36 +10,47 @@ type Format = "rst" | "docusaurus";
 
 export interface SnipArgs extends ActionArgs {
   paths: string[];
-  destination: string;
+  output: string;
   state?: string;
   id?: string | string[];
   ignore?: string | string[];
   format?: Format | Format[];
 }
 
-export const createFormattedCodeBlock = async (
-  result: ProcessResult,
-  destination: string,
-  format: string
-): Promise<void> => {
+export const createFormattedCodeBlock = async ({
+  format,
+  result,
+  output,
+  reporter,
+}: {
+  result: ProcessResult;
+  output: string;
+  format: string;
+  reporter: ActionReporter;
+}): Promise<void> => {
   if (format === "rst") {
     const formattedCodeblock = await formatInRst(result);
 
     const { document } = result;
-    const targetPath = path.join(
-      destination,
-      `${document.basename}.code-block.rst`
-    );
+    const targetPath = path.join(output, `${document.basename}.code-block.rst`);
     await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+
+    reporter.onFileWritten({
+      type: "text",
+      sourcePath: document.path,
+      outputPath: targetPath,
+    });
   } else if (format === "docusaurus") {
     const formattedCodeblock = await formatInDocusaurus(result);
 
     const { document } = result;
-    const targetPath = path.join(
-      destination,
-      `${document.basename}.code-block.md`
-    );
+    const targetPath = path.join(output, `${document.basename}.code-block.md`);
     await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+    reporter.onFileWritten({
+      type: "text",
+      sourcePath: document.path,
+      outputPath: targetPath,
+    });
   } // add additional elses + "formatInLanguage" methods to handle other markup languages
 };
 
@@ -149,8 +161,10 @@ export const formatInDocusaurus = async (
   return lines.join("\n");
 };
 
-export const snip = async (args: SnipArgs): Promise<string[]> => {
-  const { paths, destination, state, id, ignore, waitForListeners } = args;
+export const snip = async (
+  args: WithActionReporter<SnipArgs>
+): Promise<void> => {
+  const { paths, output, state, id, ignore, waitForListeners, reporter } = args;
   const formats =
     args.format && !Array.isArray(args.format) ? [args.format] : args.format;
   const errors: string[] = [];
@@ -173,24 +187,22 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
     if (document.attributes["snippet"] === undefined) {
       return;
     }
-    const targetPath = path.join(destination, document.basename);
+    const targetPath = path.join(output, document.basename);
 
     // Special handler for snippets in state tags
-    if (state !== undefined) {
-      const stateAttribute = document.attributes["state"];
-      if (stateAttribute && stateAttribute !== state) {
-        // Not the requested state
-        return;
-      }
-      const stateVersionWritten = stateVersionWrittenForPath[document.path];
-      if (stateVersionWritten === true) {
-        // Already wrote state version, so nothing more to do. This prevents a
-        // non-state version from overwriting the desired state version.
-        return;
-      }
-      if (stateAttribute === state) {
-        stateVersionWrittenForPath[document.path] = true;
-      }
+    const stateAttribute = document.attributes["state"];
+    if (stateAttribute && stateAttribute !== state) {
+      // Not the requested state
+      return;
+    }
+    const stateVersionWritten = stateVersionWrittenForPath[document.path];
+    if (stateVersionWritten === true) {
+      // Already wrote state version, so nothing more to do. This prevents a
+      // non-state version from overwriting the desired state version.
+      return;
+    }
+    if (stateAttribute === state) {
+      stateVersionWrittenForPath[document.path] = true;
     }
 
     if (id !== undefined) {
@@ -206,35 +218,50 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
 
     try {
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
+      reporter.onFileWritten({
+        type: "text",
+        sourcePath: document.path,
+        outputPath: targetPath,
+      });
 
       // Create formatted snippet block
       if (formats !== undefined) {
         for (const format of formats) {
-          await createFormattedCodeBlock(result, destination, format);
+          await createFormattedCodeBlock({
+            result,
+            output,
+            format,
+            reporter,
+          });
         }
       }
     } catch (error) {
-      const message = `Failed to write ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
-      console.error(message);
-      errors.push(message);
+      reporter.onWriteFailed({
+        type: "text",
+        outputPath: targetPath,
+        sourcePath: parseResult.source.path,
+        error,
+      });
     }
   });
 
   await bluehawk.parseAndProcess(paths, {
+    reporter,
     ignore,
     waitForListeners: waitForListeners ?? false,
-    onErrors(filepath, newErrors) {
-      logErrorsToConsole(filepath, newErrors);
-      errors.push(...newErrors.map((e) => e.message));
+    onErrors(sourcePath, errors) {
+      reporter.onBluehawkErrors({
+        sourcePath,
+        errors,
+      });
     },
   });
 
   if (state && Object.keys(stateVersionWrittenForPath).length === 0) {
-    const message = `Warning: state '${state}' never found in ${paths.join(
-      ", "
-    )}`;
-    console.warn(message);
-    errors.push(message);
+    reporter.onStateNotFound({
+      state,
+      paths,
+    });
   }
 
   // if an id was not used, print a warning
@@ -243,12 +270,10 @@ export const snip = async (args: SnipArgs): Promise<string[]> => {
     const dedupIds = typeof id === "string" ? new Set([id]) : new Set(id);
     if (id && idsUsed.size !== dedupIds.size) {
       const unused = Array.from(dedupIds).filter((x) => !idsUsed.has(x));
-      const message = `Warning: the ids "${[...unused].join(
-        " "
-      )}" were not used. Is something misspelled?`;
-      console.warn(message);
+      reporter.onIdsUnused({
+        ids: unused,
+        paths,
+      });
     }
   }
-
-  return errors;
 };

@@ -13,11 +13,11 @@ function option<T, K extends string, O extends Options & { once?: boolean }>(
   });
 }
 
-export function withDestinationOption<T>(
+export function withOutputOption<T>(
   yargs: Argv<T>
-): Argv<T & { destination: string }> {
-  return option(yargs, "destination", {
-    alias: "d",
+): Argv<T & { output: string }> {
+  return option(yargs, "output", {
+    alias: "o",
     string: true,
     describe: "the output directory",
     required: true,
@@ -75,6 +75,17 @@ export function withJsonOption<T>(
   return option(yargs, "json", {
     boolean: true,
     describe: "output as json",
+    once: true,
+  });
+}
+
+export function withLogLevelOption<T>(
+  yargs: Argv<T>
+): Argv<T & { logLevel?: number }> {
+  return option(yargs, "logLevel", {
+    number: true,
+    describe:
+      "set the reporter log level. 0=none, 1=errors only, 2=warnings & above, 3=all",
     once: true,
   });
 }

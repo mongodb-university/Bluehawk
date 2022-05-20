@@ -1,13 +1,13 @@
+import { WithActionReporter } from "./ActionReporter";
 import { Stats } from "fs";
 import * as path from "path";
 import { getBluehawk } from "../../bluehawk";
 import { ActionArgs } from "./ActionArgs";
 import { System } from "../../bluehawk/io/System";
-import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
 export interface CopyArgs extends ActionArgs {
   rootPath: string;
-  destination: string;
+  output: string;
   state?: string;
   ignore?: string | string[];
 
@@ -17,19 +17,21 @@ export interface CopyArgs extends ActionArgs {
   onBinaryFile?(path: string): Promise<void> | void;
 }
 
-export const copy = async (args: CopyArgs): Promise<string[]> => {
-  const { destination, ignore, rootPath, waitForListeners } = args;
+export const copy = async (
+  args: WithActionReporter<CopyArgs>
+): Promise<void> => {
+  const { output, ignore, rootPath, waitForListeners, reporter } = args;
   const desiredState = args.state;
-  const errors: string[] = [];
   const bluehawk = await getBluehawk();
   let stats: Stats;
   try {
     stats = await System.fs.lstat(rootPath);
   } catch (error) {
-    const message = `Could not load stats for ${rootPath}: ${error.message}`;
-    console.error(message);
-    errors.push(message);
-    return errors;
+    reporter.onFileError({
+      error,
+      sourcePath: rootPath,
+    });
+    return;
   }
   const projectDirectory = !stats.isDirectory()
     ? path.dirname(rootPath)
@@ -38,7 +40,7 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
   const onBinaryFile = async (filePath: string) => {
     // Copy binary files directly
     const directory = path.join(
-      destination,
+      output,
       path.relative(projectDirectory, path.dirname(filePath))
     );
     const targetPath = path.join(directory, path.basename(filePath));
@@ -46,14 +48,20 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.copyFile(filePath, targetPath);
       await copyPermissions({ to: targetPath, from: filePath });
+      reporter.onFileWritten({
+        type: "binary",
+        sourcePath: filePath,
+        outputPath: targetPath,
+      });
     } catch (error) {
-      const message = `Failed to copy file ${filePath} to ${targetPath}: ${error.message}`;
-      console.error(message);
-      errors.push(message);
-    } finally {
-      const { onBinaryFile } = args;
-      onBinaryFile && (await onBinaryFile(filePath));
+      reporter.onWriteFailed({
+        outputPath: targetPath,
+        sourcePath: filePath,
+        error,
+        type: "binary",
+      });
     }
+    args.onBinaryFile && args.onBinaryFile(filePath);
   };
 
   // If a file contains the state tag, the processor will generate multiple
@@ -64,8 +72,8 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     [path: string]: boolean;
   } = {};
 
-  bluehawk.subscribe(async (result) => {
-    const { document, parseResult } = result;
+  bluehawk.subscribe(async (processResult) => {
+    const { document, parseResult } = processResult;
     if (document.attributes.snippet) {
       // Not a pure state file
       return;
@@ -95,7 +103,7 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
 
     // Use the same relative path
     const directory = path.join(
-      destination,
+      output,
       path.relative(projectDirectory, path.dirname(document.path))
     );
     const targetPath = path.join(directory, document.basename);
@@ -107,10 +115,18 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
         to: targetPath,
         from: document.path,
       });
+      reporter.onFileWritten({
+        type: "text",
+        sourcePath: document.path,
+        outputPath: targetPath,
+      });
     } catch (error) {
-      const message = `Failed to write file ${targetPath} (based on ${parseResult.source.path}): ${error.message}`;
-      console.error(message);
-      errors.push(message);
+      reporter.onWriteFailed({
+        outputPath: targetPath,
+        sourcePath: parseResult.source.path,
+        error,
+        type: "text",
+      });
     }
   });
 
@@ -118,19 +134,21 @@ export const copy = async (args: CopyArgs): Promise<string[]> => {
     ignore,
     onBinaryFile,
     waitForListeners: waitForListeners ?? false,
-    onErrors(filepath, newErrors) {
-      logErrorsToConsole(filepath, newErrors);
-      errors.push(...newErrors.map((e) => e.message));
+    onErrors(sourcePath, errors) {
+      reporter.onBluehawkErrors({
+        errors,
+        sourcePath,
+      });
     },
+    reporter,
   });
 
   if (desiredState && Object.keys(stateVersionWrittenForPath).length === 0) {
-    const message = `Warning: state '${desiredState}' never found in ${projectDirectory}`;
-    console.warn(message);
-    errors.push(message);
+    reporter.onStateNotFound({
+      state: desiredState,
+      paths: [projectDirectory],
+    });
   }
-
-  return errors;
 };
 
 /**

@@ -10,7 +10,13 @@ export async function run(): Promise<void> {
     describe: "add a plugin",
   }).argv;
 
-  const mainArgv = commandDir(yargs.help(), Path.join(__dirname, "commandModules")).demandCommand();
+  const mainArgv = commandDir(
+    yargs.help(),
+    Path.join(__dirname, "commandModules")
+  )
+    .demandCommand()
+    .recommendCommands()
+    .strict();
 
   const plugins = await loadPlugins(preArgv.plugin);
 

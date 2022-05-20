@@ -1,0 +1,8 @@
+Hi, this is a sample text.
+
+:snippet-start: test-one
+This text should be in test-one
+:snippet-end:
+
+That's all, folks!
+

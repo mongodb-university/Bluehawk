@@ -1,3 +1,5 @@
+import { ConsoleActionReporter } from "./actions/ConsoleActionReporter";
+import { ActionReporter } from "./actions/ActionReporter";
 import { validateTags } from "./processor/validator";
 import { TAG_PATTERN } from "./parser/lexer/tokens";
 import { Document } from "./Document";
@@ -24,12 +26,13 @@ interface BluehawkConfiguration {
 }
 
 type ParseAndProcessOptions = ProcessOptions & {
+  reporter: ActionReporter;
   onBinaryFile?: OnBinaryFileFunction;
   onErrors?: OnErrorFunction;
   ignore?: string | string[];
 };
 
-const defaultOptions: ParseAndProcessOptions = {
+const defaultOptions: Omit<ParseAndProcessOptions, "reporter"> = {
   waitForListeners: false,
   onErrors: logErrorsToConsole,
 };
@@ -104,7 +107,7 @@ export class Bluehawk {
     // options if any
     const options = { ...defaultOptions, ...(optionsIn ?? {}) };
 
-    const { onBinaryFile, onErrors, ignore } = options;
+    const { onBinaryFile, onErrors, ignore, reporter } = options;
 
     const filePaths = await loadProjectPaths({
       rootPath: path,
@@ -116,16 +119,26 @@ export class Bluehawk {
         const blob = await System.fs.readFile(filePath);
         const stat = await System.fs.lstat(filePath);
         if (await isBinaryFile(blob, stat.size)) {
+          reporter?.onBinaryFile({ sourcePath: filePath });
           onBinaryFile && (await onBinaryFile(filePath));
           return;
         }
         const text = blob.toString("utf8");
         const document = new Document({ text, path: filePath });
-        const result = this.parse(document);
+        const result = this.parse(document, { ...options, reporter });
         if (result.errors.length !== 0) {
+          reporter?.onBluehawkErrors({
+            sourcePath: filePath,
+            errors: result.errors,
+          });
           onErrors && onErrors(filePath, result.errors);
           return;
         }
+
+        reporter?.onFileParsed({
+          sourcePath: filePath,
+          parseResult: result,
+        });
         await this.process(result, options);
       } catch (e) {
         console.error(`Encountered the following error while processing ${filePath}:
@@ -136,6 +149,11 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     });
 
     await Promise.allSettled(promises);
+    await this.waitForListeners();
+  };
+
+  waitForListeners = async (): Promise<void> => {
+    return this._processor.waitForListeners();
   };
 
   /**
@@ -143,8 +161,12 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
    */
   parse = (
     source: Document,
-    languageSpecification?: LanguageSpecification
+    options?: {
+      languageSpecification?: LanguageSpecification;
+      reporter?: ActionReporter;
+    }
   ): ParseResult => {
+    const { reporter, languageSpecification } = options ?? {};
     // First, quickly check to see if this even has any tags.
     if (!TAG_PATTERN.test(source.text.original)) {
       return {
@@ -158,9 +180,10 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     try {
       parser = this._parserStore.getParser(languageSpecification ?? source);
     } catch (error) {
-      console.warn(
-        `falling back to plaintext parser for ${source.path}: ${error.message}`
-      );
+      reporter?.onParserNotFound({
+        sourcePath: source.path,
+        error,
+      });
       parser = this._parserStore.getDefaultParser();
     }
     const result = parser.parse(source);

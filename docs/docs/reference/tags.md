@@ -110,7 +110,7 @@ public class Main {
 Running the following command:
 
 ```
-bluehawk snip Main.java -d .
+bluehawk snip Main.java -o .
 ```
 
 Produces the following output:
@@ -164,7 +164,7 @@ public class Main {
 Running the following command:
 
 ```
-bluehawk snip Main.java -d . --state hello-user
+bluehawk snip Main.java -o . --state hello-user
 ```
 
 Produces the following output:
@@ -180,7 +180,7 @@ example++;
 Alternatively, running the following command:
 
 ```
-bluehawk snip Main.java -d . --state hello-world
+bluehawk snip Main.java -o . --state hello-world
 ```
 
 Produces the following output:
@@ -228,7 +228,7 @@ public class Main {
 Running the following command:
 
 ```
-bluehawk snip Main.java -d . --state subtract-one
+bluehawk snip Main.java -o . --state subtract-one
 ```
 
 Produces the following output:
@@ -278,7 +278,7 @@ public class Main {
 Running the following command:
 
 ```
-bluehawk copy Main.java -d .
+bluehawk copy Main.java -o .
 ```
 
 Produces the following output:
@@ -338,7 +338,7 @@ public class MyMainExample {
 Running the following command:
 
 ```
-bluehawk copy Main.java -d .
+bluehawk copy Main.java -o .
 ```
 
 Produces the following output:
@@ -392,7 +392,7 @@ public class Main {
 Running the following command:
 
 ```
-bluehawk snip Main.java -d . --format=rst
+bluehawk snip Main.java -o . --format=rst
 ```
 
 Produces the following output:
@@ -440,7 +440,7 @@ public class Main {
 Running the following command:
 
 ```
-bluehawk snip Main.java -d .
+bluehawk snip Main.java -o .
 ```
 
 Produces the following output:
