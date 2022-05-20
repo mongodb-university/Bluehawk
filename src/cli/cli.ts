@@ -5,7 +5,7 @@ import { version as yargsVersion } from "yargs/package.json";
 import { version as bluehawkVersion } from "../../package.json";
 
 export async function run(): Promise<void> {
-  const preArgv = yargs.option("plugin", {
+  const preArgv = await yargs.option("plugin", {
     string: true,
     describe: "add a plugin",
   }).argv;
