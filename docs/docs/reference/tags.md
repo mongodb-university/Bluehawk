@@ -86,9 +86,8 @@ must appear on the same line as the tag itself.
 
 ## Snippet
 
-The `snippet` tag, also aliased as `code-block`, marks a range of content in a file
-as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
-these snippets.
+The `snippet` tag marks a range of content in a file as a snippet.
+You can use the [snip](#snip) CLI command to generate snippet files from these snippets.
 
 Because `snippet` operates on ranges of content, it is only available as
 a block tag. You must pass `snippet` an identifier.
@@ -379,12 +378,12 @@ Consider the following file:
 ```java
 public class Main {
   public static void main(String[] args){
-    // :code-block-start: modulo
+    // :snippet-start: modulo
     int dividend = 11;
     int divisor = 3;
     int modulus = dividend % divisor; // :emphasize:
     System.out.println(dividend + " % " + divisor + " = " + modulus);
-    // :code-block-end:
+    // :snippet-end:
   }
 }
 ```
@@ -397,7 +396,7 @@ bluehawk snip Main.java -o . --format=rst
 
 Produces the following output:
 
-`Main.codeblock.modulo.java.code-block.rst`:
+`Main.snippet.modulo.java.code-block.rst`:
 
 ```rst
 .. code-block:: java
@@ -426,13 +425,13 @@ Consider the following file:
 public class Main {
 
   public static void main(String[] args){
-    // :code-block-start: division
+    // :snippet-start: division
     int dividend = 11;
     int divisor = 3;
     int quotient = dividend / divisor;
     assert(quotient == 3) // :remove:
     System.out.println(dividend + " / " + divisor + " = " + quotient);
-    // :code-block-end:
+    // :snippet-end:
   }
 }
 ```
