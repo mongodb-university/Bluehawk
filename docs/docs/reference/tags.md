@@ -306,11 +306,11 @@ public class Main {
 
 ## Replace
 
-The `replace` tag accepts a JSON dictionary called "terms" as input
-via an attribute list, and replaces occurrences string keys in the map within
-the spanned range with their map values in all output. You can use
-`replace` to hide implementation details like complicated class names
-or API endpoint URLs in generated output.
+The `replace` tag accepts a JSON dictionary called "terms" as input via an
+attribute list, and replaces occurrences string keys in the map within the
+spanned range with their map values in all output. You can use `replace` to
+remove implementation details like complicated class names or API endpoint URLs
+in generated output.
 
 Because `replace` operates on ranges of content, it is only available
 as a block tag. You must pass an attribute list containing "terms",
@@ -419,9 +419,8 @@ Produces the following output:
 
 ## Remove
 
-The `remove` tag, also aliased as `hide`, removes the spanned
-range from Bluehawk output. `remove` can be helpful for hiding
-assertions and state setup from user-facing code samples.
+The `remove` tag removes the spanned range from Bluehawk output. `remove` can be
+helpful for hiding assertions and state setup from user-facing code samples.
 
 You can use `remove` as either a block tag or a
 line tag.
