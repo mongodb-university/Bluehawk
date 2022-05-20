@@ -199,7 +199,7 @@ it's my id
 
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors[0].message).toBe(
-      "attribute list for 'replace' tag should be object"
+      "'replace' does not accept shorthand args ('foo') because the tag definition does not have shorthandArgsAttributeName set."
     );
   });
 

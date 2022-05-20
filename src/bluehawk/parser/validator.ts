@@ -32,11 +32,25 @@ export function validateTags(
       return;
     }
 
-    // Apply the tag's shorthand rename rule to the tag node's attribute list
-    mapShorthandArgsToAttributes({
-      tagNode,
-      shorthandArgsAttributeName: tag.shorthandArgsAttributeName,
-    });
+    const { shorthandArgsAttributeName } = tag;
+    if (shorthandArgsAttributeName !== undefined) {
+      // Apply the tag's shorthand rename rule to the tag node's attribute list
+      mapShorthandArgsToAttributes({
+        tagNode,
+        shorthandArgsAttributeName,
+      });
+    } else if (tagNode.shorthandArgs !== undefined) {
+      validateResult.errors.push({
+        component: "validator",
+        location: tagNode.range.start,
+        message: `'${
+          tagNode.tagName
+        }' does not accept shorthand args ('${tagNode.shorthandArgs.join(
+          " "
+        )}') because the tag definition does not have shorthandArgsAttributeName set.`,
+      });
+      return;
+    }
 
     if (tagNode.type === "block" && !tag.supportsBlockMode) {
       validateResult.errors.push({
