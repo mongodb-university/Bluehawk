@@ -199,7 +199,7 @@ it's my id
 
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors[0].message).toBe(
-      "attribute list for 'replace' tag should have required property 'terms'"
+      "attribute list for 'replace' tag should be object"
     );
   });
 
@@ -270,7 +270,7 @@ class ReadWriteData: XCTestCase {
     });
 
     const parseResult = bluehawk.parse(source);
-    expect(parseResult.errors.length).toBe(0);
+    expect(parseResult.errors).toStrictEqual([]);
     const files = await bluehawk.process(parseResult);
     expect(files["replace.test.js"].document.text.toString())
       .toBe(`import XCTest

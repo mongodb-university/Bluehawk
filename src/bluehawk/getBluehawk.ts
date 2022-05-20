@@ -24,6 +24,7 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
     const StateUncommentTag = makeBlockTag<IdRequiredAttributes>({
       name: "state-uncomment",
       description: "combines 'uncomment' and 'state'",
+      shorthandArgsAttributeName: "id",
       attributesSchema: IdRequiredAttributesSchema,
       process(request) {
         UncommentTag.process(request);
