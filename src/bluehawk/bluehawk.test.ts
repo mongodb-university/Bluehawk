@@ -1,4 +1,4 @@
-import { idIsUnique } from "./processor/validator";
+import { idIsUnique } from "./parser/validator";
 import { Bluehawk } from "./bluehawk";
 import { Document } from "./Document";
 import {

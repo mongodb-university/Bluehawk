@@ -1,11 +1,11 @@
 import { strict as assert } from "assert";
-import { RootParser } from "../parser/RootParser";
-import { makeCstVisitor } from "../parser/visitor/makeCstVisitor";
+import { RootParser } from "./RootParser";
+import { makeCstVisitor } from "./visitor/makeCstVisitor";
 import { validateTags, idIsUnique } from "./validator";
-import { makeBlockCommentTokens } from "../parser/lexer/makeBlockCommentTokens";
-import { makeLineCommentToken } from "../parser/lexer/makeLineCommentToken";
+import { makeBlockCommentTokens } from "./lexer/makeBlockCommentTokens";
+import { makeLineCommentToken } from "./lexer/makeLineCommentToken";
 import { Document } from "../Document";
-import { TagProcessors } from "./Processor";
+import { TagProcessors } from "../processor/Processor";
 import {
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
@@ -21,6 +21,7 @@ describe("validator", () => {
     "code-block": makeBlockTag<IdRequiredAttributes>({
       name: "code-block",
       attributesSchema: IdRequiredAttributesSchema,
+      shorthandArgsAttributeName: "id",
       rules: [idIsUnique],
       process(request) {
         // do nothing
