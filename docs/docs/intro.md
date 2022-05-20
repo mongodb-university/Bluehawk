@@ -6,6 +6,12 @@ sidebar_position: -1
 slug: /
 ---
 
+:::note Bluehawk 1.0.0 is here 🎉
+
+Bluehawk 1.0.0 has been released! Future releases will adhere to [semantic versioning](https://semver.org/).
+
+:::
+
 Bluehawk is a markup processor for extracting and manipulating arbitrary code.
 With Bluehawk, you can:
 
@@ -36,6 +42,7 @@ To use Bluehawk:
 3. Include the output files that the Bluehawk CLI generated in your documentation.
 
 For examples of how the Realm Docs team uses Bluehawk in workflows, see our guides:
+
 - [Extract Code Snippets](code-snippets/)
 - [Create Checkpointed Tutorials](tutorials)
 - [Bluehawk in Continuous Integration](continuous-integration)
