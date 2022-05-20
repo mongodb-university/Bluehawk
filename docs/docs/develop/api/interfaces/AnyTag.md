@@ -24,7 +24,7 @@ Tag.attributesSchema
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:15](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L15)
+[src/bluehawk/tags/Tag.ts:15](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L15)
 
 ___
 
@@ -38,7 +38,7 @@ Tag.description
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:12](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L12)
+[src/bluehawk/tags/Tag.ts:12](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L12)
 
 ___
 
@@ -52,7 +52,7 @@ Tag.name
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:9](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L9)
+[src/bluehawk/tags/Tag.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L9)
 
 ___
 
@@ -66,7 +66,7 @@ Tag.rules
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:19](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L19)
+[src/bluehawk/tags/Tag.ts:19](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L19)
 
 ___
 
@@ -76,7 +76,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:26](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L26)
+[src/bluehawk/tags/Tag.ts:26](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L26)
 
 ___
 
@@ -86,7 +86,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:27](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L27)
+[src/bluehawk/tags/Tag.ts:27](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L27)
 
 ## Methods
 
@@ -106,4 +106,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:28](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L28)
+[src/bluehawk/tags/Tag.ts:28](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L28)
