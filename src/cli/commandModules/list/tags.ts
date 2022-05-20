@@ -2,7 +2,7 @@ import { CommandModule } from "yargs";
 import { ActionArgs, ListTagArgs, listTags, withJsonOption } from "../../..";
 
 const commandModule: CommandModule<ActionArgs, ListTagArgs> = {
-  command: "commands",
+  command: "tags",
   builder(args) {
     return withJsonOption(args);
   },
@@ -10,7 +10,7 @@ const commandModule: CommandModule<ActionArgs, ListTagArgs> = {
     await listTags(args);
   },
   aliases: [],
-  describe: "list available commands",
+  describe: "list available tags",
 };
 
 export default commandModule;
