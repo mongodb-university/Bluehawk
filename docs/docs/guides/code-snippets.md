@@ -104,17 +104,17 @@ class Person: Object {
 The output file includes only the lines of code between the `snippet-start`
 and the `snippet-end` tags.
 
-#### Hide or Remove code
+#### Remove code
 
-Bluehawk lets you to hide or remove code that isn't relevant to your
+Bluehawk lets you to remove code that isn't relevant to your
 documentation viewers.
 
 This example is from the [ManageEmailPasswordUsers.swift](https://github.com/mongodb/docs-realm/blob/master/examples/ios/Examples/ManageEmailPasswordUsers.swift) file in the Realm Docs iOS Unit Test suite.
 
-This uses the snippet start and end tags, but it also uses `// :hide-start:`
-and `// :hide-end:` to hide elements of the code example. Here, we're hiding
-a test assertion in the `catch` block that the documentation viewer doesn't
-need to see. You might also use it to hide test setup or teardown code
+This uses the snippet start and end tags, but it also uses `// :remove-start:`
+and `// :remove-end:` to remove elements of the code example. Here, we're
+removing a test assertion in the `catch` block that the documentation viewer
+doesn't need to see. You might also use it to remove test setup or teardown code
 that isn't relevant to your documentation viewers.
 
 ```swift
@@ -138,9 +138,9 @@ that isn't relevant to your documentation viewers.
             print("Password reset successful!")
         } catch {
             print("Password reset failed: \(error.localizedDescription)")
-            // :hide-start:
+            // :remove-start:
             XCTAssertEqual(error.localizedDescription, "user not found")
-            // :hide-end:
+            // :remove-end:
         }
         // :snippet-end:
     }
@@ -178,9 +178,9 @@ print line.
 #### Replace
 
 Bluehawk gives you the ability to replace terms with different terms, or even
-nothing at all. In the Realm Docs iOS Unit Test suite, we use the `replace`
-tag to hide awkward names we have to use to avoid namespace collisions.
-For example, here are the opening lines of the
+nothing at all. In the Realm Docs iOS Unit Test suite, we use the `replace` tag
+to remove awkward names we have to use to avoid namespace collisions. For
+example, here are the opening lines of the
 [ReadWriteData.swift](https://github.com/mongodb/docs-realm/blob/master/examples/ios/Examples/ReadWriteData.swift)
 file:
 

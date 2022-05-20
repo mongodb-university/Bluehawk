@@ -42,11 +42,6 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
         UncommentTag,
         EmphasizeTag,
       ],
-      // Aliases for backwards compatibility
-      tagAliases: [
-        ["hide", RemoveTag],
-        ["snippet", SnippetTag],
-      ],
     });
 
     // Add all supported extensions here.

@@ -31,11 +31,11 @@ describe("lexer", () => {
     const result = lexer.tokenize(`
 // :snippet-start: some-id
 this is bluehawk
-// :hide-start:
+// :remove-start:
 this is hidden
 // :replace-with:
 this is used to replace
-// :hide-end:
+// :remove-end:
 // :snippet-end:
 `);
     expect(result.errors).toStrictEqual([]);

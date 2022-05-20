@@ -19,7 +19,7 @@ mark up the unit test source file like this with Bluehawk tags like
 func someTest() {
     // :snippet-start: some-example
     let person = getPerson()
-    // :remove-start: // hide test boilerplate from the code block
+    // :remove-start: // remove test boilerplate from the code block
     XCTAssert(person.name != "Keith")
     // :remove-end:
     person.doSomething {
