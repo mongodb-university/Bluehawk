@@ -8,37 +8,37 @@ custom_edit_url: null
 ---
 
 :::info
-Do you prefer learning through videos? Check out our video on 
+Do you prefer learning through videos? Check out our video on
 [Extract and Generate Code Examples](/#extract-and-generate-code-examples)
 :::
 
 ## Annotate Unit Tests
 
-The first step to use Bluehawk is to annotate your unit tests with 
-[Bluehawk tags](/reference/tags). Tags are similar to HTML or XML; you 
+The first step to use Bluehawk is to annotate your unit tests with
+[Bluehawk tags](/reference/tags). Tags are similar to HTML or XML; you
 put a `start` tag before the code you want to annotate, and an `end` tag
 after it. Bluehawk reads those start and end tags, and generates output
 files based on your annotations. You can use Bluehawk tags in any text file.
 
-The Bluehawk tool has language-specific "comment awareness" - as well as 
+The Bluehawk tool has language-specific "comment awareness" - as well as
 string literal awareness - that allows it to:
 
 - Avoid making snippet files with a closing block comment token at the front
-- Parse multi-line, commented out JSON "attribute lists" of tags so they 
+- Parse multi-line, commented out JSON "attribute lists" of tags so they
   don't create syntax errors in your code
 
 There is not currently a way to find out which languages Bluehawk supports
 from the CLI. However, you can see the [supported file extensions in
-the Bluehawk source](https://github.com/mongodb-university/Bluehawk/blob/8bb5766e5f30182ed3992eae8f36dba8a8db99ba/src/bluehawk/getBluehawk.ts#L52) 
+the Bluehawk source](https://github.com/mongodb-university/Bluehawk/blob/8bb5766e5f30182ed3992eae8f36dba8a8db99ba/src/bluehawk/getBluehawk.ts#L52)
 to see if Bluehawk supports your preferred language.
 
-To request support for your language, [file an issue in the Bluehawk 
-repository](https://github.com/mongodb-university/Bluehawk/issues), or 
+To request support for your language, [file an issue in the Bluehawk
+repository](https://github.com/mongodb-university/Bluehawk/issues), or
 make a PR to add support for your preferred language.
 
 ### Output File Names
 
-When you start a Bluehawk code block tag, you append a descriptive title, 
+When you start a Bluehawk code block tag, you append a descriptive title,
 similar to:
 
 ```
@@ -48,18 +48,18 @@ similar to:
 When you generate Bluehawk output, the output file name concatenates:
 
 - The name of your unit test file
-- The word `codeblock`
+- The word `snippet`
 - The descriptive name that you put in the `snippet-start` tag
 - The file type of your unit test file
 
 For this example, the code block is in a file called Models.swift, so
-the generated output file name would be: `Models.codeblock.person-model.swift`.
+the generated output file name would be: `Models.snippet.person-model.swift`.
 
 ### Example Unit Test Annotation
 
 #### Snippet start and end
 
-This is a complete code example in the 
+This is a complete code example in the
 [Models.swift](https://github.com/mongodb/docs-realm/blob/master/examples/ios/Examples/Models.swift)
 file in the Realm Docs iOS Unit Test suite.
 
@@ -84,8 +84,8 @@ class Person: Object {
 // :snippet-end:
 ```
 
-The output file becomes 
-[Models.codeblock.person-model.swift](https://github.com/mongodb/docs-realm/blob/master/source/examples/generated/code/start/Models.codeblock.person-model.swift). After we use the Bluehawk CLI to extract 
+The output file becomes
+[Models.snippet.person-model.swift](https://github.com/mongodb/docs-realm/blob/master/source/examples/generated/code/start/Models.snippet.person-model.swift). After we use the Bluehawk CLI to extract
 this code example, the final code example looks like this:
 
 ```swift
@@ -101,20 +101,20 @@ class Person: Object {
 }
 ```
 
-The output file includes only the lines of code between the `snippet-start` 
+The output file includes only the lines of code between the `snippet-start`
 and the `snippet-end` tags.
 
 #### Hide or Remove code
 
-Bluehawk lets you to hide or remove code that isn't relevant to your 
+Bluehawk lets you to hide or remove code that isn't relevant to your
 documentation viewers.
 
 This example is from the [ManageEmailPasswordUsers.swift](https://github.com/mongodb/docs-realm/blob/master/examples/ios/Examples/ManageEmailPasswordUsers.swift) file in the Realm Docs iOS Unit Test suite.
 
 This uses the snippet start and end tags, but it also uses `// :hide-start:`
 and `// :hide-end:` to hide elements of the code example. Here, we're hiding
-a test assertion in the `catch` block that the documentation viewer doesn't 
-need to see. You might also use it to hide test setup or teardown code 
+a test assertion in the `catch` block that the documentation viewer doesn't
+need to see. You might also use it to hide test setup or teardown code
 that isn't relevant to your documentation viewers.
 
 ```swift
@@ -146,8 +146,8 @@ that isn't relevant to your documentation viewers.
     }
 ```
 
-The final output code example at 
-[ManageEmailPasswordUsers.codeblock.password-reset-function.swift](https://github.com/mongodb/docs-realm/blob/master/source/examples/generated/code/start/ManageEmailPasswordUsers.codeblock.password-reset-function.swift)
+The final output code example at
+[ManageEmailPasswordUsers.snippet.password-reset-function.swift](https://github.com/mongodb/docs-realm/blob/master/source/examples/generated/code/start/ManageEmailPasswordUsers.snippet.password-reset-function.swift)
 looks like:
 
 ```swift
@@ -178,10 +178,10 @@ print line.
 #### Replace
 
 Bluehawk gives you the ability to replace terms with different terms, or even
-nothing at all. In the Realm Docs iOS Unit Test suite, we use the `replace` 
-tag to hide awkward names we have to use to avoid namespace collisions. 
-For example, here are the opening lines of the 
-[ReadWriteData.swift](https://github.com/mongodb/docs-realm/blob/master/examples/ios/Examples/ReadWriteData.swift) 
+nothing at all. In the Realm Docs iOS Unit Test suite, we use the `replace`
+tag to hide awkward names we have to use to avoid namespace collisions.
+For example, here are the opening lines of the
+[ReadWriteData.swift](https://github.com/mongodb/docs-realm/blob/master/examples/ios/Examples/ReadWriteData.swift)
 file:
 
 ```swift
@@ -235,7 +235,7 @@ awkward name isn't something we want to show documentation viewers.
 
 Fortunately, replace lets us swap any instance of the term we specify with
 some alternative. In this example, we replace `ReadWriteDataExamples`
-with an empty string. 
+with an empty string.
 
 ```swift
 // :replace-start: {
@@ -245,7 +245,7 @@ with an empty string.
 // }
 ```
 
-The [output file for the code block above](https://github.com/mongodb/docs-realm/blob/master/source/examples/generated/code/start/ReadWriteData.codeblock.models.swift) 
+The [output file for the code block above](https://github.com/mongodb/docs-realm/blob/master/source/examples/generated/code/start/ReadWriteData.snippet.models.swift)
 looks like:
 
 ```swift
@@ -283,15 +283,15 @@ class DogClub: Object {
 The long, awkward name has been replaced with nothing.
 
 :::tip
-Be careful with `replace`. Use VerySpecificNamesAndCharacters_ here so 
+Be careful with `replace`. Use VerySpecificNamesAndCharacters\_ here so
 you can be sure you don't unintentionally delete something common.
 :::
 
 ## Use the CLI to Extract Snippets
 
-After you annotate your code examples with Bluehawk tags, use the 
+After you annotate your code examples with Bluehawk tags, use the
 Bluehawk CLI to parse the content. The CLI generates output files that contain
-only the content you specify. The Bluehawk CLI accepts various 
+only the content you specify. The Bluehawk CLI accepts various
 [commands](/reference/cli) to generate output in the way you want it.
 
 The most common command you'll use is `bluehawk snip`. When you snip code
@@ -303,7 +303,7 @@ bluehawk snip -o <output-directory> <input-directory-or-file>
 
 ### Extract Code from a Single File
 
-If you're just updating a single code example or tutorial, you can extract 
+If you're just updating a single code example or tutorial, you can extract
 code from a single file:
 
 ```shell
@@ -311,7 +311,7 @@ bluehawk snip -o source/examples/generated/code/start/ examples/ios/Examples/Rea
 ```
 
 This example extracts code snippets from the `ReadWriteData.swift` file, and
-generates output files in `source/examples/generated/code/start/`. 
+generates output files in `source/examples/generated/code/start/`.
 
 ### Extract Code in a Directory
 
@@ -323,15 +323,15 @@ bluehawk snip -o source/examples/generated/code/start/ examples/ios/Examples
 ```
 
 In this example, `examples/ios/examples` is the directory that contains all
-of the Realm docs iOS unit test files. If we create new test files, or 
-change existing tests, and then run this command, Bluehawk generates 
+of the Realm docs iOS unit test files. If we create new test files, or
+change existing tests, and then run this command, Bluehawk generates
 new or updated output files for all changes.
 
 :::tip
-Make an [alias](https://www.geeksforgeeks.org/alias-command-in-linux-with-examples/) 
-for common Bluehawk commands. If you find yourself always running the same 
-`bluehawk snip` command with the same input and output directories, make 
-it a command-line alias. I have `bluehawkify` and `bluehawkify-android` as 
+Make an [alias](https://www.geeksforgeeks.org/alias-command-in-linux-with-examples/)
+for common Bluehawk commands. If you find yourself always running the same
+`bluehawk snip` command with the same input and output directories, make
+it a command-line alias. I have `bluehawkify` and `bluehawkify-android` as
 aliases for common Bluehawk CLI commands.
 :::
 
@@ -343,23 +343,23 @@ you've got code files in an output directory.
 Now it's time to include those code blocks in your documentation.
 How you do that depends on your documentation tooling.
 
-In Realm documentation, our build system uses reStructured Text (rST), which 
-[has an `include` option](https://docutils.sourceforge.io/docs/ref/rst/directives.html#include) 
+In Realm documentation, our build system uses reStructured Text (rST), which
+[has an `include` option](https://docutils.sourceforge.io/docs/ref/rst/directives.html#include)
 that looks like:
 
 ```
-.. literalinclude:: /examples/generated/code/start/ReadWriteData.codeblock.models.swift
+.. literalinclude:: /examples/generated/code/start/ReadWriteData.snippet.models.swift
    :language: swift
 ```
 
-In [Docusaurus](https://docusaurus.io/docs/static-assets), you would `import` 
+In [Docusaurus](https://docusaurus.io/docs/static-assets), you would `import`
 the file from a generated file directory and use it in a special block:
 
 ```
-import QuickStartTestCodeblockUpdateRealmObjectDart from "!!raw-loader!@site/generated/flutter/quick_start_test.codeblock.update-realm-object.dart";
+import QuickStartTestSnippetUpdateRealmObjectDart from "!!raw-loader!@site/generated/flutter/quick_start_test.snippet.update-realm-object.dart";
 
 <CodeBlock className="language-dart">
-  {QuickStartTestCodeblockUpdateRealmObjectDart}
+  {QuickStartTestSnippetUpdateRealmObjectDart}
 </CodeBlock>
 ```
 
