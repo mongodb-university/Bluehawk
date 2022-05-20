@@ -23,6 +23,7 @@
     "bluehawk": "./build/src/main.js"
   },
   "scripts": {
+    "cbl": "npm run clean && npm run build && npm link",
     "clean": "rm -rf build",
     "build": "tsc -b",
     "watch": "tsc -b -w",
@@ -42,12 +43,13 @@
     "magic-string": "^0.25.0",
     "memfs": "^3.0.0",
     "source-map": "^0.7.0",
-    "yargs": "^15.0.0"
+    "yargs": "^17.5.1"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.0.0",
     "@types/jest": "^26.0.0",
     "@types/node": "^12.0.0",
+    "@types/yargs": "^17.0.10",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.0.0",

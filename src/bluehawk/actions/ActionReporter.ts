@@ -11,7 +11,7 @@ export type WithActionReporter<T> = T & { reporter: ActionReporter };
  */
 export interface ActionReporter {
   logLevel: LogLevel;
-  get errorCount(): number;
+  readonly errorCount: number;
 
   // Info
   onBinaryFile(event: BinaryFileEvent): void;
