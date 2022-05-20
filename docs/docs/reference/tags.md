@@ -86,9 +86,15 @@ must appear on the same line as the tag itself.
 
 ## Snippet
 
-The `snippet` tag, also aliased as `snippet`, marks a range of content in a file
-as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
-these snippets.
+:::info
+
+Prior to version 1.0, bluehawk accepted `code-block` as an alias for `snippet`.
+Version 1.0 removed the `code-block` alias.
+
+:::
+
+The `snippet` tag marks a range of content in a file as a snippet.
+You can use the [snip](#snip) CLI command to generate snippet files from these snippets.
 
 Because `snippet` operates on ranges of content, it is only available as
 a block tag. You must pass `snippet` an identifier.
@@ -127,7 +133,9 @@ The `state` tag marks a range of content in a file as part of a particular state
 You can use the [snip](#snip) or [copy](#copy) CLI commands with the [state](#state)
 flag to generate output files that contain only content from a specific named state.
 When you use the `--state` flag to specify a state, all state blocks other than the
-specified state are removed from the output. All content not in a state block is
+specified state are removed from the output. If a file has state blocks
+but you do not specify a `--state` flag in the CLI, no content from the state blocks
+is included in the generated output. All content not in a state block is
 unaffected and outputs normally.
 
 `state` can be helpful for managing tutorial code
