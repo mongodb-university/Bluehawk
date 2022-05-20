@@ -45,7 +45,7 @@ export enum LogLevel {
 }
 
 export type FileEvent = {
-  sourcePath: string;
+  inputPath: string;
 };
 
 export type BinaryFileEvent = FileEvent;

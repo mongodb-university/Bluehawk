@@ -22,7 +22,7 @@ export const check = async (
   const addErrors = (filePath: string, errors: BluehawkError[]) => {
     reporter.onBluehawkErrors({
       errors,
-      sourcePath: filePath,
+      inputPath: filePath,
     });
     const existingErrors = fileToErrorMap.get(filePath) ?? [];
     fileToErrorMap.set(filePath, [...existingErrors, ...errors]);
