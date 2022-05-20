@@ -88,7 +88,8 @@ must appear on the same line as the tag itself.
 
 :::info
 
-Prior to version 1.0, bluehawk accepted `code-block` as an alias for `snippet`. Version 1.0 removed the `code-block` alias.
+Prior to version 1.0, bluehawk accepted `code-block` as an alias for `snippet`.
+Version 1.0 removed the `code-block` alias.
 
 :::
 
