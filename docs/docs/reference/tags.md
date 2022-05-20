@@ -405,7 +405,7 @@ bluehawk snip Main.java -o . --format=rst
 
 Produces the following output:
 
-`Main.snippet.modulo.java.snippet.rst`:
+`Main.snippet.modulo.java.rst`:
 
 ```rst
 .. code-block:: java
