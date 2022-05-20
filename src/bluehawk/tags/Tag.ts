@@ -21,11 +21,10 @@ interface Tag {
   attributesSchema?: AnySchema;
 
   /**
-    The attribute names that shorthand arguments map to. The position in the
-    array corresponds to the position of the argument.
+    The attribute name that shorthand arguments map to. If not provided, then
+    shorthands are rejected.
 
-    Example: given shorthandArgsAttributeName = "id", the following
-    shorthand:
+    Example: given shorthandArgsAttributeName = "id", the following shorthand:
 
     ```
     :some-tag-start: somename somename2
