@@ -95,11 +95,7 @@ export const SnippetTag = makeBlockTag<IdRequiredAttributes>({
     fork({
       document,
       tagNodes: tagNode.children ?? [],
-<<<<<<< HEAD
-      newPath: document.pathWithInfix(`snippet.${tagNode.id[0]}`),
-=======
-      newPath: document.pathWithInfix(`codeblock.${tagNode.attributes.id[0]}`),
->>>>>>> 3c81783ff2e2a8c71b3d4fc04da8b49a499f426a
+      newPath: document.pathWithInfix(`snippet.${tagNode.attributes.id[0]}`),
       newText: clonedSnippet,
       newAttributes: {
         snippet: tagNode.attributes.id[0],
