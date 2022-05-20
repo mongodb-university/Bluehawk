@@ -72,7 +72,7 @@ commands.
 Start by annotating your tutorial with [Bluehawk tags](/reference/tags).
 As with [code snippets](code-snippets), you open and close a code block
 with `snippet-start` and `snippet-end`. You can
-[hide or remove code](code-snippets#hide-or-remove-code) if your tutorial
+[remove code](code-snippets#remove-code) if your tutorial
 contains tests or boilerplate you don't want to expose in your documentation.
 You can also [replace](code-snippets#replace) awkward terms with more
 readable ones if you have any namespace issues, or want to rename things
