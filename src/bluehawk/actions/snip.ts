@@ -32,7 +32,7 @@ export const createFormattedCodeBlock = async ({
     const formattedSnippet = await formatInRst(result);
 
     const { document } = result;
-    const targetPath = path.join(output, `${document.basename}.snippet.rst`);
+    const targetPath = path.join(output, `${document.basename}.rst`);
     await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
 
     reporter.onFileWritten({
@@ -44,7 +44,7 @@ export const createFormattedCodeBlock = async ({
     const formattedSnippet = await formatInDocusaurus(result);
 
     const { document } = result;
-    const targetPath = path.join(output, `${document.basename}.snippet.md`);
+    const targetPath = path.join(output, `${document.basename}.md`);
     await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
     reporter.onFileWritten({
       type: "text",
