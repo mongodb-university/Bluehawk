@@ -1,7 +1,7 @@
 import MagicString from "magic-string";
 import { BlockTagNode } from "../parser/TagNode";
 import { ProcessRequest } from "../processor/Processor";
-import { idIsUnique } from "../processor/validator";
+import { idIsUnique } from "../parser/validator";
 import { strict as assert } from "assert";
 import {
   makeBlockTag,
@@ -66,6 +66,7 @@ export const SnippetTag = makeBlockTag<IdRequiredAttributes>({
   name: "snippet",
   description: "identifies snippets for extraction into standalone files",
   attributesSchema: IdRequiredAttributesSchema,
+  shorthandArgsAttributeName: "id",
   rules: [idIsUnique],
   process: (request: ProcessRequest<BlockTagNode>): void => {
     const { tagNode, document, fork } = request;
@@ -86,16 +87,18 @@ export const SnippetTag = makeBlockTag<IdRequiredAttributes>({
     dedentRange(clonedSnippet, tagNode);
 
     // ID is required and enforced by the validator, so it should exist
-    assert(tagNode.id !== undefined && tagNode.id.length > 0);
+    assert(
+      tagNode.attributes.id !== undefined && tagNode.attributes.id.length > 0
+    );
 
     // Fork subset code block to another file
     fork({
       document,
       tagNodes: tagNode.children ?? [],
-      newPath: document.pathWithInfix(`codeblock.${tagNode.id[0]}`),
+      newPath: document.pathWithInfix(`codeblock.${tagNode.attributes.id[0]}`),
       newText: clonedSnippet,
       newAttributes: {
-        snippet: tagNode.id[0],
+        snippet: tagNode.attributes.id[0],
       },
     });
   },

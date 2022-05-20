@@ -131,9 +131,9 @@ annotated text
     expect(result.tagNodes[0].tagName).toBe("A");
     expect((result.tagNodes[0].children ?? []).length).toBe(0);
     expect(
-      result.tagNodes[0].id !== undefined &&
-        result.tagNodes[0].id.length == 1 &&
-        result.tagNodes[0].id[0]
+      result.tagNodes[0].shorthandArgs !== undefined &&
+        result.tagNodes[0].shorthandArgs.length == 1 &&
+        result.tagNodes[0].shorthandArgs[0]
     ).toBe("label");
   });
 

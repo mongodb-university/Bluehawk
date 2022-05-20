@@ -139,7 +139,7 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
         expect(tagNode.children).toBeUndefined();
         expect(tagNode.contentRange).toBeUndefined();
         expect(tagNode.tagName).toBe("line-tag");
-        expect(tagNode.id).toBeUndefined();
+        expect(tagNode.shorthandArgs).toBeUndefined();
         expect(tagNode.type).toBe("line");
         state.calledLineTagProcess = true;
       },
@@ -148,11 +148,12 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
     const BlockTag = makeBlockTag<IdRequiredAttributes>({
       name: "block-tag",
       attributesSchema: IdRequiredAttributesSchema,
+      shorthandArgsAttributeName: "id",
       process({ tagNode }) {
         expect(tagNode.attributes).toBeDefined();
         expect(tagNode.children).toBeDefined();
         expect(tagNode.contentRange).toBeDefined();
-        expect(tagNode.id).toBe("test");
+        expect(tagNode.attributes.id).toStrictEqual(["test"]);
         expect(tagNode.type).toBe("block");
         state.calledBlockTagProcess = true;
       },

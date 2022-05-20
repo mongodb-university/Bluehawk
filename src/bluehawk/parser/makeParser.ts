@@ -1,3 +1,4 @@
+import { TagProcessors } from "./../processor/Processor";
 import { Document } from "../Document";
 import { LanguageSpecification } from "./LanguageSpecification";
 import {
@@ -9,11 +10,12 @@ import { makeStringLiteralToken } from "./lexer/makeStringLiteralToken";
 import { ParseResult } from "./ParseResult";
 import { RootParser } from "./RootParser";
 import { makeCstVisitor } from "./visitor";
+import { validateTags } from "./validator";
 
 // Complete parser (lexicon, syntax, and semantics).
 export interface IParser {
   languageSpecification: LanguageSpecification;
-  parse(source: Document): ParseResult;
+  parse(args: { source: Document; tagProcessors?: TagProcessors }): ParseResult;
 }
 
 // Token patterns are required to be sticky (y flag)
@@ -58,7 +60,7 @@ export function makeParser(
   const syntaxProcessor = new RootParser(languageTokens);
   const semanticsProcessor = makeCstVisitor(syntaxProcessor);
   return {
-    parse(source: Document) {
+    parse({ source, tagProcessors }) {
       // ⚠️ Caller is responsible for making sure this parser is appropriate for
       // the source language
       const parseResult = syntaxProcessor.parse(source.text.original);
@@ -71,8 +73,17 @@ export function makeParser(
         };
       }
       const visitorResult = semanticsProcessor.visit(parseResult.cst, source);
+
+      const validateErrors =
+        tagProcessors !== undefined
+          ? validateTags(visitorResult.tagNodes, tagProcessors)
+          : [];
       return {
-        errors: [...parseResult.errors, ...visitorResult.errors],
+        errors: [
+          ...parseResult.errors,
+          ...visitorResult.errors,
+          ...validateErrors,
+        ],
         tagNodes: visitorResult.tagNodes,
         source,
         languageSpecification,

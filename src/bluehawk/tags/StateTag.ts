@@ -11,6 +11,7 @@ export const StateTag = makeBlockTag<IdsRequiredAttributes>({
   description:
     "given a state name(s) as tag ids, identifies blocks that should only appear in the given state's version of the file",
   attributesSchema: IdsRequiredAttributesSchema,
+  shorthandArgsAttributeName: "id",
   process(request) {
     const { tagNode, fork, document, tagNodes } = request;
 
