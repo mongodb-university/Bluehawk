@@ -86,9 +86,15 @@ must appear on the same line as the tag itself.
 
 ## Snippet
 
-The `snippet` tag, also aliased as `snippet`, marks a range of content in a file
-as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
-these snippets.
+:::info
+
+Prior to version 1.0, bluehawk accepted `code-block` as an alias for `snippet`. Version 1.0 removed the `code-block` alias.
+
+:::
+The `snippet` tag marks a range of content in a file as a snippet.
+
+The `snippet` tag marks a range of content in a file as a snippet.
+You can use the [snip](#snip) CLI command to generate snippet files from these snippets.
 
 Because `snippet` operates on ranges of content, it is only available as
 a block tag. You must pass `snippet` an identifier.
