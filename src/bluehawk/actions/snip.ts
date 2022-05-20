@@ -37,7 +37,7 @@ export const createFormattedCodeBlock = async ({
 
     reporter.onFileWritten({
       type: "text",
-      sourcePath: document.path,
+      inputPath: document.path,
       outputPath: targetPath,
     });
   } else if (format === "docusaurus") {
@@ -48,7 +48,7 @@ export const createFormattedCodeBlock = async ({
     await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
     reporter.onFileWritten({
       type: "text",
-      sourcePath: document.path,
+      inputPath: document.path,
       outputPath: targetPath,
     });
   } // add additional elses + "formatInLanguage" methods to handle other markup languages
@@ -220,7 +220,7 @@ export const snip = async (
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
       reporter.onFileWritten({
         type: "text",
-        sourcePath: document.path,
+        inputPath: document.path,
         outputPath: targetPath,
       });
 
@@ -239,7 +239,7 @@ export const snip = async (
       reporter.onWriteFailed({
         type: "text",
         outputPath: targetPath,
-        sourcePath: parseResult.source.path,
+        inputPath: parseResult.source.path,
         error,
       });
     }
@@ -249,9 +249,9 @@ export const snip = async (
     reporter,
     ignore,
     waitForListeners: waitForListeners ?? false,
-    onErrors(sourcePath, errors) {
+    onErrors(inputPath, errors) {
       reporter.onBluehawkErrors({
-        sourcePath,
+        inputPath,
         errors,
       });
     },
