@@ -45,7 +45,7 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
       // Aliases for backwards compatibility
       tagAliases: [
         ["hide", RemoveTag],
-        ["code-block", SnippetTag],
+        ["snippet", SnippetTag],
       ],
     });
 
