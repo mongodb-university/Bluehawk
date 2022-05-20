@@ -83,7 +83,7 @@ export const formatInRst = async (
     ? rstLanguageMap.get(document.extension)
     : "text";
 
-  const rstHeader = ".. snippet::";
+  const rstHeader = ".. code-block::";
   const rstEmphasizeModifier = ":emphasize-lines:";
 
   const rstEmphasizeRanges: { start: number; end: number }[] = [];

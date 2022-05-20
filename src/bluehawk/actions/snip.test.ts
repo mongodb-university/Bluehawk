@@ -60,7 +60,7 @@ describe("snip", () => {
       Path.join(outputPath, "test.snippet.foo.js.snippet.rst"),
       "utf8"
     );
-    expect(rstFileContents).toStrictEqual(`.. snippet:: javascript
+    expect(rstFileContents).toStrictEqual(`.. code-block:: javascript
    :emphasize-lines: 2-6
 
    const bar = "foo"
@@ -288,7 +288,7 @@ line 9
       Path.join(outputPath, "test.snippet.foo.js.snippet.rst"),
       "utf8"
     );
-    expect(fileContents).toStrictEqual(`.. snippet:: javascript
+    expect(fileContents).toStrictEqual(`.. code-block:: javascript
    :emphasize-lines: 3, 5, 7-8
 
    line 1
@@ -519,7 +519,7 @@ struct ContentView: SwiftUI.App {
       "utf8"
     );
     expect(fileContentsSync).toStrictEqual(
-      `.. snippet:: swift
+      `.. code-block:: swift
    :emphasize-lines: 6-8
 
    /// The main screen that determines whether to present the SyncContentView or the LocalOnlyContentView.
@@ -550,7 +550,7 @@ struct ContentView: SwiftUI.App {
     // completely in the other state
     /*
   expect(fileContentsLocal).toStrictEqual(
-    `.. snippet:: swift
+    `.. code-block:: swift
  /// The main screen that determines whether to present the SyncContentView or the LocalOnlyContentView.
  /// For now, it always displays the LocalOnlyContentView.
  @main

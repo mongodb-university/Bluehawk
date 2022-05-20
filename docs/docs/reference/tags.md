@@ -400,7 +400,7 @@ Produces the following output:
 `Main.snippet.modulo.java.snippet.rst`:
 
 ```rst
-.. snippet:: java
+.. code-block:: java
    :emphasize-lines: 3
 
    int dividend = 11;
