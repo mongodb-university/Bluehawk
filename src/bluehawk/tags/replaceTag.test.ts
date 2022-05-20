@@ -9,7 +9,7 @@ describe("replace tag", () => {
   bluehawk.registerTag(ReplaceTag);
   bluehawk.registerTag(RemoveTag);
   bluehawk.registerTag(SnippetTag);
-  bluehawk.registerTag(SnippetTag, "code-block");
+  bluehawk.registerTag(SnippetTag, "snippet");
   bluehawk.addLanguage("js", {
     languageId: "javascript",
     blockComments: [[/\/\*/, /\*\//]],
@@ -213,7 +213,7 @@ it's my id
 import XCTest
 import RealmSwift
 
-// :code-block-start: models
+// :snippet-start: models
 class ReadWriteDataExamples_Dog: Object {
     @objc dynamic var name = ""
     @objc dynamic var age = 0
@@ -237,11 +237,11 @@ class ReadWriteDataExamples_DogClub: Object {
     @objc dynamic var name = ""
     let members = List<ReadWriteDataExamples_DogOwner>()
 }
-// :code-block-end:
+// :snippet-end:
 
 class ReadWriteData: XCTestCase {
     func testCreateNewObject() {
-        // :code-block-start: create-a-new-object
+        // :snippet-start: create-a-new-object
         // (1) Create a ReadWriteDataExamples_Dog object and then set its properties
         let myReadWriteDataExamples_Dog = ReadWriteDataExamples_Dog()
         myReadWriteDataExamples_Dog.name = "Rex"
@@ -260,7 +260,7 @@ class ReadWriteData: XCTestCase {
         try! realm.write {
             realm.add(myReadWriteDataExamples_Dog)
         }
-        // :code-block-end:
+        // :snippet-end:
     }
 }
 
@@ -324,7 +324,7 @@ class ReadWriteData: XCTestCase {
 }
 
 `);
-    expect(files["replace.test.codeblock.models.js"].document.text.toString())
+    expect(files["replace.test.snippet.models.js"].document.text.toString())
       .toBe(`class Dog: Object {
     @objc dynamic var name = ""
     @objc dynamic var age = 0
@@ -351,7 +351,7 @@ class DogClub: Object {
 `);
     expect(
       files[
-        "replace.test.codeblock.create-a-new-object.js"
+        "replace.test.snippet.create-a-new-object.js"
       ].document.text.toString()
     ).toBe(`// (1) Create a Dog object and then set its properties
 let myDog = Dog()

@@ -86,7 +86,7 @@ must appear on the same line as the tag itself.
 
 ## Snippet
 
-The `snippet` tag, also aliased as `code-block`, marks a range of content in a file
+The `snippet` tag, also aliased as `snippet`, marks a range of content in a file
 as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
 these snippets.
 
@@ -115,7 +115,7 @@ bluehawk snip Main.java -o .
 
 Produces the following output:
 
-`Main.codeblock.test-block.java`:
+`Main.snippet.test-block.java`:
 
 ```java
 System.out.println("Hello world!");
@@ -169,7 +169,7 @@ bluehawk snip Main.java -o . --state hello-user
 
 Produces the following output:
 
-`Main.codeblock.example.java`:
+`Main.snippet.example.java`:
 
 ```java
 int example = 1;
@@ -185,7 +185,7 @@ bluehawk snip Main.java -o . --state hello-world
 
 Produces the following output:
 
-`Main.codeblock.example.java`:
+`Main.snippet.example.java`:
 
 ```java
 int example = 1;
@@ -233,7 +233,7 @@ bluehawk snip Main.java -o . --state subtract-one
 
 Produces the following output:
 
-`Main.codeblock.add-or-subtract.java`:
+`Main.snippet.add-or-subtract.java`:
 
 ```java
     int example = 1;
@@ -379,12 +379,12 @@ Consider the following file:
 ```java
 public class Main {
   public static void main(String[] args){
-    // :code-block-start: modulo
+    // :snippet-start: modulo
     int dividend = 11;
     int divisor = 3;
     int modulus = dividend % divisor; // :emphasize:
     System.out.println(dividend + " % " + divisor + " = " + modulus);
-    // :code-block-end:
+    // :snippet-end:
   }
 }
 ```
@@ -397,7 +397,7 @@ bluehawk snip Main.java -o . --format=rst
 
 Produces the following output:
 
-`Main.codeblock.modulo.java.code-block.rst`:
+`Main.snippet.modulo.java.snippet.rst`:
 
 ```rst
 .. code-block:: java
@@ -426,13 +426,13 @@ Consider the following file:
 public class Main {
 
   public static void main(String[] args){
-    // :code-block-start: division
+    // :snippet-start: division
     int dividend = 11;
     int divisor = 3;
     int quotient = dividend / divisor;
     assert(quotient == 3) // :remove:
     System.out.println(dividend + " / " + divisor + " = " + quotient);
-    // :code-block-end:
+    // :snippet-end:
   }
 }
 ```
@@ -445,7 +445,7 @@ bluehawk snip Main.java -o .
 
 Produces the following output:
 
-`Main.codeblock.division.java`:
+`Main.snippet.division.java`:
 
 ```rst
 int dividend = 11;

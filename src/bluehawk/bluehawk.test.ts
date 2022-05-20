@@ -15,7 +15,7 @@ describe("bluehawk", () => {
   const bluehawk = new Bluehawk();
   bluehawk.registerTag(
     makeBlockTag<IdRequiredAttributes>({
-      name: "code-block",
+      name: "snippet",
       attributesSchema: IdRequiredAttributesSchema,
       process(request) {
         return;
@@ -110,9 +110,9 @@ describe("bluehawk", () => {
     const input = new Document({
       text: `
     this is ignored
-    :code-block-start:
+    :snippet-start:
     this is in the tag
-    :code-block-end:
+    :snippet-end:
 `,
       path: "testPath",
     });
@@ -125,7 +125,7 @@ describe("bluehawk", () => {
         line: 3,
         offset: 25,
       },
-      message: "attribute list for 'code-block' tag should be object",
+      message: "attribute list for 'snippet' tag should be object",
     });
   });
 
@@ -133,11 +133,11 @@ describe("bluehawk", () => {
     System.useJsonFs({
       "/path/to/code.js": `
     this is ignored
-    :code-block-start: foo
+    :snippet-start: foo
     :emphasize-start:
     this is in the tag
     :emphasize-end:
-    :code-block-end:
+    :snippet-end:
 `,
     });
     const calledForPath: string[] = [];
@@ -153,12 +153,12 @@ describe("bluehawk", () => {
 
     await bluehawk.parseAndProcess("/path/to");
     expect(calledForPath).toStrictEqual([
-      "/path/to/code.codeblock.foo.js",
+      "/path/to/code.snippet.foo.js",
       "/path/to/code.js",
     ]);
     setTimeout(() => {
       expect(calledForPath).toStrictEqual([
-        "/path/to/code.codeblock.foo.js",
+        "/path/to/code.snippet.foo.js",
         "/path/to/code.js",
       ]);
       done();
