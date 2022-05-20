@@ -15,7 +15,7 @@ import { tokenCategoryFilter } from "./tokenCategoryFilter";
 /*
 Bluehawk uses AttributeListMode to parse the attribute list of a tag:
 
-    :code-block-start: {
+    :snippet-start: {
       "id": "some-id",
       "attribute1": 1
     }

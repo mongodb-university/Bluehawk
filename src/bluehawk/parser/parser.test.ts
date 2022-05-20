@@ -564,7 +564,7 @@ any text
 
     it("rejects incomplete markup", () => {
       const result = lexer.tokenize(`
-:code-block-start:
+:snippet-start:
 not ended code block
 `);
       expect(result.errors.length).toBe(0);
@@ -572,14 +572,14 @@ not ended code block
       parser.input = result.tokens;
       parser.annotatedText();
       expect(parser.errors[0].message).toStrictEqual(
-        "3:21(40) blockTag: After Newline, expected TagEnd but found EOF"
+        "3:21(37) blockTag: After Newline, expected TagEnd but found EOF"
       );
     });
 
     it("rejects TagEnd outside of blockTag", () => {
       const result = lexer.tokenize(`
 not in a code block
-:code-block-end: //
+:snippet-end: //
 `);
       expect(result.errors.length).toBe(0);
       // "input" is a setter which will reset the parser's state

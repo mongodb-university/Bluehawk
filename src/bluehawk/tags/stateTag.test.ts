@@ -55,10 +55,10 @@ end
     expect(Object.keys(files)).toStrictEqual([
       "stateTag.test.js",
       "stateTag.test.js?state=begin",
-      "stateTag.test.codeblock.foo.js?state=begin",
-      "stateTag.test.codeblock.foo.js",
+      "stateTag.test.snippet.foo.js?state=begin",
+      "stateTag.test.snippet.foo.js",
       "stateTag.test.js?state=final",
-      "stateTag.test.codeblock.foo.js?state=final",
+      "stateTag.test.snippet.foo.js?state=final",
     ]);
 
     expect(files["stateTag.test.js?state=final"].document.text.toString()).toBe(
@@ -107,14 +107,14 @@ end
     expect(Object.keys(files)).toStrictEqual([
       "stateTag.test.js",
       "stateTag.test.js?state=begin",
-      "stateTag.test.codeblock.foo.js?state=begin",
-      "stateTag.test.codeblock.foo.js",
+      "stateTag.test.snippet.foo.js?state=begin",
+      "stateTag.test.snippet.foo.js",
       "stateTag.test.js?state=final",
-      "stateTag.test.codeblock.foo.js?state=final",
+      "stateTag.test.snippet.foo.js?state=final",
       "stateTag.test.js?state=bar",
-      "stateTag.test.codeblock.foo.js?state=bar",
+      "stateTag.test.snippet.foo.js?state=bar",
       "stateTag.test.js?state=baz",
-      "stateTag.test.codeblock.foo.js?state=baz",
+      "stateTag.test.snippet.foo.js?state=baz",
     ]);
 
     expect(files["stateTag.test.js?state=final"].document.text.toString()).toBe(
@@ -170,14 +170,14 @@ end
     expect(Object.keys(files)).toStrictEqual([
       "stateTag.test.js",
       "stateTag.test.js?state=begin",
-      "stateTag.test.codeblock.foo.js?state=begin",
-      "stateTag.test.codeblock.foo.js",
+      "stateTag.test.snippet.foo.js?state=begin",
+      "stateTag.test.snippet.foo.js",
       "stateTag.test.js?state=final",
-      "stateTag.test.codeblock.foo.js?state=final",
+      "stateTag.test.snippet.foo.js?state=final",
       "stateTag.test.js?state=bar",
-      "stateTag.test.codeblock.foo.js?state=bar",
+      "stateTag.test.snippet.foo.js?state=bar",
       "stateTag.test.js?state=baz",
-      "stateTag.test.codeblock.foo.js?state=baz",
+      "stateTag.test.snippet.foo.js?state=baz",
     ]);
 
     expect(files["stateTag.test.js?state=final"].document.text.toString()).toBe(

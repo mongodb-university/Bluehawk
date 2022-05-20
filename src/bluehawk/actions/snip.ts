@@ -29,11 +29,11 @@ export const createFormattedCodeBlock = async ({
   reporter: ActionReporter;
 }): Promise<void> => {
   if (format === "rst") {
-    const formattedCodeblock = await formatInRst(result);
+    const formattedSnippet = await formatInRst(result);
 
     const { document } = result;
-    const targetPath = path.join(output, `${document.basename}.code-block.rst`);
-    await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+    const targetPath = path.join(output, `${document.basename}.snippet.rst`);
+    await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
 
     reporter.onFileWritten({
       type: "text",
@@ -41,11 +41,11 @@ export const createFormattedCodeBlock = async ({
       outputPath: targetPath,
     });
   } else if (format === "docusaurus") {
-    const formattedCodeblock = await formatInDocusaurus(result);
+    const formattedSnippet = await formatInDocusaurus(result);
 
     const { document } = result;
-    const targetPath = path.join(output, `${document.basename}.code-block.md`);
-    await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+    const targetPath = path.join(output, `${document.basename}.snippet.md`);
+    await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
     reporter.onFileWritten({
       type: "text",
       sourcePath: document.path,
@@ -108,7 +108,7 @@ export const formatInRst = async (
       .join(", ");
   }
 
-  const formattedCodeblock = [
+  const formattedSnippet = [
     `${rstHeader} ${rstLanguage}`,
     rstFormattedRanges === undefined
       ? ``
@@ -119,7 +119,7 @@ export const formatInRst = async (
       .map((line) => (line === "" ? line : `   ${line}`)) // indent each line 3 spaces
       .join("\n"),
   ].join("\n");
-  return formattedCodeblock;
+  return formattedSnippet;
 };
 
 export const formatInDocusaurus = async (
