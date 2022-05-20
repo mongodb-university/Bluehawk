@@ -23,7 +23,6 @@
     "bluehawk": "./build/src/main.js"
   },
   "scripts": {
-    "cbl": "npm run clean && npm run build && npm link",
     "clean": "rm -rf build",
     "build": "tsc -b",
     "watch": "tsc -b -w",
