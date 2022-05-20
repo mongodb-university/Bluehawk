@@ -1,5 +1,5 @@
 import { makeLexer } from "./makeLexer";
-import { COMMAND_PATTERN } from "./tokens";
+import { TAG_PATTERN } from "./tokens";
 import { makeBlockCommentTokens } from "./makeBlockCommentTokens";
 import { makeLineCommentToken } from "./makeLineCommentToken";
 
@@ -45,23 +45,23 @@ this is used to replace
     expect(tokenNames).toStrictEqual([
       "Newline",
       "LineComment",
-      "CommandStart",
+      "TagStart",
       "Identifier",
       "Newline",
       "Newline",
       "LineComment",
-      "CommandStart",
+      "TagStart",
       "Newline",
       "Newline",
       "LineComment",
-      "Command",
+      "Tag",
       "Newline",
       "Newline",
       "LineComment",
-      "CommandEnd",
+      "TagEnd",
       "Newline",
       "LineComment",
-      "CommandEnd",
+      "TagEnd",
       "Newline",
     ]);
   });
@@ -116,20 +116,20 @@ describe("custom comment lexer", () => {
 
   it("rejects comment patterns that conflict with other tokens", () => {
     expect(() => {
-      makeLexer([makeLineCommentToken(COMMAND_PATTERN)]);
+      makeLexer([makeLineCommentToken(TAG_PATTERN)]);
     }).toThrowError(`Errors detected in definition of Lexer:
-The same RegExp pattern ->/:([A-z0-9-]+):[^\\S\\r\\n]*/<-has been used in all of the following Token Types: Command, LineComment <-`);
+The same RegExp pattern ->/:([A-z0-9-]+):[^\\S\\r\\n]*/<-has been used in all of the following Token Types: Tag, LineComment <-`);
   });
 });
 
-describe("command attributes lexer", () => {
+describe("tag attributes lexer", () => {
   const lexer = makeLexer([
     ...makeBlockCommentTokens(/\/\*/y, /\*\//y),
     makeLineCommentToken(/\/\//y),
   ]);
 
-  it("handles JSON attribute lists after commands", () => {
-    const result = lexer.tokenize(`:some-command-start: {
+  it("handles JSON attribute lists after tags", () => {
+    const result = lexer.tokenize(`:some-tag-start: {
   "a": 1,
   "b": true,
   "c": false,
@@ -137,7 +137,7 @@ describe("command attributes lexer", () => {
   "e": {"doesn't have to be 100% valid json": "but it will still be tokenized correctly"}
 }
 this is not parsed
-:some-command-end:
+:some-tag-end:
 `);
     expect(result.errors).toStrictEqual([]);
     expect(result.groups).toStrictEqual({});
@@ -145,7 +145,7 @@ this is not parsed
       .filter((token) => token.tokenType.name !== "Newline")
       .map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
-      "CommandStart",
+      "TagStart",
       "AttributeListStart",
       "JsonStringLiteral",
       "JsonStringLiteral",
@@ -157,26 +157,26 @@ this is not parsed
       "JsonStringLiteral",
       "AttributeListEnd",
       "AttributeListEnd",
-      "CommandEnd",
+      "TagEnd",
     ]);
   });
 
-  it("accepts a command identifier as shorthand for attributes list", () => {
+  it("accepts a tag identifier as shorthand for attributes list", () => {
     const result = lexer.tokenize(`
-:some-command-start: some-id
+:some-tag-start: some-id
 this is ignored
-:some-command-end:
+:some-tag-end:
 `);
     expect(result.errors).toStrictEqual([]);
     expect(result.groups).toStrictEqual({});
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
       "Newline",
-      "CommandStart",
+      "TagStart",
       "Identifier",
       "Newline",
       "Newline",
-      "CommandEnd",
+      "TagEnd",
       "Newline",
     ]);
   });
@@ -184,43 +184,43 @@ this is ignored
   it("diagnoses invalid identifiers", () => {
     // Identifiers may not start with a number or dash nor contain invalid characters
     const result = lexer.tokenize(`
-:some-command-start: 9 - '
+:some-tag-start: 9 - '
 this is ignored
-:some-command-end:
+:some-tag-end:
 `);
     const errorMessages = result.errors.map((error) => error.message);
     expect(errorMessages).toStrictEqual([
-      "unexpected character: ->9<- at offset: 22, skipped 1 characters.",
-      "unexpected character: ->-<- at offset: 24, skipped 1 characters.",
-      "unexpected character: ->'<- at offset: 26, skipped 1 characters.",
+      "unexpected character: ->9<- at offset: 18, skipped 1 characters.",
+      "unexpected character: ->-<- at offset: 20, skipped 1 characters.",
+      "unexpected character: ->'<- at offset: 22, skipped 1 characters.",
     ]);
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
       "Newline",
-      "CommandStart",
+      "TagStart",
       "Newline",
       "Newline",
-      "CommandEnd",
+      "TagEnd",
       "Newline",
     ]);
   });
 
   it("does not diagnose on unclosed attributes lists", () => {
     const result = lexer.tokenize(`
-:some-command-start: {
+:some-tag-start: {
 forgot to close
-:some-command-end:
+:some-tag-end:
 `);
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
       "Newline",
-      "CommandStart",
+      "TagStart",
       "AttributeListStart",
       "Newline",
       "Newline",
       "Newline",
       // Note it never switched back to root mode, so it does not find a
-      // CommandEnd
+      // TagEnd
     ]);
     const errorMessages = result.errors.map((error) => error.message);
     expect(errorMessages).toStrictEqual([]);
@@ -228,15 +228,15 @@ forgot to close
 
   it("accepts comment tokens in attributes lists", () => {
     const result = lexer.tokenize(`
-:some-command-start: {
+:some-tag-start: {
 // /* */ //
 }
-:some-command-end:
+:some-tag-end:
 `);
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
       "Newline",
-      "CommandStart",
+      "TagStart",
       "AttributeListStart",
       "Newline",
       "LineComment",
@@ -246,7 +246,7 @@ forgot to close
       "Newline",
       "AttributeListEnd",
       "Newline",
-      "CommandEnd",
+      "TagEnd",
       "Newline",
     ]);
     const errorMessages = result.errors.map((error) => error.message);
@@ -254,19 +254,19 @@ forgot to close
   });
 
   it("does not misinterpret comment tokens in json strings", () => {
-    const result = lexer.tokenize(`:some-command-start: {"// /* */"}
-:some-command-end:
+    const result = lexer.tokenize(`:some-tag-start: {"// /* */"}
+:some-tag-end:
 `);
     expect(result.errors.length).toBe(0);
     const tokenNames = result.tokens.map((token) => token.tokenType.name);
     expect(tokenNames).toStrictEqual([
-      "CommandStart",
+      "TagStart",
       "AttributeListStart",
       "JsonStringLiteral",
       // NOT LineComment, BlockCommentStart, or BlockCommentEnd
       "AttributeListEnd",
       "Newline",
-      "CommandEnd",
+      "TagEnd",
       "Newline",
     ]);
   });

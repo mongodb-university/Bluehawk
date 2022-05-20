@@ -1,6 +1,15 @@
 import { createToken, Lexer } from "chevrotain";
 import { PayloadQuery, makePayloadPattern } from "./makePayloadPattern";
 
+/*
+It is idiomatic in Python to use a multi-line string literal
+(triple quoted-string) for both string assignment
+and as a multi-line comment block. Bluehawk treats multi-line
+string literals in Python as strings rather than block comments.
+*/
+export const PYTHON_STRING_LITERAL_PATTERN =
+  /((?<!\\)'''(.|\n)*?(?<!\\)''')|((?<!\\)"""(.|\n)*?(?<!\\)""")|((?<!\\)".*?(?<!\\)")|((?<!\\)'.*?(?<!\\)')/;
+
 export const JSON_STRING_LITERAL_PATTERN =
   /"(?:[^\\"]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/;
 
@@ -71,26 +80,26 @@ const Text = createToken({
 // Shared patterns with captures for use in CstVisitor. Please ensure they stay
 // aligned (both in the editor for at-a-glance error checking and as regexes).
 // TODO: Allow any amount of non-newline white space (/[^\S\r\n]*/) to be
-// included before or after the actual command name to make stripping it out
+// included before or after the actual tag name to make stripping it out
 // much easier.
-const COMMAND_START_PATTERN /**/ = /:([A-z0-9-]+)-start:/;
-const COMMAND_END_PATTERN /*  */ = /:([A-z0-9-]+)-end:/;
-const COMMAND_PATTERN /*      */ = /:([A-z0-9-]+):[^\S\r\n]*/;
+const TAG_START_PATTERN /**/ = /:([A-z0-9-]+)-start:/;
+const TAG_END_PATTERN /*  */ = /:([A-z0-9-]+)-end:/;
+const TAG_PATTERN /*      */ = /:([A-z0-9-]+):[^\S\r\n]*/;
 
-const CommandStart = createToken({
-  name: "CommandStart",
-  pattern: COMMAND_START_PATTERN,
-  push_mode: "CommandAttributesMode",
+const TagStart = createToken({
+  name: "TagStart",
+  pattern: TAG_START_PATTERN,
+  push_mode: "TagAttributesMode",
 });
 
-const CommandEnd = createToken({
-  name: "CommandEnd",
-  pattern: COMMAND_END_PATTERN,
+const TagEnd = createToken({
+  name: "TagEnd",
+  pattern: TAG_END_PATTERN,
 });
 
-const Command = createToken({
-  name: "Command",
-  pattern: COMMAND_PATTERN,
+const Tag = createToken({
+  name: "Tag",
+  pattern: TAG_PATTERN,
 });
 
 const Identifier = createToken({
@@ -111,12 +120,12 @@ export {
   PushParser,
   BlockCommentEnd,
   BlockCommentStart,
-  COMMAND_END_PATTERN,
-  COMMAND_PATTERN,
-  COMMAND_START_PATTERN,
-  Command,
-  CommandEnd,
-  CommandStart,
+  TAG_END_PATTERN,
+  TAG_PATTERN,
+  TAG_START_PATTERN,
+  Tag,
+  TagEnd,
+  TagStart,
   Identifier,
   JsonStringLiteral,
   LineComment,

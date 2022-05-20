@@ -13,7 +13,7 @@ import {
 import { tokenCategoryFilter } from "./tokenCategoryFilter";
 
 /*
-Bluehawk uses AttributeListMode to parse the attribute list of a command:
+Bluehawk uses AttributeListMode to parse the attribute list of a tag:
 
     :code-block-start: {
       "id": "some-id",

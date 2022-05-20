@@ -3,9 +3,9 @@ import { tokenCategoryFilter } from "./tokenCategoryFilter";
 import {
   BlockCommentEnd,
   BlockCommentStart,
-  Command,
-  CommandEnd,
-  CommandStart,
+  Tag,
+  TagEnd,
+  TagStart,
   LineComment,
   Newline,
   PopParser,
@@ -18,9 +18,9 @@ import {
 // RootMode is the default parser and lexer mode for a given language.
 export function makeRootMode(languageTokens: TokenType[]): Array<TokenType> {
   return [
-    CommandStart,
-    CommandEnd,
-    Command,
+    TagStart,
+    TagEnd,
+    Tag,
     ...tokenCategoryFilter(languageTokens, [
       BlockCommentStart,
       BlockCommentEnd,

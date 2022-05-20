@@ -1,7 +1,7 @@
 ---
 id: "intro"
 title: "Bluehawk"
-sidebar_label: "Intro"
+sidebar_label: "Introduction"
 sidebar_position: -1
 slug: /
 ---
@@ -27,14 +27,33 @@ What if there was a better way? What if you could write your examples in one pla
 and let a tool take care of removing your assertions and setup and copying the
 examples into your documentation? Bluehawk does exactly that.
 
+## How to Use Bluehawk
+
+To use Bluehawk:
+
+1. You add special comments, called [tags](reference/tags), to code blocks or lines of source code.
+2. Use the [Bluehawk CLI](reference/cli) to read the input files and generate output files based on the tags.
+3. Include the output files that the Bluehawk CLI generated in your documentation.
+
+For examples of how the Realm Docs team uses Bluehawk in workflows, see our guides:
+
+- [Extract Code Snippets](code-snippets/)
+- [Create Checkpointed Tutorials](tutorials)
+- [Bluehawk in Continuous Integration](continuous-integration)
+
 ### Videos
 
 How do you use Bluehawk in workflows? Here are a couple of short video
 overviews of how the MongoDB Developer Education team uses Bluehawk to create
 code examples:
 
-- [Bluehawk: Extract & Generate Code Examples](https://youtu.be/4G2n3Ps7qUY)
-- [Bluehawk: Generate Code for Tutorial Apps](https://youtu.be/DyF4tOxS0zU)
+#### Extract and Generate Code Examples
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/4G2n3Ps7qUY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+#### Generate Code for Tutorial Apps
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DyF4tOxS0zU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Contributing
 

@@ -1,66 +1,63 @@
-import { AnyCommandNode } from "../parser";
+import { AnyTagNode } from "../parser";
 import { BluehawkError } from "../BluehawkError";
 import { flatten } from "../parser";
-import { CommandProcessors } from "./Processor";
+import { TagProcessors } from "./Processor";
 import { makeAttributesConformToJsonSchemaRule } from "./makeAttributesConformToJsonSchemaRule";
 
 export interface ValidateCstResult {
   errors: BluehawkError[];
-  commandsById: Map<string, AnyCommandNode>;
+  tagsById: Map<string, AnyTagNode>;
 }
 
-// A rule function is registered for a given command name and checks that the
-// given command node conforms to the specification of that command. Errors can
+// A rule function is registered for a given tag name and checks that the
+// given tag node conforms to the specification of that tag. Errors can
 // be reported into the result.errors array.
-export type Rule = (
-  commandNode: AnyCommandNode,
-  result: ValidateCstResult
-) => void;
+export type Rule = (tagNode: AnyTagNode, result: ValidateCstResult) => void;
 
-export function validateCommands(
-  commandNodes: AnyCommandNode[],
-  commandProcessorMap: CommandProcessors
+export function validateTags(
+  tagNodes: AnyTagNode[],
+  tagProcessorMap: TagProcessors
 ): BluehawkError[] {
   const validateResult: ValidateCstResult = {
     errors: [],
-    commandsById: new Map(),
+    tagsById: new Map(),
   };
   flatten({
-    children: commandNodes,
-  } as AnyCommandNode).forEach((commandNode) => {
-    const command = commandProcessorMap[commandNode.commandName];
-    if (command === undefined) {
-      // TODO: warn unknown command
+    children: tagNodes,
+  } as AnyTagNode).forEach((tagNode) => {
+    const tag = tagProcessorMap[tagNode.tagName];
+    if (tag === undefined) {
+      // TODO: warn unknown tag
       return;
     }
 
-    if (commandNode.type === "block" && !command.supportsBlockMode) {
+    if (tagNode.type === "block" && !tag.supportsBlockMode) {
       validateResult.errors.push({
         component: "validator",
-        location: commandNode.range.start,
-        message: `'${commandNode.commandName}' cannot be used in block mode (i.e. with -start and -end)`,
+        location: tagNode.range.start,
+        message: `'${tagNode.tagName}' cannot be used in block mode (i.e. with -start and -end)`,
       });
       return;
     }
 
-    if (commandNode.type === "line" && !command.supportsLineMode) {
+    if (tagNode.type === "line" && !tag.supportsLineMode) {
       validateResult.errors.push({
         component: "validator",
-        location: commandNode.range.start,
-        message: `'${commandNode.commandName}' cannot be used in single line mode (i.e. without -start and -end around a block)`,
+        location: tagNode.range.start,
+        message: `'${tagNode.tagName}' cannot be used in single line mode (i.e. without -start and -end around a block)`,
       });
       return;
     }
 
-    if (command.attributesSchema !== undefined) {
+    if (tag.attributesSchema !== undefined) {
       const attributeSchemaValidator = makeAttributesConformToJsonSchemaRule(
-        command.attributesSchema
+        tag.attributesSchema
       );
-      attributeSchemaValidator(commandNode, validateResult);
+      attributeSchemaValidator(tagNode, validateResult);
     }
 
-    command.rules?.forEach((rule) => {
-      rule(commandNode, validateResult);
+    tag.rules?.forEach((rule) => {
+      rule(tagNode, validateResult);
     });
   });
   return validateResult.errors;
@@ -69,29 +66,26 @@ export function validateCommands(
 // standard rule implementations
 
 export const idIsUnique: Rule = (
-  commandNode: AnyCommandNode,
+  tagNode: AnyTagNode,
   result: ValidateCstResult
 ) => {
-  if (commandNode.id !== undefined) {
-    // if the command id already exists in the set of command ids, create a duplicate error
+  if (tagNode.id !== undefined) {
+    // if the tag id already exists in the set of tag ids, create a duplicate error
     const union = [
-      ...new Set([
-        ...Array.from(result.commandsById.keys()),
-        ...commandNode.id,
-      ]),
+      ...new Set([...Array.from(result.tagsById.keys()), ...tagNode.id]),
     ];
     // if the union of the seen ids and the current node's ids has fewer elements than the length of those in total... duplicate
-    if (union.length != result.commandsById.size + commandNode.id.length) {
-      // (result.commandsById.has(commandNode.id)) {
+    if (union.length != result.tagsById.size + tagNode.id.length) {
+      // (result.tagsById.has(tagNode.id)) {
       result.errors.push({
         component: "validator",
-        location: commandNode.range.start,
-        message: `duplicate ID '${commandNode.id}' found`,
+        location: tagNode.range.start,
+        message: `duplicate ID '${tagNode.id}' found`,
       });
     } else {
-      // otherwise, add the command id to the set
-      commandNode.id.forEach((id) => {
-        result.commandsById.set(id, commandNode);
+      // otherwise, add the tag id to the set
+      tagNode.id.forEach((id) => {
+        result.tagsById.set(id, tagNode);
       });
     }
   }

@@ -9,7 +9,7 @@ custom_edit_url: null
 ### Tested Code Examples
 
 Imagine you want to paste some code from a unit test into your docs. You can
-mark up the unit test source file like this with Bluehawk commands like
+mark up the unit test source file like this with Bluehawk tags like
 `:snippet-start:`, `:snippet-end:`, `:remove-start:`, and `:remove-end:`:
 
 ```swift
@@ -59,7 +59,7 @@ branches, which can be tedious and error prone.
 
 To manage this process, you can use Bluehawk to mark up your tutorial source and
 indicate different states or checkpoints with the `:state-start:` and
-`:state-end:` commands:
+`:state-end:` tags:
 
 ```swift
 // WelcomeViewController.swift
@@ -123,5 +123,5 @@ implementation code, but no "TODO":
 ```
 
 You can run Bluehawk on an entire directory, and each file in the repo will be
-copied or transformed to the destination. This makes it easy to copy one state
+copied or transformed to the output directory. This makes it easy to copy one state
 of the entire tutorial source into another repo that learners can clone.

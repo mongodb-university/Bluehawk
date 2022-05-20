@@ -1,14 +1,15 @@
+import { ActionReporter } from "./../actions/ActionReporter";
 import { strict as assert } from "assert";
-import { AnyCommandNode, ParseResult } from "../parser";
-import { Document, CommandAttributes } from "../Document";
-import { AnyCommand, removeMetaRange } from "../commands";
+import { AnyTagNode, ParseResult } from "../parser";
+import { Document, TagAttributes } from "../Document";
+import { AnyTag, removeMetaRange } from "../tags";
 import MagicString from "magic-string";
 
 export type BluehawkFiles = { [pathName: string]: ProcessResult };
 
 export interface ProcessOptions {
   waitForListeners: boolean;
-  stripUnknownCommands?: boolean;
+  stripUnknownTags?: boolean;
 }
 
 export type ProcessResult = {
@@ -16,31 +17,31 @@ export type ProcessResult = {
   document: Document;
 };
 
-export interface ProcessRequest<CommandNodeType = AnyCommandNode> {
+export interface ProcessRequest<TagNodeType = AnyTagNode> {
   /**
     The document to be edited by the processor.
 
-    Command processors may edit the document text directly using MagicString
+    Tag processors may edit the document text directly using MagicString
     functionality. Avoid converting the text to a non-MagicString string, as the
     edit history must be retained for subsequent edits and listener processing
     to work as expected.
 
-    Command processors may safely modify the attributes of the document under
-    their own command name's key (e.g. a command named "myCommand" may freely
-    edit `document.attributes["myCommand"]`). Attributes are useful for passing
-    meta information from the command to an eventual listener.
+    Tag processors may safely modify the attributes of the document under
+    their own tag name's key (e.g. a tag named "myTag" may freely
+    edit `document.attributes["myTag"]`). Attributes are useful for passing
+    meta information from the tag to an eventual listener.
    */
   document: Document;
 
   /**
-    The specific command to process.
+    The specific tag to process.
    */
-  commandNode: CommandNodeType;
+  tagNode: TagNodeType;
 
   /**
-    The overall result's command nodes being processed by the processor.
+    The overall result's tag nodes being processed by the processor.
    */
-  commandNodes: AnyCommandNode[];
+  tagNodes: AnyTagNode[];
 
   /**
     Process the given Bluehawk result, optionally under an alternative id, and
@@ -49,7 +50,7 @@ export interface ProcessRequest<CommandNodeType = AnyCommandNode> {
   fork: (args: ForkArgs) => void;
 
   /**
-    Call this to stop the processor from continuing into the command node's
+    Call this to stop the processor from continuing into the tag node's
     children.
    */
   stopPropagation: () => void;
@@ -65,9 +66,9 @@ export interface ForkArgs {
   document: Document;
 
   /**
-    The command nodes in the parse result.
+    The tag nodes in the parse result.
    */
-  commandNodes: AnyCommandNode[];
+  tagNodes: AnyTagNode[];
 
   /**
     The new text (derived from the document.text) of the forked document. If
@@ -93,23 +94,24 @@ export interface ForkArgs {
     existing attributes of the original document. If undefined, the original
     document's attributes (if any) are used.
    */
-  newAttributes?: CommandAttributes;
+  newAttributes?: TagAttributes;
 }
 
-export type CommandProcessors = Record<string, AnyCommand>;
+export type TagProcessors = Record<string, AnyTag>;
 
 export type Listener = (result: ProcessResult) => void | Promise<void>;
 
 export class Processor {
-  readonly processors: CommandProcessors = {};
+  readonly processors: TagProcessors = {};
   private _listeners = new Set<Listener>();
+  private _publishPromises: Promise<void>[] = [];
 
   /**
-    Adds a command definition to the processor. This command becomes available
-    to use when processing command nodes.
+    Adds a tag definition to the processor. This tag becomes available
+    to use when processing tag nodes.
    */
-  registerCommand(command: AnyCommand, alternateName?: string): void {
-    this.processors[alternateName ?? command.name] = command;
+  registerTag(tag: AnyTag, alternateName?: string): void {
+    this.processors[alternateName ?? tag.name] = tag;
   }
 
   /**
@@ -129,12 +131,12 @@ export class Processor {
   ): Promise<BluehawkFiles> => {
     this._removeMetaRanges(
       parseResult.source.text,
-      parseResult.commandNodes,
+      parseResult.tagNodes,
       processOptions
     );
     const _processorState = new ProcessorState(parseResult, processOptions);
     await this._fork({
-      commandNodes: parseResult.commandNodes,
+      tagNodes: parseResult.tagNodes,
       document: parseResult.source,
       _processorState,
     });
@@ -142,26 +144,37 @@ export class Processor {
     return _processorState.files;
   };
 
+  /**
+    Call after all process calls have been made to wait for outstanding promises
+    to resolve.
+
+    Has no effect if `waitForListeners` was set to true.
+   */
+  waitForListeners = async (): Promise<void> => {
+    await Promise.allSettled(this._publishPromises);
+    this._publishPromises = [];
+  };
+
   private _removeMetaRanges = (
     text: MagicString,
-    commandNode: AnyCommandNode | AnyCommandNode[],
+    tagNode: AnyTagNode | AnyTagNode[],
     options?: ProcessOptions
   ) => {
-    if (Array.isArray(commandNode)) {
-      commandNode.forEach((commandNode) =>
-        this._removeMetaRanges(text, commandNode, options)
+    if (Array.isArray(tagNode)) {
+      tagNode.forEach((tagNode) =>
+        this._removeMetaRanges(text, tagNode, options)
       );
       return;
     }
     if (
-      !options?.stripUnknownCommands &&
-      this.processors[commandNode.commandName] === undefined
+      !options?.stripUnknownTags &&
+      this.processors[tagNode.tagName] === undefined
     ) {
       return;
     }
-    removeMetaRange(text, commandNode);
-    if (commandNode.children !== undefined) {
-      this._removeMetaRanges(text, commandNode.children, options);
+    removeMetaRange(text, tagNode);
+    if (tagNode.children !== undefined) {
+      this._removeMetaRanges(text, tagNode.children, options);
     }
   };
 
@@ -169,7 +182,7 @@ export class Processor {
   // emit the file.
   private async _fork({
     _processorState,
-    commandNodes,
+    tagNodes,
     document,
     newText,
     newPath,
@@ -199,51 +212,53 @@ export class Processor {
       document: newDocument,
     };
     _processorState.files[fileId] = processResult;
-    this._process(_processorState, commandNodes, newDocument, commandNodes);
+    this._process(_processorState, tagNodes, newDocument, tagNodes);
     const publishPromise = this._publish(processResult);
     // Unless specifically asked to wait for listeners, we don't wait to
     // continue processing files.
     if (_processorState.waitForListeners) {
       await publishPromise;
+    } else {
+      this._publishPromises.push(publishPromise);
     }
   }
 
-  // Actually execute the command or commands within the result.
+  // Actually execute the tag or tags within the result.
   private _process = (
     _processorState: ProcessorState,
-    commandNode: AnyCommandNode | AnyCommandNode[],
+    tagNode: AnyTagNode | AnyTagNode[],
     document: Document,
-    allCommandNodes: AnyCommandNode[]
+    allTagNodes: AnyTagNode[]
   ): void => {
-    if (Array.isArray(commandNode)) {
-      commandNode.forEach((commandNode) =>
-        this._process(_processorState, commandNode, document, allCommandNodes)
+    if (Array.isArray(tagNode)) {
+      tagNode.forEach((tagNode) =>
+        this._process(_processorState, tagNode, document, allTagNodes)
       );
       return;
     }
-    const command = this.processors[commandNode.commandName];
-    if (command === undefined) {
+    const tag = this.processors[tagNode.tagName];
+    if (tag === undefined) {
       return;
     }
     assert(
-      (commandNode.type === "line" && command.supportsLineMode) ||
-        (commandNode.type === "block" && command.supportsBlockMode),
-      `${commandNode.commandName} found as a ${commandNode.type} command, which is ` +
-        `an unsupported mode for the corresponding command processor. (This should ` +
+      (tagNode.type === "line" && tag.supportsLineMode) ||
+        (tagNode.type === "block" && tag.supportsBlockMode),
+      `${tagNode.tagName} found as a ${tagNode.type} tag, which is ` +
+        `an unsupported mode for the corresponding tag processor. (This should ` +
         `have been reported as an error by the parser and the nodes should not have ` +
         `been sent to the processor.)`
     );
 
     let propagationStopped = false;
-    command.process({
-      commandNode,
-      commandNodes: allCommandNodes,
+    tag.process({
+      tagNode,
+      tagNodes: allTagNodes,
       document,
       stopPropagation() {
         propagationStopped = true;
       },
       fork: (args: ForkArgs) => {
-        // Commands cannot be async, so they can't await fork(). Store
+        // Tags cannot be async, so they can't await fork(). Store
         // promises so that the main entrypoint can await them before
         // resolving.
         _processorState.promises.push(
@@ -255,13 +270,8 @@ export class Processor {
       },
     });
 
-    if (commandNode.children !== undefined && !propagationStopped) {
-      this._process(
-        _processorState,
-        commandNode.children,
-        document,
-        allCommandNodes
-      );
+    if (tagNode.children !== undefined && !propagationStopped) {
+      this._process(_processorState, tagNode.children, document, allTagNodes);
     }
   };
 

@@ -1,5 +1,7 @@
-import { validateCommands } from "./processor/validator";
-import { COMMAND_PATTERN } from "./parser/lexer/tokens";
+import { ConsoleActionReporter } from "./actions/ConsoleActionReporter";
+import { ActionReporter } from "./actions/ActionReporter";
+import { validateTags } from "./processor/validator";
+import { TAG_PATTERN } from "./parser/lexer/tokens";
 import { Document } from "./Document";
 import {
   Listener,
@@ -7,7 +9,7 @@ import {
   BluehawkFiles,
   ProcessOptions,
 } from "./processor/Processor";
-import { AnyCommand } from "./commands/Command";
+import { AnyTag } from "./tags/Tag";
 import { ParseResult } from "./parser/ParseResult";
 import { ParserStore } from "./parser/ParserStore";
 import { IParser, LanguageSpecification } from "./parser";
@@ -18,18 +20,19 @@ import { OnBinaryFileFunction } from "./OnBinaryFileFunction";
 import { logErrorsToConsole, OnErrorFunction } from "./OnErrorFunction";
 
 interface BluehawkConfiguration {
-  commands?: AnyCommand[];
-  commandAliases?: [string, AnyCommand][];
+  tags?: AnyTag[];
+  tagAliases?: [string, AnyTag][];
   languageSpecs?: { [extension: string]: LanguageSpecification };
 }
 
 type ParseAndProcessOptions = ProcessOptions & {
+  reporter: ActionReporter;
   onBinaryFile?: OnBinaryFileFunction;
   onErrors?: OnErrorFunction;
   ignore?: string | string[];
 };
 
-const defaultOptions: ParseAndProcessOptions = {
+const defaultOptions: Omit<ParseAndProcessOptions, "reporter"> = {
   waitForListeners: false,
   onErrors: logErrorsToConsole,
 };
@@ -43,15 +46,15 @@ export class Bluehawk {
       return;
     }
 
-    const { commands, commandAliases, languageSpecs } = configuration;
+    const { tags, tagAliases, languageSpecs } = configuration;
 
-    if (commands !== undefined) {
-      commands.forEach((command) => this.registerCommand(command));
+    if (tags !== undefined) {
+      tags.forEach((tag) => this.registerTag(tag));
     }
 
-    if (commandAliases !== undefined) {
-      commandAliases.forEach((nameCommandPair) =>
-        this.registerCommand(nameCommandPair[1], nameCommandPair[0])
+    if (tagAliases !== undefined) {
+      tagAliases.forEach((nameTagPair) =>
+        this.registerTag(nameTagPair[1], nameTagPair[0])
       );
     }
 
@@ -63,11 +66,11 @@ export class Bluehawk {
   }
 
   /**
-    Register the given command on the processor and validator. This enables
-    support for the command under the given name.
+    Register the given tag on the processor and validator. This enables
+    support for the tag under the given name.
    */
-  registerCommand(command: AnyCommand, alternateName?: string): void {
-    this._processor.registerCommand(command, alternateName);
+  registerTag(tag: AnyTag, alternateName?: string): void {
+    this._processor.registerTag(tag, alternateName);
   }
 
   /**
@@ -104,7 +107,7 @@ export class Bluehawk {
     // options if any
     const options = { ...defaultOptions, ...(optionsIn ?? {}) };
 
-    const { onBinaryFile, onErrors, ignore } = options;
+    const { onBinaryFile, onErrors, ignore, reporter } = options;
 
     const filePaths = await loadProjectPaths({
       rootPath: path,
@@ -116,16 +119,26 @@ export class Bluehawk {
         const blob = await System.fs.readFile(filePath);
         const stat = await System.fs.lstat(filePath);
         if (await isBinaryFile(blob, stat.size)) {
+          reporter?.onBinaryFile({ sourcePath: filePath });
           onBinaryFile && (await onBinaryFile(filePath));
           return;
         }
         const text = blob.toString("utf8");
         const document = new Document({ text, path: filePath });
-        const result = this.parse(document);
+        const result = this.parse(document, { ...options, reporter });
         if (result.errors.length !== 0) {
+          reporter?.onBluehawkErrors({
+            sourcePath: filePath,
+            errors: result.errors,
+          });
           onErrors && onErrors(filePath, result.errors);
           return;
         }
+
+        reporter?.onFileParsed({
+          sourcePath: filePath,
+          parseResult: result,
+        });
         await this.process(result, options);
       } catch (e) {
         console.error(`Encountered the following error while processing ${filePath}:
@@ -136,20 +149,29 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     });
 
     await Promise.allSettled(promises);
+    await this.waitForListeners();
+  };
+
+  waitForListeners = async (): Promise<void> => {
+    return this._processor.waitForListeners();
   };
 
   /**
-    Parses the given source file into commands.
+    Parses the given source file into tags.
    */
   parse = (
     source: Document,
-    languageSpecification?: LanguageSpecification
+    options?: {
+      languageSpecification?: LanguageSpecification;
+      reporter?: ActionReporter;
+    }
   ): ParseResult => {
-    // First, quickly check to see if this even has any commands.
-    if (!COMMAND_PATTERN.test(source.text.original)) {
+    const { reporter, languageSpecification } = options ?? {};
+    // First, quickly check to see if this even has any tags.
+    if (!TAG_PATTERN.test(source.text.original)) {
       return {
         errors: [],
-        commandNodes: [],
+        tagNodes: [],
         source,
       };
     }
@@ -158,14 +180,15 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
     try {
       parser = this._parserStore.getParser(languageSpecification ?? source);
     } catch (error) {
-      console.warn(
-        `falling back to plaintext parser for ${source.path}: ${error.message}`
-      );
+      reporter?.onParserNotFound({
+        sourcePath: source.path,
+        error,
+      });
       parser = this._parserStore.getDefaultParser();
     }
     const result = parser.parse(source);
-    const validateErrors = validateCommands(
-      result.commandNodes,
+    const validateErrors = validateTags(
+      result.tagNodes,
       this._processor.processors
     );
     return {
@@ -186,7 +209,7 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
   }
 
   /**
-    Executes the commands on the given source. Use [[Bluehawk.subscribe]] to get
+    Executes the tags on the given source. Use [[Bluehawk.subscribe]] to get
     results.
    */
   process = async (

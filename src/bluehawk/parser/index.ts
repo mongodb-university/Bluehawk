@@ -1,9 +1,5 @@
 export { ParseResult } from "./ParseResult";
-export {
-  LineCommandNode,
-  BlockCommandNode,
-  AnyCommandNode,
-} from "./CommandNode";
+export { LineTagNode, BlockTagNode, AnyTagNode } from "./TagNode";
 export * from "./flatten";
 export * from "./lexer";
 export { LanguageSpecification } from "./LanguageSpecification";

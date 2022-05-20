@@ -22,6 +22,7 @@ const config = {
       {
         entryPoints: ["../src/index.ts"],
         tsconfig: "../tsconfig.json",
+        out: "develop/api",
       },
     ],
   ],
@@ -68,7 +69,7 @@ const config = {
                 to: "/",
               },
               {
-                label: "Commands",
+                label: "Tags",
                 to: "/commands",
               },
               {
@@ -101,6 +102,7 @@ const config = {
         ],
       },
       prism: {
+        additionalLanguages: ["java", "swift"],
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },

@@ -1,0 +1,11 @@
+Hi, this is a sample text.
+
+
+
+:snippet-start: test-one
+This text should be in test-one
+
+Yes I forgot to close this snippet to force an error.
+
+That's all, folks!
+
