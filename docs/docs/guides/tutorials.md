@@ -2,7 +2,7 @@
 id: "tutorials"
 title: "Create Checkpointed Tutorials"
 slug: "/tutorials/"
-sidebar_label: "Tutorials"
+sidebar_label: "Checkpointed Tutorials"
 sidebar_position: 2
 custom_edit_url: null
 ---
