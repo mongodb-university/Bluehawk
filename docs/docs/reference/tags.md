@@ -126,7 +126,9 @@ The `state` tag marks a range of content in a file as part of a particular state
 You can use the [snip](#snip) or [copy](#copy) CLI commands with the [state](#state)
 flag to generate output files that contain only content from a specific named state.
 When you use the `--state` flag to specify a state, all state blocks other than the
-specified state are removed from the output. All content not in a state block is
+specified state are removed from the output. If a file has state blocks
+but you do not specify a `--state` flag in the CLI, no content from the state blocks
+is included in the generated output. All content not in a state block is
 unaffected and outputs normally.
 
 `state` can be helpful for managing tutorial code
