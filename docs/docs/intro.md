@@ -19,6 +19,14 @@ With Bluehawk, you can:
 - Generate formatted code examples for use in documentation
 - Replace "finished" code with "todo" code for a branch in a tutorial repo
 
+## Install
+
+Install Bluehawk with [NPM](https://www.npmjs.com/):
+
+```
+npm install -g bluehawk
+```
+
 ## Example
 
 Say you're documenting a library. To provide code examples for library functionality,
