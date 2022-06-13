@@ -36,9 +36,9 @@ console.log(bar);
       "snippet.test.js",
       "snippet.test.snippet.foo.js",
     ]);
-    expect(
-      files["snippet.test.snippet.foo.js"].document.text.toString()
-    ).toBe(`${snippet}\n`);
+    expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
+      `${snippet}\n`
+    );
     done();
   });
 
@@ -56,9 +56,7 @@ console.log(bar);
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(
-      files["snippet.test.snippet.foo.js"].document.text.toString()
-    ).toBe(
+    expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
       `  abc
    def
 ghi
@@ -114,9 +112,9 @@ try! realm.write {
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(
-      files["snippet.test.snippet.foo.js"].document.text.toString()
-    ).toBe("");
+    expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
+      ""
+    );
     done();
   });
 
@@ -125,7 +123,7 @@ try! realm.write {
       text: `some text
 // :snippet-start: foo
 // :remove-start:
-hide this
+remove this
 // :remove-end:
 // :snippet-end:
 `,
@@ -134,9 +132,9 @@ hide this
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(
-      files["snippet.test.snippet.foo.js"].document.text.toString()
-    ).toBe("");
+    expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
+      ""
+    );
     done();
   });
 

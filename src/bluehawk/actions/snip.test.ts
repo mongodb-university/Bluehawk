@@ -52,12 +52,12 @@ describe("snip", () => {
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual([
       "test.snippet.foo.js",
-      "test.snippet.foo.js.snippet.md",
-      "test.snippet.foo.js.snippet.rst",
+      "test.snippet.foo.js.md",
+      "test.snippet.foo.js.rst",
     ]);
 
     const rstFileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.snippet.foo.js.snippet.rst"),
+      Path.join(outputPath, "test.snippet.foo.js.rst"),
       "utf8"
     );
     expect(rstFileContents).toStrictEqual(`.. code-block:: javascript
@@ -73,7 +73,7 @@ describe("snip", () => {
 `);
 
     const mdFileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.snippet.foo.js.snippet.md"),
+      Path.join(outputPath, "test.snippet.foo.js.md"),
       "utf8"
     );
     expect(mdFileContents).toStrictEqual(`const bar = "foo"
@@ -215,11 +215,11 @@ console.log(bar);
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual([
       "test.snippet.foo.js",
-      "test.snippet.foo.js.snippet.md",
+      "test.snippet.foo.js.md",
     ]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.snippet.foo.js.snippet.md"),
+      Path.join(outputPath, "test.snippet.foo.js.md"),
       "utf8"
     );
     expect(fileContents).toStrictEqual(`// highlight-start
@@ -281,11 +281,11 @@ line 9
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual([
       "test.snippet.foo.js",
-      "test.snippet.foo.js.snippet.rst",
+      "test.snippet.foo.js.rst",
     ]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.snippet.foo.js.snippet.rst"),
+      Path.join(outputPath, "test.snippet.foo.js.rst"),
       "utf8"
     );
     expect(fileContents).toStrictEqual(`.. code-block:: javascript
@@ -350,11 +350,11 @@ line 9
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual([
       "test.snippet.foo.js",
-      "test.snippet.foo.js.snippet.md",
+      "test.snippet.foo.js.md",
     ]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.snippet.foo.js.snippet.md"),
+      Path.join(outputPath, "test.snippet.foo.js.md"),
       "utf8"
     );
     expect(fileContents).toStrictEqual(`line 1
@@ -512,10 +512,7 @@ struct ContentView: SwiftUI.App {
     );
     // Now check states for rst version
     fileContentsSync = await System.fs.readFile(
-      Path.join(
-        outputPathSync,
-        "test.snippet.content-view.swift.snippet.rst"
-      ),
+      Path.join(outputPathSync, "test.snippet.content-view.swift.rst"),
       "utf8"
     );
     expect(fileContentsSync).toStrictEqual(
@@ -540,10 +537,7 @@ struct ContentView: SwiftUI.App {
     );
 
     const fileContentsLocal = await System.fs.readFile(
-      Path.join(
-        outputPathLocal,
-        "test.snippet.content-view.swift.snippet.rst"
-      ),
+      Path.join(outputPathLocal, "test.snippet.content-view.swift.rst"),
       "utf8"
     );
     // TODO: Expect this not to emphasize lines, since the :emphasize: tag was

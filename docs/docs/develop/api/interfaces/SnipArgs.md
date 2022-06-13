@@ -14,23 +14,13 @@ custom_edit_url: null
 
 ## Properties
 
-### destination
-
-• **destination**: `string`
-
-#### Defined in
-
-[src/bluehawk/actions/snip.ts:13](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/snip.ts#L13)
-
-___
-
 ### format
 
 • `Optional` **format**: `Format` \| `Format`[]
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:17](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/snip.ts#L17)
+[src/bluehawk/actions/snip.ts:17](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L17)
 
 ___
 
@@ -40,7 +30,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:15](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/snip.ts#L15)
+[src/bluehawk/actions/snip.ts:15](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L15)
 
 ___
 
@@ -50,7 +40,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:16](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/snip.ts#L16)
+[src/bluehawk/actions/snip.ts:16](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L16)
 
 ___
 
@@ -64,7 +54,17 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:3](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/ActionArgs.ts#L3)
+[src/bluehawk/actions/ActionArgs.ts:3](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L3)
+
+___
+
+### output
+
+• **output**: `string`
+
+#### Defined in
+
+[src/bluehawk/actions/snip.ts:13](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L13)
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:12](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/snip.ts#L12)
+[src/bluehawk/actions/snip.ts:12](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L12)
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:14](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/snip.ts#L14)
+[src/bluehawk/actions/snip.ts:14](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L14)
 
 ___
 
@@ -98,4 +98,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:4](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/ActionArgs.ts#L4)
+[src/bluehawk/actions/ActionArgs.ts:4](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L4)

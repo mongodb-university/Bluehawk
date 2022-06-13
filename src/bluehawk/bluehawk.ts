@@ -118,7 +118,7 @@ export class Bluehawk {
         const blob = await System.fs.readFile(filePath);
         const stat = await System.fs.lstat(filePath);
         if (await isBinaryFile(blob, stat.size)) {
-          reporter?.onBinaryFile({ sourcePath: filePath });
+          reporter?.onBinaryFile({ inputPath: filePath });
           onBinaryFile && (await onBinaryFile(filePath));
           return;
         }
@@ -127,7 +127,7 @@ export class Bluehawk {
         const result = this.parse(document, { ...options, reporter });
         if (result.errors.length !== 0) {
           reporter?.onBluehawkErrors({
-            sourcePath: filePath,
+            inputPath: filePath,
             errors: result.errors,
           });
           onErrors && onErrors(filePath, result.errors);
@@ -135,7 +135,7 @@ export class Bluehawk {
         }
 
         reporter?.onFileParsed({
-          sourcePath: filePath,
+          inputPath: filePath,
           parseResult: result,
         });
         await this.process(result, options);
@@ -180,7 +180,7 @@ This is probably a bug in Bluehawk. Please send this stack trace (and the conten
       parser = this._parserStore.getParser(languageSpecification ?? source);
     } catch (error) {
       reporter?.onParserNotFound({
-        sourcePath: source.path,
+        inputPath: source.path,
         error,
       });
       parser = this._parserStore.getDefaultParser();

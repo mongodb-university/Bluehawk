@@ -32,23 +32,23 @@ export const createFormattedCodeBlock = async ({
     const formattedSnippet = await formatInRst(result);
 
     const { document } = result;
-    const targetPath = path.join(output, `${document.basename}.snippet.rst`);
+    const targetPath = path.join(output, `${document.basename}.rst`);
     await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
 
     reporter.onFileWritten({
       type: "text",
-      sourcePath: document.path,
+      inputPath: document.path,
       outputPath: targetPath,
     });
   } else if (format === "docusaurus") {
     const formattedSnippet = await formatInDocusaurus(result);
 
     const { document } = result;
-    const targetPath = path.join(output, `${document.basename}.snippet.md`);
+    const targetPath = path.join(output, `${document.basename}.md`);
     await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
     reporter.onFileWritten({
       type: "text",
-      sourcePath: document.path,
+      inputPath: document.path,
       outputPath: targetPath,
     });
   } // add additional elses + "formatInLanguage" methods to handle other markup languages
@@ -220,7 +220,7 @@ export const snip = async (
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
       reporter.onFileWritten({
         type: "text",
-        sourcePath: document.path,
+        inputPath: document.path,
         outputPath: targetPath,
       });
 
@@ -239,7 +239,7 @@ export const snip = async (
       reporter.onWriteFailed({
         type: "text",
         outputPath: targetPath,
-        sourcePath: parseResult.source.path,
+        inputPath: parseResult.source.path,
         error,
       });
     }
@@ -249,9 +249,9 @@ export const snip = async (
     reporter,
     ignore,
     waitForListeners: waitForListeners ?? false,
-    onErrors(sourcePath, errors) {
+    onErrors(inputPath, errors) {
       reporter.onBluehawkErrors({
-        sourcePath,
+        inputPath,
         errors,
       });
     },

@@ -53,7 +53,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:64](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/parser/TagNode.ts#L64)
+[src/bluehawk/parser/TagNode.ts:64](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L64)
 
 ___
 
@@ -69,7 +69,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:85](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L85)
+[src/bluehawk/tags/Tag.ts:85](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L85)
 
 ___
 
@@ -85,7 +85,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:101](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L101)
+[src/bluehawk/tags/Tag.ts:101](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L101)
 
 ___
 
@@ -109,7 +109,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/processor/Processor.ts:102](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/processor/Processor.ts#L102)
+[src/bluehawk/processor/Processor.ts:102](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/processor/Processor.ts#L102)
 
 ___
 
@@ -119,7 +119,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:34](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/Plugin.ts#L34)
+[src/bluehawk/Plugin.ts:34](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L34)
 
 ___
 
@@ -129,7 +129,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:111](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L111)
+[src/bluehawk/tags/Tag.ts:111](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L111)
 
 ___
 
@@ -153,7 +153,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/OnBinaryFileFunction.ts:1](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/OnBinaryFileFunction.ts#L1)
+[src/bluehawk/OnBinaryFileFunction.ts:1](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/OnBinaryFileFunction.ts#L1)
 
 ___
 
@@ -189,7 +189,7 @@ You can then call `bluehawk --plugin /path/to/MyPlugin.js` to use the plugin.
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:26](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/Plugin.ts#L26)
+[src/bluehawk/Plugin.ts:26](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L26)
 
 ## Variables
 
@@ -199,7 +199,7 @@ You can then call `bluehawk --plugin /path/to/MyPlugin.js` to use the plugin.
 
 #### Defined in
 
-[src/bluehawk/tags/EmphasizeTag.ts:19](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/EmphasizeTag.ts#L19)
+[src/bluehawk/tags/EmphasizeTag.ts:19](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/EmphasizeTag.ts#L19)
 
 ___
 
@@ -209,7 +209,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:86](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L86)
+[src/bluehawk/tags/Tag.ts:86](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L86)
 
 ___
 
@@ -219,7 +219,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:102](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L102)
+[src/bluehawk/tags/Tag.ts:102](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L102)
 
 ___
 
@@ -229,7 +229,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:112](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L112)
+[src/bluehawk/tags/Tag.ts:112](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L112)
 
 ___
 
@@ -239,7 +239,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/RemoveTag.ts:3](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/RemoveTag.ts#L3)
+[src/bluehawk/tags/RemoveTag.ts:3](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/RemoveTag.ts#L3)
 
 ___
 
@@ -249,7 +249,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/ReplaceTag.ts:10](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/ReplaceTag.ts#L10)
+[src/bluehawk/tags/ReplaceTag.ts:10](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/ReplaceTag.ts#L10)
 
 ___
 
@@ -259,7 +259,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/SnippetTag.ts:65](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/SnippetTag.ts#L65)
+[src/bluehawk/tags/SnippetTag.ts:65](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/SnippetTag.ts#L65)
 
 ___
 
@@ -269,7 +269,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/StateTag.ts:9](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/StateTag.ts#L9)
+[src/bluehawk/tags/StateTag.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/StateTag.ts#L9)
 
 ___
 
@@ -288,7 +288,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/io/System.ts:7](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/io/System.ts#L7)
+[src/bluehawk/io/System.ts:7](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/io/System.ts#L7)
 
 ___
 
@@ -298,7 +298,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/UncommentTag.ts:6](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/UncommentTag.ts#L6)
+[src/bluehawk/tags/UncommentTag.ts:6](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/UncommentTag.ts#L6)
 
 ___
 
@@ -324,7 +324,7 @@ Returns a standard, shared Bluehawk instance.
 
 #### Defined in
 
-[src/bluehawk/getBluehawk.ts:22](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/getBluehawk.ts#L22)
+[src/bluehawk/getBluehawk.ts:22](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/getBluehawk.ts#L22)
 
 ## Functions
 
@@ -344,7 +344,7 @@ Returns a standard, shared Bluehawk instance.
 
 #### Defined in
 
-[src/bluehawk/actions/check.ts:15](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/check.ts#L15)
+[src/bluehawk/actions/check.ts:15](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/check.ts#L15)
 
 ___
 
@@ -375,7 +375,7 @@ See yargs.commandDir().
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:106](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/Plugin.ts#L106)
+[src/bluehawk/Plugin.ts:106](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L106)
 
 ___
 
@@ -395,7 +395,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:20](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/copy.ts#L20)
+[src/bluehawk/actions/copy.ts:20](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/copy.ts#L20)
 
 ___
 
@@ -408,8 +408,8 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `__namedParameters` | `Object` |
-| `__namedParameters.destination` | `string` |
 | `__namedParameters.format` | `string` |
+| `__namedParameters.output` | `string` |
 | `__namedParameters.reporter` | `ActionReporter` |
 | `__namedParameters.result` | `ProcessResult` |
 
@@ -419,7 +419,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:20](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/snip.ts#L20)
+[src/bluehawk/actions/snip.ts:20](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L20)
 
 ___
 
@@ -445,7 +445,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/flatten.ts:2](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/parser/flatten.ts#L2)
+[src/bluehawk/parser/flatten.ts:2](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/flatten.ts#L2)
 
 ___
 
@@ -465,7 +465,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:131](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/snip.ts#L131)
+[src/bluehawk/actions/snip.ts:125](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L125)
 
 ___
 
@@ -485,7 +485,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:63](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/snip.ts#L63)
+[src/bluehawk/actions/snip.ts:57](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L57)
 
 ___
 
@@ -505,7 +505,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/listStates.ts:12](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/listStates.ts#L12)
+[src/bluehawk/actions/listStates.ts:12](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/listStates.ts#L12)
 
 ___
 
@@ -525,7 +525,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/listTags.ts:9](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/listTags.ts#L9)
+[src/bluehawk/actions/listTags.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/listTags.ts#L9)
 
 ___
 
@@ -547,7 +547,7 @@ Load the given plugin(s).
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:71](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/Plugin.ts#L71)
+[src/bluehawk/Plugin.ts:71](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L71)
 
 ___
 
@@ -567,7 +567,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/project/loadProjectPaths.ts:56](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/project/loadProjectPaths.ts#L56)
+[src/bluehawk/project/loadProjectPaths.ts:56](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/project/loadProjectPaths.ts#L56)
 
 ___
 
@@ -589,7 +589,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makeBlockCommentTokens.ts:9](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/parser/lexer/makeBlockCommentTokens.ts#L9)
+[src/bluehawk/parser/lexer/makeBlockCommentTokens.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/makeBlockCommentTokens.ts#L9)
 
 ___
 
@@ -615,7 +615,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:67](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L67)
+[src/bluehawk/tags/Tag.ts:67](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L67)
 
 ___
 
@@ -641,7 +641,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:34](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L34)
+[src/bluehawk/tags/Tag.ts:34](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L34)
 
 ___
 
@@ -662,7 +662,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/visitor/makeCstVisitor.ts:44](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/parser/visitor/makeCstVisitor.ts#L44)
+[src/bluehawk/parser/visitor/makeCstVisitor.ts:44](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/visitor/makeCstVisitor.ts#L44)
 
 ___
 
@@ -682,7 +682,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makeLineCommentToken.ts:4](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/parser/lexer/makeLineCommentToken.ts#L4)
+[src/bluehawk/parser/lexer/makeLineCommentToken.ts:4](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/makeLineCommentToken.ts#L4)
 
 ___
 
@@ -702,7 +702,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:51](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/Tag.ts#L51)
+[src/bluehawk/tags/Tag.ts:51](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L51)
 
 ___
 
@@ -722,7 +722,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/makeParser.ts:27](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/parser/makeParser.ts#L27)
+[src/bluehawk/parser/makeParser.ts:27](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/makeParser.ts#L27)
 
 ___
 
@@ -749,7 +749,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makePayloadPattern.ts:20](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/parser/lexer/makePayloadPattern.ts#L20)
+[src/bluehawk/parser/lexer/makePayloadPattern.ts:20](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/makePayloadPattern.ts#L20)
 
 ___
 
@@ -771,7 +771,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makePushParserTokens.ts:19](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/parser/lexer/makePushParserTokens.ts#L19)
+[src/bluehawk/parser/lexer/makePushParserTokens.ts:19](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/makePushParserTokens.ts#L19)
 
 ___
 
@@ -792,7 +792,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/removeMetaRange.ts:25](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/tags/removeMetaRange.ts#L25)
+[src/bluehawk/tags/removeMetaRange.ts:25](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/removeMetaRange.ts#L25)
 
 ___
 
@@ -812,33 +812,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:170](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/actions/snip.ts#L170)
-
-___
-
-### withDestinationOption
-
-▸ **withDestinationOption**<`T`\>(`yargs`): `Argv`<`T` & { `destination`: `string`  }\>
-
-#### Type parameters
-
-| Name |
-| :------ |
-| `T` |
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `yargs` | `Argv`<`T`\> |
-
-#### Returns
-
-`Argv`<`T` & { `destination`: `string`  }\>
-
-#### Defined in
-
-[src/bluehawk/options.ts:16](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/options.ts#L16)
+[src/bluehawk/actions/snip.ts:164](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L164)
 
 ___
 
@@ -864,7 +838,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:58](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/options.ts#L58)
+[src/bluehawk/options.ts:58](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L58)
 
 ___
 
@@ -890,7 +864,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:49](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/options.ts#L49)
+[src/bluehawk/options.ts:49](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L49)
 
 ___
 
@@ -916,7 +890,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:28](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/options.ts#L28)
+[src/bluehawk/options.ts:28](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L28)
 
 ___
 
@@ -942,7 +916,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:72](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/options.ts#L72)
+[src/bluehawk/options.ts:72](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L72)
 
 ___
 
@@ -968,7 +942,33 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:82](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/options.ts#L82)
+[src/bluehawk/options.ts:82](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L82)
+
+___
+
+### withOutputOption
+
+▸ **withOutputOption**<`T`\>(`yargs`): `Argv`<`T` & { `output`: `string`  }\>
+
+#### Type parameters
+
+| Name |
+| :------ |
+| `T` |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `yargs` | `Argv`<`T`\> |
+
+#### Returns
+
+`Argv`<`T` & { `output`: `string`  }\>
+
+#### Defined in
+
+[src/bluehawk/options.ts:16](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L16)
 
 ___
 
@@ -994,4 +994,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:39](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/options.ts#L39)
+[src/bluehawk/options.ts:39](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L39)

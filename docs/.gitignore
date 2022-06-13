@@ -7,6 +7,8 @@
 # Generated files
 .docusaurus
 .cache-loader
+# /docs/develop/api <- note must not include these generated files in the .gitignore
+# for the plugin to work properly :/ 
 
 # Misc
 .DS_Store

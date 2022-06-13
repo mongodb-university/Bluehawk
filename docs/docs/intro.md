@@ -6,12 +6,26 @@ sidebar_position: -1
 slug: /
 ---
 
+:::note Bluehawk 1.0.0 is here 🎉
+
+Bluehawk 1.0.0 has been released! Future releases will adhere to [semantic versioning](https://semver.org/).
+
+:::
+
 Bluehawk is a markup processor for extracting and manipulating arbitrary code.
 With Bluehawk, you can:
 
 - Extract code examples for use in documentation
 - Generate formatted code examples for use in documentation
 - Replace "finished" code with "todo" code for a branch in a tutorial repo
+
+## Install
+
+Install Bluehawk with [NPM](https://www.npmjs.com/):
+
+```
+npm install -g bluehawk
+```
 
 ## Example
 

@@ -124,7 +124,3 @@ build/
 
 # vscode
 .vscode/
-
-# docs 
-docs/node_modules/
-docs/build

@@ -20,4 +20,4 @@ Resets the bluehawk instance (for unit testing).
 
 #### Defined in
 
-[src/bluehawk/getBluehawk.ts:111](https://github.com/dacharyc/Bluehawk/blob/2b37a07/src/bluehawk/getBluehawk.ts#L111)
+[src/bluehawk/getBluehawk.ts:124](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/getBluehawk.ts#L124)
