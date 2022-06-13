@@ -89,6 +89,70 @@ console.log(bar);
     done();
   });
 
+  it("generates correct MD fenced snippets", async (done) => {
+    const rootPath = Path.resolve("/path/to/project");
+    const outputPath = "/output";
+    const testFileName = "test.js";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(outputPath, {
+      recursive: true,
+    });
+    await System.fs.writeFile(
+      Path.join(rootPath, testFileName),
+      `        // :snippet-start: foo
+        const bar = "foo"
+        // :emphasize-start:
+        describe("some stuff", () => {
+          it("foos the bar", () => {
+            expect(true).toBeTruthy();
+          });
+        });
+        // :emphasize-end:
+        console.log(bar);
+        // :snippet-end:
+    `,
+      {
+        encoding: "utf8",
+      }
+    );
+
+    await snip({
+      reporter,
+      paths: [rootPath],
+      output: outputPath,
+      state: undefined,
+      ignore: undefined,
+      format: ["md"],
+      waitForListeners: true,
+    });
+
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual([
+      "test.snippet.foo.js",
+      "test.snippet.foo.js.md",
+    ]);
+    const mdFileContents = await System.fs.readFile(
+      Path.join(outputPath, "test.snippet.foo.js.md"),
+      "utf8"
+    );
+    expect(mdFileContents).toStrictEqual(`\`\`\`js
+
+const bar = "foo"
+describe("some stuff", () => {
+  it("foos the bar", () => {
+    expect(true).toBeTruthy();
+  });
+});
+console.log(bar);
+
+\`\`\``);
+
+    done();
+  });
+
   it("generates correct Python snippets", async (done) => {
     const rootPath = Path.resolve("/path/to/project");
     const outputPath = "/output";
