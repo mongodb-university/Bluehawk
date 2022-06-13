@@ -377,8 +377,14 @@ line numbers for you.
 
 You can use `emphasize` as either a block tag or a line tag.
 
-> 💡 The emphasize tag only applies to [formatted output](./cli#format).
-> Use the `--format` flag with Bluehawk CLI to get formatted output.
+:::note
+
+The emphasize tag only applies to certain formatted outputs.
+Use the `--format` flag with Bluehawk CLI to get formatted output.
+For more information on support for `emphasize`,
+refer to the [formatted output documentation](./cli#format).
+
+:::
 
 Consider the following file:
 
