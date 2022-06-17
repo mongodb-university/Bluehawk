@@ -139,8 +139,8 @@ export const formatInMd = (result: ProcessResult): string | undefined => {
     return undefined;
   }
   const language = document.extension.slice(1);
-  const startBackticks = `\`\`\`${language}\n\n`;
-  const endBackticks = `\n\`\`\``;
+  const startBackticks = ["```", language, "\n\n"].join("");
+  const endBackticks = "\n```";
 
   return startBackticks + document.text.toString() + endBackticks;
 };
