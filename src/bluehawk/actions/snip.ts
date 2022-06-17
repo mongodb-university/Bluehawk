@@ -6,7 +6,7 @@ import { ActionArgs } from "./ActionArgs";
 import { ProcessResult } from "../../bluehawk/processor/Processor";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
-type Format = "rst" | "docusaurus";
+type Format = "rst" | "docusaurus" | "md";
 
 export interface SnipArgs extends ActionArgs {
   paths: string[];
@@ -35,6 +35,16 @@ export const createFormattedCodeBlock = async ({
     const targetPath = path.join(output, `${document.basename}.rst`);
     await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
 
+    reporter.onFileWritten({
+      type: "text",
+      inputPath: document.path,
+      outputPath: targetPath,
+    });
+  } else if (format === "md") {
+    const formattedSnippet = formatInMd(result);
+    const { document } = result;
+    const targetPath = path.join(output, `${document.basename}.md`);
+    await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
     reporter.onFileWritten({
       type: "text",
       inputPath: document.path,
@@ -122,6 +132,19 @@ export const formatInRst = async (
   return formattedSnippet;
 };
 
+export const formatInMd = (result: ProcessResult): string | undefined => {
+  const { document } = result;
+  const snippet = document.attributes["snippet"];
+  if (snippet === undefined) {
+    return undefined;
+  }
+  const language = document.extension.slice(1);
+  const startBackticks = ["```", language, "\n\n"].join("");
+  const endBackticks = "\n```";
+
+  return startBackticks + document.text.toString() + endBackticks;
+};
+
 export const formatInDocusaurus = async (
   result: ProcessResult
 ): Promise<string | undefined> => {
@@ -160,7 +183,6 @@ export const formatInDocusaurus = async (
   // pop some newlines in between those lines so it doesn't come out as one long single-line spew of insanity
   return lines.join("\n");
 };
-
 export const snip = async (
   args: WithActionReporter<SnipArgs>
 ): Promise<void> => {
