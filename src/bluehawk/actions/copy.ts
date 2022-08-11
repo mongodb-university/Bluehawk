@@ -10,6 +10,7 @@ export interface CopyArgs extends ActionArgs {
   output: string;
   state?: string;
   ignore?: string | string[];
+  rename?: string;
 
   /**
     Hook for additional work after a binary file is processed.
@@ -20,7 +21,7 @@ export interface CopyArgs extends ActionArgs {
 export const copy = async (
   args: WithActionReporter<CopyArgs>
 ): Promise<void> => {
-  const { output, ignore, rootPath, waitForListeners, reporter } = args;
+  const { output, ignore, rootPath, waitForListeners, reporter, rename } = args;
   const desiredState = args.state;
   const bluehawk = await getBluehawk();
   let stats: Stats;
@@ -33,6 +34,24 @@ export const copy = async (
     });
     return;
   }
+
+  let renameObj = {};
+  if (typeof rename === "string") {
+    try {
+      renameObj = JSON.parse(rename);
+    } catch {
+      throw "Unable to parse 'rename' argument. Ensure your 'rename' argument is valid JSON.";
+    }
+  }
+
+  // function to check if object has a new name specified
+  const getRename = (fileName: string) => {
+    if (rename && renameObj && (renameObj as any)[fileName] !== undefined) {
+      return (renameObj as any)[fileName];
+    }
+    return undefined;
+  };
+
   const projectDirectory = !stats.isDirectory()
     ? path.dirname(rootPath)
     : rootPath;
@@ -43,7 +62,12 @@ export const copy = async (
       output,
       path.relative(projectDirectory, path.dirname(filePath))
     );
-    const targetPath = path.join(directory, path.basename(filePath));
+
+    // rename binary file if a new name is specified
+    let targetPath = path.join(directory, path.basename(filePath));
+    if (getRename(path.basename(filePath)) !== undefined) {
+      targetPath = path.join(directory, getRename(path.basename(filePath)));
+    }
     try {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.copyFile(filePath, targetPath);
@@ -106,7 +130,12 @@ export const copy = async (
       output,
       path.relative(projectDirectory, path.dirname(document.path))
     );
-    const targetPath = path.join(directory, document.basename);
+
+    // rename file if a new name is specified
+    let targetPath = path.join(directory, document.basename);
+    if (getRename(document.basename) !== undefined) {
+      targetPath = path.join(directory, getRename(document.basename));
+    }
 
     try {
       await System.fs.mkdir(directory, { recursive: true });

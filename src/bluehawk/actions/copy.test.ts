@@ -32,6 +32,32 @@ describe("copy", () => {
     expect(outputList).toStrictEqual(sourceList);
   });
 
+  it("can rename a file", async () => {
+    const rootPath = "/path/to/project";
+    const outputPath = "/output";
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(outputPath, {
+      recursive: true,
+    });
+    const filePath = Path.join(rootPath, "test.bin");
+    await System.fs.writeFile(filePath, new Uint8Array([11, 12, 13]));
+    const reporter = new ConsoleActionReporter();
+    await copy({
+      reporter,
+      output: outputPath,
+      rootPath,
+      waitForListeners: true,
+      rename: '{"test.bin":"renamed.bin"}',
+    });
+    expect(reporter.errorCount).toBe(0);
+    const sourceList = await System.fs.readdir(rootPath);
+    expect(sourceList).toStrictEqual(["test.bin"]);
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual(["renamed.bin"]);
+  });
+
   it("copies binary files", async () => {
     const rootPath = "/path/to/project";
     const outputPath = "/output";
@@ -60,6 +86,38 @@ describe("copy", () => {
     expect(sourceList).toStrictEqual(["test.bin"]);
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual(sourceList);
+    expect(didCallBinaryFileForPath).toBe(filePath);
+  });
+
+  it("can rename binary files", async () => {
+    const rootPath = "/path/to/project";
+    const outputPath = "/output";
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(outputPath, {
+      recursive: true,
+    });
+    const filePath = Path.join(rootPath, "test.bin");
+    await System.fs.writeFile(filePath, new Uint8Array([0, 1, 2, 3, 4, 5]));
+    let didCallBinaryFileForPath: string | undefined = undefined;
+    const reporter = new ConsoleActionReporter();
+    await copy({
+      reporter,
+      output: outputPath,
+      rootPath,
+      onBinaryFile(path) {
+        didCallBinaryFileForPath = path;
+      },
+      waitForListeners: true,
+      rename: '{"test.bin":"new_name.bin"}',
+    });
+
+    expect(reporter.errorCount).toBe(0);
+    const sourceList = await System.fs.readdir(rootPath);
+    expect(sourceList).toStrictEqual(["test.bin"]);
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual(["new_name.bin"]);
     expect(didCallBinaryFileForPath).toBe(filePath);
   });
 
