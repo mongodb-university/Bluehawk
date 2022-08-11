@@ -9,8 +9,9 @@
       "request": "launch",
       "runtimeArgs": ["run", "test"],
       "runtimeExecutable": "npm",
+      "cwd": "${workspaceFolder}",
       "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node"
+      "type": "node"
     },
     {
       "name": "Run TS Tests",
@@ -18,7 +19,7 @@
       "runtimeArgs": ["run", "ts-test"],
       "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node",
+      "type": "node"
     },
     {
       "name": "Run JS Tests",
@@ -26,7 +27,7 @@
       "runtimeArgs": ["run", "js-test"],
       "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node"
+      "type": "node"
     }
   ]
 }
