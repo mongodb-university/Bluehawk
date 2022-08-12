@@ -18,6 +18,9 @@ export interface CopyArgs extends ActionArgs {
   onBinaryFile?(path: string): Promise<void> | void;
 }
 
+// this type is necessary as yargs cannot parse directly to a record
+export type CopyArgsCLI = Omit<CopyArgs, "rename"> & { rename?: string };
+
 export const RENAME_ERR =
   "Rename flag does not support specifying a path argument. If you would like to see this functionality, please submit an issue or pull request.";
 
