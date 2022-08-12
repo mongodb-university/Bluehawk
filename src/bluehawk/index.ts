@@ -10,5 +10,5 @@ export * from "./processor";
 export * from "./project";
 export * from "./actions";
 export * from "./options";
-export * from "./actions/ActionReporter"
+export * from "./actions/ActionReporter";
 export * from "./actions/ConsoleActionReporter";

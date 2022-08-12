@@ -46,6 +46,16 @@ export function withStateOption<T>(
   });
 }
 
+export function withRenameOption<T>(
+  yargs: Argv<T>
+): Argv<T & { rename?: string }> {
+  return option(yargs, "rename", {
+    string: true,
+    describe: "rename files during copy",
+    once: true,
+  });
+}
+
 export function withIdOption<T>(
   yargs: Argv<T>
 ): Argv<T & { id?: string | string[] }> {

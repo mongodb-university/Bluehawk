@@ -2,15 +2,16 @@
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
+  "version": "0.3.0",
   "configurations": [
     {
       "name": "Run Tests",
       "request": "launch",
       "runtimeArgs": ["run", "test"],
       "runtimeExecutable": "npm",
+      "cwd": "${workspaceFolder}",
       "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node"
+      "type": "node"
     },
     {
       "name": "Run TS Tests",
@@ -18,7 +19,7 @@
       "runtimeArgs": ["run", "ts-test"],
       "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node",
+      "type": "node"
     },
     {
       "name": "Run JS Tests",
@@ -26,7 +27,7 @@
       "runtimeArgs": ["run", "js-test"],
       "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node"
+      "type": "node"
     }
   ]
 }

@@ -5,24 +5,38 @@ import {
   withStateOption,
   withIgnoreOption,
   withLogLevelOption,
+  withRenameOption,
   ActionArgs,
   CopyArgs,
+  CopyArgsCli,
   copy,
 } from "../..";
 
 const commandModule: CommandModule<
   ActionArgs & { rootPath: string },
-  CopyArgs
+  CopyArgsCli
 > = {
   command: "copy <rootPath>",
-  builder: (yargs): Argv<CopyArgs> => {
+  builder: (yargs): Argv<CopyArgsCli> => {
     return withLogLevelOption(
-      withIgnoreOption(withStateOption(withOutputOption(yargs)))
+      withIgnoreOption(
+        withStateOption(withRenameOption(withOutputOption(yargs)))
+      )
     );
   },
-  handler: async (args: Arguments<CopyArgs>) => {
+  handler: async (args: Arguments<CopyArgsCli>) => {
     const reporter = new ConsoleActionReporter(args);
-    await copy({ ...args, reporter });
+    let parsedRename = undefined;
+    // parse rename argument to record if specified
+    if (typeof args.rename === "string") {
+      try {
+        parsedRename = JSON.parse(args.rename) as Record<string, string>;
+      } catch (SyntaxError) {
+        throw "Unable to parse 'rename' argument. Ensure your 'rename' argument is valid JSON.";
+      }
+    }
+    const argsParsed: CopyArgs = { ...args, rename: parsedRename };
+    await copy({ ...argsParsed, reporter });
     reporter.printSummary();
     process.exit(reporter.errorCount > 0 ? 1 : 0);
   },

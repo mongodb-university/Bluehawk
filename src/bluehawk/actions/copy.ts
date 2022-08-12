@@ -10,6 +10,7 @@ export interface CopyArgs extends ActionArgs {
   output: string;
   state?: string;
   ignore?: string | string[];
+  rename?: Record<string, string>;
 
   /**
     Hook for additional work after a binary file is processed.
@@ -17,10 +18,16 @@ export interface CopyArgs extends ActionArgs {
   onBinaryFile?(path: string): Promise<void> | void;
 }
 
+// this type is necessary as yargs cannot parse directly to a record
+export type CopyArgsCli = Omit<CopyArgs, "rename"> & { rename?: string };
+
+export const RENAME_ERR =
+  "Rename flag does not support specifying a path argument. If you would like to see this functionality, please submit an issue or pull request.";
+
 export const copy = async (
   args: WithActionReporter<CopyArgs>
 ): Promise<void> => {
-  const { output, ignore, rootPath, waitForListeners, reporter } = args;
+  const { output, ignore, rootPath, waitForListeners, reporter, rename } = args;
   const desiredState = args.state;
   const bluehawk = await getBluehawk();
   let stats: Stats;
@@ -33,6 +40,24 @@ export const copy = async (
     });
     return;
   }
+
+  // check that args does not contain path separator. Can add this in if a use case arises.
+  if (rename) {
+    for (const [key, value] of Object.entries(rename)) {
+      if (key.includes(path.sep) || value.includes(path.sep)) {
+        throw Error(RENAME_ERR);
+      }
+    }
+  }
+
+  // construct path for file. Renames file if name specified in rename map.
+  const getRenameAwareTargetPath = (directory: string, name: string) => {
+    if (rename && rename[name] !== undefined) {
+      name = rename[name];
+    }
+    return path.join(directory, name);
+  };
+
   const projectDirectory = !stats.isDirectory()
     ? path.dirname(rootPath)
     : rootPath;
@@ -43,7 +68,11 @@ export const copy = async (
       output,
       path.relative(projectDirectory, path.dirname(filePath))
     );
-    const targetPath = path.join(directory, path.basename(filePath));
+
+    let targetPath = getRenameAwareTargetPath(
+      directory,
+      path.basename(filePath)
+    );
     try {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.copyFile(filePath, targetPath);
@@ -106,7 +135,8 @@ export const copy = async (
       output,
       path.relative(projectDirectory, path.dirname(document.path))
     );
-    const targetPath = path.join(directory, document.basename);
+
+    let targetPath = getRenameAwareTargetPath(directory, document.basename);
 
     try {
       await System.fs.mkdir(directory, { recursive: true });

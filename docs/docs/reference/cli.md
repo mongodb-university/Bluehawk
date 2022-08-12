@@ -38,6 +38,13 @@ ignore patterns that omit matched files from output.
 By default, this command generates output files that omit all `state`.
 However, you can use the `--state` flag to generate output files that
 include content from a single state that you specify.
+If you would like to rename files as you copy them, use
+the `--rename` flag. The `--rename` flag takes a JSON
+string as an argument. The JSON must represent an object whose keys are filenames that are to be renamed and whose values are the new names of those files.
+For example, ` --rename '{"test.txt":"test_new.txt"}'` changes the name of any file names `test.txt` to `test_new.txt`. The `--rename` flag cannot accept a JSON
+object whose keys or values contain a path. If you
+require this functionality, please submit a pull
+request or issue on Github.
 
 ### Check
 
