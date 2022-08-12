@@ -19,7 +19,7 @@ export interface CopyArgs extends ActionArgs {
 }
 
 // this type is necessary as yargs cannot parse directly to a record
-export type CopyArgsCLI = Omit<CopyArgs, "rename"> & { rename?: string };
+export type CopyArgsCli = Omit<CopyArgs, "rename"> & { rename?: string };
 
 export const RENAME_ERR =
   "Rename flag does not support specifying a path argument. If you would like to see this functionality, please submit an issue or pull request.";
@@ -50,12 +50,12 @@ export const copy = async (
     }
   }
 
-  // function to check if object has a new name specified
-  const getRename = (fileName: string) => {
-    if (rename && rename[fileName] !== undefined) {
-      return rename[fileName];
+  // construct path for file. Renames file if name specified in rename map.
+  const getRenameAwareTargetPath = (directory: string, name: string) => {
+    if (rename && rename[name] !== undefined) {
+      name = rename[name];
     }
-    return undefined;
+    return path.join(directory, name);
   };
 
   const projectDirectory = !stats.isDirectory()
@@ -69,14 +69,10 @@ export const copy = async (
       path.relative(projectDirectory, path.dirname(filePath))
     );
 
-    let targetPath = path.join(directory, path.basename(filePath));
-    // rename binary file if a new name is specified
-    {
-      const renamed = getRename(path.basename(filePath));
-      if (renamed) {
-        targetPath = path.join(directory, renamed);
-      }
-    }
+    let targetPath = getRenameAwareTargetPath(
+      directory,
+      path.basename(filePath)
+    );
     try {
       await System.fs.mkdir(directory, { recursive: true });
       await System.fs.copyFile(filePath, targetPath);
@@ -140,15 +136,7 @@ export const copy = async (
       path.relative(projectDirectory, path.dirname(document.path))
     );
 
-    let targetPath = path.join(directory, document.basename);
-
-    // rename file if a new name is specified
-    {
-      const renamed = getRename(document.basename);
-      if (renamed) {
-        targetPath = path.join(directory, renamed);
-      }
-    }
+    let targetPath = getRenameAwareTargetPath(directory, document.basename);
 
     try {
       await System.fs.mkdir(directory, { recursive: true });

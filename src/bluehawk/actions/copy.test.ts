@@ -58,7 +58,7 @@ describe("copy", () => {
     expect(outputList).toStrictEqual(["renamed.bin"]);
   });
 
-  it("fails to rename file with path seperator", async () => {
+  it("fails to rename file with path separator", async () => {
     const rootPath = "/path/to/project/a";
     const outputPath = "/output";
     await System.fs.mkdir(rootPath, {
