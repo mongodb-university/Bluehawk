@@ -1,7 +1,7 @@
 import { ConsoleActionReporter } from "./ConsoleActionReporter";
 import * as Path from "path";
 import { getBluehawk, System } from "../../bluehawk";
-import { copy } from "./copy";
+import { copy, RENAME_ERR } from "./copy";
 
 describe("copy", () => {
   beforeEach(getBluehawk.reset);
@@ -56,6 +56,32 @@ describe("copy", () => {
     expect(sourceList).toStrictEqual(["test.bin"]);
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual(["renamed.bin"]);
+  });
+
+  it("fails to rename file with path seperator", async () => {
+    const rootPath = "/path/to/project/a";
+    const outputPath = "/output";
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(outputPath, {
+      recursive: true,
+    });
+    const filePath = Path.join(rootPath, "test.bin");
+    await System.fs.writeFile(filePath, new Uint8Array([11, 12, 13]));
+    const reporter = new ConsoleActionReporter();
+    const path_with_sep = `a${Path.sep}test.bin`;
+    try {
+      await copy({
+        reporter,
+        output: outputPath,
+        rootPath,
+        waitForListeners: true,
+        rename: { path_with_sep: "renamed.bin" },
+      });
+    } catch (e) {
+      expect(e).toEqual(RENAME_ERR);
+    }
   });
 
   it("copies binary files", async () => {

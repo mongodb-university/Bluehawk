@@ -4,6 +4,7 @@ import * as path from "path";
 import { getBluehawk } from "../../bluehawk";
 import { ActionArgs } from "./ActionArgs";
 import { System } from "../../bluehawk/io/System";
+import { GITHUB_ISSUE } from "../const";
 
 export interface CopyArgs extends ActionArgs {
   rootPath: string;
@@ -17,6 +18,8 @@ export interface CopyArgs extends ActionArgs {
    */
   onBinaryFile?(path: string): Promise<void> | void;
 }
+
+export const RENAME_ERR = `Rename flag does not support specifying a path argument. If you would like to see this functionality, please submit an issue here:\n${GITHUB_ISSUE}\n`;
 
 export const copy = async (
   args: WithActionReporter<CopyArgs>
@@ -33,6 +36,15 @@ export const copy = async (
       sourcePath: rootPath,
     });
     return;
+  }
+
+  // check that args does not contain path separator. Can add this in if a use case arises.
+  if (rename) {
+    for (const [key, value] of Object.entries(rename)) {
+      if (key.includes(path.sep) || value.includes(path.sep)) {
+        throw Error(RENAME_ERR);
+      }
+    }
   }
 
   // function to check if object has a new name specified

@@ -9,6 +9,7 @@ import {
   CopyArgs,
   copy,
 } from "../..";
+import { DOCS } from "../../bluehawk/const";
 
 const commandModule: CommandModule<
   ActionArgs & { rootPath: string },
@@ -27,8 +28,8 @@ const commandModule: CommandModule<
     if (typeof args.rename === "string") {
       try {
         args.rename = JSON.parse(args.rename) as Record<string, string>;
-      } catch {
-        throw "Unable to parse 'rename' argument. Ensure your 'rename' argument is valid JSON.";
+      } catch (SyntaxError) {
+        throw `Unable to parse 'rename' argument. Ensure your 'rename' argument is valid JSON. To learn more, see:\n${DOCS}`;
       }
     }
 
