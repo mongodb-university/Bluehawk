@@ -6,7 +6,7 @@ import { ActionArgs } from "./ActionArgs";
 import { ProcessResult } from "../../bluehawk/processor/Processor";
 import { logErrorsToConsole } from "../../bluehawk/OnErrorFunction";
 
-type Format = "rst" | "docusaurus";
+type Format = "rst" | "docusaurus" | "md";
 
 export interface SnipArgs extends ActionArgs {
   paths: string[];
@@ -29,26 +29,36 @@ export const createFormattedCodeBlock = async ({
   reporter: ActionReporter;
 }): Promise<void> => {
   if (format === "rst") {
-    const formattedCodeblock = await formatInRst(result);
+    const formattedSnippet = await formatInRst(result);
 
     const { document } = result;
-    const targetPath = path.join(output, `${document.basename}.code-block.rst`);
-    await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+    const targetPath = path.join(output, `${document.basename}.rst`);
+    await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
 
     reporter.onFileWritten({
       type: "text",
-      sourcePath: document.path,
+      inputPath: document.path,
+      outputPath: targetPath,
+    });
+  } else if (format === "md") {
+    const formattedSnippet = formatInMd(result);
+    const { document } = result;
+    const targetPath = path.join(output, `${document.basename}.md`);
+    await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
+    reporter.onFileWritten({
+      type: "text",
+      inputPath: document.path,
       outputPath: targetPath,
     });
   } else if (format === "docusaurus") {
-    const formattedCodeblock = await formatInDocusaurus(result);
+    const formattedSnippet = await formatInDocusaurus(result);
 
     const { document } = result;
-    const targetPath = path.join(output, `${document.basename}.code-block.md`);
-    await System.fs.writeFile(targetPath, formattedCodeblock, "utf8");
+    const targetPath = path.join(output, `${document.basename}.md`);
+    await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
     reporter.onFileWritten({
       type: "text",
-      sourcePath: document.path,
+      inputPath: document.path,
       outputPath: targetPath,
     });
   } // add additional elses + "formatInLanguage" methods to handle other markup languages
@@ -108,7 +118,7 @@ export const formatInRst = async (
       .join(", ");
   }
 
-  const formattedCodeblock = [
+  const formattedSnippet = [
     `${rstHeader} ${rstLanguage}`,
     rstFormattedRanges === undefined
       ? ``
@@ -119,7 +129,20 @@ export const formatInRst = async (
       .map((line) => (line === "" ? line : `   ${line}`)) // indent each line 3 spaces
       .join("\n"),
   ].join("\n");
-  return formattedCodeblock;
+  return formattedSnippet;
+};
+
+export const formatInMd = (result: ProcessResult): string | undefined => {
+  const { document } = result;
+  const snippet = document.attributes["snippet"];
+  if (snippet === undefined) {
+    return undefined;
+  }
+  const language = document.extension.slice(1);
+  const startBackticks = ["```", language, "\n\n"].join("");
+  const endBackticks = "\n```";
+
+  return startBackticks + document.text.toString() + endBackticks;
 };
 
 export const formatInDocusaurus = async (
@@ -160,7 +183,6 @@ export const formatInDocusaurus = async (
   // pop some newlines in between those lines so it doesn't come out as one long single-line spew of insanity
   return lines.join("\n");
 };
-
 export const snip = async (
   args: WithActionReporter<SnipArgs>
 ): Promise<void> => {
@@ -190,21 +212,19 @@ export const snip = async (
     const targetPath = path.join(output, document.basename);
 
     // Special handler for snippets in state tags
-    if (state !== undefined) {
-      const stateAttribute = document.attributes["state"];
-      if (stateAttribute && stateAttribute !== state) {
-        // Not the requested state
-        return;
-      }
-      const stateVersionWritten = stateVersionWrittenForPath[document.path];
-      if (stateVersionWritten === true) {
-        // Already wrote state version, so nothing more to do. This prevents a
-        // non-state version from overwriting the desired state version.
-        return;
-      }
-      if (stateAttribute === state) {
-        stateVersionWrittenForPath[document.path] = true;
-      }
+    const stateAttribute = document.attributes["state"];
+    if (stateAttribute && stateAttribute !== state) {
+      // Not the requested state
+      return;
+    }
+    const stateVersionWritten = stateVersionWrittenForPath[document.path];
+    if (stateVersionWritten === true) {
+      // Already wrote state version, so nothing more to do. This prevents a
+      // non-state version from overwriting the desired state version.
+      return;
+    }
+    if (stateAttribute === state) {
+      stateVersionWrittenForPath[document.path] = true;
     }
 
     if (id !== undefined) {
@@ -222,7 +242,7 @@ export const snip = async (
       await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
       reporter.onFileWritten({
         type: "text",
-        sourcePath: document.path,
+        inputPath: document.path,
         outputPath: targetPath,
       });
 
@@ -241,7 +261,7 @@ export const snip = async (
       reporter.onWriteFailed({
         type: "text",
         outputPath: targetPath,
-        sourcePath: parseResult.source.path,
+        inputPath: parseResult.source.path,
         error,
       });
     }
@@ -251,9 +271,9 @@ export const snip = async (
     reporter,
     ignore,
     waitForListeners: waitForListeners ?? false,
-    onErrors(sourcePath, errors) {
+    onErrors(inputPath, errors) {
       reporter.onBluehawkErrors({
-        sourcePath,
+        inputPath,
         errors,
       });
     },

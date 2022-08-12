@@ -185,6 +185,29 @@ describe("JSON attribute lists", () => {
     });
   });
 
+  it("allows block comments around JSON attribute list", () => {
+    // Note that end tag must be similarly commented and the comment tokens must
+    // be on the same line
+    const tokens = lexer.tokenize(`/* :a-tag-start: {
+"att1": 1,
+"att2": 2
+} */
+
+/* :a-tag-end: */
+`);
+    expect(tokens.errors).toStrictEqual([]);
+    parser.input = tokens.tokens;
+    const cst = parser.annotatedText();
+    expect(parser.errors).toStrictEqual([]);
+    const visitor = makeCstVisitor(parser);
+    const result = visitor.visit(cst, source);
+    expect(result.errors).toStrictEqual([]);
+    expect(result.tagNodes[0].attributes).toStrictEqual({
+      att1: 1,
+      att2: 2,
+    });
+  });
+
   it("does not strip line comments in strings", () => {
     const tokens = lexer.tokenize(`// :A-tag-start: {
 // "a": "//",

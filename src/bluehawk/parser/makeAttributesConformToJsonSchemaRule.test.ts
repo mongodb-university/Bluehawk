@@ -1,5 +1,5 @@
 import { JSONSchemaType } from "ajv";
-import { TagNodeImpl, TagNodeAttributes, AnyTagNode } from "../parser/TagNode";
+import { TagNodeImpl, TagNodeAttributes, AnyTagNode } from "./TagNode";
 import { Range } from "../Range";
 import { makeAttributesConformToJsonSchemaRule } from "./makeAttributesConformToJsonSchemaRule";
 import { ValidateCstResult } from "./validator";

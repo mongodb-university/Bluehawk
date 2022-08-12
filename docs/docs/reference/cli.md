@@ -17,9 +17,9 @@ code blocks, full files of code, and even error checks.
 bluehawk snip --output <output-directory> <input-directory-or-file>
 ```
 
-Output "snippet files" that contain only the content of `code-block` or
+Output "snippet files" that contain only the content of `snippet` or
 `snippet` Bluehawk tags, named in the format
-`<source-file-name>.codeblock.<codeblock-name>.<source-file-extension>`.
+`<source-file-name>.snippet.<snippet-name>.<source-file-extension>`.
 By default, this command generates snippets
 that omit all `state` tag contents. However,
 you can use the `--state` flag to generate snippet files that include
@@ -74,7 +74,9 @@ state, and no other states, in the generated output.
 
 Pass the name of a markup syntax to the `--format` flag when generating snippets
 to generate a formatted version of that snippet in the specified markup syntax.
-This command currently supports
-[reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) syntax using
-`rst` and [docusaurus](https://docusaurus.io/docs/markdown-features/code-blocks#highlighting-with-comments)
-syntax with `docusaurus`.
+This command currently supports the following options:
+
+- `rst`: [ReStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) syntax
+- `md`: [Markdown fenced codeblock](https://www.markdownguide.org/extended-syntax/#fenced-code-blocks) syntax
+  using backticks (`). Markdown format does not support the [emphasize tag](./tags#emphasize).
+- `docusaurus`: Docusaurus syntax with [comment highlighting](https://docusaurus.io/docs/markdown-features/code-blocks#highlighting-with-comments)

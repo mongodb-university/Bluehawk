@@ -86,9 +86,15 @@ must appear on the same line as the tag itself.
 
 ## Snippet
 
-The `snippet` tag, also aliased as `code-block`, marks a range of content in a file
-as a snippet. You can use the [snip](#snip) CLI command to generate snippet files from
-these snippets.
+:::info
+
+Prior to version 1.0, bluehawk accepted `code-block` as an alias for `snippet`.
+Version 1.0 removed the `code-block` alias.
+
+:::
+
+The `snippet` tag marks a range of content in a file as a snippet.
+You can use the [snip](#snip) CLI command to generate snippet files from these snippets.
 
 Because `snippet` operates on ranges of content, it is only available as
 a block tag. You must pass `snippet` an identifier.
@@ -115,7 +121,7 @@ bluehawk snip Main.java -o .
 
 Produces the following output:
 
-`Main.codeblock.test-block.java`:
+`Main.snippet.test-block.java`:
 
 ```java
 System.out.println("Hello world!");
@@ -127,7 +133,9 @@ The `state` tag marks a range of content in a file as part of a particular state
 You can use the [snip](#snip) or [copy](#copy) CLI commands with the [state](#state)
 flag to generate output files that contain only content from a specific named state.
 When you use the `--state` flag to specify a state, all state blocks other than the
-specified state are removed from the output. All content not in a state block is
+specified state are removed from the output. If a file has state blocks
+but you do not specify a `--state` flag in the CLI, no content from the state blocks
+is included in the generated output. All content not in a state block is
 unaffected and outputs normally.
 
 `state` can be helpful for managing tutorial code
@@ -169,7 +177,7 @@ bluehawk snip Main.java -o . --state hello-user
 
 Produces the following output:
 
-`Main.codeblock.example.java`:
+`Main.snippet.example.java`:
 
 ```java
 int example = 1;
@@ -185,7 +193,7 @@ bluehawk snip Main.java -o . --state hello-world
 
 Produces the following output:
 
-`Main.codeblock.example.java`:
+`Main.snippet.example.java`:
 
 ```java
 int example = 1;
@@ -233,7 +241,7 @@ bluehawk snip Main.java -o . --state subtract-one
 
 Produces the following output:
 
-`Main.codeblock.add-or-subtract.java`:
+`Main.snippet.add-or-subtract.java`:
 
 ```java
     int example = 1;
@@ -298,11 +306,11 @@ public class Main {
 
 ## Replace
 
-The `replace` tag accepts a JSON dictionary called "terms" as input
-via an attribute list, and replaces occurrences string keys in the map within
-the spanned range with their map values in all output. You can use
-`replace` to hide implementation details like complicated class names
-or API endpoint URLs in generated output.
+The `replace` tag accepts a JSON dictionary called "terms" as input via an
+attribute list, and replaces occurrences string keys in the map within the
+spanned range with their map values in all output. You can use `replace` to
+remove implementation details like complicated class names or API endpoint URLs
+in generated output.
 
 Because `replace` operates on ranges of content, it is only available
 as a block tag. You must pass an attribute list containing "terms",
@@ -369,8 +377,14 @@ line numbers for you.
 
 You can use `emphasize` as either a block tag or a line tag.
 
-> 💡 The emphasize tag only applies to [formatted output](./cli#format).
-> Use the `--format` flag with Bluehawk CLI to get formatted output.
+:::note
+
+The emphasize tag only applies to certain formatted outputs.
+Use the `--format` flag with Bluehawk CLI to get formatted output.
+For more information on support for `emphasize`,
+refer to the [formatted output documentation](./cli#format).
+
+:::
 
 Consider the following file:
 
@@ -379,12 +393,12 @@ Consider the following file:
 ```java
 public class Main {
   public static void main(String[] args){
-    // :code-block-start: modulo
+    // :snippet-start: modulo
     int dividend = 11;
     int divisor = 3;
     int modulus = dividend % divisor; // :emphasize:
     System.out.println(dividend + " % " + divisor + " = " + modulus);
-    // :code-block-end:
+    // :snippet-end:
   }
 }
 ```
@@ -397,7 +411,7 @@ bluehawk snip Main.java -o . --format=rst
 
 Produces the following output:
 
-`Main.codeblock.modulo.java.code-block.rst`:
+`Main.snippet.modulo.java.rst`:
 
 ```rst
 .. code-block:: java
@@ -411,9 +425,8 @@ Produces the following output:
 
 ## Remove
 
-The `remove` tag, also aliased as `hide`, removes the spanned
-range from Bluehawk output. `remove` can be helpful for hiding
-assertions and state setup from user-facing code samples.
+The `remove` tag removes the spanned range from Bluehawk output. `remove` can be
+helpful for hiding assertions and state setup from user-facing code samples.
 
 You can use `remove` as either a block tag or a
 line tag.
@@ -426,13 +439,13 @@ Consider the following file:
 public class Main {
 
   public static void main(String[] args){
-    // :code-block-start: division
+    // :snippet-start: division
     int dividend = 11;
     int divisor = 3;
     int quotient = dividend / divisor;
     assert(quotient == 3) // :remove:
     System.out.println(dividend + " / " + divisor + " = " + quotient);
-    // :code-block-end:
+    // :snippet-end:
   }
 }
 ```
@@ -445,7 +458,7 @@ bluehawk snip Main.java -o .
 
 Produces the following output:
 
-`Main.codeblock.division.java`:
+`Main.snippet.division.java`:
 
 ```rst
 int dividend = 11;

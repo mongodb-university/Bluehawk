@@ -1,21 +1,47 @@
-import { Rule } from "../processor/validator";
+import { Rule } from "../parser/validator";
 import { ProcessRequest } from "../processor/Processor";
 import { AnySchema, JSONSchemaType } from "ajv";
 import { AnyTagNode, BlockTagNode, LineTagNode } from "../parser";
 
 interface Tag {
-  // The tag name. For block tags this should not include -start or
-  // -end.
+  /**
+    The tag name. For block tags this should not include -start or
+    -end.
+   */
   name: string;
 
-  // A helpful description of what the tag is supposed to do
+  /**
+    A helpful description of what the tag is supposed to do
+   */
   description?: string;
 
-  // JSON schema of the attributes list
+  /**
+    JSON schema of the attributes list
+   */
   attributesSchema?: AnySchema;
 
-  // Validator rules to determine if the tag meets requirements before
-  // processing is possible
+  /**
+    The attribute name that shorthand arguments map to. If not provided, then
+    shorthands are rejected.
+
+    Example: given shorthandArgsAttributeName = "id", the following shorthand:
+
+    ```
+    :some-tag-start: somename somename2
+    ```
+
+    would map to the following attribute list:
+
+    ```
+    :some-tag-start: { "id": ["somename", "somename2"] }
+    ```
+   */
+  shorthandArgsAttributeName?: string;
+
+  /**
+    Validator rules to determine if the tag meets requirements before
+    processing is possible
+   */
   rules?: Rule[];
 }
 
@@ -78,7 +104,11 @@ export function makeBlockOrLineTag<AttributesType>(
     process: (request: ProcessRequest<AnyTagNode>) => NotPromise;
   }
 ): AnyTag {
-  return { ...tag, supportsLineMode: true, supportsBlockMode: true };
+  return {
+    ...tag,
+    supportsLineMode: true,
+    supportsBlockMode: true,
+  };
 }
 
 // Helper for tags that require one and only one id
@@ -113,3 +143,20 @@ export const NoAttributesSchema: JSONSchemaType<NoAttributes> = {
   type: "null",
   nullable: true,
 };
+
+export function mapShorthandArgsToAttributes({
+  tagNode,
+  shorthandArgsAttributeName,
+}: {
+  tagNode: AnyTagNode;
+  shorthandArgsAttributeName?: string;
+}) {
+  if (
+    tagNode.shorthandArgs === undefined ||
+    shorthandArgsAttributeName === undefined
+  ) {
+    return;
+  }
+  tagNode.attributes = tagNode.attributes ?? {};
+  tagNode.attributes[shorthandArgsAttributeName] = tagNode.shorthandArgs;
+}

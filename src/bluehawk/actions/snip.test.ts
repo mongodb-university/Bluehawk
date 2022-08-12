@@ -22,7 +22,7 @@ describe("snip", () => {
     });
     await System.fs.writeFile(
       Path.join(rootPath, testFileName),
-      `        // :code-block-start: foo
+      `        // :snippet-start: foo
         const bar = "foo"
         // :emphasize-start:
         describe("some stuff", () => {
@@ -32,7 +32,7 @@ describe("snip", () => {
         });
         // :emphasize-end:
         console.log(bar);
-        // :code-block-end:
+        // :snippet-end:
     `,
       {
         encoding: "utf8",
@@ -51,13 +51,13 @@ describe("snip", () => {
 
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual([
-      "test.codeblock.foo.js",
-      "test.codeblock.foo.js.code-block.md",
-      "test.codeblock.foo.js.code-block.rst",
+      "test.snippet.foo.js",
+      "test.snippet.foo.js.md",
+      "test.snippet.foo.js.rst",
     ]);
 
     const rstFileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.codeblock.foo.js.code-block.rst"),
+      Path.join(outputPath, "test.snippet.foo.js.rst"),
       "utf8"
     );
     expect(rstFileContents).toStrictEqual(`.. code-block:: javascript
@@ -73,7 +73,7 @@ describe("snip", () => {
 `);
 
     const mdFileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.codeblock.foo.js.code-block.md"),
+      Path.join(outputPath, "test.snippet.foo.js.md"),
       "utf8"
     );
     expect(mdFileContents).toStrictEqual(`const bar = "foo"
@@ -86,6 +86,70 @@ describe("some stuff", () => {
 // highlight-end
 console.log(bar);
 `);
+    done();
+  });
+
+  it("generates correct MD fenced snippets", async (done) => {
+    const rootPath = Path.resolve("/path/to/project");
+    const outputPath = "/output";
+    const testFileName = "test.js";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(outputPath, {
+      recursive: true,
+    });
+    await System.fs.writeFile(
+      Path.join(rootPath, testFileName),
+      `        // :snippet-start: foo
+        const bar = "foo"
+        // :emphasize-start:
+        describe("some stuff", () => {
+          it("foos the bar", () => {
+            expect(true).toBeTruthy();
+          });
+        });
+        // :emphasize-end:
+        console.log(bar);
+        // :snippet-end:
+    `,
+      {
+        encoding: "utf8",
+      }
+    );
+
+    await snip({
+      reporter,
+      paths: [rootPath],
+      output: outputPath,
+      state: undefined,
+      ignore: undefined,
+      format: ["md"],
+      waitForListeners: true,
+    });
+
+    const outputList = await System.fs.readdir(outputPath);
+    expect(outputList).toStrictEqual([
+      "test.snippet.foo.js",
+      "test.snippet.foo.js.md",
+    ]);
+    const mdFileContents = await System.fs.readFile(
+      Path.join(outputPath, "test.snippet.foo.js.md"),
+      "utf8"
+    );
+    expect(mdFileContents).toStrictEqual(`\`\`\`js
+
+const bar = "foo"
+describe("some stuff", () => {
+  it("foos the bar", () => {
+    expect(true).toBeTruthy();
+  });
+});
+console.log(bar);
+
+\`\`\``);
+
     done();
   });
 
@@ -103,7 +167,7 @@ console.log(bar);
     const state = "test-state";
     await System.fs.writeFile(
       Path.join(rootPath, testFileName),
-      `# :code-block-start: foo
+      `# :snippet-start: foo
 start=1
 # :state-start: ${state}
 print("this shouldn't get removed#:remove:")
@@ -128,7 +192,7 @@ this must show up # :remove:
 "Shouldnt print"
 # :state-end:
 dont_look_at_me = True # :remove:
-# :code-block-end:
+# :snippet-end:
     `,
       {
         encoding: "utf8",
@@ -145,10 +209,10 @@ dont_look_at_me = True # :remove:
     });
 
     const outputList = await System.fs.readdir(outputPath);
-    expect(outputList).toStrictEqual(["test.codeblock.foo.py"]);
+    expect(outputList).toStrictEqual(["test.snippet.foo.py"]);
 
     const rstFileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.codeblock.foo.py"),
+      Path.join(outputPath, "test.snippet.foo.py"),
       "utf8"
     );
     expect(rstFileContents).toStrictEqual(`start=1
@@ -185,7 +249,7 @@ this must show up # :remove:
     });
     await System.fs.writeFile(
       Path.join(rootPath, testFileName),
-      `// :code-block-start: foo
+      `// :snippet-start: foo
 // :emphasize-start:
 const bar = "foo"
 describe("some stuff", () => {
@@ -195,7 +259,7 @@ describe("some stuff", () => {
 });
 console.log(bar);
 // :emphasize-end:
-// :code-block-end:
+// :snippet-end:
     `,
       {
         encoding: "utf8",
@@ -214,12 +278,12 @@ console.log(bar);
 
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual([
-      "test.codeblock.foo.js",
-      "test.codeblock.foo.js.code-block.md",
+      "test.snippet.foo.js",
+      "test.snippet.foo.js.md",
     ]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.codeblock.foo.js.code-block.md"),
+      Path.join(outputPath, "test.snippet.foo.js.md"),
       "utf8"
     );
     expect(fileContents).toStrictEqual(`// highlight-start
@@ -248,7 +312,7 @@ console.log(bar);
     });
     await System.fs.writeFile(
       Path.join(rootPath, testFileName),
-      `// :code-block-start: foo
+      `// :snippet-start: foo
 line 1
 line 2
 // :emphasize-start:
@@ -262,7 +326,7 @@ line 7
 line 8
 // :emphasize-end:
 line 9
-// :code-block-end:
+// :snippet-end:
 `,
       {
         encoding: "utf8",
@@ -280,12 +344,12 @@ line 9
     });
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual([
-      "test.codeblock.foo.js",
-      "test.codeblock.foo.js.code-block.rst",
+      "test.snippet.foo.js",
+      "test.snippet.foo.js.rst",
     ]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.codeblock.foo.js.code-block.rst"),
+      Path.join(outputPath, "test.snippet.foo.js.rst"),
       "utf8"
     );
     expect(fileContents).toStrictEqual(`.. code-block:: javascript
@@ -316,7 +380,7 @@ line 9
     });
     await System.fs.writeFile(
       Path.join(rootPath, testFileName),
-      `// :code-block-start: foo
+      `// :snippet-start: foo
 line 1
 line 2
 // :emphasize-start:
@@ -330,7 +394,7 @@ line 7
 line 8
 // :emphasize-end:
 line 9
-// :code-block-end:
+// :snippet-end:
 `,
       {
         encoding: "utf8",
@@ -349,12 +413,12 @@ line 9
 
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual([
-      "test.codeblock.foo.js",
-      "test.codeblock.foo.js.code-block.md",
+      "test.snippet.foo.js",
+      "test.snippet.foo.js.md",
     ]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.codeblock.foo.js.code-block.md"),
+      Path.join(outputPath, "test.snippet.foo.js.md"),
       "utf8"
     );
     expect(fileContents).toStrictEqual(`line 1
@@ -376,7 +440,7 @@ line 9
   });
 
   it("handles carriage returns", async () => {
-    const text = `            //:code-block-start:foo
+    const text = `            //:snippet-start:foo
             var harrysStrat = realm.All<Guitar>().FirstOrDefault(\r
                 g => g.Owner == "D. Gilmour"
                   && g.Make == "Fender"
@@ -386,7 +450,7 @@ line 9
             {
                 harrysStrat.Price = 322.56;
             });
-            //:code-block-end:
+            //:snippet-end:
 
 `;
     const rootPath = "/path/to/project";
@@ -409,10 +473,10 @@ line 9
     });
 
     const outputList = await System.fs.readdir(outputPath);
-    expect(outputList).toStrictEqual(["test.codeblock.foo.js"]);
+    expect(outputList).toStrictEqual(["test.snippet.foo.js"]);
 
     const fileContents = await System.fs.readFile(
-      Path.join(outputPath, "test.codeblock.foo.js"),
+      Path.join(outputPath, "test.snippet.foo.js"),
       "utf8"
     );
     expect(JSON.stringify(fileContents)).toStrictEqual(
@@ -430,7 +494,7 @@ realm.Write(() =>
   });
 
   it("handles state interplay", async () => {
-    const text = `// :code-block-start: content-view
+    const text = `// :snippet-start: content-view
 /// The main screen that determines whether to present the SyncContentView or the LocalOnlyContentView.
 // :state-start: local
 /// For now, it always displays the LocalOnlyContentView.
@@ -455,7 +519,7 @@ struct ContentView: SwiftUI.App {
       }
   }
 }
-// :code-block-end:
+// :snippet-end:
 `;
     const rootPath = "/path/to/project";
     const outputPathSync = "/stateAndEmphasize/sync";
@@ -489,7 +553,7 @@ struct ContentView: SwiftUI.App {
     });
 
     let fileContentsSync = await System.fs.readFile(
-      Path.join(outputPathSync, "test.codeblock.content-view.swift"),
+      Path.join(outputPathSync, "test.snippet.content-view.swift"),
       "utf8"
     );
     // Verify states are working in non-rst version
@@ -512,10 +576,7 @@ struct ContentView: SwiftUI.App {
     );
     // Now check states for rst version
     fileContentsSync = await System.fs.readFile(
-      Path.join(
-        outputPathSync,
-        "test.codeblock.content-view.swift.code-block.rst"
-      ),
+      Path.join(outputPathSync, "test.snippet.content-view.swift.rst"),
       "utf8"
     );
     expect(fileContentsSync).toStrictEqual(
@@ -540,10 +601,7 @@ struct ContentView: SwiftUI.App {
     );
 
     const fileContentsLocal = await System.fs.readFile(
-      Path.join(
-        outputPathLocal,
-        "test.codeblock.content-view.swift.code-block.rst"
-      ),
+      Path.join(outputPathLocal, "test.snippet.content-view.swift.rst"),
       "utf8"
     );
     // TODO: Expect this not to emphasize lines, since the :emphasize: tag was
@@ -564,6 +622,86 @@ struct ContentView: SwiftUI.App {
  `);
  */
   });
+
+  it("handles states when no state is specified", async () => {
+    const text = `// Used in quickstart
+// :snippet-start: define-model
+// :state-start: dart
+import 'package:realm_dart/realm.dart';
+// :state-end:
+
+// :state-start: flutter
+// :state-uncomment-start: flutter
+// import 'package:realm/realm.dart';
+// :state-uncomment-end:
+// :state-end:
+
+part 'define_realm_model_test.g.dart'; // :remove:
+// :uncomment-start:
+// part 'car.g.dart';
+// :uncomment-end:
+
+@RealmModel()
+class _Car {
+  @PrimaryKey()
+  late String make;
+
+  late String? model;
+  late int? miles;
+}
+// :snippet-end:
+
+main() {}
+`;
+    const rootPath = "/path/to/project";
+    const outputPath = "/output";
+    const testFileName = "test.dart";
+
+    await System.fs.mkdir(rootPath, {
+      recursive: true,
+    });
+    await System.fs.mkdir(outputPath, {
+      recursive: true,
+    });
+    await System.fs.writeFile(Path.join(rootPath, testFileName), text, "utf8");
+
+    let fileCount = 0;
+    await snip({
+      reporter: {
+        ...reporter,
+        errorCount: 0,
+        onFileWritten() {
+          fileCount++;
+        },
+      },
+      paths: [rootPath],
+      output: outputPath,
+    });
+
+    let fileContents = await System.fs.readFile(
+      Path.join(outputPath, "test.snippet.define-model.dart"),
+      "utf8"
+    );
+    console.log(fileContents);
+    expect(fileContents).toBe(
+      `
+
+part 'car.g.dart';
+
+@RealmModel()
+class _Car {
+  @PrimaryKey()
+  late String make;
+
+  late String? model;
+  late int? miles;
+}
+`
+    );
+    // Don't write a file for each state (old bug)
+    expect(fileCount).toBe(1);
+  });
+
   it("handles the --id option with multiple args", async () => {
     const snippet_1 = "id-1";
     const snippet_2 = "id-2";
@@ -580,8 +718,8 @@ struct ContentView: SwiftUI.App {
     // :snippet-end:
 `;
     const rootPath = "/path/to/project";
-    const snippetName1 = `test.codeblock.${snippet_1}.js`;
-    const snippetName2 = `test.codeblock.${snippet_2}.js`;
+    const snippetName1 = `test.snippet.${snippet_1}.js`;
+    const snippetName2 = `test.snippet.${snippet_2}.js`;
     const outputPathLocal = "/stateAndEmphasize/local";
     const testFileName = "test.js";
 

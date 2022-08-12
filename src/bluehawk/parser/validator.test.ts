@@ -1,11 +1,11 @@
 import { strict as assert } from "assert";
-import { RootParser } from "../parser/RootParser";
-import { makeCstVisitor } from "../parser/visitor/makeCstVisitor";
+import { RootParser } from "./RootParser";
+import { makeCstVisitor } from "./visitor/makeCstVisitor";
 import { validateTags, idIsUnique } from "./validator";
-import { makeBlockCommentTokens } from "../parser/lexer/makeBlockCommentTokens";
-import { makeLineCommentToken } from "../parser/lexer/makeLineCommentToken";
+import { makeBlockCommentTokens } from "./lexer/makeBlockCommentTokens";
+import { makeLineCommentToken } from "./lexer/makeLineCommentToken";
 import { Document } from "../Document";
-import { TagProcessors } from "./Processor";
+import { TagProcessors } from "../processor/Processor";
 import {
   IdRequiredAttributes,
   IdRequiredAttributesSchema,
@@ -18,9 +18,10 @@ import {
 
 describe("validator", () => {
   const tagProcessors: TagProcessors = {
-    "code-block": makeBlockTag<IdRequiredAttributes>({
-      name: "code-block",
+    "snippet": makeBlockTag<IdRequiredAttributes>({
+      name: "snippet",
       attributesSchema: IdRequiredAttributesSchema,
+      shorthandArgsAttributeName: "id",
       rules: [idIsUnique],
       process(request) {
         // do nothing
@@ -39,7 +40,7 @@ describe("validator", () => {
   ]);
   const { lexer } = parser;
 
-  test("validates non-code-block tags without error", () => {
+  test("validates non-snippet tags without error", () => {
     const tokens = lexer.tokenize(`
 // :a-start:
 the quick brown fox jumped
@@ -55,11 +56,11 @@ the quick brown fox jumped
     expect(errors.length).toBe(0);
   });
 
-  test("throws an error when a code-block lacks an id", () => {
+  test("throws an error when a snippet lacks an id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start:
+// :snippet-start:
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -70,7 +71,7 @@ the quick brown fox jumped
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'code-block' tag should be object"
+      "attribute list for 'snippet' tag should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -79,15 +80,15 @@ the quick brown fox jumped
     });
   });
 
-  test("throws a single error when just one code-block lacks an id", () => {
+  test("throws a single error when just one snippet lacks an id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start: valid
+// :snippet-start: valid
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 
-// :code-block-start:
+// :snippet-start:
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -98,24 +99,24 @@ the quick brown fox jumped
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'code-block' tag should be object"
+      "attribute list for 'snippet' tag should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 80,
+      offset: 74,
     });
   });
 
-  test("throws two errors when two code-blocks lack an id", () => {
+  test("throws two errors when two snippets lack an id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start:
+// :snippet-start:
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 
-// :code-block-start:
+// :snippet-start:
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -126,7 +127,7 @@ the quick brown fox jumped
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(2);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'code-block' tag should be object"
+      "attribute list for 'snippet' tag should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -134,20 +135,20 @@ the quick brown fox jumped
       offset: 4,
     });
     expect(errors[1].message).toStrictEqual(
-      "attribute list for 'code-block' tag should be object"
+      "attribute list for 'snippet' tag should be object"
     );
     expect(errors[1].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 74,
+      offset: 68,
     });
   });
 
-  test("does not throw an error when a code-block has an id", () => {
+  test("does not throw an error when a snippet has an id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start: shindig
+// :snippet-start: shindig
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -159,15 +160,15 @@ the quick brown fox jumped
     expect(errors.length).toBe(0);
   });
 
-  test("throws an error when two code-blocks share an id", () => {
+  test("throws an error when two snippets share an id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start: totallyuniqueid
+// :snippet-start: totallyuniqueid
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 
-// :code-block-start: totallyuniqueid
+// :snippet-start: totallyuniqueid
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -183,19 +184,19 @@ the quick brown fox jumped
     expect(errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 90,
+      offset: 84,
     });
   });
 
   test("throws an error when attributes list lacks an id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start: { notid: totallyuniqueid }
+// :snippet-start: { notid: totallyuniqueid }
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 
-// :code-block-start: totallyuniqueid
+// :snippet-start: totallyuniqueid
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -206,7 +207,7 @@ the quick brown fox jumped
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'code-block' tag should be object"
+      "attribute list for 'snippet' tag should be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -217,13 +218,13 @@ the quick brown fox jumped
 
   test("does not throw an error when attributes list contains an id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start: { "id": ["uniqueid"] }
+// :snippet-start: { "id": ["uniqueid"] }
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 
-// :code-block-start: anotheruniqueid
+// :snippet-start: anotheruniqueid
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -237,13 +238,13 @@ the quick brown fox jumped
 
   test("throws an error when attributes list contains an id that duplicates another block's id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start: { "id": ["totallyuniqueid"] }
+// :snippet-start: { "id": ["totallyuniqueid"] }
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 
-// :code-block-start: totallyuniqueid
+// :snippet-start: totallyuniqueid
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -259,19 +260,19 @@ the quick brown fox jumped
     expect(errors[0].location).toStrictEqual({
       line: 6,
       column: 4,
-      offset: 104,
+      offset: 98,
     });
   });
 
   test("throws an error a tag that should only accept one id accepts more than one id", () => {
     const tokens = lexer.tokenize(`
-// :code-block-start: id1 id2
+// :snippet-start: id1 id2
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 
-// :code-block-start: totallyuniqueid
+// :snippet-start: totallyuniqueid
 the quick brown fox jumped
-// :code-block-end:
+// :snippet-end:
 `);
     expect(tokens.errors.length).toBe(0);
     parser.input = tokens.tokens;
@@ -282,7 +283,7 @@ the quick brown fox jumped
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'code-block' tag/id should NOT have more than 1 items"
+      "attribute list for 'snippet' tag/id should NOT have more than 1 items"
     );
   });
 

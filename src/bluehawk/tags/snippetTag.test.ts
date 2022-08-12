@@ -34,11 +34,11 @@ console.log(bar);
     const files = await bluehawk.process(parseResult);
     expect(Object.keys(files)).toStrictEqual([
       "snippet.test.js",
-      "snippet.test.codeblock.foo.js",
+      "snippet.test.snippet.foo.js",
     ]);
-    expect(
-      files["snippet.test.codeblock.foo.js"].document.text.toString()
-    ).toBe(`${snippet}\n`);
+    expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
+      `${snippet}\n`
+    );
     done();
   });
 
@@ -56,9 +56,7 @@ console.log(bar);
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(
-      files["snippet.test.codeblock.foo.js"].document.text.toString()
-    ).toBe(
+    expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
       `  abc
    def
 ghi
@@ -87,7 +85,7 @@ ghi
     const files = await bluehawk.process(parseResult);
     expect(
       files[
-        "snippet.test.codeblock.delete-collection.swift"
+        "snippet.test.snippet.delete-collection.swift"
       ].document.text.toString()
     ).toBe(
       `let realm = try! Realm()
@@ -114,9 +112,9 @@ try! realm.write {
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(
-      files["snippet.test.codeblock.foo.js"].document.text.toString()
-    ).toBe("");
+    expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
+      ""
+    );
     done();
   });
 
@@ -125,7 +123,7 @@ try! realm.write {
       text: `some text
 // :snippet-start: foo
 // :remove-start:
-hide this
+remove this
 // :remove-end:
 // :snippet-end:
 `,
@@ -134,9 +132,9 @@ hide this
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(
-      files["snippet.test.codeblock.foo.js"].document.text.toString()
-    ).toBe("");
+    expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
+      ""
+    );
     done();
   });
 
@@ -156,22 +154,22 @@ world
 
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
-    expect(files["snippet.test.codeblock.a.js"].document.text.toString()).toBe(
+    expect(files["snippet.test.snippet.a.js"].document.text.toString()).toBe(
       `hello
 world
 !
 `
     );
-    expect(files["snippet.test.codeblock.b.js"].document.text.toString()).toBe(
+    expect(files["snippet.test.snippet.b.js"].document.text.toString()).toBe(
       `world
 `
     );
 
-    // Ensure nested snippets don't generate, e.g., snippet.test.codeblock.a.codeblock.b.js
+    // Ensure nested snippets don't generate, e.g., snippet.test.snippet.a.snippet.b.js
     expect(Object.keys(files)).toStrictEqual([
       "snippet.test.js",
-      "snippet.test.codeblock.a.js",
-      "snippet.test.codeblock.b.js",
+      "snippet.test.snippet.a.js",
+      "snippet.test.snippet.b.js",
     ]);
   });
 });

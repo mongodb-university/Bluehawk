@@ -33,7 +33,7 @@ export const copy = async (
   } catch (error) {
     reporter.onFileError({
       error,
-      sourcePath: rootPath,
+      inputPath: rootPath,
     });
     return;
   }
@@ -80,13 +80,13 @@ export const copy = async (
       await copyPermissions({ to: targetPath, from: filePath });
       reporter.onFileWritten({
         type: "binary",
-        sourcePath: filePath,
+        inputPath: filePath,
         outputPath: targetPath,
       });
     } catch (error) {
       reporter.onWriteFailed({
         outputPath: targetPath,
-        sourcePath: filePath,
+        inputPath: filePath,
         error,
         type: "binary",
       });
@@ -156,13 +156,13 @@ export const copy = async (
       });
       reporter.onFileWritten({
         type: "text",
-        sourcePath: document.path,
+        inputPath: document.path,
         outputPath: targetPath,
       });
     } catch (error) {
       reporter.onWriteFailed({
         outputPath: targetPath,
-        sourcePath: parseResult.source.path,
+        inputPath: parseResult.source.path,
         error,
         type: "text",
       });
@@ -173,10 +173,10 @@ export const copy = async (
     ignore,
     onBinaryFile,
     waitForListeners: waitForListeners ?? false,
-    onErrors(sourcePath, errors) {
+    onErrors(inputPath, errors) {
       reporter.onBluehawkErrors({
         errors,
-        sourcePath,
+        inputPath,
       });
     },
     reporter,

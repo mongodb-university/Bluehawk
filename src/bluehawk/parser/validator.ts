@@ -1,8 +1,9 @@
+import { TagProcessors } from "./../processor/Processor";
 import { AnyTagNode } from "../parser";
 import { BluehawkError } from "../BluehawkError";
 import { flatten } from "../parser";
-import { TagProcessors } from "./Processor";
 import { makeAttributesConformToJsonSchemaRule } from "./makeAttributesConformToJsonSchemaRule";
+import { mapShorthandArgsToAttributes } from "../tags/Tag";
 
 export interface ValidateCstResult {
   errors: BluehawkError[];
@@ -28,6 +29,26 @@ export function validateTags(
     const tag = tagProcessorMap[tagNode.tagName];
     if (tag === undefined) {
       // TODO: warn unknown tag
+      return;
+    }
+
+    const { shorthandArgsAttributeName } = tag;
+    if (shorthandArgsAttributeName !== undefined) {
+      // Apply the tag's shorthand rename rule to the tag node's attribute list
+      mapShorthandArgsToAttributes({
+        tagNode,
+        shorthandArgsAttributeName,
+      });
+    } else if (tagNode.shorthandArgs !== undefined) {
+      validateResult.errors.push({
+        component: "validator",
+        location: tagNode.range.start,
+        message: `'${
+          tagNode.tagName
+        }' does not accept shorthand args ('${tagNode.shorthandArgs.join(
+          " "
+        )}') because the tag definition does not have shorthandArgsAttributeName set.`,
+      });
       return;
     }
 
@@ -69,22 +90,25 @@ export const idIsUnique: Rule = (
   tagNode: AnyTagNode,
   result: ValidateCstResult
 ) => {
-  if (tagNode.id !== undefined) {
+  if (tagNode.attributes?.id !== undefined) {
     // if the tag id already exists in the set of tag ids, create a duplicate error
     const union = [
-      ...new Set([...Array.from(result.tagsById.keys()), ...tagNode.id]),
+      ...new Set([
+        ...Array.from(result.tagsById.keys()),
+        ...tagNode.attributes.id,
+      ]),
     ];
     // if the union of the seen ids and the current node's ids has fewer elements than the length of those in total... duplicate
-    if (union.length != result.tagsById.size + tagNode.id.length) {
-      // (result.tagsById.has(tagNode.id)) {
+    if (union.length != result.tagsById.size + tagNode.attributes.id.length) {
+      // (result.tagsById.has(tagNode.attributes.id)) {
       result.errors.push({
         component: "validator",
         location: tagNode.range.start,
-        message: `duplicate ID '${tagNode.id}' found`,
+        message: `duplicate ID '${tagNode.attributes.id}' found`,
       });
     } else {
       // otherwise, add the tag id to the set
-      tagNode.id.forEach((id) => {
+      tagNode.attributes.id.forEach((id: string) => {
         result.tagsById.set(id, tagNode);
       });
     }

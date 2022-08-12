@@ -29,14 +29,14 @@ describe("lexer", () => {
 
   it("tokenizes bluehawk markup", () => {
     const result = lexer.tokenize(`
-// :code-block-start: some-id
+// :snippet-start: some-id
 this is bluehawk
-// :hide-start:
+// :remove-start:
 this is hidden
 // :replace-with:
 this is used to replace
-// :hide-end:
-// :code-block-end:
+// :remove-end:
+// :snippet-end:
 `);
     expect(result.errors).toStrictEqual([]);
     expect(result.groups).toStrictEqual({});

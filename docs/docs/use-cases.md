@@ -19,7 +19,7 @@ mark up the unit test source file like this with Bluehawk tags like
 func someTest() {
     // :snippet-start: some-example
     let person = getPerson()
-    // :remove-start: // hide test boilerplate from the code block
+    // :remove-start: // remove test boilerplate from the code block
     XCTAssert(person.name != "Keith")
     // :remove-end:
     person.doSomething {
@@ -31,7 +31,7 @@ func someTest() {
 ```
 
 Running Bluehawk with the `snip` command on this file will produce a snippet
-file called `SomeTest.codeblock.some-example.swift` that looks something like this:
+file called `SomeTest.snippet.some-example.swift` that looks something like this:
 
 ```swift
 let person = getPerson()
