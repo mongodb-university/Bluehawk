@@ -10,7 +10,7 @@ export interface CopyArgs extends ActionArgs {
   output: string;
   state?: string;
   ignore?: string | string[];
-  rename?: string;
+  rename?: Record<string, string>;
 
   /**
     Hook for additional work after a binary file is processed.
@@ -35,19 +35,10 @@ export const copy = async (
     return;
   }
 
-  let renameObj = {};
-  if (typeof rename === "string") {
-    try {
-      renameObj = JSON.parse(rename);
-    } catch {
-      throw "Unable to parse 'rename' argument. Ensure your 'rename' argument is valid JSON.";
-    }
-  }
-
   // function to check if object has a new name specified
   const getRename = (fileName: string) => {
-    if (rename && renameObj && (renameObj as any)[fileName] !== undefined) {
-      return (renameObj as any)[fileName];
+    if (rename && rename[fileName] !== undefined) {
+      return rename[fileName];
     }
     return undefined;
   };
@@ -63,10 +54,13 @@ export const copy = async (
       path.relative(projectDirectory, path.dirname(filePath))
     );
 
-    // rename binary file if a new name is specified
     let targetPath = path.join(directory, path.basename(filePath));
-    if (getRename(path.basename(filePath)) !== undefined) {
-      targetPath = path.join(directory, getRename(path.basename(filePath)));
+    // rename binary file if a new name is specified
+    {
+      const renamed = getRename(path.basename(filePath));
+      if (renamed) {
+        targetPath = path.join(directory, renamed);
+      }
     }
     try {
       await System.fs.mkdir(directory, { recursive: true });
@@ -131,10 +125,14 @@ export const copy = async (
       path.relative(projectDirectory, path.dirname(document.path))
     );
 
-    // rename file if a new name is specified
     let targetPath = path.join(directory, document.basename);
-    if (getRename(document.basename) !== undefined) {
-      targetPath = path.join(directory, getRename(document.basename));
+
+    // rename file if a new name is specified
+    {
+      const renamed = getRename(document.basename);
+      if (renamed) {
+        targetPath = path.join(directory, renamed);
+      }
     }
 
     try {

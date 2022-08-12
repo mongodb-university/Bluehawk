@@ -49,7 +49,7 @@ describe("copy", () => {
       output: outputPath,
       rootPath,
       waitForListeners: true,
-      rename: '{"test.bin":"renamed.bin"}',
+      rename: { "test.bin": "renamed.bin" },
     });
     expect(reporter.errorCount).toBe(0);
     const sourceList = await System.fs.readdir(rootPath);
@@ -110,7 +110,7 @@ describe("copy", () => {
         didCallBinaryFileForPath = path;
       },
       waitForListeners: true,
-      rename: '{"test.bin":"new_name.bin"}',
+      rename: { "test.bin": "new_name.bin" },
     });
 
     expect(reporter.errorCount).toBe(0);
