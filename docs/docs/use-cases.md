@@ -79,7 +79,7 @@ indicate different states or checkpoints with the `:state-start:` and
     // :state-start: start
     // TODO: Use the app's emailPasswordAuth to registerUser with the email and password.
     // When registered, call signIn().
-    // :state-uncomment-end:
+    // :state-end:
 }
 // :snippet-end:
 // ... more code ...
