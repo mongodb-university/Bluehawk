@@ -16,7 +16,7 @@ export const RemoveStateTag = makeBlockTag<IdsRequiredAttributes>({
     conditionalForkWithState(request);
     const { tagNode, document } = request;
     const stateAttribute = document.attributes["state"];
-    // Strip all other states
+    // Strip all matching states
     if (tagNode.attributes.id.includes(stateAttribute)) {
       RemoveTag.process(request);
     }
