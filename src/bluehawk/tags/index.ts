@@ -1,5 +1,6 @@
 export * from "./Tag";
 export * from "./RemoveTag";
+export * from "./RemoveStateTag";
 export * from "./ReplaceTag";
 export * from "./SnippetTag";
 export * from "./StateTag";
