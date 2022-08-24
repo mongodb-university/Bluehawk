@@ -15,7 +15,7 @@ describe("remove state tag", () => {
   });
 
   it("strips text", async (done) => {
-    const singleInput = `t0
+    const input = `t0
 // :state-start: s1 s2
 t1
 // :state-end:
@@ -25,7 +25,7 @@ t2
 `;
 
     const source = new Document({
-      text: singleInput,
+      text: input,
       path: "test.js",
     });
 
@@ -61,12 +61,12 @@ t2
 `;
     const source = new Document({
       text: input,
-      path: "t.js",
+      path: "test.js",
     });
     const parseResult = bluehawk.parse(source);
     const files = await bluehawk.process(parseResult);
 
-    expect(files["t.js"].document.text.toString()).toBe(`1
+    expect(files["test.js"].document.text.toString()).toBe(`1
 2
 3
 4
@@ -74,15 +74,15 @@ t2
 6
 7
 `);
-    expect(files["t.js?state=s1"].document.text.toString()).toBe(`1
+    expect(files["test.js?state=s1"].document.text.toString()).toBe(`1
 7
 `);
-    expect(files["t.js?state=s2"].document.text.toString()).toBe(`1
+    expect(files["test.js?state=s2"].document.text.toString()).toBe(`1
 2
 6
 7
 `);
-    expect(files["t.js?state=s3"].document.text.toString()).toBe(`1
+    expect(files["test.js?state=s3"].document.text.toString()).toBe(`1
 2
 3
 5

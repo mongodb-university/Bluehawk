@@ -1,14 +1,11 @@
-import { strict as assert } from "assert";
 import {
   makeBlockTag,
   IdsRequiredAttributes,
   IdsRequiredAttributesSchema,
 } from "./Tag";
 import { RemoveTag } from "./RemoveTag";
-import { Tag } from "../parser/lexer/tokens";
 import { BlockTagNode } from "../parser";
-import { ForkArgs, ProcessRequest } from "../processor/Processor";
-import { Document } from "../Document";
+import { ProcessRequest } from "../processor/Processor";
 
 export const StateTag = makeBlockTag<IdsRequiredAttributes>({
   name: "state",
