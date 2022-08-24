@@ -466,3 +466,14 @@ int divisor = 3;
 int quotient = dividend / divisor;
 System.out.println(dividend + " / " + divisor + " = " + quotient);
 ```
+
+## Remove State
+
+The `remove-state` tag removes the spanned range from
+Bluehawk output for specified states.
+
+Use the `remove-state` when you want to include
+enclosed text in everything except the states you
+specify to the tag.
+
+The `remove-state` tag is a block tag.
