@@ -3,6 +3,7 @@ export * from "./RemoveTag";
 export * from "./ReplaceTag";
 export * from "./SnippetTag";
 export * from "./StateTag";
+export * from "./StateRemoveTag";
 export * from "./UncommentTag";
 export * from "./removeMetaRange";
 export * from "./EmphasizeTag";
