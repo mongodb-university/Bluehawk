@@ -6,8 +6,8 @@ import {
 import { RemoveTag } from "./RemoveTag";
 import { conditionalForkWithState } from "./StateTag";
 
-export const RemoveStateTag = makeBlockTag<IdsRequiredAttributes>({
-  name: "remove-state",
+export const StateRemoveTag = makeBlockTag<IdsRequiredAttributes>({
+  name: "state-remove",
   description:
     "given a state name(s) as tag ids, identifies blocks that should not appear in the given state's version of the file",
   attributesSchema: IdsRequiredAttributesSchema,
