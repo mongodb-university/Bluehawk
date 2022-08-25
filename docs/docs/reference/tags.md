@@ -255,6 +255,17 @@ Produces the following output:
 With `state-uncomment`, you can create multiple valid end states but only run
 one of those states when executing your source code.
 
+## State Remove
+
+The `state-remove` tag removes the spanned range from
+Bluehawk output for specified states.
+
+Use the `state-remove` when you want to include
+enclosed text in everything except the states you
+specify to the tag.
+
+The `state-remove` tag is a block tag.
+
 ## Uncomment
 
 The `uncomment` tag removes a single comment from the beginning of
@@ -466,14 +477,3 @@ int divisor = 3;
 int quotient = dividend / divisor;
 System.out.println(dividend + " / " + divisor + " = " + quotient);
 ```
-
-## Remove State
-
-The `remove-state` tag removes the spanned range from
-Bluehawk output for specified states.
-
-Use the `remove-state` when you want to include
-enclosed text in everything except the states you
-specify to the tag.
-
-The `remove-state` tag is a block tag.
