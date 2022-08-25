@@ -15,7 +15,7 @@ describe("remove state tag", () => {
     lineComments: [/\/\/ ?/],
   });
 
-  it("strips text", async (done) => {
+  it("strips text", async () => {
     const input = `t0
 // :state-start: s1 s2
 t1
@@ -42,10 +42,9 @@ t1
 t1
 t2
 `);
-    done();
   });
 
-  it("nests", async (done) => {
+  it("nests", async () => {
     const input = `1
 // :state-remove-start: s1
 2
@@ -90,9 +89,8 @@ t2
 6
 7
 `);
-    done();
   });
-  it("behaves well when mixed with state", async (done) => {
+  it("behaves well when mixed with state", async () => {
     const input = `a
 // :state-remove-start: s0
 b
@@ -151,6 +149,5 @@ g
 h
 i
 `);
-    done();
   });
 });
