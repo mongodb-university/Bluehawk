@@ -106,7 +106,7 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
         },
       ],
     });
-
+  
     bluehawk.addLanguage([".xml", ".svg", ".html", ".htm", ".uxml", ".xaml"], {
       languageId: "xml",
       blockComments: [[/<!--/, /-->/]],
