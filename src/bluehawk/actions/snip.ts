@@ -79,15 +79,16 @@ export const formatInRst = async (
   // nasty hack to cover the suffixes/rst languages we use most often
   // TODO: switch to a better mapping
   const rstLanguageMap: Map<string, string> = new Map([
-    [".js", "javascript"],
-    [".ts", "typescript"],
-    [".kt", "kotlin"],
-    [".java", "java"],
+    [".cpp", "cpp"],
+    [".cs", "csharp"],
     [".gradle", "groovy"],
+    [".java", "java"],
+    [".js", "javascript"],
+    [".json", "json"],
+    [".kt", "kotlin"],
     [".m", "objectivec"],
     [".swift", "swift"],
-    [".cs", "csharp"],
-    [".json", "json"],
+    [".ts", "typescript"],
   ]);
   const rstLanguage = rstLanguageMap.has(document.extension)
     ? rstLanguageMap.get(document.extension)
