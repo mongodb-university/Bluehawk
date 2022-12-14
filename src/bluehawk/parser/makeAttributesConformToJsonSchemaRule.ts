@@ -5,7 +5,7 @@ import { Rule, ValidateCstResult } from "./validator";
 const ajv = new Ajv();
 
 // Creates a rule that checks attributes against the given JSON schema.
-export const makeAttributesConformToJsonSchemaRule = (
+export const makeAttributesConformToJsonSchemaRule = <Type = unknown>(
   schema: AnySchema
 ): Rule => {
   const validate = ajv.compile(schema);

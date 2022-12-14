@@ -33,6 +33,7 @@ export const createFormattedCodeBlock = async ({
     if (formattedSnippet === undefined) {
       return;
     }
+
     const { document } = result;
     const targetPath = path.join(output, `${document.basename}.rst`);
     await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
@@ -235,7 +236,7 @@ export const snip = async (
       stateVersionWrittenForPath[document.path] = true;
     }
 
-    if (id) {
+    if (id !== undefined) {
       const idAttribute: string = document.attributes["snippet"];
 
       if (![id].flat(1).includes(idAttribute)) {
@@ -248,7 +249,7 @@ export const snip = async (
 
     try {
       // Create formatted snippet block
-      if (formats) {
+      if (formats !== undefined) {
         for (const format of formats) {
           await createFormattedCodeBlock({
             result,
@@ -258,7 +259,7 @@ export const snip = async (
           });
         }
       } else {
-        // only perform a write if we haven't already created the file in rST|md|etc
+        // only perform a write if we haven't already created the file in rST/md/etc
         await System.fs.writeFile(targetPath, document.text.toString(), "utf8");
         reporter.onFileWritten({
           type: "text",
