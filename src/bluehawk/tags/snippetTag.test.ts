@@ -13,7 +13,7 @@ describe("snippet Tag", () => {
     lineComments: [/\/\/ ?/],
   });
 
-  it("performs extraction", async (done) => {
+  it("performs extraction", async () => {
     const snippet = `describe("some stuff", () => {
   it("foos the bar", () => {
     expect(true).toBeTruthy();
@@ -39,10 +39,9 @@ console.log(bar);
     expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
       `${snippet}\n`
     );
-    done();
   });
 
-  it("dedents the snippet", async (done) => {
+  it("dedents the snippet", async () => {
     const source = new Document({
       text: `const bar = "foo"
     // :snippet-start: foo
@@ -62,10 +61,9 @@ console.log(bar);
 ghi
 `
     );
-    done();
   });
 
-  it("dedents a realistic snippet", async (done) => {
+  it("dedents a realistic snippet", async () => {
     const source = new Document({
       text: `        // :snippet-start: delete-collection
         let realm = try! Realm()
@@ -98,10 +96,9 @@ try! realm.write {
 }
 `
     );
-    done();
   });
 
-  it("handles empty snippets", async (done) => {
+  it("handles empty snippets", async () => {
     const source = new Document({
       text: `const bar = "foo"
     // :snippet-start: foo
@@ -115,10 +112,9 @@ try! realm.write {
     expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
       ""
     );
-    done();
   });
 
-  it("handles adjusted offsets", async (done) => {
+  it("handles adjusted offsets", async () => {
     const source = new Document({
       text: `some text
 // :snippet-start: foo
@@ -135,7 +131,6 @@ remove this
     expect(files["snippet.test.snippet.foo.js"].document.text.toString()).toBe(
       ""
     );
-    done();
   });
 
   it("supports nested snippets", async () => {

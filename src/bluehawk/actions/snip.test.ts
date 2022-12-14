@@ -9,7 +9,7 @@ describe("snip", () => {
 
   const reporter = new ConsoleActionReporter();
 
-  it("generates correct RST snippets AND docusaurus snippets", async (done) => {
+  it("generates correct RST snippets AND docusaurus snippets", async () => {
     const rootPath = Path.resolve("/path/to/project");
     const outputPath = "/output";
     const testFileName = "test.js";
@@ -86,10 +86,9 @@ describe("some stuff", () => {
 // highlight-end
 console.log(bar);
 `);
-    done();
   });
 
-  it("generates correct MD fenced snippets", async (done) => {
+  it("generates correct MD fenced snippets", async () => {
     const rootPath = Path.resolve("/path/to/project");
     const outputPath = "/output";
     const testFileName = "test.js";
@@ -149,11 +148,9 @@ describe("some stuff", () => {
 console.log(bar);
 
 \`\`\``);
-
-    done();
   });
 
-  it("generates correct Python snippets", async (done) => {
+  it("generates correct Python snippets", async () => {
     const rootPath = Path.resolve("/path/to/project");
     const outputPath = "/output";
     const testFileName = "test.py";
@@ -233,10 +230,9 @@ this must show up # :remove:
 ''' me too # :remove:
 """
 `);
-    done();
   });
 
-  it("generates correct docusarus-formatted code blocks for start and end blocks at the beginning and end of the block", async (done) => {
+  it("generates correct docusarus-formatted code blocks for start and end blocks at the beginning and end of the block", async () => {
     const rootPath = Path.resolve("/path/to/project");
     const outputPath = "/output";
     const testFileName = "test.js";
@@ -296,7 +292,6 @@ describe("some stuff", () => {
 console.log(bar);
 // highlight-end
 `);
-    done();
   });
 
   it("correctly logics multiple ranges within RST snippets", async () => {

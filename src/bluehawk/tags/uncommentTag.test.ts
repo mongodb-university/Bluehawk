@@ -13,7 +13,7 @@ describe("uncomment tag", () => {
     lineComments: [/\/\/ ?/],
   });
 
-  it("uncomments", async (done) => {
+  it("uncomments", async () => {
     const source = new Document({
       text: `// :uncomment-start:
 //comment
@@ -32,10 +32,9 @@ no comment
 // double comment
 `
     );
-    done();
   });
 
-  it("handles one space after comments", async (done) => {
+  it("handles one space after comments", async () => {
     const source = new Document({
       text: `// :uncomment-start:
 // comment
@@ -54,10 +53,9 @@ no comment
 // double comment
 `
     );
-    done();
   });
 
-  it("nests", async (done) => {
+  it("nests", async () => {
     const source = new Document({
       text: `// :uncomment-start:
 // comment
@@ -78,10 +76,9 @@ no comment
 // double comment
 `
     );
-    done();
   });
 
-  it("uncomments only at the beginning of the line (after whitespace if any)", async (done) => {
+  it("uncomments only at the beginning of the line (after whitespace if any)", async () => {
     const source = new Document({
       text: `// :uncomment-start:
       a//
@@ -108,10 +105,9 @@ leave this alone // // double comment
 \t\tnot this // though
 `
     );
-    done();
   });
 
-  it("pairs with remove", async (done) => {
+  it("pairs with remove", async () => {
     const source = new Document({
       text: `// :uncomment-start:
 // comment
@@ -134,6 +130,5 @@ no comment
 // double comment
 `
     );
-    done();
   });
 });

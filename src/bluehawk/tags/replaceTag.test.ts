@@ -26,7 +26,7 @@ describe("replace tag", () => {
 
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors[0].message).toBe(
-      "attribute list for 'replace' tag should be object"
+      "attribute list for 'replace' tag must be object"
     );
   });
 
@@ -40,11 +40,11 @@ describe("replace tag", () => {
 
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors[0].message).toBe(
-      "attribute list for 'replace' tag/terms/numbersNotAllowed should be string"
+      "attribute list for 'replace' tag/terms/numbersNotAllowed must be string"
     );
   });
 
-  it("replaces keys with values", async (done) => {
+  it("replaces keys with values", async () => {
     const source = new Document({
       text: `// :replace-start: {
 // "terms": {
@@ -67,10 +67,9 @@ and see test2
 go ahead and It works!
 and see --replaced--
 `);
-    done();
   });
 
-  it("is case sensitive", async (done) => {
+  it("is case sensitive", async () => {
     const source = new Document({
       text: `// :replace-start: {"terms": {
 //   "Notice the Case": "It works!",
@@ -92,10 +91,9 @@ and see unchanged
 go ahead and notice the case
 and see unchanged
 `);
-    done();
   });
 
-  it("replaces all instances within the block", async (done) => {
+  it("replaces all instances within the block", async () => {
     const source = new Document({
       text: `replaceme
 replaceme
@@ -135,10 +133,9 @@ replaceme
 replaceme
 replaceme
 `);
-    done();
   });
 
-  it("can't match outside of its block", async (done) => {
+  it("can't match outside of its block", async () => {
     const source = new Document({
       text: `// :replace-start: {"terms": {
 //   ":replace-": "hacked"
@@ -155,10 +152,9 @@ replaceme
     expect(files["replace.test.js"].document.text.toString()).toBe(
       `hacked hacked :rep\n`
     );
-    done();
   });
 
-  it("interoperates with remove", async (done) => {
+  it("interoperates with remove", async () => {
     const source = new Document({
       text: `// :replace-start: {"terms": {
 //   "removethis": ""
@@ -185,7 +181,6 @@ andremovethisaswell
 4
 andaswell
 `);
-    done();
   });
 
   it("doesn't unexpectedly use id as a replacement", () => {
@@ -203,7 +198,7 @@ it's my id
     );
   });
 
-  it("handles a real-world example", async (done) => {
+  it("handles a real-world example", async () => {
     const source = new Document({
       text: `// :replace-start: {
 //   "terms": {
@@ -372,6 +367,5 @@ try! realm.write {
     realm.add(myDog)
 }
 `);
-    done();
   });
 });

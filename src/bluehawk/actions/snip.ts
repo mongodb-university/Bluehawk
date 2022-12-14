@@ -30,6 +30,9 @@ export const createFormattedCodeBlock = async ({
 }): Promise<void> => {
   if (format === "rst") {
     const formattedSnippet = await formatInRst(result);
+    if (formattedSnippet === undefined) {
+      return;
+    }
 
     const { document } = result;
     const targetPath = path.join(output, `${document.basename}.rst`);
@@ -42,6 +45,9 @@ export const createFormattedCodeBlock = async ({
     });
   } else if (format === "md") {
     const formattedSnippet = formatInMd(result);
+    if (formattedSnippet === undefined) {
+      return;
+    }
     const { document } = result;
     const targetPath = path.join(output, `${document.basename}.md`);
     await System.fs.writeFile(targetPath, formattedSnippet, "utf8");
@@ -52,7 +58,9 @@ export const createFormattedCodeBlock = async ({
     });
   } else if (format === "docusaurus") {
     const formattedSnippet = await formatInDocusaurus(result);
-
+    if (formattedSnippet === undefined) {
+      return;
+    }
     const { document } = result;
     const targetPath = path.join(output, `${document.basename}.md`);
     await System.fs.writeFile(targetPath, formattedSnippet, "utf8");

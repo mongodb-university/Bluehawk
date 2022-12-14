@@ -64,7 +64,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
           offset: 0,
         },
         message:
-          "attribute list for 'mock' tag should have required property 'requiredNumber'",
+          "attribute list for 'mock' tag must have required property 'requiredNumber'",
       },
     ]);
   });
@@ -88,7 +88,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
       result
     );
     expect(result.errors.map((error) => error.message)).toStrictEqual([
-      "attribute list for 'mock' tag should have required property 'requiredNumber'",
+      "attribute list for 'mock' tag must have required property 'requiredNumber'",
     ]);
     result = makeValidateCstResult();
     rule(
@@ -100,7 +100,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
       result
     );
     expect(result.errors.map((error) => error.message)).toStrictEqual([
-      "attribute list for 'mock' tag/notNegative should be >= 0",
+      "attribute list for 'mock' tag/notNegative must be >= 0",
     ]);
     result = makeValidateCstResult();
     rule(
@@ -127,7 +127,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
     });
     rule(mockTagNode(), result);
     expect(result.errors[0].message).toBe(
-      "attribute list for 'mock' tag should be object"
+      "attribute list for 'mock' tag must be object"
     );
   });
 
@@ -138,7 +138,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any as JSONSchemaType<MyType>);
     }).toThrow(
-      "schema is invalid: data/type should be equal to one of the allowed values, data/type should be array, data/type should match some schema in anyOf"
+      "schema is invalid: data/type must be equal to one of the allowed values, data/type must be array, data/type must match a schema in anyOf"
     );
   });
 });

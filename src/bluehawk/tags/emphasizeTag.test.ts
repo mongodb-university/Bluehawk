@@ -12,7 +12,7 @@ describe("emphasize tag", () => {
     lineComments: [/\/\/ ?/],
   });
 
-  it("works as a one line tag", async (done) => {
+  it("works as a one line tag", async () => {
     const source = new Document({
       text: `a
 b // :emphasize:
@@ -39,10 +39,9 @@ c
         end: { line: 2 },
       },
     ]);
-    done();
   });
 
-  it("functions as a block", async (done) => {
+  it("functions as a block", async () => {
     const singleInput = `const bar = "foo"
 
 // :emphasize-start:
@@ -82,10 +81,9 @@ console.log(bar);
         end: { line: 8 },
       },
     ]);
-    done();
   });
 
-  it("handles double blocks correctly", async (done) => {
+  it("handles double blocks correctly", async () => {
     const singleInput = `const bar = "foo"
 
 // :emphasize-start:
@@ -133,10 +131,9 @@ console.log(bar);
         end: { line: 10 },
       },
     ]);
-    done();
   });
 
-  it("handles block and line usages correctly when combined", async (done) => {
+  it("handles block and line usages correctly when combined", async () => {
     const singleInput = `line 1
 line 2
 // :emphasize-start:
@@ -190,6 +187,5 @@ line 9`);
         end: { line: 11 },
       },
     ]);
-    done();
   });
 });

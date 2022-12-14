@@ -40,7 +40,7 @@ line 3`);
     expect(s.toString()).toBe(`line 3`);
   });
 
-  it("strips text", async (done) => {
+  it("strips text", async () => {
     const singleInput = `const bar = "foo"
 
 // :remove-start:
@@ -64,10 +64,9 @@ console.log(bar);
 
 console.log(bar);
 `);
-    done();
   });
 
-  it("nests", async (done) => {
+  it("nests", async () => {
     const source = new Document({
       text: `a
 :remove-start:
@@ -89,7 +88,6 @@ e
 e
 `
     );
-    done();
   });
 
   it("requires no attributes", () => {
@@ -106,11 +104,11 @@ e
 
     const parseResult = bluehawk.parse(source);
     expect(parseResult.errors[0].message).toStrictEqual(
-      "attribute list for 'remove' tag should be null"
+      "attribute list for 'remove' tag must be null"
     );
   });
 
-  it("works as a line tag", async (done) => {
+  it("works as a line tag", async () => {
     const input = `leave this
 this should be removed // :remove:
 and leave this
@@ -131,6 +129,5 @@ and leave this
 but not this
 `
     );
-    done();
   });
 });
