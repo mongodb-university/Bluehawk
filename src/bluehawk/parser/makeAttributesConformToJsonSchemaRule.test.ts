@@ -38,7 +38,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
   };
 
   it("reports errors", () => {
-    const rule = makeAttributesConformToJsonSchemaRule<MyType>({
+    const rule = makeAttributesConformToJsonSchemaRule({
       type: "object",
       properties: {
         requiredNumber: { type: "number" },
@@ -70,7 +70,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
   });
 
   it("reports errors one at a time", () => {
-    const rule = makeAttributesConformToJsonSchemaRule<MyType>({
+    const rule = makeAttributesConformToJsonSchemaRule({
       type: "object",
       properties: {
         requiredNumber: { type: "number" },
@@ -116,7 +116,7 @@ describe("makeAttributesConformToJsonSchemaRule", () => {
 
   it("reports errors on undefined attributes", () => {
     const result = makeValidateCstResult();
-    const rule = makeAttributesConformToJsonSchemaRule<MyType>({
+    const rule = makeAttributesConformToJsonSchemaRule({
       type: "object",
       properties: {
         requiredNumber: { type: "number" },
