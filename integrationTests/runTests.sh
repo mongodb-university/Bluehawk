@@ -35,7 +35,7 @@ do
   if [ "$EXPECTED_CHECKSUM" != "$OUTPUT_CHECKSUM" ]
   then
     echo "Test failed: $TEST_DIR"
-    echo "Compare ./$TEST_DIR/expected and ./$TEST_DIR/output to debug."
+    echo "Compare $TEST_DIR/expected and $TEST_DIR/output to debug."
     exit 1
   else
     echo "✅ Test passed: $TEST_DIR"

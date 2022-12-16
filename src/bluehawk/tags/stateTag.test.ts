@@ -15,7 +15,7 @@ describe("stateTag", () => {
     blockComments: [[/\/\*/, /\*\//]],
     lineComments: [/\/\/ ?/],
   });
-  it("processes nested tags", async (done) => {
+  it("processes nested tags", async () => {
     const multipleInput = new Document({
       text: `
 // :state-start: begin
@@ -64,10 +64,9 @@ end
     expect(files["stateTag.test.js?state=final"].document.text.toString()).toBe(
       multipleFinal
     );
-    done();
   });
 
-  it("handles multiple states", async (done) => {
+  it("handles multiple states", async () => {
     const multipleInput = new Document({
       text: `
 // :state-start: begin
@@ -126,10 +125,9 @@ end
     expect(files["stateTag.test.js?state=baz"].document.text.toString()).toBe(
       multipleFinal
     );
-    done();
   });
 
-  it("handles multiple states declared via attribute list", async (done) => {
+  it("handles multiple states declared via attribute list", async () => {
     const multipleInput = new Document({
       text: `
 // :state-start: begin
@@ -189,7 +187,5 @@ end
     expect(files["stateTag.test.js?state=baz"].document.text.toString()).toBe(
       multipleFinal
     );
-    done();
-    done();
   });
 });

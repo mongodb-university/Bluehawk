@@ -125,11 +125,11 @@ describe("bluehawk", () => {
         line: 3,
         offset: 25,
       },
-      message: "attribute list for 'snippet' tag should be object",
+      message: "attribute list for 'snippet' tag must be object",
     });
   });
 
-  it("calls async listeners only once per document", async (done) => {
+  it("calls async listeners only once per document", async () => {
     System.useJsonFs({
       "/path/to/code.js": `
     this is ignored
@@ -161,7 +161,6 @@ describe("bluehawk", () => {
         "/path/to/code.snippet.foo.js",
         "/path/to/code.js",
       ]);
-      done();
     }, 200);
   });
 });

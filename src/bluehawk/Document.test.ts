@@ -1,7 +1,7 @@
 import { Document } from "./Document";
 
 describe("Document", () => {
-  it("maps original locations to new", async (done) => {
+  it("maps original locations to new", async () => {
     const document = new Document({
       path: "",
       text: `line1
@@ -52,7 +52,5 @@ line4
       column: 1,
       line: 3, // :shrug:
     });
-
-    done();
   });
 });

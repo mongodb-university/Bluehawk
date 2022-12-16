@@ -18,7 +18,7 @@ import {
 
 describe("validator", () => {
   const tagProcessors: TagProcessors = {
-    "snippet": makeBlockTag<IdRequiredAttributes>({
+    snippet: makeBlockTag<IdRequiredAttributes>({
       name: "snippet",
       attributesSchema: IdRequiredAttributesSchema,
       shorthandArgsAttributeName: "id",
@@ -71,7 +71,7 @@ the quick brown fox jumped
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'snippet' tag should be object"
+      "attribute list for 'snippet' tag must be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -99,7 +99,7 @@ the quick brown fox jumped
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'snippet' tag should be object"
+      "attribute list for 'snippet' tag must be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 6,
@@ -127,7 +127,7 @@ the quick brown fox jumped
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(2);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'snippet' tag should be object"
+      "attribute list for 'snippet' tag must be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -135,7 +135,7 @@ the quick brown fox jumped
       offset: 4,
     });
     expect(errors[1].message).toStrictEqual(
-      "attribute list for 'snippet' tag should be object"
+      "attribute list for 'snippet' tag must be object"
     );
     expect(errors[1].location).toStrictEqual({
       line: 6,
@@ -207,7 +207,7 @@ the quick brown fox jumped
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'snippet' tag should be object"
+      "attribute list for 'snippet' tag must be object"
     );
     expect(errors[0].location).toStrictEqual({
       line: 2,
@@ -283,7 +283,7 @@ the quick brown fox jumped
     const errors = validateTags(result.tagNodes, tagProcessors);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toStrictEqual(
-      "attribute list for 'snippet' tag/id should NOT have more than 1 items"
+      "attribute list for 'snippet' tag/id must NOT have more than 1 items"
     );
   });
 

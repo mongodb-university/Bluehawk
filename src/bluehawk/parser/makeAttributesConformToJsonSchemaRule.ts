@@ -1,12 +1,12 @@
 import { AnyTagNode } from "../parser";
-import Ajv, { JSONSchemaType, AnySchema } from "ajv";
+import Ajv, { AnySchema } from "ajv";
 import { Rule, ValidateCstResult } from "./validator";
 
 const ajv = new Ajv();
 
 // Creates a rule that checks attributes against the given JSON schema.
-export const makeAttributesConformToJsonSchemaRule = <Type = unknown>(
-  schema: JSONSchemaType<Type> | AnySchema
+export const makeAttributesConformToJsonSchemaRule = (
+  schema: AnySchema
 ): Rule => {
   const validate = ajv.compile(schema);
   return (
@@ -18,11 +18,11 @@ export const makeAttributesConformToJsonSchemaRule = <Type = unknown>(
     }
     if (validate.errors?.length === 1 && attributes === undefined) {
       // Provide an exception for attributes being 'undefined' instead of null
-      const { dataPath, params, message } = validate.errors[0];
+      const { instancePath, params, message } = validate.errors[0];
       if (
-        dataPath === "" &&
+        instancePath === "" &&
         params.type === "null" &&
-        message === "should be null"
+        message === "must be null"
       ) {
         return;
       }

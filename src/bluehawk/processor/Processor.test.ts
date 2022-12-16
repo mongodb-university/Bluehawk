@@ -6,7 +6,11 @@ import {
   makeLineTag,
 } from "../tags/Tag";
 import { Document } from "../Document";
-import { ParseResult } from "../parser/ParseResult";
+
+const timeout = (ms: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 
 describe("processor", () => {
   const bluehawk = new Bluehawk();
@@ -16,7 +20,7 @@ describe("processor", () => {
     lineComments: [/\/\/ ?/],
   });
 
-  it("ignores unknown tags", async (done) => {
+  it("ignores unknown tags", async () => {
     // NOTE: This is not necessarily the desired behavior, but it is the current
     // behavior.
     const source = new Document({
@@ -30,10 +34,9 @@ describe("processor", () => {
     const files = await bluehawk.process(parseResult);
     expect(files["test.js"].document.text.toString()).toBe(`:unknown-tag:
 `);
-    done();
   });
 
-  it("supports async listeners", async (done) => {
+  it("supports async listeners", async () => {
     const source = new Document({
       text: `abc\n`,
       path: "test.js",
@@ -62,14 +65,12 @@ describe("processor", () => {
 
     // Processor fires off files to listeners and doesn't wait for the result,
     // so we must set a timeout here
-    setTimeout(() => {
-      expect(didCallListener).toBe(10);
-      expect(didWaitForListener).toBe(10);
-      done();
-    }, 11);
+    await timeout(11);
+    expect(didCallListener).toBe(10);
+    expect(didWaitForListener).toBe(10);
   });
 
-  it("does not stop on misbehaving listeners", async (done) => {
+  it("does not stop on misbehaving listeners", async () => {
     const source = new Document({
       text: `abc\n`,
       path: "test.js",
@@ -113,14 +114,12 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
 
     // Processor fires off files to listeners and doesn't wait for the result,
     // so we must set a timeout here
-    setTimeout(() => {
-      expect(didCallListener).toBe(9);
-      expect(didWaitForListener).toBe(9);
-      done();
-    }, 11);
+    await timeout(11);
+    expect(didCallListener).toBe(9);
+    expect(didWaitForListener).toBe(9);
   });
 
-  it("passes correct tag node type to ", async (done) => {
+  it("passes correct tag node type to ", async () => {
     const bluehawk = new Bluehawk();
     bluehawk.addLanguage(["js"], {
       languageId: "javascript",
@@ -192,6 +191,5 @@ This is probably not a bug in the Bluehawk library itself. Please check with the
     expect(result.errors).toStrictEqual([]);
     await bluehawk.process(result);
     expect(state.calledLineTagProcess).toBe(true);
-    done();
   });
 });
