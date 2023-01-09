@@ -51,7 +51,6 @@ describe("snip", () => {
 
     const outputList = await System.fs.readdir(outputPath);
     expect(outputList).toStrictEqual([
-      "test.snippet.foo.js",
       "test.snippet.foo.js.md",
       "test.snippet.foo.js.rst",
     ]);
@@ -129,10 +128,7 @@ console.log(bar);
     });
 
     const outputList = await System.fs.readdir(outputPath);
-    expect(outputList).toStrictEqual([
-      "test.snippet.foo.js",
-      "test.snippet.foo.js.md",
-    ]);
+    expect(outputList).toStrictEqual(["test.snippet.foo.js.md"]);
     const mdFileContents = await System.fs.readFile(
       Path.join(outputPath, "test.snippet.foo.js.md"),
       "utf8"
@@ -273,10 +269,7 @@ console.log(bar);
     });
 
     const outputList = await System.fs.readdir(outputPath);
-    expect(outputList).toStrictEqual([
-      "test.snippet.foo.js",
-      "test.snippet.foo.js.md",
-    ]);
+    expect(outputList).toStrictEqual(["test.snippet.foo.js.md"]);
 
     const fileContents = await System.fs.readFile(
       Path.join(outputPath, "test.snippet.foo.js.md"),
@@ -338,10 +331,7 @@ line 9
       waitForListeners: true,
     });
     const outputList = await System.fs.readdir(outputPath);
-    expect(outputList).toStrictEqual([
-      "test.snippet.foo.js",
-      "test.snippet.foo.js.rst",
-    ]);
+    expect(outputList).toStrictEqual(["test.snippet.foo.js.rst"]);
 
     const fileContents = await System.fs.readFile(
       Path.join(outputPath, "test.snippet.foo.js.rst"),
@@ -407,10 +397,7 @@ line 9
     });
 
     const outputList = await System.fs.readdir(outputPath);
-    expect(outputList).toStrictEqual([
-      "test.snippet.foo.js",
-      "test.snippet.foo.js.md",
-    ]);
+    expect(outputList).toStrictEqual(["test.snippet.foo.js.md"]);
 
     const fileContents = await System.fs.readFile(
       Path.join(outputPath, "test.snippet.foo.js.md"),
@@ -544,6 +531,22 @@ struct ContentView: SwiftUI.App {
       paths: [rootPath],
       output: outputPathLocal,
       format: "rst",
+      state: "local",
+    });
+
+    // non-rst snip for sync
+    await snip({
+      reporter,
+      paths: [rootPath],
+      output: outputPathSync,
+      state: "sync",
+    });
+
+    // non-rst snip for local
+    await snip({
+      reporter,
+      paths: [rootPath],
+      output: outputPathLocal,
       state: "local",
     });
 
