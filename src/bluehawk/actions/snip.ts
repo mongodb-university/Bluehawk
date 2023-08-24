@@ -92,11 +92,13 @@ export const formatInRst = async (
     [".gradle", "groovy"],
     [".java", "java"],
     [".js", "javascript"],
+    [".jsx", "javascript"],
     [".json", "json"],
     [".kt", "kotlin"],
     [".m", "objectivec"],
     [".swift", "swift"],
     [".ts", "typescript"],
+    [".tsx", "typescript"],
   ]);
   const rstLanguage = rstLanguageMap.has(document.extension)
     ? rstLanguageMap.get(document.extension)
