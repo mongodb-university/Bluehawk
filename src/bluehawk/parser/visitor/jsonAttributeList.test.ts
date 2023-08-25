@@ -83,7 +83,9 @@ describe("JSON attribute lists", () => {
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.tagNodes[0].attributes).toBeUndefined();
-    expect(result.errors[0].message).toBe("Unexpected number in JSON");
+    expect(result.errors[0].message).toBe(
+      "Expected double-quoted property name in JSON"
+    );
     expect(result.errors[0].location).toStrictEqual({
       line: 5,
       column: 3,
@@ -106,11 +108,13 @@ describe("JSON attribute lists", () => {
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors[0].location).toStrictEqual({
-      line: 5,
-      column: 1,
-      offset: 34,
+      line: 1,
+      column: 15,
+      offset: 14,
     });
-    expect(result.errors[0].message).toBe("Unexpected token } in JSON");
+    expect(result.errors[0].message).toBe(
+      "Unexpected token '}', ...\" [[[[[[[\n\n}\" is not valid JSON"
+    );
   });
 
   it("reports error accurately with weird newlines", () => {
@@ -133,7 +137,9 @@ describe("JSON attribute lists", () => {
       column: 1,
       offset: 23,
     });
-    expect(result.errors[0].message).toBe("Unexpected token [ in JSON");
+    expect(result.errors[0].message).toBe(
+      "Expected property name or '}' in JSON"
+    );
   });
 
   it("reports error accurately with mixed weird newlines", () => {
@@ -156,7 +162,9 @@ describe("JSON attribute lists", () => {
       column: 1,
       offset: 21,
     });
-    expect(result.errors[0].message).toBe("Unexpected token [ in JSON");
+    expect(result.errors[0].message).toBe(
+      "Expected property name or '}' in JSON"
+    );
   });
 
   it("allows line comments in JSON", () => {
@@ -246,6 +254,8 @@ describe("JSON attribute lists", () => {
       column: 4,
       offset: 39,
     });
-    expect(result.errors[0].message).toBe("Unexpected number in JSON");
+    expect(result.errors[0].message).toBe(
+      "Expected double-quoted property name in JSON"
+    );
   });
 });
