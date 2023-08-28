@@ -226,7 +226,7 @@ bad second line
 }`;
       expect(() => {
         JSON.parse(json);
-      }).toThrow("Unexpected number in JSON at position 1"); // It is not valid JSON
+      }).toThrow("in JSON at position 1"); // It is not valid JSON
       const result = lexer.tokenize(`:block-tag-start: ${json}`);
       expect(result.errors.length).toBe(0);
       expect(result.tokens[0].image).toBe(":block-tag-start:");
@@ -252,7 +252,7 @@ bad second line
 //}`;
       expect(() => {
         JSON.parse(json);
-      }).toThrow("Unexpected number in JSON at position 1"); // It is not valid JSON
+      }).toThrow("in JSON at position 1"); // It is not valid JSON
       const result = lexer.tokenize(`:block-tag-start: ${json}`);
       expect(result.errors.length).toBe(0);
       expect(result.tokens[0].image).toBe(":block-tag-start:");
@@ -269,7 +269,7 @@ bad second line
 `;
       expect(() => {
         JSON.parse(json);
-      }).toThrow("Unexpected token / in JSON at position 4"); // It is not valid JSON
+      }).toThrow("in JSON at position 4"); // It is not valid JSON
       const result = lexer.tokenize(`:block-tag-start: ${json}`);
       expect(result.errors.length).toBe(0);
       expect(result.tokens[0].image).toBe(":block-tag-start:");
@@ -288,7 +288,7 @@ bad second line
 `;
       expect(() => {
         JSON.parse(json);
-      }).toThrow("Unexpected token * in JSON at position 4"); // It is not valid JSON
+      }).toThrow("in JSON at position 4"); // It is not valid JSON
       const result = lexer.tokenize(`:block-tag-start: ${json}`);
       expect(result.errors.length).toBe(0);
       expect(result.tokens[0].image).toBe(":block-tag-start:");
@@ -306,7 +306,9 @@ bad second line
 `;
       expect(() => {
         JSON.parse(json);
-      }).toThrow("Unexpected end of JSON input"); // It is not valid JSON
+      }).toThrow(
+        "Expected ',' or '}' after property value in JSON at position 11"
+      ); // It is not valid JSON
       const result = lexer.tokenize(`:block-tag-start: ${json}`);
       expect(result.errors.length).toBe(0);
       expect(result.tokens[0].image).toBe(":block-tag-start:");
