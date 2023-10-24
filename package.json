@@ -43,6 +43,7 @@
     "magic-string": "^0.27",
     "memfs": "^3",
     "source-map": "^0.7",
+    "yaml": "^2.3.3",
     "yargs": "^17"
   },
   "devDependencies": {
