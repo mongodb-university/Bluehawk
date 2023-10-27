@@ -3,7 +3,7 @@ import * as yargs from "yargs";
 import { getBluehawk, loadPlugins, commandDir } from "../bluehawk";
 import { version as yargsVersion } from "yargs/package.json";
 import { version as bluehawkVersion } from "../../package.json";
-import { BluehawkConfig, getUserConfig } from "../config/config";
+// import { BluehawkConfig, getUserConfig } from "../config/config";
 
 export async function run(): Promise<void> {
   const preArgv = await yargs.option("plugin", {
@@ -22,12 +22,6 @@ export async function run(): Promise<void> {
   const plugins = await loadPlugins(preArgv.plugin);
 
   const bluehawk = await getBluehawk();
-
-  console.log("> in Run");
-
-  const configFile: BluehawkConfig = await getUserConfig();
-  console.log(configFile);
-  console.log(configFile.output);
 
   const pluginPromises = plugins.map(async (plugin) => {
     const { path, register } = plugin;

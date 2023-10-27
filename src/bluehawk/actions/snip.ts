@@ -197,6 +197,7 @@ export const formatInDocusaurus = async (
 export const snip = async (
   args: WithActionReporter<SnipArgs>
 ): Promise<void> => {
+  console.log("||| In snip: ", performance.now());
   const { paths, output, state, id, ignore, waitForListeners, reporter } = args;
   const formats =
     args.format && !Array.isArray(args.format) ? [args.format] : args.format;
