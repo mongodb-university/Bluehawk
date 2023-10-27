@@ -14,6 +14,7 @@ export interface ActionReporter {
   readonly errorCount: number;
 
   // Info
+  onActionProcessed(event: ActionProcessedEvent): void;
   onBinaryFile(event: BinaryFileEvent): void;
   onFileParsed(event: FileParsedEvent): void;
   onFileWritten(event: FileWrittenEvent): void;
@@ -51,7 +52,8 @@ export type FileEvent = {
 export type BinaryFileEvent = FileEvent;
 
 export type FileParsedEvent = FileEvent & {
-  parseResult: ParseResult;
+  parseResult?: ParseResult;
+  isConfig?: boolean;
 };
 
 export type FileWrittenEvent = FileEvent & {
@@ -89,4 +91,8 @@ export type WriteFailedEvent = FileWrittenEvent & {
 
 export type BluehawkErrorsEvent = FileEvent & {
   errors: BluehawkError[];
+};
+
+export type ActionProcessedEvent = FileEvent & {
+  name: string;
 };

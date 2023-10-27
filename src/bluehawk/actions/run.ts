@@ -1,21 +1,18 @@
 import { WithActionReporter } from "./ActionReporter";
-import { getBluehawk, snip, loadProjectPaths } from "../../bluehawk";
+import {
+  getBluehawk,
+  loadProjectPaths,
+  ConsoleActionReporter,
+  snip,
+  check,
+  copy,
+} from "../../bluehawk";
 import { BluehawkError } from "../../bluehawk/BluehawkError";
 import { ActionArgs } from "./ActionArgs";
-import { Dirent, promises as fsp } from "fs";
+import { promises as fsp } from "fs";
 import { System } from "../io/System";
 import * as Path from "path";
 import YAML from "yaml";
-
-// export interface OldBluehawkConfig {
-//   // action: "snip" | "copy" | "check";
-//   inputDirectory: string;
-//   outputDirectory: string;
-//   baseUri?: string;
-//   // ignore?: string[];
-//   // state?: string;
-//   format?: "rst" | "md" | "docusaurus"; // or arbitrary string perhaps?
-// }
 
 export interface ConfigArgs extends ActionArgs {
   configPath?: string;
@@ -40,21 +37,18 @@ export interface ConfigAction {
   ignore?: string[];
   state?: string;
   format?: "rst" | "md" | "docusaurus";
+  json?: boolean;
 }
-
-// export interface CheckResult {}
 
 export const run = async (
   args: WithActionReporter<ConfigArgs>
 ): Promise<void> => {
-  const { configPath, waitForListeners, reporter } = args;
-  const bluehawk = await getBluehawk();
-  const fileToErrorMap = new Map<string, BluehawkError[]>();
+  const { configPath, reporter } = args;
   const currentWorkingDirectory = Path.resolve(process.cwd());
   const configFileName = "bluehawk.config.yaml";
 
   let rootConfig: Config | undefined = undefined;
-  let subConfigs: Config[] = [];
+  let rootConfigPath = configPath ? configPath : undefined;
 
   // Get and parse root config file
   const parseConfigFile = async (configFilePath: string) => {
@@ -73,6 +67,7 @@ export const run = async (
 
     if (ls.includes(configFileName)) {
       const configFilePath = Path.join(directory, configFileName);
+      rootConfigPath = configFilePath;
 
       return parseConfigFile(configFilePath);
     } else if (directory == "/") {
@@ -90,16 +85,28 @@ export const run = async (
 
   // Process root config file
   if (rootConfig) {
+    reporter.onFileParsed({
+      inputPath: rootConfigPath!,
+      isConfig: true,
+    });
+
     // Run config actions
     for (let index = 0; index < rootConfig.commands.length; index++) {
-      const { action, source, destination, ignore, state, format } =
+      const { action, source, destination, ignore, state, format, json } =
         rootConfig.commands[index];
+
+      reporter.onActionProcessed({
+        inputPath: rootConfigPath!,
+        name: action,
+      });
+
+      // TODO: If error in previous command, exit with results and error.
+      // TODO: Bluehawk will currently look in all subdirectories with
+      // loadProjectPaths. Even if there are subconfig files. Maybe this
+      // is desirable?
 
       switch (action) {
         case "snip":
-          // TODO: Bluehawk will currently look in all subdirectories.
-          // Even if there are subconfig files. Maybe this is
-          // desirable?
           await snip({
             paths: [source],
             output: destination,
@@ -113,9 +120,28 @@ export const run = async (
           break;
 
         case "check":
+          await check({
+            paths: [source],
+            ignore: ignore,
+            json: json,
+            reporter,
+          });
+
           break;
 
         case "copy":
+          // await copy({
+          //   reporter,
+          //   output: outputPath,
+          //   rootPath,
+          //   waitForListeners: true,
+          // });
+
+          break;
+
+        default:
+          console.error(new Error("No action found!"));
+
           break;
       }
     }
@@ -138,6 +164,7 @@ export const run = async (
       ignores.push(...gitignores);
     } catch {
       // no gitignore -- oh well
+      // TODO: add some sensible default ignores? Like node_modules?
     }
 
     const filePaths = await loadProjectPaths({
@@ -159,12 +186,24 @@ export const run = async (
         subConfigFilePaths[index].lastIndexOf(configFileName)
       );
 
+      reporter.onFileParsed({
+        inputPath: subConfigPath,
+        isConfig: true,
+      });
+
       for (let index = 0; index < subConfig.commands.length; index++) {
-        const { action, source, destination, ignore, state, format } =
+        const { action, source, destination, ignore, state, format, json } =
           subConfig.commands[index];
         const sourceFilePath = source
           ? Path.join(subConfigPath, source)
           : subConfigPath;
+
+        reporter.onActionProcessed({
+          inputPath: rootConfigPath!,
+          name: action,
+        });
+
+        // TODO: If error in previous command, exit with results and error.
 
         switch (action) {
           case "snip":
@@ -182,6 +221,13 @@ export const run = async (
             break;
 
           case "check":
+            await check({
+              paths: [source],
+              ignore: ignore,
+              json: json,
+              reporter,
+            });
+
             break;
 
           case "copy":

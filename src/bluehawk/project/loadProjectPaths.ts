@@ -8,7 +8,6 @@ async function traverse(
   projectRoot: string,
   ignores: string[]
 ): Promise<string[]> {
-  console.log("|||||| In traverse");
   const ig = ignore();
   ig.add(ignores);
   const stats = await System.fs.lstat(absolutePath);
@@ -50,7 +49,6 @@ async function traverse(
     return await traverse(absoluteSubpath, projectRoot, [...ignores]);
   });
 
-  // console.log("Map function result for paths: ", promises);
   return (await Promise.all(promises)).flat();
 }
 
@@ -63,6 +61,6 @@ export async function loadProjectPaths(project: Project): Promise<string[]> {
     : typeof project.ignore === "string"
     ? [project.ignore]
     : [];
-  console.log("||||| In loadProjectPaths");
+
   return traverse(projectRoot, projectRoot, ignores);
 }
