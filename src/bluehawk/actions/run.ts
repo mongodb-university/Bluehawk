@@ -130,12 +130,12 @@ export const run = async (
           break;
 
         case "copy":
-          // await copy({
-          //   reporter,
-          //   output: outputPath,
-          //   rootPath,
-          //   waitForListeners: true,
-          // });
+          await copy({
+            reporter,
+            output: destination,
+            rootPath: source,
+            waitForListeners: true,
+          });
 
           break;
 
@@ -231,6 +231,13 @@ export const run = async (
             break;
 
           case "copy":
+            await copy({
+              reporter,
+              output: destination,
+              rootPath: source,
+              waitForListeners: true,
+            });
+
             break;
 
           default:

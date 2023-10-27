@@ -128,10 +128,11 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
     ++this._count.errors;
     if (this.logLevel >= LogLevel.Error) {
       console.error(
-        `file error: ${path.relative(
-          __dirname,
-          path.dirname(event.inputPath)
-        )}: ${event.error.message}`
+        `   ${chalk.red.bold("!")} file ${chalk.red.bold(
+          "error"
+        )}: ${path.relative(__dirname, path.dirname(event.inputPath))}: ${
+          event.error.message
+        }`
       );
     }
   };
@@ -140,7 +141,9 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
     ++this._count.errors;
     if (this.logLevel >= LogLevel.Error) {
       console.error(
-        `failed to write file ${path.relative(
+        `   ${chalk.red.bold("!")} ${chalk.red.bold(
+          "failed"
+        )} to write file ${path.relative(
           __dirname,
           path.dirname(event.inputPath)
         )} -> ${path.relative(__dirname, path.dirname(event.outputPath))}: ${
@@ -155,7 +158,9 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
     this._count.errors += event.errors.length;
     if (this.logLevel >= LogLevel.Error) {
       console.error(
-        `bluehawk errors on ${path.relative(
+        `   ${chalk.red.bold("!")} bluehawk ${chalk.red.bold(
+          "errors"
+        )} on ${path.relative(
           __dirname,
           path.dirname(event.inputPath)
         )}:\n${event.errors

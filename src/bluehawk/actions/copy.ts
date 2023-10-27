@@ -58,8 +58,6 @@ export const copy = async (
     return path.join(directory, name);
   };
 
-  console.log("++++++", rootPath, path.relative);
-
   const projectDirectory = !stats.isDirectory()
     ? path.dirname(rootPath)
     : rootPath;
