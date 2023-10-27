@@ -49,6 +49,10 @@ export type FileEvent = {
   inputPath: string;
 };
 
+export type ActionProcessedEvent = FileEvent & {
+  name: string;
+};
+
 export type BinaryFileEvent = FileEvent;
 
 export type FileParsedEvent = FileEvent & {
@@ -91,8 +95,4 @@ export type WriteFailedEvent = FileWrittenEvent & {
 
 export type BluehawkErrorsEvent = FileEvent & {
   errors: BluehawkError[];
-};
-
-export type ActionProcessedEvent = FileEvent & {
-  name: string;
 };

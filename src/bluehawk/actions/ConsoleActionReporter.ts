@@ -13,12 +13,16 @@ import {
   StatesFoundEvent,
   WriteFailedEvent,
 } from "./ActionReporter";
-
 import * as path from "path";
-
 import chalk from "chalk";
 
-const log = console.log;
+// TODO: move this to a "onExecuteCommand event"?
+console.log(`
+${chalk.white.bgBlue.bold(
+  `            
+  Bluehawk  
+            `
+)}`);
 
 export class ConsoleActionReporter implements ActionReporter {
   _count = {
@@ -35,13 +39,6 @@ export class ConsoleActionReporter implements ActionReporter {
     if (args?.logLevel !== undefined) {
       this.logLevel = args.logLevel;
     }
-
-    log(`
-${chalk.white.bgBlue.bold(
-  `            
-  Bluehawk  
-            `
-)}`);
   }
 
   get errorCount(): number {
@@ -51,7 +48,7 @@ ${chalk.white.bgBlue.bold(
   onBinaryFile = (event: FileEvent): void => {
     ++this._count.binaryFiles;
     if (this.logLevel >= LogLevel.Info) {
-      log(
+      console.log(
         `found binary file: ${path.relative(
           __dirname,
           path.dirname(event.inputPath)
@@ -63,13 +60,13 @@ ${chalk.white.bgBlue.bold(
   onFileParsed = (event: FileParsedEvent): void => {
     ++this._count.textFiles;
     if (this.logLevel >= LogLevel.Info && event.isConfig) {
-      log(`
+      console.log(`
 Run ${chalk.blue.bold("config")} file: ${path.relative(
         __dirname,
         path.dirname(event.inputPath)
       )}`);
     } else if (this.logLevel >= LogLevel.Info) {
-      log(
+      console.log(
         `    ${chalk.magenta("▕")} parsed file: ${path.relative(
           __dirname,
           path.dirname(event.inputPath)
@@ -81,7 +78,7 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
   onFileWritten = (event: FileWrittenEvent): void => {
     ++this._count.filesWritten;
     if (this.logLevel >= LogLevel.Info) {
-      log(
+      console.log(
         `    ${chalk.magenta("▕")} wrote ${chalk.cyan.bold(event.type)} file:
       ${chalk.cyan("▕")} Input : ${path.relative(
           __dirname,
@@ -97,7 +94,7 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
 
   onStatesFound = (event: StatesFoundEvent): void => {
     if (this.logLevel >= LogLevel.Info) {
-      log(`found states: ${event.statesFound.join(", ")}`);
+      console.log(`found states: ${event.statesFound.join(", ")}`);
     }
   };
 
@@ -187,14 +184,14 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
       this._count;
 
     if (actions) {
-      log(`Processed ${binaryFiles + textFiles} files:
+      console.log(`Processed ${binaryFiles + textFiles} files:
 - ${actions} config actions
 - ${binaryFiles} binary files
 - ${textFiles} text files
 - ${errors} errors
 - ${filesWritten} files written`);
     } else {
-      log(`Processed ${binaryFiles + textFiles} files:
+      console.log(`Processed ${binaryFiles + textFiles} files:
 - ${binaryFiles} binary files
 - ${textFiles} text files
 - ${errors} errors
