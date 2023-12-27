@@ -18,7 +18,6 @@ const commandModule: CommandModule<ActionArgs & { path?: string }, ConfigArgs> =
     async handler(args) {
       const reporter = new ConsoleActionReporter(args);
 
-      // TODO: check if path is valid pattern. Should not be more than one path.
       await run({ ...args, reporter });
       reporter.printSummary();
       process.exit(reporter.errorCount > 0 ? 1 : 0);

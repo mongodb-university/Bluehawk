@@ -1,13 +1,5 @@
 import { WithActionReporter } from "./ActionReporter";
-import {
-  getBluehawk,
-  loadProjectPaths,
-  ConsoleActionReporter,
-  snip,
-  check,
-  copy,
-} from "../../bluehawk";
-import { BluehawkError } from "../../bluehawk/BluehawkError";
+import { loadProjectPaths, snip, check, copy } from "../../bluehawk";
 import { ActionArgs } from "./ActionArgs";
 import { promises as fsp } from "fs";
 import { System } from "../io/System";
@@ -20,14 +12,6 @@ export interface ConfigArgs extends ActionArgs {
 
 export interface Config {
   commands: ConfigAction[];
-  // plugins?: ConfigPlugin[];
-  baseUri?: string;
-  subConfig?: boolean;
-  logLevel?: string;
-}
-
-export interface ConfigPlugin {
-  name: string;
 }
 
 export interface ConfigAction {
@@ -100,11 +84,6 @@ export const run = async (
         name: action,
       });
 
-      // TODO: If error in previous command, exit with results and error.
-      // TODO: Bluehawk will currently look in all subdirectories with
-      // loadProjectPaths. Even if there are subconfig files. Maybe this
-      // is desirable?
-
       switch (action) {
         case "snip":
           await snip({
@@ -140,17 +119,19 @@ export const run = async (
           break;
 
         default:
-          console.error(new Error("No action found!"));
+          console.error(new Error("No Bluehawk action found!"));
 
           break;
       }
     }
+
+    await processSubconfigFiles();
   } else {
-    console.error("No config actions found.");
-    // TODO: log error
+    console.error("No Bluehawk config actions found.");
   }
 
-  if (rootConfig.subConfig) {
+  // Look for and process config files in child directories
+  async function processSubconfigFiles() {
     const ignores: string[] = [".git"];
 
     try {
@@ -161,10 +142,22 @@ export const run = async (
       const gitignores = gitignore
         .split(/\r\n|\r|\n/)
         .filter((line) => !(line.startsWith("#") || line.trim().length == 0));
+
       ignores.push(...gitignores);
     } catch {
-      // no gitignore -- oh well
-      // TODO: add some sensible default ignores? Like node_modules?
+      const gitignores = [
+        "android",
+        "ios",
+        ".*",
+        "*.lock",
+        "gemfile",
+        "*.config.*",
+        "*.json",
+        "*.cjs",
+        "*.md",
+      ];
+
+      ignores.push(...gitignores);
     }
 
     const filePaths = await loadProjectPaths({
@@ -172,6 +165,10 @@ export const run = async (
       ignore: ignores,
     });
 
+    // Look for file paths that:
+    // - include "bluhawk.config.yaml"
+    // - do not include the current working directory + "bluhawk.config.yaml"
+    // - the last bit of the file path equals "bluhawk.config.yaml"
     const subConfigFilePaths = filePaths.filter(
       (filePath) =>
         filePath.includes(configFileName) &&
@@ -179,6 +176,7 @@ export const run = async (
         filePath.split("/").pop() == configFileName
     );
 
+    // Process each subconfig file
     for (let index = 0; index < subConfigFilePaths.length; index++) {
       const subConfig = await parseConfigFile(subConfigFilePaths[index]);
       const subConfigPath = subConfigFilePaths[index].substring(
@@ -187,10 +185,11 @@ export const run = async (
       );
 
       reporter.onFileParsed({
-        inputPath: subConfigPath,
+        inputPath: subConfigFilePaths[index],
         isConfig: true,
       });
 
+      // Run config actions
       for (let index = 0; index < subConfig.commands.length; index++) {
         const { action, source, destination, ignore, state, format, json } =
           subConfig.commands[index];
@@ -199,11 +198,9 @@ export const run = async (
           : subConfigPath;
 
         reporter.onActionProcessed({
-          inputPath: rootConfigPath!,
+          inputPath: sourceFilePath,
           name: action,
         });
-
-        // TODO: If error in previous command, exit with results and error.
 
         switch (action) {
           case "snip":

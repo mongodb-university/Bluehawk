@@ -16,7 +16,6 @@ import {
 import * as path from "path";
 import chalk from "chalk";
 
-// TODO: move this to a "onExecuteCommand event"?
 console.log(`
 ${chalk.white.bgBlue.bold(
   `            
@@ -63,13 +62,13 @@ export class ConsoleActionReporter implements ActionReporter {
       console.log(`
 Run ${chalk.blue.bold("config")} file: ${path.relative(
         __dirname,
-        path.dirname(event.inputPath)
+        event.inputPath
       )}`);
     } else if (this.logLevel >= LogLevel.Info) {
       console.log(
         `    ${chalk.magenta("▕")} parsed file: ${path.relative(
           __dirname,
-          path.dirname(event.inputPath)
+          event.inputPath
         )}`
       );
     }
@@ -80,14 +79,8 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
     if (this.logLevel >= LogLevel.Info) {
       console.log(
         `    ${chalk.magenta("▕")} wrote ${chalk.cyan.bold(event.type)} file:
-      ${chalk.cyan("▕")} Input : ${path.relative(
-          __dirname,
-          path.dirname(event.inputPath)
-        )}
-      ${chalk.cyan("▕")} Output: ${path.relative(
-          __dirname,
-          path.dirname(event.outputPath)
-        )}`
+      ${chalk.cyan("▕")} Input : ${path.relative(__dirname, event.inputPath)}
+      ${chalk.cyan("▕")} Output: ${path.relative(__dirname, event.outputPath)}`
       );
     }
   };
@@ -182,20 +175,35 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
   printSummary = (): void => {
     const { actions, binaryFiles, errors, textFiles, filesWritten } =
       this._count;
+    const success = chalk.blue("✓");
+    const failure = chalk.red("x");
+    const noResult = chalk.yellow("-");
+    const binaryMarker = binaryFiles == 0 ? noResult : success;
+    const textFilesMarker = textFiles == 0 ? noResult : success;
+    const errorsMarker = errors > 0 ? failure : success;
+    const filesWrittenMarker = filesWritten == 0 ? noResult : success;
 
     if (actions) {
-      console.log(`Processed ${binaryFiles + textFiles} files:
-- ${actions} config actions
-- ${binaryFiles} binary files
-- ${textFiles} text files
-- ${errors} errors
-- ${filesWritten} files written`);
+      console.log(`
+${chalk.white.bgBlue(" Bluehawk summary: ")}
+${success} ran ${chalk.cyan(actions)} config actions
+${binaryMarker} processed ${chalk.cyan(binaryFiles)} binary files
+${textFilesMarker} parsed ${chalk.cyan(textFiles)} text files
+${errorsMarker} logged ${chalk.cyan(errors)} errors
+${filesWrittenMarker} wrote ${chalk.cyan(filesWritten)} files
+
+  Number of files processed: ${chalk.cyan(binaryFiles + textFiles)}
+`);
     } else {
-      console.log(`Processed ${binaryFiles + textFiles} files:
-- ${binaryFiles} binary files
-- ${textFiles} text files
-- ${errors} errors
-- ${filesWritten} files written`);
+      console.log(`
+${chalk.white.bgBlue(" Bluehawk summary: ")}
+${binaryMarker} processed ${chalk.cyan(binaryFiles)} binary files
+${textFilesMarker} parsed ${chalk.cyan(textFiles)} text files
+${errorsMarker} logged ${chalk.cyan(errors)} errors
+${filesWrittenMarker} wrote ${chalk.cyan(filesWritten)} files
+
+  Number of files processed: ${chalk.cyan(binaryFiles + textFiles)}
+`);
     }
   };
 }
