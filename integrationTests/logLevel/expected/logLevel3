@@ -1,11 +1,19 @@
-parsed file: path/to/project/input/normalFile.txt
-bluehawk errors on path/to/project/input/sample.txt:
-(parser) Line 11:1 - 11:1(162) blockTag: After Newline, expected TagEnd but found EOF
-bluehawk errors on path/to/project/input/sample.txt:
-(parser) Line 11:1 - 11:1(162) blockTag: After Newline, expected TagEnd but found EOF
+
+            
+  Bluehawk  
+            
+    ▕ parsed file: ../../../../integrationTests/logLevel/input/normalFile.txt
+   ! bluehawk errors on ../../../../integrationTests/logLevel/input/sample.txt:
+        (parser) Line 11:1 - 11:1(162) blockTag: After Newline, expected TagEnd but found EOF
+   ! bluehawk errors on ../../../../integrationTests/logLevel/input/sample.txt:
+        (parser) Line 11:1 - 11:1(162) blockTag: After Newline, expected TagEnd but found EOF
 state not found: notfound
-Processed 3 files:
-- 0 binary files
-- 3 text files
-- 2 errors
-- 0 files written
+
+ Bluehawk summary: 
+- processed 0 binary files
+✓ parsed 3 text files
+x logged 2 errors
+- wrote 0 files
+
+  Number of files processed: 3
+

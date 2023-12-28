@@ -150,10 +150,8 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
       console.error(
         `   ${chalk.red.bold("!")} bluehawk ${chalk.red.bold(
           "errors"
-        )} on ${path.relative(
-          __dirname,
-          path.dirname(event.inputPath)
-        )}:\n${event.errors
+        )} on ${path.relative(__dirname, event.inputPath)}:
+        ${event.errors
           .map((error) => {
             return `(${error.component}) Line ${error.location.line}:${error.location.column} - ${error.message}`;
           })
