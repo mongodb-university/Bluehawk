@@ -26,7 +26,7 @@ Represents a file either before or after processing.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:100](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L100)
+[src/bluehawk/Document.ts:100](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L100)
 
 ## Properties
 
@@ -36,7 +36,7 @@ Represents a file either before or after processing.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:167](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L167)
+[src/bluehawk/Document.ts:167](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L167)
 
 ___
 
@@ -51,7 +51,7 @@ These do not affect the identity of the document.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:70](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L70)
+[src/bluehawk/Document.ts:70](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L70)
 
 ___
 
@@ -67,7 +67,7 @@ A file at one path may result in multiple output files after processing
 
 #### Defined in
 
-[src/bluehawk/Document.ts:41](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L41)
+[src/bluehawk/Document.ts:41](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L41)
 
 ___
 
@@ -88,7 +88,7 @@ with modifiers.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:62](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L62)
+[src/bluehawk/Document.ts:62](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L62)
 
 ___
 
@@ -100,7 +100,7 @@ The original path of the document.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:52](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L52)
+[src/bluehawk/Document.ts:52](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L52)
 
 ___
 
@@ -113,7 +113,7 @@ https://www.npmjs.com/package/magic-string for details.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:47](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L47)
+[src/bluehawk/Document.ts:47](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L47)
 
 ## Accessors
 
@@ -129,7 +129,7 @@ Returns the name of the file with the file extension, if any.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:82](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L82)
+[src/bluehawk/Document.ts:82](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L82)
 
 ___
 
@@ -145,7 +145,7 @@ Returns the path of the directory containing this file based on the path.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:96](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L96)
+[src/bluehawk/Document.ts:96](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L96)
 
 ___
 
@@ -161,7 +161,7 @@ Returns the file extension, if any, including the dot.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:89](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L89)
+[src/bluehawk/Document.ts:89](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L89)
 
 ___
 
@@ -177,7 +177,7 @@ Returns the name of the file minus the file extension.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:75](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L75)
+[src/bluehawk/Document.ts:75](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L75)
 
 ## Methods
 
@@ -204,7 +204,7 @@ are finalized.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:136](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L136)
+[src/bluehawk/Document.ts:136](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L136)
 
 ___
 
@@ -224,7 +224,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/Document.ts:126](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L126)
+[src/bluehawk/Document.ts:126](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L126)
 
 ___
 
@@ -248,4 +248,4 @@ instance.
 
 #### Defined in
 
-[src/bluehawk/Document.ts:16](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Document.ts#L16)
+[src/bluehawk/Document.ts:16](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Document.ts#L16)

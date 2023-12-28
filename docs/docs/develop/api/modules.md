@@ -11,20 +11,29 @@ custom_edit_url: null
 - [getBluehawk](namespaces/getBluehawk)
 - [tokens](namespaces/tokens)
 
+## Enumerations
+
+- [LogLevel](enums/LogLevel)
+
 ## Classes
 
 - [Bluehawk](classes/Bluehawk)
+- [ConsoleActionReporter](classes/ConsoleActionReporter)
 - [Document](classes/Document)
 - [RootParser](classes/RootParser)
 
 ## Interfaces
 
 - [ActionArgs](interfaces/ActionArgs)
+- [ActionReporter](interfaces/ActionReporter)
 - [AnyTag](interfaces/AnyTag)
 - [BlockCommentTokenConfiguration](interfaces/BlockCommentTokenConfiguration)
 - [BlockTagNode](interfaces/BlockTagNode)
 - [CheckArgs](interfaces/CheckArgs)
 - [CheckResult](interfaces/CheckResult)
+- [Config](interfaces/Config)
+- [ConfigAction](interfaces/ConfigAction)
+- [ConfigArgs](interfaces/ConfigArgs)
 - [CopyArgs](interfaces/CopyArgs)
 - [EmphasizeRange](interfaces/EmphasizeRange)
 - [EmphasizeSourceAttributes](interfaces/EmphasizeSourceAttributes)
@@ -47,13 +56,99 @@ custom_edit_url: null
 
 ## Type aliases
 
+### ActionProcessedEvent
+
+Ƭ **ActionProcessedEvent**: [`FileEvent`](modules#fileevent) & { `name`: `string`  }
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:52](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L52)
+
+___
+
 ### AnyTagNode
 
 Ƭ **AnyTagNode**: [`LineTagNode`](interfaces/LineTagNode) \| [`BlockTagNode`](interfaces/BlockTagNode)
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:64](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L64)
+[src/bluehawk/parser/TagNode.ts:63](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/TagNode.ts#L63)
+
+___
+
+### BinaryFileEvent
+
+Ƭ **BinaryFileEvent**: [`FileEvent`](modules#fileevent)
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:56](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L56)
+
+___
+
+### BluehawkErrorsEvent
+
+Ƭ **BluehawkErrorsEvent**: [`FileEvent`](modules#fileevent) & { `errors`: `BluehawkError`[]  }
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:96](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L96)
+
+___
+
+### CopyArgsCli
+
+Ƭ **CopyArgsCli**: `Omit`<[`CopyArgs`](interfaces/CopyArgs), ``"rename"``\> & { `rename?`: `string`  }
+
+#### Defined in
+
+[src/bluehawk/actions/copy.ts:22](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/copy.ts#L22)
+
+___
+
+### FileErrorEvent
+
+Ƭ **FileErrorEvent**: [`FileEvent`](modules#fileevent) & { `error`: `Error`  }
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:88](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L88)
+
+___
+
+### FileEvent
+
+Ƭ **FileEvent**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `inputPath` | `string` |
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:48](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L48)
+
+___
+
+### FileParsedEvent
+
+Ƭ **FileParsedEvent**: [`FileEvent`](modules#fileevent) & { `isConfig?`: `boolean` ; `parseResult?`: [`ParseResult`](interfaces/ParseResult)  }
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:58](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L58)
+
+___
+
+### FileWrittenEvent
+
+Ƭ **FileWrittenEvent**: [`FileEvent`](modules#fileevent) & { `outputPath`: `string` ; `type`: ``"text"`` \| ``"binary"``  }
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:63](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L63)
 
 ___
 
@@ -69,7 +164,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:85](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L85)
+[src/bluehawk/tags/Tag.ts:115](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/Tag.ts#L115)
 
 ___
 
@@ -85,7 +180,24 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:101](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L101)
+[src/bluehawk/tags/Tag.ts:131](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/Tag.ts#L131)
+
+___
+
+### IdsUnusedEvent
+
+Ƭ **IdsUnusedEvent**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `ids` | `string`[] |
+| `paths` | `string`[] |
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:79](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L79)
 
 ___
 
@@ -109,7 +221,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/processor/Processor.ts:102](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/processor/Processor.ts#L102)
+[src/bluehawk/processor/Processor.ts:102](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/processor/Processor.ts#L102)
 
 ___
 
@@ -119,7 +231,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:34](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L34)
+[src/bluehawk/Plugin.ts:34](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Plugin.ts#L34)
 
 ___
 
@@ -129,7 +241,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:111](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L111)
+[src/bluehawk/tags/Tag.ts:141](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/Tag.ts#L141)
 
 ___
 
@@ -153,7 +265,17 @@ ___
 
 #### Defined in
 
-[src/bluehawk/OnBinaryFileFunction.ts:1](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/OnBinaryFileFunction.ts#L1)
+[src/bluehawk/OnBinaryFileFunction.ts:1](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/OnBinaryFileFunction.ts#L1)
+
+___
+
+### ParserNotFoundEvent
+
+Ƭ **ParserNotFoundEvent**: [`FileEvent`](modules#fileevent) & { `error`: `Error`  }
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:84](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L84)
 
 ___
 
@@ -189,7 +311,70 @@ You can then call `bluehawk --plugin /path/to/MyPlugin.js` to use the plugin.
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:26](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L26)
+[src/bluehawk/Plugin.ts:26](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Plugin.ts#L26)
+
+___
+
+### StateNotFoundEvent
+
+Ƭ **StateNotFoundEvent**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `paths` | `string`[] |
+| `state` | `string` |
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:74](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L74)
+
+___
+
+### StatesFoundEvent
+
+Ƭ **StatesFoundEvent**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `action` | `string` |
+| `paths` | `string`[] |
+| `statesFound` | `string`[] |
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:68](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L68)
+
+___
+
+### WithActionReporter
+
+Ƭ **WithActionReporter**<`T`\>: `T` & { `reporter`: [`ActionReporter`](interfaces/ActionReporter)  }
+
+Creates a type with a required ActionReporter field.
+
+#### Type parameters
+
+| Name |
+| :------ |
+| `T` |
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:7](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L7)
+
+___
+
+### WriteFailedEvent
+
+Ƭ **WriteFailedEvent**: [`FileWrittenEvent`](modules#filewrittenevent) & { `error`: `Error`  }
+
+#### Defined in
+
+[src/bluehawk/actions/ActionReporter.ts:92](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionReporter.ts#L92)
 
 ## Variables
 
@@ -199,7 +384,7 @@ You can then call `bluehawk --plugin /path/to/MyPlugin.js` to use the plugin.
 
 #### Defined in
 
-[src/bluehawk/tags/EmphasizeTag.ts:19](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/EmphasizeTag.ts#L19)
+[src/bluehawk/tags/EmphasizeTag.ts:19](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/EmphasizeTag.ts#L19)
 
 ___
 
@@ -209,7 +394,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:86](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L86)
+[src/bluehawk/tags/Tag.ts:116](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/Tag.ts#L116)
 
 ___
 
@@ -219,7 +404,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:102](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L102)
+[src/bluehawk/tags/Tag.ts:132](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/Tag.ts#L132)
 
 ___
 
@@ -229,7 +414,17 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:112](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L112)
+[src/bluehawk/tags/Tag.ts:142](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/Tag.ts#L142)
+
+___
+
+### RENAME\_ERR
+
+• **RENAME\_ERR**: ``"Rename flag does not support specifying a path argument. If you would like to see this functionality, please submit an issue or pull request."``
+
+#### Defined in
+
+[src/bluehawk/actions/copy.ts:24](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/copy.ts#L24)
 
 ___
 
@@ -239,7 +434,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/RemoveTag.ts:3](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/RemoveTag.ts#L3)
+[src/bluehawk/tags/RemoveTag.ts:3](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/RemoveTag.ts#L3)
 
 ___
 
@@ -249,7 +444,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/ReplaceTag.ts:10](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/ReplaceTag.ts#L10)
+[src/bluehawk/tags/ReplaceTag.ts:10](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/ReplaceTag.ts#L10)
 
 ___
 
@@ -259,7 +454,17 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/SnippetTag.ts:65](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/SnippetTag.ts#L65)
+[src/bluehawk/tags/SnippetTag.ts:65](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/SnippetTag.ts#L65)
+
+___
+
+### StateRemoveTag
+
+• **StateRemoveTag**: [`AnyTag`](interfaces/AnyTag)
+
+#### Defined in
+
+[src/bluehawk/tags/StateRemoveTag.ts:9](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/StateRemoveTag.ts#L9)
 
 ___
 
@@ -269,7 +474,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/StateTag.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/StateTag.ts#L9)
+[src/bluehawk/tags/StateTag.ts:10](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/StateTag.ts#L10)
 
 ___
 
@@ -281,14 +486,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `fs` | typeof `promises` |
+| `fs` | `__module` |
 | `useJsonFs` | (`directoryJson`: `DirectoryJSON`) => `void` |
 | `useMemfs` | () => `void` |
 | `useRealfs` | () => `void` |
 
 #### Defined in
 
-[src/bluehawk/io/System.ts:7](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/io/System.ts#L7)
+[src/bluehawk/io/System.ts:7](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/io/System.ts#L7)
 
 ___
 
@@ -298,7 +503,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/UncommentTag.ts:6](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/UncommentTag.ts#L6)
+[src/bluehawk/tags/UncommentTag.ts:6](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/UncommentTag.ts#L6)
 
 ___
 
@@ -324,7 +529,7 @@ Returns a standard, shared Bluehawk instance.
 
 #### Defined in
 
-[src/bluehawk/getBluehawk.ts:22](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/getBluehawk.ts#L22)
+[src/bluehawk/getBluehawk.ts:23](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/getBluehawk.ts#L23)
 
 ## Functions
 
@@ -336,7 +541,7 @@ Returns a standard, shared Bluehawk instance.
 
 | Name | Type |
 | :------ | :------ |
-| `args` | `WithActionReporter`<[`CheckArgs`](interfaces/CheckArgs)\> |
+| `args` | [`WithActionReporter`](modules#withactionreporter)<[`CheckArgs`](interfaces/CheckArgs)\> |
 
 #### Returns
 
@@ -344,7 +549,7 @@ Returns a standard, shared Bluehawk instance.
 
 #### Defined in
 
-[src/bluehawk/actions/check.ts:15](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/check.ts#L15)
+[src/bluehawk/actions/check.ts:15](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/check.ts#L15)
 
 ___
 
@@ -375,7 +580,30 @@ See yargs.commandDir().
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:106](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L106)
+[src/bluehawk/Plugin.ts:106](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Plugin.ts#L106)
+
+___
+
+### conditionalForkWithState
+
+▸ `Const` **conditionalForkWithState**(`request`): `void`
+
+If we are not processing in a state file, fork a file for each
+state listed in our tag node.
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `request` | [`ProcessRequest`](interfaces/ProcessRequest)<[`BlockTagNode`](interfaces/BlockTagNode)\> |
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[src/bluehawk/tags/StateTag.ts:31](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/StateTag.ts#L31)
 
 ___
 
@@ -387,7 +615,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `args` | `WithActionReporter`<[`CopyArgs`](interfaces/CopyArgs)\> |
+| `args` | [`WithActionReporter`](modules#withactionreporter)<[`CopyArgs`](interfaces/CopyArgs)\> |
 
 #### Returns
 
@@ -395,7 +623,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:20](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/copy.ts#L20)
+[src/bluehawk/actions/copy.ts:27](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/copy.ts#L27)
 
 ___
 
@@ -410,7 +638,7 @@ ___
 | `__namedParameters` | `Object` |
 | `__namedParameters.format` | `string` |
 | `__namedParameters.output` | `string` |
-| `__namedParameters.reporter` | `ActionReporter` |
+| `__namedParameters.reporter` | [`ActionReporter`](interfaces/ActionReporter) |
 | `__namedParameters.result` | `ProcessResult` |
 
 #### Returns
@@ -419,7 +647,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:20](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L20)
+[src/bluehawk/actions/snip.ts:20](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/snip.ts#L20)
 
 ___
 
@@ -445,7 +673,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/flatten.ts:2](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/flatten.ts#L2)
+[src/bluehawk/parser/flatten.ts:2](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/flatten.ts#L2)
 
 ___
 
@@ -465,7 +693,27 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:125](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L125)
+[src/bluehawk/actions/snip.ts:159](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/snip.ts#L159)
+
+___
+
+### formatInMd
+
+▸ `Const` **formatInMd**(`result`): `undefined` \| `string`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `result` | `ProcessResult` |
+
+#### Returns
+
+`undefined` \| `string`
+
+#### Defined in
+
+[src/bluehawk/actions/snip.ts:146](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/snip.ts#L146)
 
 ___
 
@@ -485,7 +733,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:57](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L57)
+[src/bluehawk/actions/snip.ts:75](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/snip.ts#L75)
 
 ___
 
@@ -497,7 +745,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `args` | `WithActionReporter`<[`ListStatesArgs`](interfaces/ListStatesArgs)\> |
+| `args` | [`WithActionReporter`](modules#withactionreporter)<[`ListStatesArgs`](interfaces/ListStatesArgs)\> |
 
 #### Returns
 
@@ -505,7 +753,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/listStates.ts:12](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/listStates.ts#L12)
+[src/bluehawk/actions/listStates.ts:12](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/listStates.ts#L12)
 
 ___
 
@@ -525,7 +773,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/listTags.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/listTags.ts#L9)
+[src/bluehawk/actions/listTags.ts:9](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/listTags.ts#L9)
 
 ___
 
@@ -547,7 +795,7 @@ Load the given plugin(s).
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:71](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L71)
+[src/bluehawk/Plugin.ts:71](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Plugin.ts#L71)
 
 ___
 
@@ -567,7 +815,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/project/loadProjectPaths.ts:56](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/project/loadProjectPaths.ts#L56)
+[src/bluehawk/project/loadProjectPaths.ts:57](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/project/loadProjectPaths.ts#L57)
 
 ___
 
@@ -589,7 +837,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makeBlockCommentTokens.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/makeBlockCommentTokens.ts#L9)
+[src/bluehawk/parser/lexer/makeBlockCommentTokens.ts:9](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/lexer/makeBlockCommentTokens.ts#L9)
 
 ___
 
@@ -607,7 +855,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `tag` | `Tag` & { `attributesSchema`: `JSONSchemaType`<`AttributesType`, ``false``\> ; `process`: (`request`: [`ProcessRequest`](interfaces/ProcessRequest)<[`AnyTagNode`](modules#anytagnode)\>) => `NotPromise`  } |
+| `tag` | `Tag` & { `attributesSchema`: `UncheckedJSONSchemaType`<`AttributesType`, ``false``\> ; `process`: (`request`: [`ProcessRequest`](interfaces/ProcessRequest)<[`AnyTagNode`](modules#anytagnode)\>) => `NotPromise`  } |
 
 #### Returns
 
@@ -615,7 +863,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:67](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L67)
+[src/bluehawk/tags/Tag.ts:93](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/Tag.ts#L93)
 
 ___
 
@@ -633,7 +881,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `tag` | `Tag` & { `attributesSchema`: `JSONSchemaType`<`AttributesType`, ``false``\> ; `process`: (`request`: [`ProcessRequest`](interfaces/ProcessRequest)<[`BlockTagNode`](interfaces/BlockTagNode)\>) => `NotPromise`  } |
+| `tag` | `Tag` & { `attributesSchema`: `UncheckedJSONSchemaType`<`AttributesType`, ``false``\> ; `process`: (`request`: [`ProcessRequest`](interfaces/ProcessRequest)<[`BlockTagNode`](interfaces/BlockTagNode)\>) => `NotPromise`  } |
 
 #### Returns
 
@@ -641,7 +889,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:34](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L34)
+[src/bluehawk/tags/Tag.ts:60](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/Tag.ts#L60)
 
 ___
 
@@ -662,7 +910,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/visitor/makeCstVisitor.ts:44](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/visitor/makeCstVisitor.ts#L44)
+[src/bluehawk/parser/visitor/makeCstVisitor.ts:44](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/visitor/makeCstVisitor.ts#L44)
 
 ___
 
@@ -682,7 +930,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makeLineCommentToken.ts:4](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/makeLineCommentToken.ts#L4)
+[src/bluehawk/parser/lexer/makeLineCommentToken.ts:4](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/lexer/makeLineCommentToken.ts#L4)
 
 ___
 
@@ -702,7 +950,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/Tag.ts:51](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/Tag.ts#L51)
+[src/bluehawk/tags/Tag.ts:77](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/Tag.ts#L77)
 
 ___
 
@@ -722,7 +970,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/makeParser.ts:27](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/makeParser.ts#L27)
+[src/bluehawk/parser/makeParser.ts:29](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/makeParser.ts#L29)
 
 ___
 
@@ -749,7 +997,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makePayloadPattern.ts:20](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/makePayloadPattern.ts#L20)
+[src/bluehawk/parser/lexer/makePayloadPattern.ts:20](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/lexer/makePayloadPattern.ts#L20)
 
 ___
 
@@ -771,7 +1019,29 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/makePushParserTokens.ts:19](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/makePushParserTokens.ts#L19)
+[src/bluehawk/parser/lexer/makePushParserTokens.ts:19](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/lexer/makePushParserTokens.ts#L19)
+
+___
+
+### mapShorthandArgsToAttributes
+
+▸ **mapShorthandArgsToAttributes**(`__namedParameters`): `void`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `__namedParameters` | `Object` |
+| `__namedParameters.shorthandArgsAttributeName?` | `string` |
+| `__namedParameters.tagNode` | [`AnyTagNode`](modules#anytagnode) |
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[src/bluehawk/tags/Tag.ts:147](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/Tag.ts#L147)
 
 ___
 
@@ -792,7 +1062,27 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/removeMetaRange.ts:25](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/removeMetaRange.ts#L25)
+[src/bluehawk/tags/removeMetaRange.ts:25](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/removeMetaRange.ts#L25)
+
+___
+
+### run
+
+▸ `Const` **run**(`args`): `Promise`<`void`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `args` | [`WithActionReporter`](modules#withactionreporter)<[`ConfigArgs`](interfaces/ConfigArgs)\> |
+
+#### Returns
+
+`Promise`<`void`\>
+
+#### Defined in
+
+[src/bluehawk/actions/run.ts:27](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/run.ts#L27)
 
 ___
 
@@ -804,7 +1094,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `args` | `WithActionReporter`<[`SnipArgs`](interfaces/SnipArgs)\> |
+| `args` | [`WithActionReporter`](modules#withactionreporter)<[`SnipArgs`](interfaces/SnipArgs)\> |
 
 #### Returns
 
@@ -812,7 +1102,33 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/snip.ts:164](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/snip.ts#L164)
+[src/bluehawk/actions/snip.ts:197](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/snip.ts#L197)
+
+___
+
+### withConfigOption
+
+▸ **withConfigOption**<`T`\>(`yargs`): `Argv`<`T` & { `configPath?`: `string`  }\>
+
+#### Type parameters
+
+| Name |
+| :------ |
+| `T` |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `yargs` | `Argv`<`T`\> |
+
+#### Returns
+
+`Argv`<`T` & { `configPath?`: `string`  }\>
+
+#### Defined in
+
+[src/bluehawk/options.ts:103](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/options.ts#L103)
 
 ___
 
@@ -838,7 +1154,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:58](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L58)
+[src/bluehawk/options.ts:68](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/options.ts#L68)
 
 ___
 
@@ -864,7 +1180,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:49](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L49)
+[src/bluehawk/options.ts:59](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/options.ts#L59)
 
 ___
 
@@ -890,7 +1206,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:28](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L28)
+[src/bluehawk/options.ts:28](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/options.ts#L28)
 
 ___
 
@@ -916,7 +1232,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:72](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L72)
+[src/bluehawk/options.ts:82](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/options.ts#L82)
 
 ___
 
@@ -942,7 +1258,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:82](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L82)
+[src/bluehawk/options.ts:92](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/options.ts#L92)
 
 ___
 
@@ -968,7 +1284,33 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:16](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L16)
+[src/bluehawk/options.ts:16](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/options.ts#L16)
+
+___
+
+### withRenameOption
+
+▸ **withRenameOption**<`T`\>(`yargs`): `Argv`<`T` & { `rename?`: `string`  }\>
+
+#### Type parameters
+
+| Name |
+| :------ |
+| `T` |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `yargs` | `Argv`<`T`\> |
+
+#### Returns
+
+`Argv`<`T` & { `rename?`: `string`  }\>
+
+#### Defined in
+
+[src/bluehawk/options.ts:49](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/options.ts#L49)
 
 ___
 
@@ -994,4 +1336,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/options.ts:39](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/options.ts#L39)
+[src/bluehawk/options.ts:39](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/options.ts#L39)

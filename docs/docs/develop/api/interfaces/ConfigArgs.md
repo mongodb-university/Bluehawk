@@ -1,7 +1,7 @@
 ---
-id: "CheckArgs"
-title: "Interface: CheckArgs"
-sidebar_label: "CheckArgs"
+id: "ConfigArgs"
+title: "Interface: ConfigArgs"
+sidebar_label: "ConfigArgs"
 sidebar_position: 0
 custom_edit_url: null
 ---
@@ -10,27 +10,17 @@ custom_edit_url: null
 
 - [`ActionArgs`](ActionArgs)
 
-  ↳ **`CheckArgs`**
+  ↳ **`ConfigArgs`**
 
 ## Properties
 
-### ignore
+### configPath
 
-• `Optional` **ignore**: `string` \| `string`[]
-
-#### Defined in
-
-[src/bluehawk/actions/check.ts:9](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/check.ts#L9)
-
-___
-
-### json
-
-• `Optional` **json**: `boolean`
+• `Optional` **configPath**: `string`
 
 #### Defined in
 
-[src/bluehawk/actions/check.ts:10](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/check.ts#L10)
+[src/bluehawk/actions/run.ts:10](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/run.ts#L10)
 
 ___
 
@@ -45,16 +35,6 @@ ___
 #### Defined in
 
 [src/bluehawk/actions/ActionArgs.ts:3](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionArgs.ts#L3)
-
-___
-
-### paths
-
-• **paths**: `string`[]
-
-#### Defined in
-
-[src/bluehawk/actions/check.ts:8](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/check.ts#L8)
 
 ___
 

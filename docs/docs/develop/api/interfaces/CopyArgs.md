@@ -20,13 +20,13 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:12](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/copy.ts#L12)
+[src/bluehawk/actions/copy.ts:12](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/copy.ts#L12)
 
 ___
 
 ### logLevel
 
-• `Optional` **logLevel**: `LogLevel`
+• `Optional` **logLevel**: [`LogLevel`](../enums/LogLevel)
 
 #### Inherited from
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:3](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L3)
+[src/bluehawk/actions/ActionArgs.ts:3](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionArgs.ts#L3)
 
 ___
 
@@ -44,7 +44,17 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:10](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/copy.ts#L10)
+[src/bluehawk/actions/copy.ts:10](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/copy.ts#L10)
+
+___
+
+### rename
+
+• `Optional` **rename**: `Record`<`string`, `string`\>
+
+#### Defined in
+
+[src/bluehawk/actions/copy.ts:13](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/copy.ts#L13)
 
 ___
 
@@ -54,7 +64,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/copy.ts#L9)
+[src/bluehawk/actions/copy.ts:9](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/copy.ts#L9)
 
 ___
 
@@ -64,7 +74,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:11](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/copy.ts#L11)
+[src/bluehawk/actions/copy.ts:11](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/copy.ts#L11)
 
 ___
 
@@ -78,7 +88,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:4](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L4)
+[src/bluehawk/actions/ActionArgs.ts:4](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionArgs.ts#L4)
 
 ## Methods
 
@@ -100,4 +110,4 @@ Hook for additional work after a binary file is processed.
 
 #### Defined in
 
-[src/bluehawk/actions/copy.ts:17](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/copy.ts#L17)
+[src/bluehawk/actions/copy.ts:18](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/copy.ts#L18)

@@ -14,19 +14,21 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/makeParser.ts:15](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/makeParser.ts#L15)
+[src/bluehawk/parser/makeParser.ts:17](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/makeParser.ts#L17)
 
 ## Methods
 
 ### parse
 
-▸ **parse**(`source`): [`ParseResult`](ParseResult)
+▸ **parse**(`args`): [`ParseResult`](ParseResult)
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `source` | [`Document`](../classes/Document) |
+| `args` | `Object` |
+| `args.source` | [`Document`](../classes/Document) |
+| `args.tagProcessors?` | `TagProcessors` |
 
 #### Returns
 
@@ -34,4 +36,4 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/makeParser.ts:16](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/makeParser.ts#L16)
+[src/bluehawk/parser/makeParser.ts:18](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/makeParser.ts#L18)
