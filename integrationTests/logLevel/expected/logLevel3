@@ -2,7 +2,7 @@
             
   Bluehawk  
             
-    ▕ parsed file: ../../../../integrationTests/logLevel/input/normalFile.txt
+  ▕ parsed file: ../../../../integrationTests/logLevel/input/normalFile.txt
    ! bluehawk errors on ../../../../integrationTests/logLevel/input/sample.txt:
         (parser) Line 11:1 - 11:1(162) blockTag: After Newline, expected TagEnd but found EOF
    ! bluehawk errors on ../../../../integrationTests/logLevel/input/sample.txt:
