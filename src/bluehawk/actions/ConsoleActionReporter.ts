@@ -66,7 +66,7 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
       )}`);
     } else if (this.logLevel >= LogLevel.Info) {
       console.log(
-        `    ${chalk.magenta("▕")} parsed file: ${path.relative(
+        `  ${chalk.magenta("▕")} parsed file: ${path.relative(
           __dirname,
           event.inputPath
         )}`
@@ -78,9 +78,9 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
     ++this._count.filesWritten;
     if (this.logLevel >= LogLevel.Info) {
       console.log(
-        `    ${chalk.magenta("▕")} wrote ${chalk.cyan.bold(event.type)} file:
-      ${chalk.cyan("▕")} Input : ${path.relative(__dirname, event.inputPath)}
-      ${chalk.cyan("▕")} Output: ${path.relative(__dirname, event.outputPath)}`
+        `  ${chalk.magenta("▕")} wrote ${chalk.cyan.bold(event.type)} file:
+    ${chalk.cyan("▕")} Input : ${path.relative(__dirname, event.inputPath)}
+    ${chalk.cyan("▕")} Output: ${path.relative(__dirname, event.outputPath)}`
       );
     }
   };
@@ -165,7 +165,7 @@ Run ${chalk.blue.bold("config")} file: ${path.relative(
 
     if (this.logLevel >= LogLevel.Info) {
       console.warn(
-        `${chalk.blue("▕")}  process ${chalk.magenta.bold(event.name)} command`
+        `${chalk.blue("▕")} process ${chalk.magenta.bold(event.name)} command`
       );
     }
   };
