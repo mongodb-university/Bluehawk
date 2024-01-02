@@ -20,7 +20,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/actions/check.ts:9](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/check.ts#L9)
+[src/bluehawk/actions/check.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/check.ts#L9)
 
 ___
 
@@ -30,13 +30,13 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/check.ts:10](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/check.ts#L10)
+[src/bluehawk/actions/check.ts:10](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/check.ts#L10)
 
 ___
 
 ### logLevel
 
-• `Optional` **logLevel**: [`LogLevel`](../enums/LogLevel)
+• `Optional` **logLevel**: `LogLevel`
 
 #### Inherited from
 
@@ -44,7 +44,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:3](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionArgs.ts#L3)
+[src/bluehawk/actions/ActionArgs.ts:3](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L3)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/check.ts:8](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/check.ts#L8)
+[src/bluehawk/actions/check.ts:8](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/check.ts#L8)
 
 ___
 
@@ -68,4 +68,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:4](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionArgs.ts#L4)
+[src/bluehawk/actions/ActionArgs.ts:4](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L4)

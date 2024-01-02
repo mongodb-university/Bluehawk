@@ -56,43 +56,6 @@ Generates non-zero output if processing any input files generates a Bluehawk
 error, zero output otherwise. Does not generate any files: instead, `check`
 outputs directly to the command line.
 
-### Run
-
-```
-bluehawk run
-```
-
-Use YAML config files to define and orcestrate bluehawk commands. Supports
-multiple config files that define different command behavior in child
-directories.
-
-Optionally, you can pass a `--path` flag to point Bluehawk to a specific config
-file.
-
-```
-bluehawk run --path <path-to-config-file>
-```
-
-The YAML config file should contain an array of objects. Each object represents a
-Bluehawk CLI most commands require the following properties:
-
-- `command`: The CLI command. Currently, `snip`, `copy`, and `check` are supported.
-- `source`: The source (input) file or directory for the command.
-- `destination`: The destination (output) directory for the command.
-
-Depending on the Bluehawk CLI command, you can add more properties to your
-YAML definitions. For example, you can add a `format` property to `snip` commands.
-
-Here is a full list of supported properties:
-
-- `command`
-- `source`
-- `destination`
-- `ignore`
-- `state`
-- `format`
-- `json`
-
 ## Flags
 
 You can use flags to tweak the output of Bluehawk.

@@ -15,7 +15,7 @@ export interface Config {
 }
 
 export interface ConfigAction {
-  command: "snip" | "copy" | "check";
+  action: "snip" | "copy" | "check";
   source: string;
   destination: string;
   ignore?: string[];
@@ -76,15 +76,15 @@ export const run = async (
 
     // Run config actions
     for (let index = 0; index < rootConfig.commands.length; index++) {
-      const { command, source, destination, ignore, state, format, json } =
+      const { action, source, destination, ignore, state, format, json } =
         rootConfig.commands[index];
 
       reporter.onActionProcessed({
         inputPath: rootConfigPath!,
-        name: command,
+        name: action,
       });
 
-      switch (command) {
+      switch (action) {
         case "snip":
           await snip({
             paths: [source],
@@ -119,7 +119,7 @@ export const run = async (
           break;
 
         default:
-          console.error(new Error("No Bluehawk command found!"));
+          console.error(new Error("No Bluehawk action found!"));
 
           break;
       }
@@ -127,7 +127,7 @@ export const run = async (
 
     await processSubconfigFiles();
   } else {
-    console.error("No Bluehawk config commands found.");
+    console.error("No Bluehawk config actions found.");
   }
 
   // Look for and process config files in child directories
@@ -189,9 +189,9 @@ export const run = async (
         isConfig: true,
       });
 
-      // Run config commands
+      // Run config actions
       for (let index = 0; index < subConfig.commands.length; index++) {
-        const { command, source, destination, ignore, state, format, json } =
+        const { action, source, destination, ignore, state, format, json } =
           subConfig.commands[index];
         const sourceFilePath = source
           ? Path.join(subConfigPath, source)
@@ -199,10 +199,10 @@ export const run = async (
 
         reporter.onActionProcessed({
           inputPath: sourceFilePath,
-          name: command,
+          name: action,
         });
 
-        switch (command) {
+        switch (action) {
           case "snip":
             await snip({
               paths: [sourceFilePath],
@@ -238,7 +238,7 @@ export const run = async (
             break;
 
           default:
-            console.error(new Error("No command found!"));
+            console.error(new Error("No action found!"));
 
             break;
         }

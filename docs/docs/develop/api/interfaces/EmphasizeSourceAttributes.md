@@ -14,4 +14,4 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/tags/EmphasizeTag.ts:16](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/tags/EmphasizeTag.ts#L16)
+[src/bluehawk/tags/EmphasizeTag.ts:16](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/EmphasizeTag.ts#L16)

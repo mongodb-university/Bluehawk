@@ -19,7 +19,7 @@ languages, and listeners.
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:49](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Plugin.ts#L49)
+[src/bluehawk/Plugin.ts:49](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L49)
 
 ___
 
@@ -31,7 +31,7 @@ The current semantic version string of Bluehawk.
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:60](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Plugin.ts#L60)
+[src/bluehawk/Plugin.ts:60](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L60)
 
 ___
 
@@ -44,7 +44,7 @@ CLI commands and options.
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:55](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Plugin.ts#L55)
+[src/bluehawk/Plugin.ts:55](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L55)
 
 ___
 
@@ -56,4 +56,4 @@ The current semantic version string of Yargs.
 
 #### Defined in
 
-[src/bluehawk/Plugin.ts:65](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/Plugin.ts#L65)
+[src/bluehawk/Plugin.ts:65](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/Plugin.ts#L65)

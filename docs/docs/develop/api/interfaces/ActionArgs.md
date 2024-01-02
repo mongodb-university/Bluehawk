@@ -12,8 +12,6 @@ custom_edit_url: null
 
   ↳ [`CheckArgs`](CheckArgs)
 
-  ↳ [`ConfigArgs`](ConfigArgs)
-
   ↳ [`CopyArgs`](CopyArgs)
 
   ↳ [`ListStatesArgs`](ListStatesArgs)
@@ -26,11 +24,11 @@ custom_edit_url: null
 
 ### logLevel
 
-• `Optional` **logLevel**: [`LogLevel`](../enums/LogLevel)
+• `Optional` **logLevel**: `LogLevel`
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:3](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionArgs.ts#L3)
+[src/bluehawk/actions/ActionArgs.ts:3](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L3)
 
 ___
 
@@ -40,4 +38,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:4](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/actions/ActionArgs.ts#L4)
+[src/bluehawk/actions/ActionArgs.ts:4](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L4)

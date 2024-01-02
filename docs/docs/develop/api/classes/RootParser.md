@@ -31,7 +31,7 @@ CstParser.constructor
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:103](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L103)
+[src/bluehawk/parser/RootParser.ts:103](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L103)
 
 ## Properties
 
@@ -62,7 +62,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:325](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L325)
+[src/bluehawk/parser/RootParser.ts:325](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L325)
 
 ___
 
@@ -72,7 +72,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:91](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L91)
+[src/bluehawk/parser/RootParser.ts:91](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L91)
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:99](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L99)
+[src/bluehawk/parser/RootParser.ts:99](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L99)
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:97](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L97)
+[src/bluehawk/parser/RootParser.ts:97](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L97)
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:93](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L93)
+[src/bluehawk/parser/RootParser.ts:93](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L93)
 
 ___
 
@@ -112,7 +112,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:94](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L94)
+[src/bluehawk/parser/RootParser.ts:94](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L94)
 
 ___
 
@@ -122,7 +122,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:92](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L92)
+[src/bluehawk/parser/RootParser.ts:92](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L92)
 
 ___
 
@@ -160,7 +160,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:101](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L101)
+[src/bluehawk/parser/RootParser.ts:101](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L101)
 
 ___
 
@@ -170,7 +170,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:89](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L89)
+[src/bluehawk/parser/RootParser.ts:89](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L89)
 
 ___
 
@@ -180,7 +180,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:98](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L98)
+[src/bluehawk/parser/RootParser.ts:98](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L98)
 
 ___
 
@@ -190,7 +190,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:100](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L100)
+[src/bluehawk/parser/RootParser.ts:100](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L100)
 
 ___
 
@@ -200,7 +200,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:95](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L95)
+[src/bluehawk/parser/RootParser.ts:95](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L95)
 
 ___
 
@@ -210,7 +210,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:96](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L96)
+[src/bluehawk/parser/RootParser.ts:96](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L96)
 
 ## Methods
 
@@ -438,7 +438,7 @@ CstParser.LA
 
 #### Defined in
 
-node_modules/@chevrotain/types/api.d.ts:878
+node_modules/@chevrotain/types/api.d.ts:874
 
 ___
 
@@ -447,7 +447,7 @@ ___
 ▸ `Protected` **MANY**(`actionORMethodDef`): `void`
 
 Parsing DSL method, that indicates a repetition of zero or more.
-This is equivalent to EBNF repetition \{...\}.
+This is equivalent to EBNF repetition {...}.
 
 Note that there are two syntax forms:
 - Passing the grammar action directly:
@@ -957,7 +957,7 @@ CstParser.OVERRIDE\_RULE
 
 #### Defined in
 
-node_modules/@chevrotain/types/api.d.ts:905
+node_modules/@chevrotain/types/api.d.ts:901
 
 ___
 
@@ -994,16 +994,13 @@ CstParser.RULE
 
 #### Defined in
 
-node_modules/@chevrotain/types/api.d.ts:895
+node_modules/@chevrotain/types/api.d.ts:891
 
 ___
 
 ### SKIP\_TOKEN
 
 ▸ `Protected` **SKIP_TOKEN**(): `IToken`
-
-Will consume a single token and return the **next** token, meaning
-the token **after** the skipped token.
 
 #### Returns
 
@@ -1015,7 +1012,7 @@ CstParser.SKIP\_TOKEN
 
 #### Defined in
 
-node_modules/@chevrotain/types/api.d.ts:863
+node_modules/@chevrotain/types/api.d.ts:859
 
 ___
 
@@ -1061,7 +1058,7 @@ CstParser.SUBRULE
 
 #### Defined in
 
-node_modules/@chevrotain/types/api.d.ts:942
+node_modules/@chevrotain/types/api.d.ts:938
 
 ___
 
@@ -1102,8 +1099,8 @@ ___
 
 ▸ `Protected` **canTokenTypeBeDeletedInRecovery**(`tokType`): `boolean`
 
-By default, all token types may be deleted. This behavior may be overridden in inheriting parsers.
-The method receives the expected token type. The token that would be deleted can be received with [LA](RootParser#la).
+By default all token types may be deleted. This behavior may be overridden in inheriting parsers.
+The method receives the expected token type. The token that would be deleted can be received with [LA(1)](RootParser#la).
 
 #### Parameters
 
@@ -1129,7 +1126,7 @@ ___
 
 ▸ `Protected` **canTokenTypeBeInsertedInRecovery**(`tokType`): `boolean`
 
-By default, all tokens type may be inserted. This behavior may be overridden in inheriting Recognizers
+By default all tokens type may be inserted. This behavior may be overridden in inheriting Recognizers
 for example: One may decide that only punctuation tokens may be inserted automatically as they have no additional
 semantic value. (A mandatory semicolon has no additional semantic meaning, but an Integer may have additional meaning
 depending on its int value and context (Inserting an integer 0 in cardinality: "[1..]" will cause semantic issues
@@ -1523,7 +1520,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/parser/RootParser.ts:275](https://github.com/krollins-mdb/bluehawk/blob/f65f7b1e/src/bluehawk/parser/RootParser.ts#L275)
+[src/bluehawk/parser/RootParser.ts:275](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/RootParser.ts#L275)
 
 ___
 
@@ -1605,4 +1602,4 @@ CstParser.subrule
 
 #### Defined in
 
-node_modules/@chevrotain/types/api.d.ts:919
+node_modules/@chevrotain/types/api.d.ts:915
