@@ -3,6 +3,10 @@ import { Document } from "./../Document";
 import { ConsoleActionReporter } from "./ConsoleActionReporter";
 
 const dummyReport = (reporter: ActionReporter) => {
+  reporter.onActionProcessed({
+    inputPath: "test",
+    name: "snip",
+  });
   reporter.onBinaryFile({
     inputPath: "test",
   });

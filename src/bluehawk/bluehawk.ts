@@ -1,4 +1,3 @@
-import { ConsoleActionReporter } from "./actions/ConsoleActionReporter";
 import { ActionReporter } from "./actions/ActionReporter";
 import { TAG_PATTERN } from "./parser/lexer/tokens";
 import { Document } from "./Document";

@@ -48,6 +48,7 @@ async function traverse(
     }
     return await traverse(absoluteSubpath, projectRoot, [...ignores]);
   });
+
   return (await Promise.all(promises)).flat();
 }
 

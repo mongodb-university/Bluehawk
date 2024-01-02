@@ -14,6 +14,7 @@ export interface ActionReporter {
   readonly errorCount: number;
 
   // Info
+  onActionProcessed(event: ActionProcessedEvent): void;
   onBinaryFile(event: BinaryFileEvent): void;
   onFileParsed(event: FileParsedEvent): void;
   onFileWritten(event: FileWrittenEvent): void;
@@ -48,10 +49,15 @@ export type FileEvent = {
   inputPath: string;
 };
 
+export type ActionProcessedEvent = FileEvent & {
+  name: string;
+};
+
 export type BinaryFileEvent = FileEvent;
 
 export type FileParsedEvent = FileEvent & {
-  parseResult: ParseResult;
+  parseResult?: ParseResult;
+  isConfig?: boolean;
 };
 
 export type FileWrittenEvent = FileEvent & {

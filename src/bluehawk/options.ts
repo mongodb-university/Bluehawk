@@ -99,3 +99,14 @@ export function withLogLevelOption<T>(
     once: true,
   });
 }
+
+export function withConfigOption<T>(
+  yargs: Argv<T>
+): Argv<T & { configPath?: string }> {
+  return option(yargs, "configPath", {
+    alias: "c",
+    string: true,
+    describe: "path to your project's root Bluehawk config file",
+    once: true,
+  }).check((argv) => !Array.isArray(argv.state));
+}
