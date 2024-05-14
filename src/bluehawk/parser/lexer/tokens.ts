@@ -82,24 +82,30 @@ const Text = createToken({
 // TODO: Allow any amount of non-newline white space (/[^\S\r\n]*/) to be
 // included before or after the actual tag name to make stripping it out
 // much easier.
-const TAG_START_PATTERN /**/ = /:([A-z0-9-]+)-start:/;
-const TAG_END_PATTERN /*  */ = /:([A-z0-9-]+)-end:/;
-const TAG_PATTERN /*      */ = /:([A-z0-9-]+):[^\S\r\n]*/;
+const TAG_START_PATTERN /**/ = /(?<!:):([A-z0-9-]+)-start:(?!:)/;
+const TAG_END_PATTERN /*  */ = /(?<!:):([A-z0-9-]+)-end:(?!:)/;
+const TAG_PATTERN /*      */ = /(?<!:):([A-z0-9-]+):(?!:)[^\S\r\n]*/;
 
 const TagStart = createToken({
   name: "TagStart",
   pattern: TAG_START_PATTERN,
   push_mode: "TagAttributesMode",
+  line_breaks: false,
+  start_chars_hint: [":"],
 });
 
 const TagEnd = createToken({
   name: "TagEnd",
   pattern: TAG_END_PATTERN,
+  line_breaks: false,
+  start_chars_hint: [":"],
 });
 
 const Tag = createToken({
   name: "Tag",
   pattern: TAG_PATTERN,
+  line_breaks: false,
+  start_chars_hint: [":"],
 });
 
 const Identifier = createToken({
