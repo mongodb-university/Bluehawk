@@ -73,6 +73,49 @@ this is used to replace
     expect(tokenNames).toBeNull;
   });
 
+  it("does not make a token from content that starts with ::", () => {
+    const result = lexer.tokenize(`::SomeClass::state::something;`);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
+  it("does not make a token from content that ends with ::", () => {
+    const result = lexer.tokenize(`SomeClass::state::something::`);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
+  it("does not make a token from content that starts and ends with ::", () => {
+    const result = lexer.tokenize(`::SomeClass::state::something::`);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
+  it("does not make a token with a space in the state tag", () => {
+    const result = lexer.tokenize(`
+// :state -start: state-identifier
+SomeClass::state::something;
+// :state-end:
+    `);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
+  it("does not make a token with a space after the start colon", () => {
+    const result = lexer.tokenize(`
+// : state-start: state-identifier
+SomeClass::state::something;
+// :state-end:
+    `);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
   it("Correctly tokenizes C++ syntax within a tag", () => {
     const result = lexer.tokenize(`
 // :state-start: state-identifier
