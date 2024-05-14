@@ -84,12 +84,12 @@ describe("JSON attribute lists", () => {
     const result = visitor.visit(cst, source);
     expect(result.tagNodes[0].attributes).toBeUndefined();
     expect(result.errors[0].message).toBe(
-      "Expected double-quoted property name in JSON"
+      "Expected double-quoted property name in JSON at position 19 (line 5 column 3)"
     );
     expect(result.errors[0].location).toStrictEqual({
-      line: 5,
-      column: 3,
-      offset: 33,
+      line: 1,
+      column: 15,
+      offset: 14,
     });
   });
 
@@ -133,12 +133,12 @@ describe("JSON attribute lists", () => {
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors[0].location).toStrictEqual({
-      line: 5,
-      column: 1,
-      offset: 23,
+      line: 1,
+      column: 15,
+      offset: 14,
     });
     expect(result.errors[0].message).toBe(
-      "Expected property name or '}' in JSON"
+      "Expected property name or '}' in JSON at position 9 (line 5 column 1)"
     );
   });
 
@@ -158,12 +158,12 @@ describe("JSON attribute lists", () => {
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors[0].location).toStrictEqual({
-      line: 5,
-      column: 1,
-      offset: 21,
+      line: 1,
+      column: 15,
+      offset: 14,
     });
     expect(result.errors[0].message).toBe(
-      "Expected property name or '}' in JSON"
+      "Expected property name or '}' in JSON at position 7 (line 5 column 1)"
     );
   });
 
@@ -250,12 +250,12 @@ describe("JSON attribute lists", () => {
     const visitor = makeCstVisitor(parser);
     const result = visitor.visit(cst, source);
     expect(result.errors[0].location).toStrictEqual({
-      line: 3,
-      column: 4,
-      offset: 39,
+      line: 1,
+      column: 18,
+      offset: 17,
     });
     expect(result.errors[0].message).toBe(
-      "Expected double-quoted property name in JSON"
+      "Expected double-quoted property name in JSON at position 22 (line 3 column 4)"
     );
   });
 });
