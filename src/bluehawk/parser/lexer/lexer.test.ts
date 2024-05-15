@@ -65,6 +65,77 @@ this is used to replace
       "Newline",
     ]);
   });
+
+  it("does not misinterpret C++ syntax as tokens", () => {
+    const result = lexer.tokenize(`SomeClass::state::something;`);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
+  it("does not make a token from content that starts with ::", () => {
+    const result = lexer.tokenize(`::SomeClass::state::something;`);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
+  it("does not make a token from content that ends with ::", () => {
+    const result = lexer.tokenize(`SomeClass::state::something::`);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
+  it("does not make a token from content that starts and ends with ::", () => {
+    const result = lexer.tokenize(`::SomeClass::state::something::`);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
+  it("does not make a token with a space in the state tag", () => {
+    const result = lexer.tokenize(`
+// :state -start: state-identifier
+SomeClass::state::something;
+// :state-end:
+    `);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
+  it("does not make a token with a space after the start colon", () => {
+    const result = lexer.tokenize(`
+// : state-start: state-identifier
+SomeClass::state::something;
+// :state-end:
+    `);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toBeNull;
+  });
+
+  it("Correctly tokenizes C++ syntax within a tag", () => {
+    const result = lexer.tokenize(`
+// :state-start: state-identifier
+SomeClass::state::something;
+// :state-end:
+`);
+    expect(result.errors.length).toBe(0);
+    const tokenNames = result.tokens.map((token) => token.tokenType.name);
+    expect(tokenNames).toStrictEqual([
+      "Newline",
+      "LineComment",
+      "TagStart",
+      "Identifier",
+      "Newline",
+      "Newline",
+      "LineComment",
+      "TagEnd",
+      "Newline",
+    ]);
+  });
 });
 
 describe("custom comment lexer", () => {
@@ -116,9 +187,13 @@ describe("custom comment lexer", () => {
 
   it("rejects comment patterns that conflict with other tokens", () => {
     expect(() => {
-      makeLexer([makeLineCommentToken(TAG_PATTERN)]);
-    }).toThrowError(`Errors detected in definition of Lexer:
-The same RegExp pattern ->/:([A-z0-9-]+):[^\\S\\r\\n]*/<-has been used in all of the following Token Types: Tag, LineComment <-`);
+      try {
+        makeLexer([makeLineCommentToken(TAG_PATTERN)]);
+      } catch (e) {
+        expect(e.message).toBe(`Errors detected in definition of Lexer:
+        The same RegExp pattern ->/(?<!:):([A-z0-9-]+):(?!:)[^\\S\\r\\n]*/<-has been used in all of the following Token Types: Tag, LineComment <-`);
+      }
+    });
   });
 });
 
