@@ -83,13 +83,8 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
 
     bluehawk.addLanguage([".php"], {
       languageId: "PHP",
-      lineComments: [/# ?/],
-      stringLiterals: [
-        {
-          pattern: tokens.PYTHON_STRING_LITERAL_PATTERN,
-          multiline: true,
-        },
-      ],
+      lineComments: [/#|\/\//],
+      blockComments: [[/\/\*/, /\*\//]],
     });
 
     bluehawk.addLanguage([".py", ".ipynb"], {
@@ -106,12 +101,6 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
     bluehawk.addLanguage([".rb"], {
       languageId: "Ruby",
       lineComments: [/# ?/],
-      stringLiterals: [
-        {
-          pattern: tokens.PYTHON_STRING_LITERAL_PATTERN,
-          multiline: true,
-        },
-      ],
     });
 
     bluehawk.addLanguage(["", ".txt", ".rst", ".md", ".json"], {
