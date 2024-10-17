@@ -92,7 +92,6 @@ export const formatInRst = async (
     [".cs", "csharp"],
     [".go", "golang"],
     [".gradle", "groovy"],
-    [".ipynb", "python"],
     [".java", "java"],
     [".js", "javascript"],
     [".jsx", "javascript"],

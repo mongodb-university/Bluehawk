@@ -87,7 +87,7 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
       blockComments: [[/\/\*/, /\*\//]],
     });
 
-    bluehawk.addLanguage([".py", ".ipynb"], {
+    bluehawk.addLanguage([".py"], {
       languageId: "Python",
       lineComments: [/# ?/],
       stringLiterals: [
