@@ -52,24 +52,27 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
         ".c",
         ".cpp",
         ".cs",
+        ".dart",
+        ".go",
+        ".gradle",
+        ".groovy",
+        ".gsh",
+        ".gvy",
+        ".gy",
         ".h",
         ".hpp",
-        ".kt",
         ".java",
         ".js",
-        ".dart",
         ".jsx",
+        ".kt",
         ".m",
         ".mm",
+        ".rs",
+        ".sc",
+        ".scala",
         ".swift",
         ".ts",
         ".tsx",
-        ".gradle",
-        ".groovy",
-        ".gvy",
-        ".gy",
-        ".gsh",
-        ".go",
       ],
       {
         languageId: "C-like",
@@ -78,7 +81,12 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
       }
     );
 
-    // Add all supported extensions here.
+    bluehawk.addLanguage([".php"], {
+      languageId: "PHP",
+      lineComments: [/#|\/\//],
+      blockComments: [[/\/\*/, /\*\//]],
+    });
+
     bluehawk.addLanguage([".py"], {
       languageId: "Python",
       lineComments: [/# ?/],
@@ -88,6 +96,11 @@ export const getBluehawk = async (): Promise<Bluehawk> => {
           multiline: true,
         },
       ],
+    });
+
+    bluehawk.addLanguage([".rb"], {
+      languageId: "Ruby",
+      lineComments: [/# ?/],
     });
 
     bluehawk.addLanguage(["", ".txt", ".rst", ".md", ".json"], {

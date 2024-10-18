@@ -87,8 +87,10 @@ export const formatInRst = async (
   // nasty hack to cover the suffixes/rst languages we use most often
   // TODO: switch to a better mapping
   const rstLanguageMap: Map<string, string> = new Map([
+    [".c", "c"],
     [".cpp", "cpp"],
     [".cs", "csharp"],
+    [".go", "golang"],
     [".gradle", "groovy"],
     [".java", "java"],
     [".js", "javascript"],
@@ -96,6 +98,12 @@ export const formatInRst = async (
     [".json", "json"],
     [".kt", "kotlin"],
     [".m", "objectivec"],
+    [".php", "php"],
+    [".py", "python"],
+    [".rb", "ruby"],
+    [".rs", "rust"],
+    [".sc", "scala"],
+    [".scala", "scala"],
     [".swift", "swift"],
     [".ts", "typescript"],
     [".tsx", "typescript"],
