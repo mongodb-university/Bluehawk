@@ -31,7 +31,7 @@ Handles various events for user information.
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:26](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L26)
+[bluehawk/actions/ConsoleActionReporter.ts:26](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L26)
 
 ## Properties
 
@@ -50,7 +50,7 @@ Handles various events for user information.
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:17](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L17)
+[bluehawk/actions/ConsoleActionReporter.ts:17](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L17)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:24](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L24)
+[bluehawk/actions/ConsoleActionReporter.ts:24](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L24)
 
 ## Accessors
 
@@ -82,7 +82,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:32](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L32)
+[bluehawk/actions/ConsoleActionReporter.ts:32](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L32)
 
 ## Methods
 
@@ -106,7 +106,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:36](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L36)
+[bluehawk/actions/ConsoleActionReporter.ts:36](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L36)
 
 ___
 
@@ -130,7 +130,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:101](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L101)
+[bluehawk/actions/ConsoleActionReporter.ts:101](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L101)
 
 ___
 
@@ -154,7 +154,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:85](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L85)
+[bluehawk/actions/ConsoleActionReporter.ts:85](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L85)
 
 ___
 
@@ -178,7 +178,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:43](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L43)
+[bluehawk/actions/ConsoleActionReporter.ts:43](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L43)
 
 ___
 
@@ -202,7 +202,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:50](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L50)
+[bluehawk/actions/ConsoleActionReporter.ts:50](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L50)
 
 ___
 
@@ -226,7 +226,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:71](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L71)
+[bluehawk/actions/ConsoleActionReporter.ts:71](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L71)
 
 ___
 
@@ -250,7 +250,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:77](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L77)
+[bluehawk/actions/ConsoleActionReporter.ts:77](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L77)
 
 ___
 
@@ -274,7 +274,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:65](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L65)
+[bluehawk/actions/ConsoleActionReporter.ts:65](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L65)
 
 ___
 
@@ -298,7 +298,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:59](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L59)
+[bluehawk/actions/ConsoleActionReporter.ts:59](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L59)
 
 ___
 
@@ -322,7 +322,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:92](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L92)
+[bluehawk/actions/ConsoleActionReporter.ts:92](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L92)
 
 ___
 
@@ -344,4 +344,4 @@ Users should call this after an action is complete.
 
 #### Defined in
 
-[bluehawk/actions/ConsoleActionReporter.ts:115](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ConsoleActionReporter.ts#L115)
+[bluehawk/actions/ConsoleActionReporter.ts:115](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ConsoleActionReporter.ts#L115)

@@ -8,7 +8,7 @@ custom_edit_url: null
 
 ## Hierarchy
 
-- `unknown`
+- `CstParser`
 
   ↳ **`RootParser`**
 
@@ -35,7 +35,7 @@ CstParser.constructor
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:103](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L103)
+[bluehawk/parser/RootParser.ts:103](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L103)
 
 ## Properties
 
@@ -45,7 +45,7 @@ CstParser.constructor
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:325](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L325)
+[bluehawk/parser/RootParser.ts:325](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L325)
 
 ___
 
@@ -55,7 +55,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:91](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L91)
+[bluehawk/parser/RootParser.ts:91](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L91)
 
 ___
 
@@ -65,7 +65,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:99](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L99)
+[bluehawk/parser/RootParser.ts:99](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L99)
 
 ___
 
@@ -75,7 +75,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:97](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L97)
+[bluehawk/parser/RootParser.ts:97](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L97)
 
 ___
 
@@ -85,7 +85,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:93](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L93)
+[bluehawk/parser/RootParser.ts:93](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L93)
 
 ___
 
@@ -95,7 +95,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:94](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L94)
+[bluehawk/parser/RootParser.ts:94](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L94)
 
 ___
 
@@ -105,7 +105,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:92](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L92)
+[bluehawk/parser/RootParser.ts:92](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L92)
 
 ___
 
@@ -115,7 +115,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:101](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L101)
+[bluehawk/parser/RootParser.ts:101](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L101)
 
 ___
 
@@ -125,7 +125,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:89](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L89)
+[bluehawk/parser/RootParser.ts:89](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L89)
 
 ___
 
@@ -135,7 +135,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:98](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L98)
+[bluehawk/parser/RootParser.ts:98](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L98)
 
 ___
 
@@ -145,7 +145,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:100](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L100)
+[bluehawk/parser/RootParser.ts:100](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L100)
 
 ___
 
@@ -155,7 +155,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:95](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L95)
+[bluehawk/parser/RootParser.ts:95](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L95)
 
 ___
 
@@ -165,7 +165,7 @@ ___
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:96](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L96)
+[bluehawk/parser/RootParser.ts:96](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L96)
 
 ## Methods
 
@@ -185,9 +185,9 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `cst?` | `any` |
+| `cst?` | `CstNode` |
 | `errors` | `BluehawkError`[] |
 
 #### Defined in
 
-[bluehawk/parser/RootParser.ts:275](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/RootParser.ts#L275)
+[bluehawk/parser/RootParser.ts:275](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/RootParser.ts#L275)

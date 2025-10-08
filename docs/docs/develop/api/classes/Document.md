@@ -22,7 +22,7 @@ Represents a file either before or after processing.
 | › `attributes?` | `TagAttributes` |
 | › `modifiers?` | `Object` |
 | › `path` | `string` |
-| › `text` | `any` |
+| › `text` | `string` \| `default` |
 
 #### Returns
 
@@ -30,17 +30,17 @@ Represents a file either before or after processing.
 
 #### Defined in
 
-[bluehawk/Document.ts:100](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L100)
+[bluehawk/Document.ts:100](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L100)
 
 ## Properties
 
 ### \_sourceMapConsumer
 
-• `Private` `Optional` **\_sourceMapConsumer**: `any`
+• `Private` `Optional` **\_sourceMapConsumer**: `SourceMapConsumer`
 
 #### Defined in
 
-[bluehawk/Document.ts:167](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L167)
+[bluehawk/Document.ts:167](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L167)
 
 ___
 
@@ -55,7 +55,7 @@ These do not affect the identity of the document.
 
 #### Defined in
 
-[bluehawk/Document.ts:70](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L70)
+[bluehawk/Document.ts:70](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L70)
 
 ___
 
@@ -71,7 +71,7 @@ A file at one path may result in multiple output files after processing
 
 #### Defined in
 
-[bluehawk/Document.ts:41](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L41)
+[bluehawk/Document.ts:41](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L41)
 
 ___
 
@@ -92,7 +92,7 @@ with modifiers.
 
 #### Defined in
 
-[bluehawk/Document.ts:62](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L62)
+[bluehawk/Document.ts:62](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L62)
 
 ___
 
@@ -104,20 +104,20 @@ The original path of the document.
 
 #### Defined in
 
-[bluehawk/Document.ts:52](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L52)
+[bluehawk/Document.ts:52](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L52)
 
 ___
 
 ### text
 
-• **text**: `MagicString`
+• **text**: `default`
 
 The source text as a conveniently editable magic string. See
 https://www.npmjs.com/package/magic-string for details.
 
 #### Defined in
 
-[bluehawk/Document.ts:47](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L47)
+[bluehawk/Document.ts:47](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L47)
 
 ## Accessors
 
@@ -133,7 +133,7 @@ Returns the name of the file with the file extension, if any.
 
 #### Defined in
 
-[bluehawk/Document.ts:82](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L82)
+[bluehawk/Document.ts:82](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L82)
 
 ___
 
@@ -149,7 +149,7 @@ Returns the path of the directory containing this file based on the path.
 
 #### Defined in
 
-[bluehawk/Document.ts:96](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L96)
+[bluehawk/Document.ts:96](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L96)
 
 ___
 
@@ -165,7 +165,7 @@ Returns the file extension, if any, including the dot.
 
 #### Defined in
 
-[bluehawk/Document.ts:89](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L89)
+[bluehawk/Document.ts:89](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L89)
 
 ___
 
@@ -181,7 +181,7 @@ Returns the name of the file minus the file extension.
 
 #### Defined in
 
-[bluehawk/Document.ts:75](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L75)
+[bluehawk/Document.ts:75](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L75)
 
 ## Methods
 
@@ -208,7 +208,7 @@ are finalized.
 
 #### Defined in
 
-[bluehawk/Document.ts:136](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L136)
+[bluehawk/Document.ts:136](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L136)
 
 ___
 
@@ -228,7 +228,7 @@ ___
 
 #### Defined in
 
-[bluehawk/Document.ts:126](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L126)
+[bluehawk/Document.ts:126](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L126)
 
 ___
 
@@ -252,4 +252,4 @@ instance.
 
 #### Defined in
 
-[bluehawk/Document.ts:16](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/Document.ts#L16)
+[bluehawk/Document.ts:16](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/Document.ts#L16)

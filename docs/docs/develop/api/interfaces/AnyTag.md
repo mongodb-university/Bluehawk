@@ -16,7 +16,7 @@ custom_edit_url: null
 
 ### attributesSchema
 
-• `Optional` **attributesSchema**: `any`
+• `Optional` **attributesSchema**: `AnySchema`
 
 JSON schema of the attributes list
 
@@ -26,7 +26,7 @@ Tag.attributesSchema
 
 #### Defined in
 
-[bluehawk/tags/Tag.ts:21](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/tags/Tag.ts#L21)
+[bluehawk/tags/Tag.ts:21](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/Tag.ts#L21)
 
 ___
 
@@ -42,7 +42,7 @@ Tag.description
 
 #### Defined in
 
-[bluehawk/tags/Tag.ts:16](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/tags/Tag.ts#L16)
+[bluehawk/tags/Tag.ts:16](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/Tag.ts#L16)
 
 ___
 
@@ -59,7 +59,7 @@ Tag.name
 
 #### Defined in
 
-[bluehawk/tags/Tag.ts:11](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/tags/Tag.ts#L11)
+[bluehawk/tags/Tag.ts:11](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/Tag.ts#L11)
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 #### Defined in
 
-[bluehawk/tags/Tag.ts:54](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/tags/Tag.ts#L54)
+[bluehawk/tags/Tag.ts:54](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/Tag.ts#L54)
 
 ___
 
@@ -100,7 +100,7 @@ Tag.rules
 
 #### Defined in
 
-[bluehawk/tags/Tag.ts:45](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/tags/Tag.ts#L45)
+[bluehawk/tags/Tag.ts:45](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/Tag.ts#L45)
 
 ___
 
@@ -129,7 +129,7 @@ Tag.shorthandArgsAttributeName
 
 #### Defined in
 
-[bluehawk/tags/Tag.ts:39](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/tags/Tag.ts#L39)
+[bluehawk/tags/Tag.ts:39](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/Tag.ts#L39)
 
 ___
 
@@ -139,7 +139,7 @@ ___
 
 #### Defined in
 
-[bluehawk/tags/Tag.ts:52](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/tags/Tag.ts#L52)
+[bluehawk/tags/Tag.ts:52](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/Tag.ts#L52)
 
 ___
 
@@ -149,4 +149,4 @@ ___
 
 #### Defined in
 
-[bluehawk/tags/Tag.ts:53](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/tags/Tag.ts#L53)
+[bluehawk/tags/Tag.ts:53](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/Tag.ts#L53)

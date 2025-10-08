@@ -20,7 +20,7 @@ Handles various events for user information.
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:14](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L14)
+[bluehawk/actions/ActionReporter.ts:14](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L14)
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:13](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L13)
+[bluehawk/actions/ActionReporter.ts:13](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L13)
 
 ## Methods
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:17](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L17)
+[bluehawk/actions/ActionReporter.ts:17](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L17)
 
 ___
 
@@ -70,7 +70,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:30](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L30)
+[bluehawk/actions/ActionReporter.ts:30](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L30)
 
 ___
 
@@ -90,7 +90,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:28](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L28)
+[bluehawk/actions/ActionReporter.ts:28](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L28)
 
 ___
 
@@ -110,7 +110,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:18](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L18)
+[bluehawk/actions/ActionReporter.ts:18](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L18)
 
 ___
 
@@ -130,7 +130,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:19](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L19)
+[bluehawk/actions/ActionReporter.ts:19](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L19)
 
 ___
 
@@ -150,7 +150,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:24](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L24)
+[bluehawk/actions/ActionReporter.ts:24](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L24)
 
 ___
 
@@ -170,7 +170,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:25](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L25)
+[bluehawk/actions/ActionReporter.ts:25](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L25)
 
 ___
 
@@ -190,7 +190,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:23](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L23)
+[bluehawk/actions/ActionReporter.ts:23](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L23)
 
 ___
 
@@ -210,7 +210,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:20](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L20)
+[bluehawk/actions/ActionReporter.ts:20](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L20)
 
 ___
 
@@ -230,7 +230,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:29](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L29)
+[bluehawk/actions/ActionReporter.ts:29](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L29)
 
 ___
 
@@ -248,4 +248,4 @@ Users should call this after an action is complete.
 
 #### Defined in
 
-[bluehawk/actions/ActionReporter.ts:37](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionReporter.ts#L37)
+[bluehawk/actions/ActionReporter.ts:37](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionReporter.ts#L37)

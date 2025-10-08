@@ -32,7 +32,7 @@ meta information from the tag to an eventual listener.
 
 #### Defined in
 
-[bluehawk/processor/Processor.ts:34](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/processor/Processor.ts#L34)
+[bluehawk/processor/Processor.ts:34](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/processor/Processor.ts#L34)
 
 ___
 
@@ -59,7 +59,7 @@ emit the file.
 
 #### Defined in
 
-[bluehawk/processor/Processor.ts:50](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/processor/Processor.ts#L50)
+[bluehawk/processor/Processor.ts:50](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/processor/Processor.ts#L50)
 
 ___
 
@@ -80,7 +80,7 @@ children.
 
 #### Defined in
 
-[bluehawk/processor/Processor.ts:56](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/processor/Processor.ts#L56)
+[bluehawk/processor/Processor.ts:56](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/processor/Processor.ts#L56)
 
 ___
 
@@ -92,7 +92,7 @@ The specific tag to process.
 
 #### Defined in
 
-[bluehawk/processor/Processor.ts:39](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/processor/Processor.ts#L39)
+[bluehawk/processor/Processor.ts:39](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/processor/Processor.ts#L39)
 
 ___
 
@@ -104,4 +104,4 @@ The overall result's tag nodes being processed by the processor.
 
 #### Defined in
 
-[bluehawk/processor/Processor.ts:44](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/processor/Processor.ts#L44)
+[bluehawk/processor/Processor.ts:44](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/processor/Processor.ts#L44)

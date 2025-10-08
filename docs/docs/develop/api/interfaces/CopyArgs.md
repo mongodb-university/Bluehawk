@@ -20,7 +20,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[bluehawk/actions/copy.ts:12](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/copy.ts#L12)
+[bluehawk/actions/copy.ts:12](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/copy.ts#L12)
 
 ___
 
@@ -34,7 +34,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionArgs.ts:3](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionArgs.ts#L3)
+[bluehawk/actions/ActionArgs.ts:3](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionArgs.ts#L3)
 
 ___
 
@@ -44,7 +44,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/copy.ts:10](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/copy.ts#L10)
+[bluehawk/actions/copy.ts:10](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/copy.ts#L10)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/copy.ts:13](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/copy.ts#L13)
+[bluehawk/actions/copy.ts:13](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/copy.ts#L13)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/copy.ts:9](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/copy.ts#L9)
+[bluehawk/actions/copy.ts:9](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/copy.ts#L9)
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/copy.ts:11](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/copy.ts#L11)
+[bluehawk/actions/copy.ts:11](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/copy.ts#L11)
 
 ___
 
@@ -88,7 +88,7 @@ ___
 
 #### Defined in
 
-[bluehawk/actions/ActionArgs.ts:4](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/ActionArgs.ts#L4)
+[bluehawk/actions/ActionArgs.ts:4](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionArgs.ts#L4)
 
 ## Methods
 
@@ -110,4 +110,4 @@ Hook for additional work after a binary file is processed.
 
 #### Defined in
 
-[bluehawk/actions/copy.ts:18](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/actions/copy.ts#L18)
+[bluehawk/actions/copy.ts:18](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/copy.ts#L18)

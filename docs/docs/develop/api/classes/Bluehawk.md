@@ -26,7 +26,7 @@ The frontend of Bluehawk.
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:43](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L43)
+[bluehawk/bluehawk.ts:43](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L43)
 
 ## Properties
 
@@ -36,7 +36,7 @@ The frontend of Bluehawk.
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:221](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L221)
+[bluehawk/bluehawk.ts:221](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L221)
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:220](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L220)
+[bluehawk/bluehawk.ts:220](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L220)
 
 ## Accessors
 
@@ -60,7 +60,7 @@ ___
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:216](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L216)
+[bluehawk/bluehawk.ts:216](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L216)
 
 ## Methods
 
@@ -83,7 +83,7 @@ Specify the special patterns for a given language.
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:78](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L78)
+[bluehawk/bluehawk.ts:78](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L78)
 
 ___
 
@@ -108,7 +108,7 @@ Parses the given source file into tags.
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:161](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L161)
+[bluehawk/bluehawk.ts:161](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L161)
 
 ___
 
@@ -131,7 +131,7 @@ Runs through all given source paths to parse and process them.
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:91](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L91)
+[bluehawk/bluehawk.ts:91](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L91)
 
 ___
 
@@ -155,7 +155,7 @@ results.
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:209](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L209)
+[bluehawk/bluehawk.ts:209](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L209)
 
 ___
 
@@ -179,7 +179,7 @@ support for the tag under the given name.
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:71](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L71)
+[bluehawk/bluehawk.ts:71](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L71)
 
 ___
 
@@ -201,7 +201,7 @@ Subscribe to processed documents as they are processed by Bluehawk.
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:197](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L197)
+[bluehawk/bluehawk.ts:197](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L197)
 
 ___
 
@@ -215,4 +215,4 @@ ___
 
 #### Defined in
 
-[bluehawk/bluehawk.ts:154](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/bluehawk.ts#L154)
+[bluehawk/bluehawk.ts:154](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L154)

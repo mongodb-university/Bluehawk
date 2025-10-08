@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[bluehawk/parser/makeParser.ts:17](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/makeParser.ts#L17)
+[bluehawk/parser/makeParser.ts:17](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/makeParser.ts#L17)
 
 ## Methods
 
@@ -36,4 +36,4 @@ custom_edit_url: null
 
 #### Defined in
 
-[bluehawk/parser/makeParser.ts:18](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/makeParser.ts#L18)
+[bluehawk/parser/makeParser.ts:18](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/makeParser.ts#L18)
