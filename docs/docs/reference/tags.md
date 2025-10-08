@@ -94,7 +94,7 @@ Version 1.0 removed the `code-block` alias.
 :::
 
 The `snippet` tag marks a range of content in a file as a snippet.
-You can use the [snip](#snip) CLI command to generate snippet files from these snippets.
+You can use the [snip](./cli.md#snip) CLI command to generate snippet files from these snippets.
 
 Because `snippet` operates on ranges of content, it is only available as
 a block tag. You must pass `snippet` an identifier.
@@ -130,7 +130,7 @@ System.out.println("Hello world!");
 ## State
 
 The `state` tag marks a range of content in a file as part of a particular state.
-You can use the [snip](#snip) or [copy](#copy) CLI commands with the [state](#state)
+You can use the [snip](./cli.md#snip) or [copy](./cli.md#copy) CLI commands with the [state](./cli.md#state)
 flag to generate output files that contain only content from a specific named state.
 When you use the `--state` flag to specify a state, all state blocks other than the
 specified state are removed from the output. If a file has state blocks

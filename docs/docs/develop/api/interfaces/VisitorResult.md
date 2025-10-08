@@ -14,14 +14,14 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/parser/visitor/makeCstVisitor.ts:21](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/visitor/makeCstVisitor.ts#L21)
+[bluehawk/parser/visitor/makeCstVisitor.ts:21](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/visitor/makeCstVisitor.ts#L21)
 
 ___
 
 ### tagNodes
 
-• **tagNodes**: [`AnyTagNode`](../modules#anytagnode)[]
+• **tagNodes**: [`AnyTagNode`](../modules.md#anytagnode)[]
 
 #### Defined in
 
-[src/bluehawk/parser/visitor/makeCstVisitor.ts:22](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/visitor/makeCstVisitor.ts#L22)
+[bluehawk/parser/visitor/makeCstVisitor.ts:22](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/visitor/makeCstVisitor.ts#L22)

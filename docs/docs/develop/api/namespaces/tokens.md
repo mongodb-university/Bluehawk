@@ -10,208 +10,208 @@ custom_edit_url: null
 
 ### AttributeListEnd
 
-• **AttributeListEnd**: `TokenType`
+• `Const` **AttributeListEnd**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:46](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L46)
+[bluehawk/parser/lexer/tokens.ts:46](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L46)
 
 ___
 
 ### AttributeListStart
 
-• **AttributeListStart**: `TokenType`
+• `Const` **AttributeListStart**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:53](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L53)
+[bluehawk/parser/lexer/tokens.ts:53](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L53)
 
 ___
 
 ### BlockCommentEnd
 
-• **BlockCommentEnd**: `TokenType`
+• `Const` **BlockCommentEnd**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:26](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L26)
+[bluehawk/parser/lexer/tokens.ts:26](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L26)
 
 ___
 
 ### BlockCommentStart
 
-• **BlockCommentStart**: `TokenType`
+• `Const` **BlockCommentStart**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:21](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L21)
+[bluehawk/parser/lexer/tokens.ts:21](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L21)
 
 ___
 
 ### Identifier
 
-• **Identifier**: `TokenType`
+• `Const` **Identifier**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:105](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L105)
+[bluehawk/parser/lexer/tokens.ts:111](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L111)
 
 ___
 
 ### JSON\_STRING\_LITERAL\_PATTERN
 
-• **JSON\_STRING\_LITERAL\_PATTERN**: `RegExp`
+• `Const` **JSON\_STRING\_LITERAL\_PATTERN**: `RegExp`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:13](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L13)
+[bluehawk/parser/lexer/tokens.ts:13](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L13)
 
 ___
 
 ### JsonStringLiteral
 
-• **JsonStringLiteral**: `TokenType`
+• `Const` **JsonStringLiteral**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:110](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L110)
+[bluehawk/parser/lexer/tokens.ts:116](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L116)
 
 ___
 
 ### LineComment
 
-• **LineComment**: `TokenType`
+• `Const` **LineComment**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:16](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L16)
+[bluehawk/parser/lexer/tokens.ts:16](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L16)
 
 ___
 
 ### Newline
 
-• **Newline**: `TokenType`
+• `Const` **Newline**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:68](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L68)
+[bluehawk/parser/lexer/tokens.ts:68](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L68)
 
 ___
 
 ### PYTHON\_STRING\_LITERAL\_PATTERN
 
-• **PYTHON\_STRING\_LITERAL\_PATTERN**: `RegExp`
+• `Const` **PYTHON\_STRING\_LITERAL\_PATTERN**: `RegExp`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:10](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L10)
+[bluehawk/parser/lexer/tokens.ts:10](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L10)
 
 ___
 
 ### PopParser
 
-• **PopParser**: `TokenType`
+• `Const` **PopParser**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:36](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L36)
+[bluehawk/parser/lexer/tokens.ts:36](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L36)
 
 ___
 
 ### PushParser
 
-• **PushParser**: `TokenType`
+• `Const` **PushParser**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:31](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L31)
+[bluehawk/parser/lexer/tokens.ts:31](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L31)
 
 ___
 
 ### Space
 
-• **Space**: `TokenType`
+• `Const` **Space**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:62](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L62)
+[bluehawk/parser/lexer/tokens.ts:62](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L62)
 
 ___
 
 ### StringLiteral
 
-• **StringLiteral**: `TokenType`
+• `Const` **StringLiteral**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:41](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L41)
+[bluehawk/parser/lexer/tokens.ts:41](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L41)
 
 ___
 
 ### TAG\_END\_PATTERN
 
-• **TAG\_END\_PATTERN**: `RegExp`
+• `Const` **TAG\_END\_PATTERN**: `RegExp`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:86](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L86)
+[bluehawk/parser/lexer/tokens.ts:86](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L86)
 
 ___
 
 ### TAG\_PATTERN
 
-• **TAG\_PATTERN**: `RegExp`
+• `Const` **TAG\_PATTERN**: `RegExp`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:87](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L87)
+[bluehawk/parser/lexer/tokens.ts:87](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L87)
 
 ___
 
 ### TAG\_START\_PATTERN
 
-• **TAG\_START\_PATTERN**: `RegExp`
+• `Const` **TAG\_START\_PATTERN**: `RegExp`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:85](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L85)
+[bluehawk/parser/lexer/tokens.ts:85](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L85)
 
 ___
 
 ### Tag
 
-• **Tag**: `TokenType`
+• `Const` **Tag**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:100](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L100)
+[bluehawk/parser/lexer/tokens.ts:104](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L104)
 
 ___
 
 ### TagEnd
 
-• **TagEnd**: `TokenType`
+• `Const` **TagEnd**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:95](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L95)
+[bluehawk/parser/lexer/tokens.ts:97](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L97)
 
 ___
 
 ### TagStart
 
-• **TagStart**: `TokenType`
+• `Const` **TagStart**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:89](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L89)
+[bluehawk/parser/lexer/tokens.ts:89](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L89)
 
 ___
 
 ### Text
 
-• **Text**: `TokenType`
+• `Const` **Text**: `any`
 
 #### Defined in
 
-[src/bluehawk/parser/lexer/tokens.ts:74](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/lexer/tokens.ts#L74)
+[bluehawk/parser/lexer/tokens.ts:74](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/lexer/tokens.ts#L74)

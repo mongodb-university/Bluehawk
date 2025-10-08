@@ -59,10 +59,6 @@ the generated output file name would be: `Models.snippet.person-model.swift`.
 
 #### Snippet start and end
 
-This is a complete code example in the
-[Models.swift](https://github.com/mongodb/docs-realm/blob/master/examples/ios/Examples/Models.swift)
-file in the Realm Docs iOS Unit Test suite.
-
 For this code snippet, we don't need to show the `import` statement in our final
 example, so we start the snippet after it. Then, after the code we want
 to show in our final example, we end the snippet.
@@ -84,9 +80,7 @@ class Person: Object {
 // :snippet-end:
 ```
 
-The output file becomes
-[Models.snippet.person-model.swift](https://github.com/mongodb/docs-realm/blob/master/source/examples/generated/code/start/Models.snippet.person-model.swift). After we use the Bluehawk CLI to extract
-this code example, the final code example looks like this:
+The output file becomes `Models.snippet.person-model.swift`. After we use the Bluehawk CLI to extract this code example, the final code example looks like this:
 
 ```swift
 class Person: Object {
@@ -146,8 +140,8 @@ that isn't relevant to your documentation viewers.
     }
 ```
 
-The final output code example at
-[ManageEmailPasswordUsers.snippet.password-reset-function.swift](https://github.com/mongodb/docs-realm/blob/master/source/examples/generated/code/start/ManageEmailPasswordUsers.snippet.password-reset-function.swift)
+The final output code example
+`ManageEmailPasswordUsers.snippet.password-reset-function.swift`
 looks like:
 
 ```swift
@@ -180,9 +174,7 @@ print line.
 Bluehawk gives you the ability to replace terms with different terms, or even
 nothing at all. In the Realm Docs iOS Unit Test suite, we use the `replace` tag
 to remove awkward names we have to use to avoid namespace collisions. For
-example, here are the opening lines of the
-[ReadWriteData.swift](https://github.com/mongodb/docs-realm/blob/master/examples/ios/Examples/ReadWriteData.swift)
-file:
+example:
 
 ```swift
 // :replace-start: {
@@ -245,8 +237,7 @@ with an empty string.
 // }
 ```
 
-The [output file for the code block above](https://github.com/mongodb/docs-realm/blob/master/source/examples/generated/code/start/ReadWriteData.snippet.models.swift)
-looks like:
+The output file for the code block above looks like this:
 
 ```swift
 class DogToy: Object {

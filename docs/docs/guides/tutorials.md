@@ -70,18 +70,16 @@ commands.
 ## Annotate the Tutorial
 
 Start by annotating your tutorial with [Bluehawk tags](/reference/tags).
-As with [code snippets](code-snippets), you open and close a code block
+As with [code snippets](./code-snippets.md), you open and close a code block
 with `snippet-start` and `snippet-end`. You can
-[remove code](code-snippets#remove-code) if your tutorial
+[remove code](./code-snippets.md#remove-code) if your tutorial
 contains tests or boilerplate you don't want to expose in your documentation.
-You can also [replace](code-snippets#replace) awkward terms with more
+You can also [replace](./code-snippets.md#replace) awkward terms with more
 readable ones if you have any namespace issues, or want to rename things
 for consistency across docs.
 
 The key to tutorials, though, is adding `state` annotations where you want
-the content to change based on which state you want to show. This example
-is from the Realm React Native Tutorial
-[TasksProvider.js file](https://github.com/mongodb/docs-realm/blob/master/tutorial/rn/providers/TasksProvider.js).
+the content to change based on which state you want to show.
 
 We start a snippet called `clean-up`. Then you see `// :state-start: final`.
 In this code snippet, `final` is the identifier we use for
@@ -151,14 +149,14 @@ It shows only the `TODO:` block in the `start` state, while the
 
 After you have annotated your tutorial code, use the Bluehawk CLI to extract
 code snippets. The process is the same as when
-[extracting code examples](code-snippets#use-the-cli-to-extract-snippets),
+[extracting code examples](./code-snippets.md#use-the-cli-to-extract-snippets),
 because you're doing the same thing - you just pass an additional `--state`
 flag to indicate which state you want in the code example.
 
 As with extracting code examples, you use the `bluehawk snip` command,
 and you can
-[extract code from a single file](code-snippets#extract-code-from-a-single-file)
-or [from a directory](code-snippets#extract-code-in-a-directory). But you
+[extract code from a single file](./code-snippets.md#extract-code-from-a-single-file)
+or [from a directory](./code-snippets.md#extract-code-in-a-directory). But you
 must run the command more than once, and each time you pass it the `state`
 identifier whose code example you want to generate.
 
@@ -177,7 +175,7 @@ bluehawk snip -o source/tutorial/generated/code/final/ tutorial/rn/providers/Tas
 
 The input file is the same in both cases. The output directory is different.
 Every output file follows the same
-[naming convention](code-snippets#output-file-names), and there is
+[naming convention](./code-snippets.md#output-file-names), and there is
 nothing in the file name to indicate the state that was used to generate
 that file. In the example above, the generated file name would be
 `TasksProvider.snippet.clean-up.js` in both cases.
@@ -190,7 +188,7 @@ Bluehawk CLI, you've got code files in output directories.
 Now it's time to include those code files in your documentation.
 How you do that depends on your documentation tooling. For info
 about how the Realm docs team includes code examples in our documentation, see:
-[Include Code Snippets In Your documentation](code-snippets#include-the-snippets-in-your-documentation).
+[Include Code Snippets In Your documentation](./code-snippets.md#include-the-snippets-in-your-documentation).
 
 ### Automatically Update Tutorial Code
 

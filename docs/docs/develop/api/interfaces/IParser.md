@@ -10,28 +10,30 @@ custom_edit_url: null
 
 ### languageSpecification
 
-• **languageSpecification**: [`LanguageSpecification`](LanguageSpecification)
+• **languageSpecification**: [`LanguageSpecification`](LanguageSpecification.md)
 
 #### Defined in
 
-[src/bluehawk/parser/makeParser.ts:15](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/makeParser.ts#L15)
+[bluehawk/parser/makeParser.ts:17](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/makeParser.ts#L17)
 
 ## Methods
 
 ### parse
 
-▸ **parse**(`source`): [`ParseResult`](ParseResult)
+▸ **parse**(`args`): [`ParseResult`](ParseResult.md)
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `source` | [`Document`](../classes/Document) |
+| `args` | `Object` |
+| `args.source` | [`Document`](../classes/Document.md) |
+| `args.tagProcessors?` | `TagProcessors` |
 
 #### Returns
 
-[`ParseResult`](ParseResult)
+[`ParseResult`](ParseResult.md)
 
 #### Defined in
 
-[src/bluehawk/parser/makeParser.ts:16](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/makeParser.ts#L16)
+[bluehawk/parser/makeParser.ts:18](https://github.com/krollins-mdb/Bluehawk/blob/d923c41019cdc6c2363277c64633a01b869a67e4/src/bluehawk/parser/makeParser.ts#L18)

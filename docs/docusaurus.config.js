@@ -1,8 +1,7 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-const darkCodeTheme = require("prism-react-renderer/themes/dracula");
+const {themes} = require("prism-react-renderer");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -11,18 +10,23 @@ const config = {
   url: "https://mongodb-university.github.io",
   baseUrl: "/Bluehawk/",
   onBrokenLinks: "warn",
-  onBrokenMarkdownLinks: "warn",
   organizationName: "mongodb-university", // Usually your GitHub org/user name.
   projectName: "Bluehawk", // Usually your repo name.
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
+  },
   plugins: [
     [
       "docusaurus-plugin-typedoc",
-
       // Plugin / TypeDoc options
       {
         entryPoints: ["../src/index.ts"],
         tsconfig: "../tsconfig.json",
-        out: "develop/api"
+        out: "develop/api",
+        skipErrorChecking: true,
+        excludeExternals: true,
       },
     ],
   ],
@@ -70,15 +74,15 @@ const config = {
               },
               {
                 label: "Tags",
-                to: "/commands",
+                to: "/reference/tags",
               },
               {
                 label: "CLI",
-                to: "/cli",
+                to: "/reference/cli",
               },
               {
                 label: "API",
-                to: "api",
+                to: "/develop/api",
               },
             ],
           },
@@ -103,8 +107,8 @@ const config = {
       },
       prism: {
         additionalLanguages: ["java", "swift"],
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: themes.github,
+        darkTheme: themes.dracula,
       },
     }),
 };
