@@ -12,7 +12,7 @@ The frontend of Bluehawk.
 
 ### constructor
 
-• **new Bluehawk**(`configuration?`)
+• **new Bluehawk**(`configuration?`): [`Bluehawk`](Bluehawk.md)
 
 #### Parameters
 
@@ -20,9 +20,13 @@ The frontend of Bluehawk.
 | :------ | :------ |
 | `configuration?` | `BluehawkConfiguration` |
 
+#### Returns
+
+[`Bluehawk`](Bluehawk.md)
+
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:44](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L44)
+[bluehawk/bluehawk.ts:43](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L43)
 
 ## Properties
 
@@ -32,7 +36,7 @@ The frontend of Bluehawk.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:227](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L227)
+[bluehawk/bluehawk.ts:221](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L221)
 
 ___
 
@@ -42,7 +46,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:226](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L226)
+[bluehawk/bluehawk.ts:220](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L220)
 
 ## Accessors
 
@@ -56,7 +60,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:222](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L222)
+[bluehawk/bluehawk.ts:216](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L216)
 
 ## Methods
 
@@ -71,7 +75,7 @@ Specify the special patterns for a given language.
 | Name | Type |
 | :------ | :------ |
 | `forFileExtension` | `string` \| `string`[] |
-| `languageSpecification` | [`LanguageSpecification`](../interfaces/LanguageSpecification) |
+| `languageSpecification` | [`LanguageSpecification`](../interfaces/LanguageSpecification.md) |
 
 #### Returns
 
@@ -79,13 +83,13 @@ Specify the special patterns for a given language.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:79](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L79)
+[bluehawk/bluehawk.ts:78](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L78)
 
 ___
 
 ### parse
 
-▸ **parse**(`source`, `options?`): [`ParseResult`](../interfaces/ParseResult)
+▸ **parse**(`source`, `options?`): [`ParseResult`](../interfaces/ParseResult.md)
 
 Parses the given source file into tags.
 
@@ -93,24 +97,24 @@ Parses the given source file into tags.
 
 | Name | Type |
 | :------ | :------ |
-| `source` | [`Document`](Document) |
+| `source` | [`Document`](Document.md) |
 | `options?` | `Object` |
-| `options.languageSpecification?` | [`LanguageSpecification`](../interfaces/LanguageSpecification) |
-| `options.reporter?` | `ActionReporter` |
+| `options.languageSpecification?` | [`LanguageSpecification`](../interfaces/LanguageSpecification.md) |
+| `options.reporter?` | [`ActionReporter`](../interfaces/ActionReporter.md) |
 
 #### Returns
 
-[`ParseResult`](../interfaces/ParseResult)
+[`ParseResult`](../interfaces/ParseResult.md)
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:162](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L162)
+[bluehawk/bluehawk.ts:161](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L161)
 
 ___
 
 ### parseAndProcess
 
-▸ **parseAndProcess**(`path`, `optionsIn?`): `Promise`<`void`\>
+▸ **parseAndProcess**(`path`, `optionsIn?`): `Promise`\<`void`\>
 
 Runs through all given source paths to parse and process them.
 
@@ -123,35 +127,35 @@ Runs through all given source paths to parse and process them.
 
 #### Returns
 
-`Promise`<`void`\>
+`Promise`\<`void`\>
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:92](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L92)
+[bluehawk/bluehawk.ts:91](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L91)
 
 ___
 
 ### process
 
-▸ **process**(`parseResult`, `processOptions?`): `Promise`<`BluehawkFiles`\>
+▸ **process**(`parseResult`, `processOptions?`): `Promise`\<`BluehawkFiles`\>
 
-Executes the tags on the given source. Use [Bluehawk.subscribe](Bluehawk#subscribe) to get
+Executes the tags on the given source. Use [[Bluehawk.subscribe]] to get
 results.
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `parseResult` | [`ParseResult`](../interfaces/ParseResult) |
-| `processOptions?` | [`ProcessOptions`](../interfaces/ProcessOptions) |
+| `parseResult` | [`ParseResult`](../interfaces/ParseResult.md) |
+| `processOptions?` | [`ProcessOptions`](../interfaces/ProcessOptions.md) |
 
 #### Returns
 
-`Promise`<`BluehawkFiles`\>
+`Promise`\<`BluehawkFiles`\>
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:215](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L215)
+[bluehawk/bluehawk.ts:209](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L209)
 
 ___
 
@@ -166,7 +170,7 @@ support for the tag under the given name.
 
 | Name | Type |
 | :------ | :------ |
-| `tag` | [`AnyTag`](../interfaces/AnyTag) |
+| `tag` | [`AnyTag`](../interfaces/AnyTag.md) |
 | `alternateName?` | `string` |
 
 #### Returns
@@ -175,7 +179,7 @@ support for the tag under the given name.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:72](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L72)
+[bluehawk/bluehawk.ts:71](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L71)
 
 ___
 
@@ -189,7 +193,7 @@ Subscribe to processed documents as they are processed by Bluehawk.
 
 | Name | Type |
 | :------ | :------ |
-| `listener` | [`Listener`](../modules#listener) \| [`Listener`](../modules#listener)[] |
+| `listener` | [`Listener`](../modules.md#listener) \| [`Listener`](../modules.md#listener)[] |
 
 #### Returns
 
@@ -197,18 +201,18 @@ Subscribe to processed documents as they are processed by Bluehawk.
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:203](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L203)
+[bluehawk/bluehawk.ts:197](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L197)
 
 ___
 
 ### waitForListeners
 
-▸ **waitForListeners**(): `Promise`<`void`\>
+▸ **waitForListeners**(): `Promise`\<`void`\>
 
 #### Returns
 
-`Promise`<`void`\>
+`Promise`\<`void`\>
 
 #### Defined in
 
-[src/bluehawk/bluehawk.ts:155](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/bluehawk.ts#L155)
+[bluehawk/bluehawk.ts:154](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/bluehawk.ts#L154)

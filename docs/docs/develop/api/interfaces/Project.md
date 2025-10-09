@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/project/Project.ts:7](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/project/Project.ts#L7)
+[bluehawk/project/Project.ts:7](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/project/Project.ts#L7)
 
 ___
 
@@ -24,4 +24,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/project/Project.ts:4](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/project/Project.ts#L4)
+[bluehawk/project/Project.ts:4](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/project/Project.ts#L4)

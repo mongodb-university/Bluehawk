@@ -10,25 +10,25 @@ custom_edit_url: null
 
 - **`ActionArgs`**
 
-  ↳ [`CheckArgs`](CheckArgs)
+  ↳ [`CheckArgs`](CheckArgs.md)
 
-  ↳ [`CopyArgs`](CopyArgs)
+  ↳ [`CopyArgs`](CopyArgs.md)
 
-  ↳ [`ListStatesArgs`](ListStatesArgs)
+  ↳ [`ListStatesArgs`](ListStatesArgs.md)
 
-  ↳ [`ListTagArgs`](ListTagArgs)
+  ↳ [`ListTagArgs`](ListTagArgs.md)
 
-  ↳ [`SnipArgs`](SnipArgs)
+  ↳ [`SnipArgs`](SnipArgs.md)
 
 ## Properties
 
 ### logLevel
 
-• `Optional` **logLevel**: `LogLevel`
+• `Optional` **logLevel**: [`LogLevel`](../enums/LogLevel.md)
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:3](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L3)
+[bluehawk/actions/ActionArgs.ts:3](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionArgs.ts#L3)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:4](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L4)
+[bluehawk/actions/ActionArgs.ts:4](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionArgs.ts#L4)

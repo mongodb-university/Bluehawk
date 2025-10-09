@@ -21,7 +21,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/tags/EmphasizeTag.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/EmphasizeTag.ts#L9)
+[bluehawk/tags/EmphasizeTag.ts:9](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/EmphasizeTag.ts#L9)
 
 ___
 
@@ -38,4 +38,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/tags/EmphasizeTag.ts:5](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/EmphasizeTag.ts#L5)
+[bluehawk/tags/EmphasizeTag.ts:5](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/EmphasizeTag.ts#L5)

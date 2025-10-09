@@ -10,8 +10,8 @@ custom_edit_url: null
 
 ### ranges
 
-• **ranges**: [`EmphasizeRange`](EmphasizeRange)[]
+• **ranges**: [`EmphasizeRange`](EmphasizeRange.md)[]
 
 #### Defined in
 
-[src/bluehawk/tags/EmphasizeTag.ts:16](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/tags/EmphasizeTag.ts#L16)
+[bluehawk/tags/EmphasizeTag.ts:16](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/tags/EmphasizeTag.ts#L16)

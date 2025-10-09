@@ -8,7 +8,7 @@ custom_edit_url: null
 
 ## Hierarchy
 
-- [`ActionArgs`](ActionArgs)
+- [`ActionArgs`](ActionArgs.md)
 
   ↳ **`CheckArgs`**
 
@@ -20,7 +20,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/actions/check.ts:9](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/check.ts#L9)
+[bluehawk/actions/check.ts:9](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/check.ts#L9)
 
 ___
 
@@ -30,21 +30,21 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/check.ts:10](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/check.ts#L10)
+[bluehawk/actions/check.ts:10](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/check.ts#L10)
 
 ___
 
 ### logLevel
 
-• `Optional` **logLevel**: `LogLevel`
+• `Optional` **logLevel**: [`LogLevel`](../enums/LogLevel.md)
 
 #### Inherited from
 
-[ActionArgs](ActionArgs).[logLevel](ActionArgs#loglevel)
+[ActionArgs](ActionArgs.md).[logLevel](ActionArgs.md#loglevel)
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:3](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L3)
+[bluehawk/actions/ActionArgs.ts:3](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionArgs.ts#L3)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-[src/bluehawk/actions/check.ts:8](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/check.ts#L8)
+[bluehawk/actions/check.ts:8](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/check.ts#L8)
 
 ___
 
@@ -64,8 +64,8 @@ ___
 
 #### Inherited from
 
-[ActionArgs](ActionArgs).[waitForListeners](ActionArgs#waitforlisteners)
+[ActionArgs](ActionArgs.md).[waitForListeners](ActionArgs.md#waitforlisteners)
 
 #### Defined in
 
-[src/bluehawk/actions/ActionArgs.ts:4](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/actions/ActionArgs.ts#L4)
+[bluehawk/actions/ActionArgs.ts:4](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/actions/ActionArgs.ts#L4)

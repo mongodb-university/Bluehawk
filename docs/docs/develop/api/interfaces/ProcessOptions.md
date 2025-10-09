@@ -14,7 +14,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[src/bluehawk/processor/Processor.ts:12](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/processor/Processor.ts#L12)
+[bluehawk/processor/Processor.ts:12](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/processor/Processor.ts#L12)
 
 ___
 
@@ -24,4 +24,4 @@ ___
 
 #### Defined in
 
-[src/bluehawk/processor/Processor.ts:11](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/processor/Processor.ts#L11)
+[bluehawk/processor/Processor.ts:11](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/processor/Processor.ts#L11)

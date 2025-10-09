@@ -24,7 +24,7 @@ TagNode.associatedTokens
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:26](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L26)
+[bluehawk/parser/TagNode.ts:26](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L26)
 
 ___
 
@@ -38,7 +38,7 @@ TagNode.attributes
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:53](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L53)
+[bluehawk/parser/TagNode.ts:52](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L52)
 
 ___
 
@@ -52,7 +52,7 @@ TagNode.children
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:52](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L52)
+[bluehawk/parser/TagNode.ts:51](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L51)
 
 ___
 
@@ -66,7 +66,7 @@ TagNode.contentRange
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:51](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L51)
+[bluehawk/parser/TagNode.ts:50](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L50)
 
 ___
 
@@ -74,13 +74,9 @@ ___
 
 • **id**: `undefined`
 
-#### Overrides
-
-TagNode.id
-
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:50](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L50)
+[bluehawk/parser/TagNode.ts:49](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L49)
 
 ___
 
@@ -94,7 +90,7 @@ TagNode.inContext
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:29](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L29)
+[bluehawk/parser/TagNode.ts:29](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L29)
 
 ___
 
@@ -108,7 +104,7 @@ TagNode.lineComments
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:23](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L23)
+[bluehawk/parser/TagNode.ts:23](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L23)
 
 ___
 
@@ -122,7 +118,7 @@ TagNode.lineRange
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:19](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L19)
+[bluehawk/parser/TagNode.ts:19](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L19)
 
 ___
 
@@ -136,7 +132,7 @@ TagNode.newlines
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:22](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L22)
+[bluehawk/parser/TagNode.ts:22](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L22)
 
 ___
 
@@ -150,7 +146,21 @@ TagNode.range
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:15](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L15)
+[bluehawk/parser/TagNode.ts:15](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L15)
+
+___
+
+### shorthandArgs
+
+• `Optional` **shorthandArgs**: `string`[]
+
+#### Inherited from
+
+TagNode.shorthandArgs
+
+#### Defined in
+
+[bluehawk/parser/TagNode.ts:42](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L42)
 
 ___
 
@@ -164,7 +174,7 @@ TagNode.tagName
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:10](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L10)
+[bluehawk/parser/TagNode.ts:10](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L10)
 
 ___
 
@@ -178,4 +188,4 @@ TagNode.type
 
 #### Defined in
 
-[src/bluehawk/parser/TagNode.ts:49](https://github.com/mongodben/Bluehawk/blob/be77c09/src/bluehawk/parser/TagNode.ts#L49)
+[bluehawk/parser/TagNode.ts:48](https://github.com/krollins-mdb/Bluehawk/blob/0886b9526801a2b31a73b01fc05e9bdcbd23c69e/src/bluehawk/parser/TagNode.ts#L48)
