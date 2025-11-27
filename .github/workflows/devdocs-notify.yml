@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Send Slack Notification for New Issue
         env:
-          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_TITLE: ${{ github.event.issue.title }} 
           ISSUE_USER: ${{ github.event.issue.user.login }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
           REPO_NAME: ${{ github.repository }}
@@ -23,7 +23,8 @@ jobs:
             --arg title "$ISSUE_TITLE" \
             --arg user "$ISSUE_USER" \
             --arg url "$ISSUE_URL" \
-            '*📢 @DevDocs a PR was opened or issue created in \($repo) 📢*\n\n*Issue Title:* \($title)\n*Opened By:* \($user)\n\n*View Issue:* \($url)')
+            "*📢 @DevDocs a PR was opened or issue created in * \($repo)\n*Title:* \($title)\n*By:* \($user)\n*URL:* \($url)"
+            }')
 
           # Build Slack payload
           SLACK_PAYLOAD=$(jq -n \
