@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Send Slack Notification for New Issue
         env:
-          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_TITLE: ${{ github.event.issue.title }} 
           ISSUE_USER: ${{ github.event.issue.user.login }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
           REPO_NAME: ${{ github.repository }}
