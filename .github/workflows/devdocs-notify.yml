@@ -6,30 +6,37 @@ on:
     types: [opened]
 
 jobs:
-  notify:
+  notify_slack_on_issue:
     runs-on: ubuntu-latest
     steps:
-      - name: Check for new PR or issues
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const text = context.payload.comment?.body 
-                      || context.payload.issue?.body 
-                      || context.payload.pull_request?.body 
-                      || context.payload.review?.body 
-                      || "";
-
-            await fetch(process.env.SLACK_WEBHOOK_URL, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                text: `:eyes: @DevDocs a PR was opened or issue created  in *${context.payload.repository.full_name}* 
-            Event: *${context.eventName}* 
-            Link: ${context.payload.comment?.html_url
-                    || context.payload.issue?.html_url
-                    || context.payload.pull_request?.html_url
-                    || context.payload.review?.html_url}`
-                }),
-              });
+      - name: Send Slack Notification for New Issue
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          REPO_NAME: ${{ github.repository }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          # Build message text using jq to safely handle user input
+          MESSAGE_TEXT=$(jq -n \
+            --arg repo "$REPO_NAME" \
+            --arg title "$ISSUE_TITLE" \
+            --arg user "$ISSUE_USER" \
+            --arg url "$ISSUE_URL" \
+            '*📢 @DevDocs a PR was opened or issue created in \($repo) 📢*\n\n*Issue Title:* \($title)\n*Opened By:* \($user)\n\n*View Issue:* \($url)')
+
+          # Build Slack payload
+          SLACK_PAYLOAD=$(jq -n \
+            --arg text "$MESSAGE_TEXT" \
+            '{
+              "channel": "#docs-devdocs-notifications",
+              "username": "Issue Notifier",
+              "icon_emoji": ":mega:",
+              "text": $text
+            }')
+
+          # Send to Slack
+          curl -X POST \
+               -H 'Content-type: application/json' \
+               --data "$SLACK_PAYLOAD" \
+               "$SLACK_WEBHOOK"
