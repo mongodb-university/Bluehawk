@@ -16,7 +16,7 @@ jobs:
           ISSUE_URL: ${{ github.event.issue.html_url }}
           REPO_NAME: ${{ github.repository }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        run: |
+        run: | 
           # Build message text using jq to safely handle user input
           MESSAGE_TEXT=$(jq -n \
             --arg repo "$REPO_NAME" \
